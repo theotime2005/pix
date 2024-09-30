@@ -17,6 +17,7 @@ import {
   sessionRepositories,
   sharedCompetenceMarkRepository,
 } from '../../../session-management/infrastructure/repositories/index.js';
+import * as certificationCourseRepository from '../../../shared/infrastructure/repositories/certification-course-repository.js';
 import * as certificationCandidateRepository from '../../infrastructure/repositories/certification-candidate-repository.js';
 
 const dependencies = {
@@ -33,6 +34,7 @@ const dependencies = {
   flashAlgorithmConfigurationRepository,
   flashAlgorithmService,
   pickChallengeService,
+  certificationCourseRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));
