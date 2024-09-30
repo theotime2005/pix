@@ -10,6 +10,7 @@ export default class MembersListItem extends Component {
   @service currentUser;
   @service notifications;
   @service intl;
+  @service pixToast;
   @tracked isEditionMode = false;
 
   roleOptions = [
@@ -74,6 +75,10 @@ export default class MembersListItem extends Component {
     try {
       await member.save();
       this.notifications.success(this.intl.t('pages.team.members.notifications.change-member-role.success'));
+      this.pixToast.sendSuccessNotification({
+        message: this.intl.t('pages.team.members.notifications.change-member-role.success'),
+        ariaLabel: 'Fermer la notification',
+      });
     } catch (e) {
       member.rollbackAttributes();
       this.notifications.error(this.intl.t('pages.team.members.notifications.change-member-role.error'));
