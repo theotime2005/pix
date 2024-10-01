@@ -1,5 +1,5 @@
-import { OrganizationPlacesLot } from '../../../../../../src/prescription/organization-place/domain/models/OrganizationPlacesLot.js';
-import { OrganizationPlacesLotManagement as organizationPlacesLotManagement } from '../../../../../../src/prescription/organization-place/domain/read-models/OrganizationPlacesLotManagement.js';
+import { OrganizationPlacesLotForManagement } from '../../../../../../src/prescription/organization-place/domain/models/OrganizationPlacesLotForManagement.js';
+import { OrganizationPlacesLotManagement } from '../../../../../../src/prescription/organization-place/domain/read-models/OrganizationPlacesLotManagement.js';
 import { createOrganizationPlacesLot } from '../../../../../../src/prescription/organization-place/domain/usecases/create-organization-places-lot.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
@@ -26,28 +26,30 @@ describe('Unit | UseCase | create-organization-places-lot', function () {
       organizationId,
       createdBy,
       count: 10,
-      category: OrganizationPlacesLot.categories.FREE_RATE,
+      category: OrganizationPlacesLotForManagement.categories.FREE_RATE,
       activationDate: '2022-01-02',
       expirationDate: '2023-01-01',
       reference: 'ABC123',
     };
 
-    const organizationPlaceLotId = 12;
+    const organizationPlacesLotId = 12;
 
-    const expectedOrganizationPlacesLotData = new OrganizationPlacesLot({
+    const expectedOrganizationPlacesLotData = new OrganizationPlacesLotForManagement({
       ...organizationPlacesLotData,
       organizationId,
       createdBy,
     });
 
-    const expectedOrganizatonPlacesLotManagement = new organizationPlacesLotManagement(
+    const expectedOrganizatonPlacesLotManagement = new OrganizationPlacesLotManagement(
       expectedOrganizationPlacesLotData,
     );
 
-    organizationPlacesLotRepository.create.withArgs(expectedOrganizationPlacesLotData).resolves(organizationPlaceLotId);
+    organizationPlacesLotRepository.create
+      .withArgs(expectedOrganizationPlacesLotData)
+      .resolves(organizationPlacesLotId);
     organizationRepository.get.withArgs(organizationId).resolves(organization);
     organizationPlacesLotRepository.get
-      .withArgs(organizationPlaceLotId)
+      .withArgs(organizationPlacesLotId)
       .resolves(expectedOrganizatonPlacesLotManagement);
 
     //when

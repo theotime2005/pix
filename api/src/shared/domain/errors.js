@@ -139,22 +139,8 @@ class CertificationCandidateByPersonalInfoTooManyMatchesError extends DomainErro
   }
 }
 
-class CertificationCandidateCreationOrUpdateError extends DomainError {
-  constructor(message = 'Echec lors la création ou de la mise à jour du candidat de certification.') {
-    super(message);
-  }
-}
-
 class CertificationCandidateDeletionError extends DomainError {
   constructor(message = 'Echec lors de la suppression du candidat de certification.') {
-    super(message);
-  }
-}
-
-class CertificationCandidateMultipleUserLinksWithinSessionError extends DomainError {
-  constructor(
-    message = "Il est interdit de lier un utilisateur à plusieurs candidats de certification au sein d'une même session.",
-  ) {
     super(message);
   }
 }
@@ -597,12 +583,6 @@ class YamlParsingError extends DomainError {
   }
 }
 
-class AnswerEvaluationError extends DomainError {
-  constructor(challenge) {
-    super(`Problème lors de l'évaluation de la réponse du challenge: "${challenge.id}"`, '', challenge);
-  }
-}
-
 class TargetProfileCannotBeCreated extends DomainError {
   constructor(message = 'Erreur lors de la création du profil cible.') {
     super(message);
@@ -665,12 +645,6 @@ class ManyOrganizationsFoundError extends DomainError {
 
 class AlreadyExistingInvitationError extends DomainError {
   constructor(message = "L'invitation de l'organisation existe déjà.") {
-    super(message);
-  }
-}
-
-class AlreadyAcceptedOrCancelledInvitationError extends DomainError {
-  constructor(message = "L'invitation a déjà été acceptée ou annulée.") {
     super(message);
   }
 }
@@ -811,22 +785,22 @@ class DeprecatedCertificationIssueReportSubcategoryError extends DomainError {
 }
 
 class SendingEmailError extends DomainError {
-  constructor() {
-    super("Échec lors de l'envoi de l'email.");
+  constructor(emailAddress) {
+    super(`Failed to send email to "${emailAddress}" for some unknown reason.`);
     this.code = 'SENDING_EMAIL_FAILED';
   }
 }
 
 class SendingEmailToInvalidDomainError extends DomainError {
   constructor(emailAddress) {
-    super(`Failed to send email to ${emailAddress} because domain seems to be invalid.`);
+    super(`Failed to send email to "${emailAddress}" because domain seems to be invalid.`);
     this.code = 'INVALID_EMAIL_DOMAIN';
   }
 }
 
 class SendingEmailToInvalidEmailAddressError extends DomainError {
   constructor(emailAddress, errorMessage) {
-    super(`Failed to send email to ${emailAddress} because email address seems to be invalid.`);
+    super(`Failed to send email to "${emailAddress}" because email address seems to be invalid.`);
     this.code = 'INVALID_EMAIL_ADDRESS_FORMAT';
     this.meta = {
       emailAddress,
@@ -1016,6 +990,8 @@ const SIECLE_ERRORS = {
   BIRTH_CITY_CODE_REQUIRED_FOR_FR_STUDENT: 'BIRTH_CITY_CODE_REQUIRED_FOR_FR_STUDENT',
   BIRTHDATE_REQUIRED: 'BIRTHDATE_REQUIRED',
   INVALID_BIRTHDATE_FORMAT: 'INVALID_BIRTHDATE_FORMAT',
+  LAST_NAME_REQUIRED: 'LAST_NAME_REQUIRED',
+  FIRST_NAME_REQUIRED: 'FIRST_NAME_REQUIRED',
 };
 
 class NotImplementedError extends Error {
@@ -1085,12 +1061,6 @@ class InvalidJuryLevelError extends DomainError {
   }
 }
 
-class InvalidStageError extends DomainError {
-  constructor(message) {
-    super(message);
-  }
-}
-
 class AuditLoggerApiError extends DomainError {
   constructor(message) {
     super(message);
@@ -1107,7 +1077,6 @@ export {
   AccountRecoveryDemandExpired,
   AccountRecoveryUserAlreadyConfirmEmail,
   AcquiredBadgeForbiddenDeletionError,
-  AlreadyAcceptedOrCancelledInvitationError,
   AlreadyExistingCampaignParticipationError,
   AlreadyExistingEntityError,
   AlreadyExistingInvitationError,
@@ -1117,7 +1086,6 @@ export {
   AlreadyRegisteredEmailError,
   AlreadyRegisteredUsernameError,
   AlreadySharedCampaignParticipationError,
-  AnswerEvaluationError,
   ApplicationScopeNotAllowedError,
   ApplicationWithInvalidClientIdError,
   ApplicationWithInvalidClientSecretError,
@@ -1141,9 +1109,7 @@ export {
   CertificationBadgeForbiddenDeletionError,
   CertificationCandidateByPersonalInfoNotFoundError,
   CertificationCandidateByPersonalInfoTooManyMatchesError,
-  CertificationCandidateCreationOrUpdateError,
   CertificationCandidateDeletionError,
-  CertificationCandidateMultipleUserLinksWithinSessionError,
   CertificationCandidateNotFoundError,
   CertificationCandidateOnFinalizedSessionError,
   CertificationCandidatePersonalInfoFieldMissingError,
@@ -1180,7 +1146,6 @@ export {
   InvalidPasswordForUpdateEmailError,
   InvalidResultRecipientTokenError,
   InvalidSessionResultTokenError,
-  InvalidStageError,
   InvalidTemporaryKeyError,
   InvalidVerificationCodeError,
   LanguageNotSupportedError,

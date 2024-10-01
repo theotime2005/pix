@@ -3,18 +3,29 @@ import dayjs from 'dayjs';
 
 import * as organizationLearnerRepository from '../../../../../lib/infrastructure/repositories/organization-learner-repository.js';
 import { ComputeCertificabilityJob } from '../../../../prescription/learner-management/domain/models/ComputeCertificabilityJob.js';
+import { JobScheduleController } from '../../../../shared/application/jobs/job-schedule-controller.js';
 import { config } from '../../../../shared/config.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { logger } from '../../../../shared/infrastructure/utils/logger.js';
 import { computeCertificabilityJobRepository } from '../../../learner-management/infrastructure/repositories/jobs/compute-certificability-job-repository.js';
 
-class ScheduleComputeOrganizationLearnersCertificabilityJobController {
-  async handle(
-    event = {},
+class ScheduleComputeOrganizationLearnersCertificabilityJobController extends JobScheduleController {
+  constructor() {
+    super('ScheduleComputeOrganizationLearnersCertificabilityJob', {
+      jobCron: config.features.scheduleComputeOrganizationLearnersCertificability.cron,
+    });
+  }
+
+  get legacyName() {
+    return 'ComputeOrganizationLearnersCertificabilityJob';
+  }
+
+  async handle({
+    data = {},
     dependencies = { organizationLearnerRepository, computeCertificabilityJobRepository, config, logger },
-  ) {
-    const skipLoggedLastDayCheck = event?.skipLoggedLastDayCheck;
-    const onlyNotComputed = event?.onlyNotComputed;
+  }) {
+    const skipLoggedLastDayCheck = data?.skipLoggedLastDayCheck;
+    const onlyNotComputed = data?.onlyNotComputed;
     const chunkSize = dependencies.config.features.scheduleComputeOrganizationLearnersCertificability.chunkSize;
     const cronConfig = dependencies.config.features.scheduleComputeOrganizationLearnersCertificability.cron;
 

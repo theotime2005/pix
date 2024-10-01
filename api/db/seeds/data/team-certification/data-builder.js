@@ -89,7 +89,7 @@ async function _createScoCertificationCenter({ databaseBuilder }) {
     id: SCO_CERTIFICATION_MANAGING_STUDENTS_CERTIFICATION_CENTER_USER_ID,
     firstName: 'Centre de certif SCO managing student',
     lastName: 'Certification',
-    email: 'certif-sco@example.net',
+    email: 'certif-sco-v3@example.net',
     cgu: true,
     lang: 'fr',
     lastTermsOfServiceValidatedAt: new Date(),
@@ -283,7 +283,7 @@ async function _createProOrganization({ databaseBuilder }) {
     organizationId: PRO_ORGANIZATION_ID,
     type: 'PRO',
     name: 'Orga team Certification',
-    isManagingStudents: true,
+    isManagingStudents: false,
     externalId: PRO_EXTERNAL_ID,
     adminIds: [PRO_ORGANIZATION_USER_ID],
     configOrganization: {

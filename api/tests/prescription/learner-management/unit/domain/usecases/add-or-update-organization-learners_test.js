@@ -14,7 +14,7 @@ describe('Unit | UseCase | add-or-update-organization-learners', function () {
   let parserStub;
   let streamerSymbol;
   let organizationImportStub;
-  let logErrorWithCorrelationIdsStub;
+  let loggerStub;
 
   beforeEach(function () {
     organizationId = Symbol('organizationId');
@@ -55,8 +55,9 @@ describe('Unit | UseCase | add-or-update-organization-learners', function () {
       addOrUpdateOrganizationOfOrganizationLearners: sinon.stub(),
       disableAllOrganizationLearnersInOrganization: sinon.stub().resolves(),
     };
-
-    logErrorWithCorrelationIdsStub = sinon.stub();
+    loggerStub = {
+      error: sinon.stub(),
+    };
   });
 
   it('should save learners', async function () {
@@ -111,20 +112,18 @@ describe('Unit | UseCase | add-or-update-organization-learners', function () {
     expect(organizationImportRepositoryStub.save).to.have.been.called;
   });
 
-  it('should call log method if file deletion on s3 fails', async function () {
-    const deletionError = new Error('deletion error');
-    importStorageStub.readFile.rejects();
-    importStorageStub.deleteFile.rejects(deletionError);
-
-    await catchErr(addOrUpdateOrganizationLearners)({
+  it('should save import state even if deleteFile crash but log error for tracking', async function () {
+    const s3DeleteError = new Error('s3 delete error');
+    importStorageStub.deleteFile.rejects(s3DeleteError);
+    await addOrUpdateOrganizationLearners({
       organizationImportId,
       importStorage: importStorageStub,
       organizationImportRepository: organizationImportRepositoryStub,
       organizationLearnerRepository: organizationLearnerRepositoryStub,
+      logger: loggerStub,
       chunkSize: 2,
-      logErrorWithCorrelationIds: logErrorWithCorrelationIdsStub,
     });
-
-    expect(logErrorWithCorrelationIdsStub).to.have.been.calledWith(deletionError);
+    expect(loggerStub.error).to.have.been.calledWith(s3DeleteError);
+    expect(organizationImportRepositoryStub.save).to.have.been.calledWithExactly(organizationImportStub);
   });
 });

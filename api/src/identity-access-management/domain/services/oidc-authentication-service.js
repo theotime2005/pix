@@ -5,12 +5,12 @@ import lodash from 'lodash';
 import ms from 'ms';
 import { Issuer } from 'openid-client';
 
-import { monitoringTools } from '../../../../lib/infrastructure/monitoring-tools.js';
 import { config } from '../../../shared/config.js';
 import { OIDC_ERRORS } from '../../../shared/domain/constants.js';
 import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { OidcError, OidcMissingFieldsError } from '../../../shared/domain/errors.js';
 import { AuthenticationMethod, AuthenticationSessionContent } from '../../../shared/domain/models/index.js';
+import { monitoringTools } from '../../../shared/infrastructure/monitoring-tools.js';
 import { temporaryStorage } from '../../../shared/infrastructure/temporary-storage/index.js';
 import { logger } from '../../../shared/infrastructure/utils/logger.js';
 import { DEFAULT_CLAIM_MAPPING } from '../constants/oidc-identity-providers.js';
@@ -44,7 +44,7 @@ export class OidcAuthenticationService {
       scope = DEFAULT_SCOPE,
       slug,
       source,
-      claimMapping = DEFAULT_CLAIM_MAPPING,
+      claimMapping,
     },
     { sessionTemporaryStorage = defaultSessionTemporaryStorage } = {},
   ) {
@@ -66,6 +66,8 @@ export class OidcAuthenticationService {
     this.sessionTemporaryStorage = sessionTemporaryStorage;
     this.slug = slug;
     this.source = source;
+
+    claimMapping = claimMapping || DEFAULT_CLAIM_MAPPING;
 
     const additionalClaims = !lodash.isEmpty(claimsToStore)
       ? claimsToStore.split(',').map((claim) => claim.trim())

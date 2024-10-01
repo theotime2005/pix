@@ -1,8 +1,6 @@
 import * as organizationSerializer from '../../../src/organizational-entities/infrastructure/serializers/jsonapi/organization-serializer.js';
 import { organizationForAdminSerializer } from '../../../src/organizational-entities/infrastructure/serializers/jsonapi/organizations-administration/organization-for-admin.serializer.js';
-import * as divisionSerializer from '../../../src/prescription/campaign/infrastructure/serializers/jsonapi/division-serializer.js';
 import * as csvSerializer from '../../../src/shared/infrastructure/serializers/csv/csv-serializer.js';
-import * as membershipSerializer from '../../../src/shared/infrastructure/serializers/jsonapi/membership.serializer.js';
 import {
   extractLocaleFromRequest,
   extractUserIdFromRequest,
@@ -10,7 +8,6 @@ import {
 import { organizationInvitationSerializer } from '../../../src/team/infrastructure/serializers/jsonapi/organization-invitation.serializer.js';
 import { usecases } from '../../domain/usecases/index.js';
 import * as organizationMemberIdentitySerializer from '../../infrastructure/serializers/jsonapi/organization-member-identity-serializer.js';
-import * as targetProfileSummaryForAdminSerializer from '../../infrastructure/serializers/jsonapi/target-profile-summary-for-admin-serializer.js';
 
 const create = async function (request) {
   const superAdminUserId = extractUserIdFromRequest(request);
@@ -42,30 +39,6 @@ const findPaginatedFilteredOrganizations = async function (request, h, dependenc
   return dependencies.organizationSerializer.serialize(organizations, pagination);
 };
 
-const findPaginatedFilteredMembershipsForAdmin = async function (request) {
-  const organizationId = request.params.id;
-  const options = request.query;
-
-  const { models: memberships, pagination } = await usecases.findPaginatedFilteredOrganizationMemberships({
-    organizationId,
-    filter: options.filter,
-    page: options.page,
-  });
-  return membershipSerializer.serializeForAdmin(memberships, pagination);
-};
-
-const findPaginatedFilteredMemberships = async function (request) {
-  const organizationId = request.params.id;
-  const options = request.query;
-
-  const { models: memberships, pagination } = await usecases.findPaginatedFilteredOrganizationMemberships({
-    organizationId,
-    filter: options.filter,
-    page: options.page,
-  });
-  return membershipSerializer.serialize(memberships, pagination);
-};
-
 const getOrganizationMemberIdentities = async function (
   request,
   h,
@@ -74,12 +47,6 @@ const getOrganizationMemberIdentities = async function (
   const organizationId = request.params.id;
   const members = await usecases.getOrganizationMemberIdentities({ organizationId });
   return dependencies.organizationMemberIdentitySerializer.serialize(members);
-};
-
-const getDivisions = async function (request) {
-  const organizationId = request.params.id;
-  const divisions = await usecases.findDivisionsByOrganization({ organizationId });
-  return divisionSerializer.serialize(divisions);
 };
 
 const resendInvitation = async function (request, h) {
@@ -102,14 +69,6 @@ const archiveOrganization = async function (request, h, dependencies = { organiz
   return dependencies.organizationForAdminSerializer.serialize(archivedOrganization);
 };
 
-const findTargetProfileSummariesForAdmin = async function (request) {
-  const organizationId = request.params.id;
-  const targetProfileSummaries = await usecases.findOrganizationTargetProfileSummariesForAdmin({
-    organizationId,
-  });
-  return targetProfileSummaryForAdminSerializer.serialize(targetProfileSummaries);
-};
-
 const findChildrenOrganizationsForAdmin = async function (
   request,
   h,
@@ -125,11 +84,7 @@ const organizationController = {
   create,
   createInBatch,
   findChildrenOrganizationsForAdmin,
-  findPaginatedFilteredMemberships,
-  findPaginatedFilteredMembershipsForAdmin,
   findPaginatedFilteredOrganizations,
-  findTargetProfileSummariesForAdmin,
-  getDivisions,
   getOrganizationMemberIdentities,
   resendInvitation,
 };

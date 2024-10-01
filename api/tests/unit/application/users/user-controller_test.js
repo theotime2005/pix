@@ -4,7 +4,6 @@ import { DomainTransaction } from '../../../../lib/infrastructure/DomainTransact
 import { usecases as devcompUsecases } from '../../../../src/devcomp/domain/usecases/index.js';
 import { evaluationUsecases } from '../../../../src/evaluation/domain/usecases/index.js';
 import { NON_OIDC_IDENTITY_PROVIDERS } from '../../../../src/identity-access-management/domain/constants/identity-providers.js';
-import { User } from '../../../../src/identity-access-management/domain/models/User.js';
 import { UserOrganizationForAdmin } from '../../../../src/shared/domain/read-models/UserOrganizationForAdmin.js';
 import * as requestResponseUtils from '../../../../src/shared/infrastructure/utils/request-response-utils.js';
 import { domainBuilder, expect, hFake, sinon } from '../../../test-helper.js';
@@ -123,32 +122,6 @@ describe('Unit | Controller | user-controller', function () {
     });
   });
 
-  describe('#rememberUserHasSeenNewDashboardInfo', function () {
-    let request;
-    const userId = 1;
-
-    beforeEach(function () {
-      request = {
-        auth: { credentials: { userId } },
-        params: { id: userId },
-      };
-
-      sinon.stub(usecases, 'rememberUserHasSeenNewDashboardInfo');
-    });
-
-    it('should remember user has seen new dashboard info', async function () {
-      // given
-      usecases.rememberUserHasSeenNewDashboardInfo.withArgs({ userId }).resolves({});
-      userSerializer.serialize.withArgs({}).returns('ok');
-
-      // when
-      const response = await userController.rememberUserHasSeenNewDashboardInfo(request, hFake, { userSerializer });
-
-      // then
-      expect(response).to.be.equal('ok');
-    });
-  });
-
   describe('#rememberUserHasSeenChallengeTooltip', function () {
     let request;
     const userId = 1;
@@ -217,101 +190,6 @@ describe('Unit | Controller | user-controller', function () {
 
       // then
       expect(response).to.be.equal('ok');
-    });
-  });
-
-  describe('#findPaginatedFilteredUsers', function () {
-    let dependencies;
-
-    beforeEach(function () {
-      sinon.stub(usecases, 'findPaginatedFilteredUsers');
-      const userForAdminSerializer = { serialize: sinon.stub() };
-      dependencies = {
-        userForAdminSerializer,
-      };
-    });
-
-    it('should return a list of JSON API users fetched from the data repository', async function () {
-      // given
-      const request = { query: {} };
-      usecases.findPaginatedFilteredUsers.resolves({ models: {}, pagination: {} });
-      dependencies.userForAdminSerializer.serialize.returns({ data: {}, meta: {} });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(usecases.findPaginatedFilteredUsers).to.have.been.calledOnce;
-      expect(dependencies.userForAdminSerializer.serialize).to.have.been.calledOnce;
-    });
-
-    it('should return a JSON API response with pagination information', async function () {
-      // given
-      const request = { query: {} };
-      const expectedResults = [new User({ id: 1 }), new User({ id: 2 }), new User({ id: 3 })];
-      const expectedPagination = { page: 2, pageSize: 25, itemsCount: 100, pagesCount: 4 };
-      usecases.findPaginatedFilteredUsers.resolves({ models: expectedResults, pagination: expectedPagination });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(dependencies.userForAdminSerializer.serialize).to.have.been.calledWithExactly(
-        expectedResults,
-        expectedPagination,
-      );
-    });
-
-    it('should allow to filter users by first name', async function () {
-      // given
-      const query = { filter: { firstName: 'Alexia' }, page: {} };
-      const request = { query };
-      usecases.findPaginatedFilteredUsers.resolves({ models: {}, pagination: {} });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(usecases.findPaginatedFilteredUsers).to.have.been.calledWithMatch(query);
-    });
-
-    it('should allow to filter users by last name', async function () {
-      // given
-      const query = { filter: { lastName: 'Granjean' }, page: {} };
-      const request = { query };
-      usecases.findPaginatedFilteredUsers.resolves({ models: {}, pagination: {} });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(usecases.findPaginatedFilteredUsers).to.have.been.calledWithMatch(query);
-    });
-
-    it('should allow to filter users by email', async function () {
-      // given
-      const query = { filter: { email: 'alexiagranjean' }, page: {} };
-      const request = { query };
-      usecases.findPaginatedFilteredUsers.resolves({ models: {}, pagination: {} });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(usecases.findPaginatedFilteredUsers).to.have.been.calledWithMatch(query);
-    });
-
-    it('should allow to paginate on a given page and page size', async function () {
-      // given
-      const query = { filter: { email: 'alexiagranjean' }, page: { number: 2, size: 25 } };
-      const request = { query };
-      usecases.findPaginatedFilteredUsers.resolves({ models: {}, pagination: {} });
-
-      // when
-      await userController.findPaginatedFilteredUsers(request, hFake, dependencies);
-
-      // then
-      expect(usecases.findPaginatedFilteredUsers).to.have.been.calledWithMatch(query);
     });
   });
 
@@ -468,108 +346,6 @@ describe('Unit | Controller | user-controller', function () {
         id: 'campaignParticipationOverviews',
       });
       expect(dependencies.campaignParticipationOverviewSerializer.serializeForPaginatedList).to.have.been.calledOnce;
-    });
-  });
-
-  describe('#isCertifiable', function () {
-    it('should return user certification eligibility', async function () {
-      // given
-      const certificationEligibility = domainBuilder.buildCertificationEligibility({
-        id: 123,
-        pixCertificationEligible: true,
-        complementaryCertifications: ['Pix+ Droit Maître', 'Pix+ Édu 1er degré Avancé'],
-      });
-      sinon
-        .stub(usecases, 'getUserCertificationEligibility')
-        .withArgs({ userId: 123 })
-        .resolves(certificationEligibility);
-      const request = {
-        auth: {
-          credentials: {
-            userId: 123,
-          },
-        },
-      };
-
-      // when
-      const serializedEligibility = await userController.isCertifiable(request);
-
-      // then
-      expect(serializedEligibility).to.deep.equal({
-        data: {
-          id: '123',
-          type: 'isCertifiables',
-          attributes: {
-            'is-certifiable': true,
-            'complementary-certifications': ['Pix+ Droit Maître', 'Pix+ Édu 1er degré Avancé'],
-          },
-        },
-      });
-    });
-  });
-
-  describe('#getProfile', function () {
-    beforeEach(function () {
-      sinon.stub(usecases, 'getUserProfile').resolves({
-        pixScore: 3,
-        scorecards: [],
-      });
-    });
-
-    it('should call the expected usecase', async function () {
-      // given
-      const profileSerializer = { serialize: sinon.stub() };
-      profileSerializer.serialize.resolves();
-      const userId = '12';
-      const locale = 'fr';
-
-      const request = {
-        auth: {
-          credentials: {
-            userId,
-          },
-        },
-        params: {
-          id: userId,
-        },
-        headers: { 'accept-language': locale },
-      };
-
-      // when
-      await userController.getProfile(request, hFake, { profileSerializer, requestResponseUtils });
-
-      // then
-      expect(usecases.getUserProfile).to.have.been.calledWithExactly({ userId, locale });
-    });
-  });
-
-  describe('#getProfileForAdmin', function () {
-    beforeEach(function () {
-      sinon.stub(usecases, 'getUserProfile').resolves({
-        pixScore: 3,
-        scorecards: [],
-      });
-    });
-
-    it('should call the expected usecase', async function () {
-      // given
-      const profileSerializer = { serialize: sinon.stub() };
-      profileSerializer.serialize.resolves();
-      const userId = '12';
-      const locale = 'fr';
-
-      const request = {
-        params: {
-          id: userId,
-        },
-        headers: { 'accept-language': locale },
-      };
-
-      // when
-      await userController.getProfileForAdmin(request, hFake, { profileSerializer, requestResponseUtils });
-
-      // then
-      expect(usecases.getUserProfile).to.have.been.calledWithExactly({ userId, locale });
     });
   });
 

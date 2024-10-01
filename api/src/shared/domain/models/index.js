@@ -14,7 +14,6 @@ import { CertificationIssueReportCategory } from '../../../certification/shared/
 import { CertificationReport } from '../../../certification/shared/domain/models/CertificationReport.js';
 import { CompetenceMark } from '../../../certification/shared/domain/models/CompetenceMark.js';
 import { ComplementaryCertificationCourseResult } from '../../../certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
-import { FinalizedSession } from '../../../certification/shared/domain/models/FinalizedSession.js';
 import { Training } from '../../../devcomp/domain/models/Training.js';
 import { TrainingTrigger } from '../../../devcomp/domain/models/TrainingTrigger.js';
 import { TrainingTriggerTube } from '../../../devcomp/domain/models/TrainingTriggerTube.js';
@@ -37,7 +36,7 @@ import { CampaignCreator } from '../../../prescription/campaign/domain/models/Ca
 import { CampaignForCreation } from '../../../prescription/campaign/domain/models/CampaignForCreation.js';
 import { Group } from '../../../prescription/campaign/domain/models/Group.js';
 import { CampaignToStartParticipation } from '../../../prescription/campaign-participation/domain/models/CampaignToStartParticipation.js';
-import { OrganizationPlacesLot } from '../../../prescription/organization-place/domain/models/OrganizationPlacesLot.js';
+import { OrganizationPlacesLotForManagement } from '../../../prescription/organization-place/domain/models/OrganizationPlacesLotForManagement.js';
 import { CampaignParticipationStatuses, CampaignTypes } from '../../../prescription/shared/domain/constants.js';
 import { OrganizationsToAttachToTargetProfile } from '../../../prescription/target-profile/domain/models/OrganizationsToAttachToTargetProfile.js';
 import { TargetProfileForCreation } from '../../../prescription/target-profile/domain/models/TargetProfileForCreation.js';
@@ -64,7 +63,6 @@ import { CertifiableBadgeAcquisition } from './CertifiableBadgeAcquisition.js';
 import { CertifiableProfileForLearningContent } from './CertifiableProfileForLearningContent.js';
 import { CertificationCandidate } from './CertificationCandidate.js';
 import { CertificationCenter } from './CertificationCenter.js';
-import { CertificationCenterInvitedUser } from './CertificationCenterInvitedUser.js';
 import { CertificationCenterMembership } from './CertificationCenterMembership.js';
 import { CertificationChallenge } from './CertificationChallenge.js';
 import { CertificationChallengeWithType } from './CertificationChallengeWithType.js';
@@ -98,7 +96,6 @@ import { PartnerCertificationScoring } from './PartnerCertificationScoring.js';
 import { PlacementProfile } from './PlacementProfile.js';
 import { PoleEmploiSending } from './PoleEmploiSending.js';
 import { ReproducibilityRate } from './ReproducibilityRate.js';
-import { ResultCompetence } from './ResultCompetence.js';
 import { ScoringSimulation } from './ScoringSimulation.js';
 import { ScoringSimulationContext } from './ScoringSimulationContext.js';
 import { ScoringSimulationDataset } from './ScoringSimulationDataset.js';
@@ -109,11 +106,9 @@ import { Solution } from './Solution.js';
 import { Student } from './Student.js';
 import { TargetProfile } from './TargetProfile.js';
 import { TargetProfileForAdmin } from './TargetProfileForAdmin.js';
-import { TargetProfileSummaryForAdmin } from './TargetProfileSummaryForAdmin.js';
 import { Thematic } from './Thematic.js';
 import { Tube } from './Tube.js';
 import { UserCompetence } from './UserCompetence.js';
-import { UserDetailsForAdmin } from './UserDetailsForAdmin.js';
 import { UserOrgaSettings } from './UserOrgaSettings.js';
 import { UserSavedTutorialWithTutorial } from './UserSavedTutorialWithTutorial.js';
 import { Validation } from './Validation.js';
@@ -154,7 +149,6 @@ export {
   CertificationCandidate,
   CertificationCandidateForSupervising,
   CertificationCenter,
-  CertificationCenterInvitedUser,
   CertificationCenterMembership,
   CertificationChallenge,
   CertificationChallengeWithType,
@@ -185,7 +179,6 @@ export {
   DataProtectionOfficer,
   EmailingAttempt,
   Examiner,
-  FinalizedSession,
   FlashAssessmentAlgorithm,
   Framework,
   Group,
@@ -198,7 +191,7 @@ export {
   OrganizationInvitation,
   OrganizationLearner,
   OrganizationMemberIdentity,
-  OrganizationPlacesLot,
+  OrganizationPlacesLotForManagement,
   OrganizationsToAttachToTargetProfile,
   OrganizationTag,
   ParticipantResultsShared,
@@ -208,7 +201,6 @@ export {
   PrivateCertificate,
   Progression,
   ReproducibilityRate,
-  ResultCompetence,
   ResultCompetenceTree,
   ScoringSimulation,
   ScoringSimulationContext,
@@ -223,7 +215,6 @@ export {
   TargetProfile,
   TargetProfileForAdmin,
   TargetProfileForCreation,
-  TargetProfileSummaryForAdmin,
   Thematic,
   ThematicForAdmin,
   Training,
@@ -235,7 +226,6 @@ export {
   TutorialEvaluation,
   User,
   UserCompetence,
-  UserDetailsForAdmin,
   UserLogin,
   UserOrgaSettings,
   UserSavedTutorial,

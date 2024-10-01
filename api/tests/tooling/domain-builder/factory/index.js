@@ -23,11 +23,12 @@ import { buildCampaignManagement } from './build-campaign-management.js';
 import { buildCampaignParticipation } from './build-campaign-participation.js';
 import { buildCampaignParticipationForUserManagement } from './build-campaign-participation-for-user-management.js';
 import { buildCampaignParticipationInfo } from './build-campaign-participation-info.js';
+import { buildCampaignParticipationOverview } from './build-campaign-participation-overview.js';
 import { buildCampaignParticipationResult } from './build-campaign-participation-result.js';
 import { buildCampaignReport } from './build-campaign-report.js';
 import { buildCampaignToJoin } from './build-campaign-to-join.js';
 import { buildCampaignToStartParticipation } from './build-campaign-to-start-participation.js';
-import { buildCenter } from './build-center.js';
+import { buildCenter, buildMatchingOrganization } from './build-center.js';
 import { buildCenterForAdmin } from './build-center-for-admin.js';
 import { buildCertifiableBadgeAcquisition } from './build-certifiable-badge-acquisition.js';
 import { buildCertifiableProfileForLearningContent } from './build-certifiable-profile-for-learning-content.js';
@@ -48,7 +49,6 @@ import { buildCertificationChallengeWithType } from './build-certification-chall
 import { buildCertificationCourse } from './build-certification-course.js';
 import { buildCertificationCpfCity } from './build-certification-cpf-city.js';
 import { buildCertificationCpfCountry } from './build-certification-cpf-country.js';
-import { buildCertificationEligibility } from './build-certification-eligibility.js';
 import { buildCertificationIssueReport } from './build-certification-issue-report.js';
 import { buildCertificationOfficer } from './build-certification-officer.js';
 import { buildCertificationPointOfContact } from './build-certification-point-of-contact.js';
@@ -76,7 +76,6 @@ import { buildComplementaryCertificationBadgeForAdmin } from './build-complement
 import { buildComplementaryCertificationCourseResult } from './build-complementary-certification-course-result.js';
 import { buildComplementaryCertificationCourseResultForJuryCertification } from './build-complementary-certification-course-result-for-certification.js';
 import { buildComplementaryCertificationCourseResultForJuryCertificationWithExternal } from './build-complementary-certification-course-result-for-certification-with-external.js';
-import { buildComplementaryCertificationCourseWithResults } from './build-complementary-certification-course-with-results.js';
 import { buildComplementaryCertificationForSupervising } from './build-complementary-certification-for-supervising.js';
 import { buildComplementaryCertificationForTargetProfileAttachment } from './build-complementary-certification-for-target-profile-attachment.js';
 import { buildComplementaryCertificationHabilitation } from './build-complementary-certification-habilitation.js';
@@ -171,14 +170,24 @@ import { buildV3CertificationChallengeLiveAlertForAdministration } from './build
 import { buildV3CertificationCourseDetailsForAdministration } from './build-v3-certification-course-details-for-administration.js';
 import { buildValidation } from './build-validation.js';
 import { buildValidator } from './build-validator.js';
+import { buildCenterPilotFeatures } from './certification/configuration/build-center-pilot-features.js';
 import { buildCandidate } from './certification/enrolment/build-candidate.js';
+import { buildCertificationEligibilityEnrolment } from './certification/enrolment/build-certification-eligibility.js';
+import { buildComplementaryCertificationBadge as buildComplementaryCertificationBadgeForEnrolment } from './certification/enrolment/build-complementary-certification-badge.js';
+import { buildComplementaryCertificationCourseWithResultsEnrolment } from './certification/enrolment/build-complementary-certification-course-with-results.js';
+import { buildEditedCandidate } from './certification/enrolment/build-edited-candidate.js';
 import { buildEnrolledCandidate } from './certification/enrolment/build-enrolled-candidate.js';
+import { buildPixCertification } from './certification/enrolment/build-pix-certification.js';
 import { buildSessionEnrolment } from './certification/enrolment/build-session.js';
 import {
   buildComplementarySubscription,
   buildCoreSubscription,
   buildSubscription,
 } from './certification/enrolment/build-subscription.js';
+import { buildUserEnrolment } from './certification/enrolment/build-user.js';
+import { buildUserCertificationEligibility } from './certification/enrolment/build-user-certification-eligibility.js';
+import { buildV3CertificationEligibility } from './certification/enrolment/build-v3-certification-eligibility.js';
+import { buildEvaluationCandidate } from './certification/evaluation/build-candidate.js';
 import { buildFlashAssessmentAlgorithm } from './certification/flash-certification/build-flash-assessment-algorithm.js';
 import { buildAssessmentResult as buildCertificationScoringAssessmentResult } from './certification/scoring/build-assessment-result.js';
 import { buildCertificationAssessmentHistory } from './certification/scoring/build-certification-assessment-history.js';
@@ -186,6 +195,7 @@ import { buildCertificationChallengeCapacity } from './certification/scoring/bui
 import { buildCertificationChallengeForScoring } from './certification/scoring/build-certification-challenge-for-scoring.js';
 import { buildCompetenceForScoring } from './certification/scoring/build-competence-for-scoring.js';
 import { buildV3CertificationScoring } from './certification/scoring/build-v3-certification-scoring.js';
+import { buildCertificationCandidate as buildSessionManagementCandidate } from './certification/session-management/build-certification-candidate.js';
 import { buildCertificationDetails } from './certification/session-management/build-certification-details.js';
 import { buildCertificationSessionComplementaryCertification } from './certification/session-management/build-certification-session-complementary-certification.js';
 import { buildSessionManagement } from './certification/session-management/build-session.js';
@@ -196,6 +206,9 @@ import { buildStageCollection as buildStageCollectionForTargetProfileManagement 
 import { buildStageCollection as buildStageCollectionForUserCampaignResults } from './user-campaign-results/build-stage-collection.js';
 
 const certification = {
+  configuration: {
+    buildCenterPilotFeatures,
+  },
   complementary: {
     buildComplementaryCertificationBadge: buildComplementaryCertificationBadge,
   },
@@ -206,17 +219,30 @@ const certification = {
   enrolment: {
     buildSession: buildSessionEnrolment,
     buildCenter,
+    buildMatchingOrganization,
     buildHabilitation,
     buildCertificationSessionCandidate,
     buildEnrolledCandidate,
     buildCandidate,
     buildCoreSubscription,
     buildComplementarySubscription,
+    buildEditedCandidate,
     buildSubscription,
+    buildUser: buildUserEnrolment,
+    buildCertificationEligibility: buildCertificationEligibilityEnrolment,
+    buildComplementaryCertificationCourseWithResults: buildComplementaryCertificationCourseWithResultsEnrolment,
+    buildUserCertificationEligibility,
+    buildV3CertificationEligibility,
+    buildPixCertification,
+    buildComplementaryCertificationBadge: buildComplementaryCertificationBadgeForEnrolment,
+  },
+  evaluation: {
+    buildCandidate: buildEvaluationCandidate,
   },
   sessionManagement: {
     buildCertificationSessionComplementaryCertification,
     buildSession: buildSessionManagement,
+    buildCertificationCandidate: buildSessionManagementCandidate,
   },
   shared: {
     buildJuryComment: buildJuryComment,
@@ -261,6 +287,7 @@ export {
   buildCampaignParticipation,
   buildCampaignParticipationForUserManagement,
   buildCampaignParticipationInfo,
+  buildCampaignParticipationOverview,
   buildCampaignParticipationResult,
   buildCampaignReport,
   buildCampaignToJoin,
@@ -289,7 +316,6 @@ export {
   buildCertificationCpfCity,
   buildCertificationCpfCountry,
   buildCertificationDetails,
-  buildCertificationEligibility,
   buildCertificationIssueReport,
   buildCertificationOfficer,
   buildCertificationPointOfContact,
@@ -317,7 +343,6 @@ export {
   buildComplementaryCertificationCourseResult,
   buildComplementaryCertificationCourseResultForJuryCertification,
   buildComplementaryCertificationCourseResultForJuryCertificationWithExternal,
-  buildComplementaryCertificationCourseWithResults,
   buildComplementaryCertificationForSupervising,
   buildComplementaryCertificationForTargetProfileAttachment,
   buildComplementaryCertificationHabilitation,

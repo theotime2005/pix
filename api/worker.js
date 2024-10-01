@@ -1,41 +1,21 @@
 import 'dotenv/config';
 
-import * as url from 'node:url';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
+import { glob } from 'glob';
 import _ from 'lodash';
 import PgBoss from 'pg-boss';
 
-import { CertificationCompletedJob } from './lib/domain/events/CertificationCompleted.js';
-import { CertificationCompletedJobController } from './src/certification/scoring/application/jobs/certification-completed-job-controller.js';
-import { CertificationRescoringByScriptJobController } from './src/certification/session-management/application/jobs/certification-rescoring-by-script-job-controller.js';
-import { CertificationRescoringByScriptJob } from './src/certification/session-management/domain/models/CertificationRescoringByScriptJob.js';
-import { GarAnonymizedBatchEventsLoggingJobController } from './src/identity-access-management/application/jobs/gar-anonymized-batch-events-logging-job.controller.js';
-import { GarAnonymizedBatchEventsLoggingJob } from './src/identity-access-management/domain/models/GarAnonymizedBatchEventsLoggingJob.js';
-import { UserAnonymizedEventLoggingJob } from './src/identity-access-management/domain/models/UserAnonymizedEventLoggingJob.js';
-import { ParticipationResultCalculationJobController } from './src/prescription/campaign-participation/application/jobs/participation-result-calculation-job-controller.js';
-import { PoleEmploiParticipationCompletedJobController } from './src/prescription/campaign-participation/application/jobs/pole-emploi-participation-completed-job-controller.js';
-import { PoleEmploiParticipationStartedJobController } from './src/prescription/campaign-participation/application/jobs/pole-emploi-participation-started-job-controller.js';
-import { SendSharedParticipationResultsToPoleEmploiJobController } from './src/prescription/campaign-participation/application/jobs/send-share-participation-results-to-pole-emploi-job-controller.js';
-import { ParticipationResultCalculationJob } from './src/prescription/campaign-participation/domain/models/ParticipationResultCalculationJob.js';
-import { PoleEmploiParticipationCompletedJob } from './src/prescription/campaign-participation/domain/models/PoleEmploiParticipationCompletedJob.js';
-import { PoleEmploiParticipationStartedJob } from './src/prescription/campaign-participation/domain/models/PoleEmploiParticipationStartedJob.js';
-import { SendSharedParticipationResultsToPoleEmploiJob } from './src/prescription/campaign-participation/domain/models/SendSharedParticipationResultsToPoleEmploiJob.js';
-import { ComputeCertificabilityJobController } from './src/prescription/learner-management/application/jobs/compute-certificability-job-controller.js';
-import { ImportOrganizationLearnersJobController } from './src/prescription/learner-management/application/jobs/import-organization-learners-job-controller.js';
-import { ScheduleComputeOrganizationLearnersCertificabilityJobController } from './src/prescription/learner-management/application/jobs/schedule-compute-organization-learners-certificability-job-controller.js';
-import { ValidateOrganizationLearnersImportFileJobController } from './src/prescription/learner-management/application/jobs/validate-organization-learners-import-file-job-controller.js';
-import { ComputeCertificabilityJob } from './src/prescription/learner-management/domain/models/ComputeCertificabilityJob.js';
-import { ImportOrganizationLearnersJob } from './src/prescription/learner-management/domain/models/ImportOrganizationLearnersJob.js';
-import { ScheduleComputeOrganizationLearnersCertificabilityJob } from './src/prescription/learner-management/domain/models/ScheduleComputeOrganizationLearnersCertificabilityJob.js';
-import { ValidateOrganizationImportFileJob } from './src/prescription/learner-management/domain/models/ValidateOrganizationImportFileJob.js';
-import { UserAnonymizedEventLoggingJobController } from './src/shared/application/jobs/audit-log/user-anonymized-event-logging-job-controller.js';
-import { LcmsRefreshCacheJobController } from './src/shared/application/jobs/lcms-refresh-cache-job-controller.js';
+import { JobGroup } from './src/shared/application/jobs/job-controller.js';
 import { config } from './src/shared/config.js';
-import { LcmsRefreshCacheJob } from './src/shared/domain/models/LcmsRefreshCacheJob.js';
-import { scheduleCpfJobs } from './src/shared/infrastructure/jobs/cpf-export/schedule-cpf-jobs.js';
 import { JobQueue } from './src/shared/infrastructure/jobs/JobQueue.js';
-import { MonitoredJobQueue } from './src/shared/infrastructure/jobs/monitoring/MonitoredJobQueue.js';
+import { importNamedExportFromFile } from './src/shared/infrastructure/utils/import-named-exports-from-directory.js';
 import { logger } from './src/shared/infrastructure/utils/logger.js';
+
+const isTestEnv = process.env.NODE_ENV === 'test';
+const isJobInWebProcess = process.env.START_JOB_IN_WEB_PROCESS === 'true';
+const workerDirPath = dirname(fileURLToPath(import.meta.url));
 
 async function startPgBoss() {
   logger.info('Starting pg-boss');
@@ -62,11 +42,10 @@ async function startPgBoss() {
   return pgBoss;
 }
 
-function createMonitoredJobQueue(pgBoss) {
-  const jobQueue = new JobQueue(pgBoss);
-  const monitoredJobQueue = new MonitoredJobQueue(jobQueue);
+function createJobQueues(pgBoss) {
+  const jobQueues = new JobQueue(pgBoss);
   process.on('SIGINT', async () => {
-    await monitoredJobQueue.stop();
+    await jobQueues.stop();
 
     // Make sure pgBoss stopped before quitting
     pgBoss.on('stopped', () => {
@@ -74,77 +53,74 @@ function createMonitoredJobQueue(pgBoss) {
       process.exit(0);
     });
   });
-  return monitoredJobQueue;
+  return jobQueues;
 }
 
-export async function runJobs(dependencies = { startPgBoss, createMonitoredJobQueue, scheduleCpfJobs }) {
+function checkJobGroup(jobGroup) {
+  if (!jobGroup) {
+    throw new Error(`Job group invalid, allowed Job groups are [${Object.values(JobGroup)}]`);
+  }
+  logger.info(`Job group "${jobGroup}"`);
+}
+
+export async function registerJobs({ jobGroup, dependencies = { startPgBoss, createJobQueues } }) {
+  checkJobGroup(jobGroup);
+
   const pgBoss = await dependencies.startPgBoss();
-  const monitoredJobQueue = dependencies.createMonitoredJobQueue(pgBoss);
 
-  // Access
-  monitoredJobQueue.performJob(UserAnonymizedEventLoggingJob.name, UserAnonymizedEventLoggingJobController);
-  monitoredJobQueue.performJob(GarAnonymizedBatchEventsLoggingJob.name, GarAnonymizedBatchEventsLoggingJobController);
+  const jobQueues = dependencies.createJobQueues(pgBoss);
 
-  // Contenu
-  monitoredJobQueue.performJob(LcmsRefreshCacheJob.name, LcmsRefreshCacheJobController);
+  const globPattern = `${workerDirPath}/src/**/application/**/*job-controller.js`;
 
-  // Prescription
-  monitoredJobQueue.performJob(ComputeCertificabilityJob.name, ComputeCertificabilityJobController);
-  monitoredJobQueue.performJob(
-    ScheduleComputeOrganizationLearnersCertificabilityJob.name,
-    ScheduleComputeOrganizationLearnersCertificabilityJobController,
-  );
-  monitoredJobQueue.performJob(ParticipationResultCalculationJob.name, ParticipationResultCalculationJobController);
+  logger.info(`Search for job handlers in ${globPattern}`);
+  const jobFiles = await glob(globPattern, { ignore: '**/job-controller.js' });
+  logger.info(`${jobFiles.length} job handlers files found.`);
 
-  monitoredJobQueue.performJob(PoleEmploiParticipationCompletedJob.name, PoleEmploiParticipationCompletedJobController);
-  monitoredJobQueue.performJob(
-    SendSharedParticipationResultsToPoleEmploiJob.name,
-    SendSharedParticipationResultsToPoleEmploiJobController,
-  );
-  monitoredJobQueue.performJob(PoleEmploiParticipationStartedJob.name, PoleEmploiParticipationStartedJobController);
-
-  if (config.pgBoss.importFileJobEnabled) {
-    monitoredJobQueue.performJob(ImportOrganizationLearnersJob.name, ImportOrganizationLearnersJobController);
+  let jobModules = {};
+  for (const jobFile of jobFiles) {
+    const fileModules = await importNamedExportFromFile(jobFile);
+    jobModules = { ...jobModules, ...fileModules };
   }
 
-  if (config.pgBoss.validationFileJobEnabled) {
-    monitoredJobQueue.performJob(
-      ValidateOrganizationImportFileJob.name,
-      ValidateOrganizationLearnersImportFileJobController,
-    );
+  let jobRegisteredCount = 0;
+  let cronJobCount = 0;
+  for (const [moduleName, ModuleClass] of Object.entries(jobModules)) {
+    const job = new ModuleClass();
+
+    if (!isJobInWebProcess && job.jobGroup !== jobGroup) continue;
+
+    if (job.isJobEnabled) {
+      logger.info(`Job "${job.jobName}" registered from module "${moduleName}."`);
+      jobQueues.register(job.jobName, ModuleClass);
+
+      if (!job.jobCron && job.legacyName) {
+        logger.warn(`Temporary Job" ${job.legacyName}" registered from module "${moduleName}."`);
+        jobQueues.register(job.legacyName, ModuleClass);
+      }
+
+      if (job.jobCron) {
+        await jobQueues.scheduleCronJob({ name: job.jobName, cron: job.jobCron, options: { tz: 'Europe/Paris' } });
+        logger.info(`Cron for job "${job.jobName}" scheduled "${job.jobCron}"`);
+
+        // For cronJob we need to unschedule older cron
+        if (job.legacyName) {
+          await jobQueues.unscheduleCronJob(job.legacyName);
+        }
+
+        cronJobCount++;
+      } else {
+        jobRegisteredCount++;
+      }
+    } else {
+      logger.warn(`Job "${job.jobName}" is disabled.`);
+    }
   }
 
-  //Certification
-  monitoredJobQueue.performJob(CertificationRescoringByScriptJob.name, CertificationRescoringByScriptJobController);
-  monitoredJobQueue.performJob(CertificationCompletedJob.name, CertificationCompletedJobController);
-
-  // TODO - use abstraction for CRON
-
-  //schudeler
-  await pgBoss.schedule(
-    ScheduleComputeOrganizationLearnersCertificabilityJob.name,
-    config.features.scheduleComputeOrganizationLearnersCertificability.cron,
-    null,
-    { tz: 'Europe/Paris' },
-  );
-
-  // Certification
-  await dependencies.scheduleCpfJobs(pgBoss);
+  logger.info(`${jobRegisteredCount} jobs registered for group "${jobGroup}".`);
+  logger.info(`${cronJobCount} cron jobs scheduled for group "${jobGroup}".`);
 }
-
-const startInWebProcess = process.env.START_JOB_IN_WEB_PROCESS;
-const isTestEnv = process.env.NODE_ENV === 'test';
-const modulePath = url.fileURLToPath(import.meta.url);
-const isEntryPointFromOtherFile = process.argv[1] !== modulePath;
 
 if (!isTestEnv) {
-  if (!startInWebProcess || (startInWebProcess && isEntryPointFromOtherFile)) {
-    await runJobs();
-  } else {
-    logger.error(
-      'Worker process is started in the web process. Please unset the START_JOB_IN_WEB_PROCESS environment variable to start a dedicated worker process.',
-    );
-    // eslint-disable-next-line n/no-process-exit
-    process.exit(1);
-  }
+  const jobGroup = process.argv[2] ? JobGroup[process.argv[2]?.toUpperCase()] : JobGroup.DEFAULT;
+  await registerJobs({ jobGroup });
 }

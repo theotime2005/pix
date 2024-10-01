@@ -250,6 +250,24 @@ describe('Integration | Repository | Certifiable Badge Acquisition', function ()
               detachedAt: new Date('2022-09-30'),
             });
 
+            buildComplementaryCertificationWithMultipleCertifiableBadges({
+              keyLevelList: [
+                { key: 6, level: 1 },
+                { key: 7, level: 2 },
+              ],
+              complementaryCertificationId,
+              detachedAt: new Date('2023-09-30'),
+            });
+
+            buildComplementaryCertificationWithMultipleCertifiableBadges({
+              keyLevelList: [
+                { key: 3, level: 1 },
+                { key: 4, level: 2 },
+              ],
+              complementaryCertificationId,
+              detachedAt: null,
+            });
+
             const latestCampaignParticipationId = databaseBuilder.factory.buildCampaignParticipation().id;
             databaseBuilder.factory.buildBadgeAcquisition({
               badgeId: latestComplementaryBadges[0].id,

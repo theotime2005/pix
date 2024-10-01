@@ -32,7 +32,42 @@ export const membershipRoutes = [
           order: 2,
         },
       },
-      tags: ['api', 'memberships'],
+      tags: ['api', 'team', 'memberships'],
+    },
+  },
+  {
+    method: 'GET',
+    path: '/api/organizations/{id}/memberships',
+    config: {
+      pre: [
+        {
+          method: (request, h) => securityPreHandlers.checkUserBelongsToOrganization(request, h),
+          assign: 'belongsToOrganization',
+        },
+      ],
+      validate: {
+        params: Joi.object({
+          id: identifiersType.organizationId,
+        }),
+        query: Joi.object({
+          filter: Joi.object({
+            firstName: Joi.string().empty('').allow(null).optional(),
+            lastName: Joi.string().empty('').allow(null).optional(),
+            email: Joi.string().empty('').allow(null).optional(),
+            organizationRole: Joi.string().empty('').allow(null).optional(),
+          }).default({}),
+          page: Joi.object({
+            number: Joi.number().integer().empty('').allow(null).optional(),
+            size: Joi.number().integer().empty('').allow(null).optional(),
+          }).default({}),
+        }),
+      },
+      handler: (request, h) => membershipController.findPaginatedFilteredMemberships(request, h),
+      tags: ['api', 'team', 'organizations'],
+      notes: [
+        "Cette route est restreinte aux membres authentifiés d'une organisation",
+        'Elle retourne les rôles des membres rattachés à l’organisation de manière paginée.',
+      ],
     },
   },
 ];

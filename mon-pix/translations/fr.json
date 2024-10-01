@@ -63,6 +63,13 @@
       "label": "J'accepte les conditions d'utilisation et la politique de confidentialité de Pix",
       "message": "J'accepte les '<'a href=\"{cguUrl}\" class=\"link\" target=\"_blank\" rel=\"noopener noreferrer\"'>'conditions d'utilisation'</a>' et la '<'a href=\"{dataProtectionPolicyUrl}\" class=\"link\" target=\"_blank\" rel=\"noopener noreferrer\"'>'politique de confidentialité'</a>' de Pix"
     },
+    "companion": {
+      "not-detected": {
+        "title": "L’extension Pix Companion<br /> n’est pas détectée",
+        "description": "L’extension n’est peut-être pas installée ou activée. Consultez le document suivant afin de reprendre votre session de certification. Si besoin contactez le surveillant.",
+        "link": "Accéder à la documentation"
+      }
+    },
     "data-protection-policy-information-banner": {
       "title": "Notre politique de confidentialité a évolué. Nous vous invitons à en prendre connaissance : ",
       "url-label": "Politique de protection des données."
@@ -145,6 +152,7 @@
       "help-center": "Centre d'aide",
       "label": "Menu de bas de page",
       "legal-notice": "Mentions légales",
+      "server-status": "Statut des services",
       "sitemap": "Plan du site",
       "student-data-protection-policy": "Politique de protection des données des élèves",
       "student-data-protection-policy-url": "https://cloud.pix.fr/s/nqgBodTkbtsGb39"
@@ -320,6 +328,11 @@
       },
       "answers": {
         "header": "Vos réponses"
+      }
+    },
+    "authentication": {
+      "login": {
+        "signup-button": "S'inscrire sur Pix"
       }
     },
     "autonomous-course": {
@@ -1084,6 +1097,19 @@
       "content-text": "'<p>'Nous vous invitons à recharger cette page ou revenir à la page d’accueil.'</p><p>'Vous pouvez aussi nous contacter via '<a href=\"https://support.pix.fr/support/tickets/new\">'le formulaire du centre d'aide'</a>' en nous précisant le code d’erreur ci-dessous dans la description.'</p><p>'Nous vous prions de nous excuser pour la gêne occasionnée.'</p><p>'L’équipe Pix.'</p>'",
       "first-title": "Oups, une erreur est survenue !"
     },
+    "evaluation-results": {
+      "quit-results": {
+        "modal": {
+          "title": "Oups, vous n’avez pas encore envoyé vos résultats !",
+          "content-information": "Envoyer vos résultats à l’organisateur du parcours est essentiel pour votre accompagnement. Restez sur cette page et cliquez sur ‘Envoyer mes résultats’ pour les transmettre.",
+          "content-instruction": "Voulez-vous vraiment quitter sans les envoyer ?",
+          "actions": {
+            "quit-without-sharing": "Quitter sans envoyer",
+            "cancel-to-share": "Rester pour envoyer"
+          }
+        }
+      }
+    },
     "fill-in-campaign-code": {
       "title": "J'ai un code",
       "description": "Ce code est composé de 9 chiffres et/ou lettres. Il est transmis par votre établissement/organisation et permet de démarrer un parcours ou d’envoyer votre profil.",
@@ -1333,6 +1359,11 @@
             "name": "Commencer"
           }
         },
+        "flashcards": {
+          "seeAnswer": "Voir la réponse",
+          "seeAgain": "Revoir la question",
+          "nextCard": "Suivant"
+        },
         "grain": {
           "continue": "Continuer",
           "skip": "Passer",
@@ -1353,6 +1384,12 @@
         "explanationTitle": "C'est quoi un module ?",
         "level": "Niveau",
         "objectives": "Objectifs",
+        "smallScreenModal": {
+          "title": "Vous semblez utiliser un petit écran",
+          "cancel": "Revenir aux détails",
+          "description": "Certaines activités de ce module peuvent être difficiles à réaliser sur un petit écran. Pour une expérience optimale, nous vous recommandons d'utiliser un ordinateur.",
+          "startModule": "Commencer"
+        },
         "startModule": "Commencer le module"
       },
       "download": {
@@ -1363,6 +1400,10 @@
         "format": "Format {format}",
         "intro": "Choisissez le format de fichier que vous voulez utiliser.",
         "label": "Télécharger le fichier au format {format}"
+      },
+      "flashcards": {
+        "direction": "Cherchez la réponse puis tournez la carte",
+        "position": "Carte {currentCardPosition}/{totalCards}"
       },
       "grain": {
         "tag": {
@@ -1553,12 +1594,14 @@
         "submit": "Je me connecte"
       },
       "error": {
-        "message": "L'adresse e-mail ou l'identifiant et/ou le mot de passe saisis sont incorrects"
+        "message": "L'adresse e-mail ou l'identifiant et/ou le mot de passe saisis sont incorrects",
+        "unexpected": "Impossible de se connecter. Merci de réessayer dans quelques instants. Si le problème persiste, '<'a href=\"https://pix.fr/support\" target=\"blank\"'>'merci de nous contacter'</a>'."
       },
       "fields": {
         "legend": "Informations nécessaires pour se connecter.",
         "login": {
-          "label": "Adresse e-mail ou identifiant"
+          "label": "Adresse e-mail ou identifiant",
+          "placeholder": "ex: jean.dupont@email.com"
         },
         "password": {
           "label": "Mot de passe"
@@ -1711,7 +1754,7 @@
         "results-details": {
           "title": "Détails des résultats",
           "description": "Découvrez en détail vos compétences, organisées par domaines spécifiques, pour mieux comprendre vos forces et axes d'amélioration. Identifiez vos points forts et les domaines où concentrer vos efforts pour progresser davantage.",
-          "tab-label": "Détails des résultats"
+          "tab-label": "Détails"
         },
         "rewards": {
           "title": "Récompenses et attentes de l’organisateur",
@@ -1721,7 +1764,11 @@
         "trainings": {
           "title": "Vous souhaitez en apprendre plus ?",
           "description": "Obtenez des recommandations de formations personnalisées pour continuer à progresser et nourrir votre curiosité pour vous aider à réaliser votre plein potentiel.",
-          "tab-label": "Formations"
+          "tab-label": "Formations",
+          "modal": {
+            "content": "Envoyez vos résultats pour permettre à l’organisateur du parcours de vous accompagner.'<br />'Après avoir partagé, vous bénéficierez d'un accès à ces formations&nbsp;!",
+            "share-error": "Il y a eu une erreur lors de l'envoi de vos résultats. Veuillez réessayer."
+          }
         }
       },
       "trainings": {

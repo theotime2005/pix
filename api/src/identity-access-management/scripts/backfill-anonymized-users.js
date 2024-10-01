@@ -25,14 +25,14 @@ if (isLaunchedFromCommandLine) {
 }
 
 export async function backfillAnonymizedUsers() {
-  const anonymizedUserIds = await anonymizedUserRepository.findIds();
+  const anonymizedUserIds = await anonymizedUserRepository.findLegacyAnonymizedIds();
 
   logger.info(`Total anonymized users to backfill: ${anonymizedUserIds.length}`);
 
   let current = 1;
   for (const anonymizedUserId of anonymizedUserIds) {
     logger.info(`Backfill anonymized user ${current++}/${anonymizedUserIds.length}: "${anonymizedUserId}"`);
-    await withTransaction(usecases.anonymizeUser)({ userId: anonymizedUserId });
+    await withTransaction(usecases.anonymizeUser)({ userId: anonymizedUserId, preventAuditLogging: true });
   }
 
   logger.info(`Anonymized users backfill finished.`);

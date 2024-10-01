@@ -5,7 +5,7 @@ import { teamRoutes } from '../../../../../src/team/application/routes.js';
 import { usecases } from '../../../../../src/team/domain/usecases/index.js';
 import { domainBuilder, expect, HttpTestServer, sinon } from '../../../../test-helper.js';
 
-describe('Integration | Application | Memberships | membership-controller', function () {
+describe('Integration | Team | Application | Memberships | membership-controller', function () {
   let httpTestServer;
 
   beforeEach(async function () {
@@ -262,6 +262,60 @@ describe('Integration | Application | Memberships | membership-controller', func
           // then
           expect(response.statusCode).to.equal(400);
         });
+      });
+    });
+  });
+
+  describe('#findPaginatedFilteredMemberships', function () {
+    context('Success cases', function () {
+      beforeEach(function () {
+        sinon.stub(securityPreHandlers, 'checkUserBelongsToOrganization').returns(true);
+      });
+
+      it('returns an HTTP response with status code 200', async function () {
+        // given
+        const membership = domainBuilder.buildMembership();
+        sinon
+          .stub(usecases, 'findPaginatedFilteredOrganizationMemberships')
+          .resolves({ models: [membership], pagination: {} });
+
+        // when
+        const response = await httpTestServer.request('GET', '/api/organizations/1234/memberships');
+
+        // then
+        expect(response.statusCode).to.equal(200);
+      });
+
+      it('returns an HTTP response formatted as JSON:API', async function () {
+        // given
+        const membership = domainBuilder.buildMembership();
+        sinon
+          .stub(usecases, 'findPaginatedFilteredOrganizationMemberships')
+          .resolves({ models: [membership], pagination: {} });
+
+        // when
+        const response = await httpTestServer.request('GET', '/api/organizations/1234/memberships');
+
+        // then
+        expect(response.result.data[0].type).to.equal('memberships');
+        expect(response.result.data[0].id).to.equal(membership.id.toString());
+      });
+
+      it('returns a JSON:API response including organization, organization role & user information', async function () {
+        // given
+        const membership = domainBuilder.buildMembership();
+        sinon
+          .stub(usecases, 'findPaginatedFilteredOrganizationMemberships')
+          .resolves({ models: [membership], pagination: {} });
+
+        // when
+        const response = await httpTestServer.request('GET', '/api/organizations/1234/memberships');
+
+        // then
+        expect(response.result.included[0].type).to.equal('organizations');
+        expect(response.result.included[0].id).to.equal(`${membership.organization.id}`);
+        expect(response.result.included[1].type).to.equal('users');
+        expect(response.result.included[1].id).to.equal(`${membership.user.id}`);
       });
     });
   });

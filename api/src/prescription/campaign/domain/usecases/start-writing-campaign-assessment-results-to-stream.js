@@ -1,4 +1,3 @@
-import bluebird from 'bluebird';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone.js';
 import utc from 'dayjs/plugin/utc.js';
@@ -6,14 +5,44 @@ import _ from 'lodash';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+import { CampaignTypeError } from '../../../../shared/domain/errors.js';
+import { CampaignLearningContent } from '../../../../shared/domain/models/index.js';
 import {
   CHUNK_SIZE_CAMPAIGN_RESULT_PROCESSING,
   CONCURRENCY_HEAVY_OPERATIONS,
-} from '../../../../../lib/infrastructure/constants.js';
-import { CampaignTypeError } from '../../../../shared/domain/errors.js';
-import { CampaignLearningContent } from '../../../../shared/domain/models/CampaignLearningContent.js';
+} from '../../../../shared/infrastructure/constants.js';
 import * as csvSerializer from '../../../../shared/infrastructure/serializers/csv/csv-serializer.js';
+import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
 
+/**
+ * @typedef {import ('./index.js').CampaignRepository} CampaignRepository
+ * @typedef {import ('./index.js').CampaignParticipationInfoRepository} CampaignParticipationInfoRepository
+ * @typedef {import ('./index.js').OrganizationRepository} OrganizationRepository
+ * @typedef {import ('./index.js').KnowledgeElementSnapshotRepository} KnowledgeElementSnapshotRepository
+ * @typedef {import ('./index.js').CampaignCsvExportService} CampaignCsvExportService
+ * @typedef {import ('./index.js').TargetProfileRepository} TargetProfileRepository
+ * @typedef {import ('./index.js').LearningContentRepository} LearningContentRepository
+ * @typedef {import ('./index.js').StageCollectionRepository} StageCollectionRepository
+ * @typedef {import ('./index.js').OrganizationFeatureApi} OrganizationFeatureApi
+ * @typedef {import ('./index.js').OrganizationLearnerImportFormat} OrganizationLearnerImportFormat
+ */
+
+/**
+ * @param {Object} params
+ * @param {Number} params.campaignId
+ * @param {Object} params.writableStream
+ * @param {Object} params.i18n
+ * @param {CampaignRepository} params.campaignRepository
+ * @param {CampaignParticipationInfoRepository} params.campaignParticipationInfoRepository
+ * @param {OrganizationRepository} params.organizationRepository
+ * @param {KnowledgeElementSnapshotRepository} params.knowledgeElementSnapshotRepository
+ * @param {CampaignCsvExportService} params.campaignCsvExportService
+ * @param {TargetProfileRepository} params.targetProfileRepository
+ * @param {LearningContentRepository} params.learningContentRepository
+ * @param {StageCollectionRepository} params.stageCollectionRepository
+ * @param {OrganizationFeatureApi} params.organizationFeatureApi
+ * @param {OrganizationLearnerImportFormat} params.organizationLearnerImportFormatRepository
+ */
 const startWritingCampaignAssessmentResultsToStream = async function ({
   campaignId,
   writableStream,
@@ -28,7 +57,10 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
   targetProfileRepository,
   learningContentRepository,
   stageCollectionRepository,
+  organizationFeatureApi,
+  organizationLearnerImportFormatRepository,
 }) {
+  let additionalHeaders = [];
   const campaign = await campaignRepository.get(campaignId);
   const translate = i18n.__;
 
@@ -44,15 +76,22 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
   const organization = await organizationRepository.get(campaign.organizationId);
   const campaignParticipationInfos = await campaignParticipationInfoRepository.findByCampaignId(campaign.id);
 
+  const organizationFeatures = await organizationFeatureApi.getAllFeaturesFromOrganization(campaign.organizationId);
+  if (organizationFeatures.hasLearnersImportFeature) {
+    const importFormat = await organizationLearnerImportFormatRepository.get(campaign.organizationId);
+    additionalHeaders = importFormat.exportableColumns;
+  }
+
   // Create HEADER of CSV
-  const headers = _createHeaderOfCSV(
+  const headers = _createHeaderOfCSV({
     targetProfile,
-    campaign.idPixLabel,
+    idPixLabel: campaign.idPixLabel,
     organization,
     translate,
-    campaignLearningContent,
+    learningContent: campaignLearningContent,
     stageCollection,
-  );
+    additionalHeaders,
+  });
 
   // WHY: add \uFEFF the UTF-8 BOM at the start of the text, see:
   // - https://en.wikipedia.org/wiki/Byte_order_mark
@@ -66,85 +105,88 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
   // function, node will keep all the data in memory until the end of the
   // complete operation.
   const campaignParticipationInfoChunks = _.chunk(campaignParticipationInfos, CHUNK_SIZE_CAMPAIGN_RESULT_PROCESSING);
-  bluebird
-    .map(
-      campaignParticipationInfoChunks,
-      async (campaignParticipationInfoChunk) => {
-        const sharedParticipations = campaignParticipationInfoChunk.filter(({ isShared }) => isShared);
-        const startedParticipations = campaignParticipationInfoChunk.filter(
-          ({ isShared, isCompleted }) => !isShared && !isCompleted,
+
+  PromiseUtils.map(
+    campaignParticipationInfoChunks,
+    async (campaignParticipationInfoChunk) => {
+      const sharedParticipations = campaignParticipationInfoChunk.filter(({ isShared }) => isShared);
+      const startedParticipations = campaignParticipationInfoChunk.filter(
+        ({ isShared, isCompleted }) => !isShared && !isCompleted,
+      );
+
+      const sharedKnowledgeElementsByUserIdAndCompetenceId =
+        await knowledgeElementSnapshotRepository.findMultipleUsersFromUserIdsAndSnappedAtDates(
+          sharedParticipations.map(({ userId, sharedAt }) => ({ userId, sharedAt })),
         );
 
-        const sharedKnowledgeElementsByUserIdAndCompetenceId =
-          await knowledgeElementSnapshotRepository.findMultipleUsersFromUserIdsAndSnappedAtDates(
-            sharedParticipations.map(({ userId, sharedAt }) => ({ userId, sharedAt })),
-          );
+      const othersKnowledgeElementsByUserIdAndCompetenceId = await knowledgeElementRepository.findUniqByUserIds(
+        startedParticipations.map(({ userId }) => userId),
+      );
 
-        const othersKnowledgeElementsByUserIdAndCompetenceId = await knowledgeElementRepository.findUniqByUserIds(
-          startedParticipations.map(({ userId }) => userId),
+      let acquiredBadgesByCampaignParticipations;
+      if (targetProfile.hasBadges) {
+        const campaignParticipationsIds = campaignParticipationInfoChunk.map(
+          (campaignParticipationInfo) => campaignParticipationInfo.campaignParticipationId,
         );
+        acquiredBadgesByCampaignParticipations =
+          await badgeAcquisitionRepository.getAcquiredBadgesByCampaignParticipations({ campaignParticipationsIds });
+      }
 
-        let acquiredBadgesByCampaignParticipations;
-        if (targetProfile.hasBadges) {
-          const campaignParticipationsIds = campaignParticipationInfoChunk.map(
-            (campaignParticipationInfo) => campaignParticipationInfo.campaignParticipationId,
+      const csvLines = campaignParticipationInfoChunk.map((campaignParticipationInfo) => {
+        let participantKnowledgeElementsByCompetenceId = [];
+
+        if (campaignParticipationInfo.isShared) {
+          const sharedResultInfo = sharedKnowledgeElementsByUserIdAndCompetenceId.find(
+            (knowledElementForSharedParticipation) => {
+              const sameUserId = campaignParticipationInfo.userId === knowledElementForSharedParticipation.userId;
+              const sameDate =
+                campaignParticipationInfo.sharedAt &&
+                campaignParticipationInfo.sharedAt.getTime() ===
+                  knowledElementForSharedParticipation.snappedAt.getTime();
+
+              return sameUserId && sameDate;
+            },
           );
-          acquiredBadgesByCampaignParticipations =
-            await badgeAcquisitionRepository.getAcquiredBadgesByCampaignParticipations({ campaignParticipationsIds });
+
+          participantKnowledgeElementsByCompetenceId = campaignLearningContent.getKnowledgeElementsGroupedByCompetence(
+            sharedResultInfo.knowledgeElements,
+          );
+        } else if (campaignParticipationInfo.isCompleted === false) {
+          const othersResultInfo = othersKnowledgeElementsByUserIdAndCompetenceId.find(
+            (knowledElementForOtherParticipation) =>
+              campaignParticipationInfo.userId === knowledElementForOtherParticipation.userId,
+          );
+          participantKnowledgeElementsByCompetenceId = campaignLearningContent.getKnowledgeElementsGroupedByCompetence(
+            othersResultInfo.knowledgeElements,
+          );
         }
 
-        const csvLines = campaignParticipationInfoChunk.map((campaignParticipationInfo) => {
-          let participantKnowledgeElementsByCompetenceId = [];
+        const acquiredBadges =
+          acquiredBadgesByCampaignParticipations &&
+          acquiredBadgesByCampaignParticipations[campaignParticipationInfo.campaignParticipationId]
+            ? acquiredBadgesByCampaignParticipations[campaignParticipationInfo.campaignParticipationId].map(
+                (badge) => badge.title,
+              )
+            : [];
 
-          if (campaignParticipationInfo.isShared) {
-            const sharedResultInfo = sharedKnowledgeElementsByUserIdAndCompetenceId.find(
-              (knowledElementForSharedParticipation) => {
-                const sameUserId = campaignParticipationInfo.userId === knowledElementForSharedParticipation.userId;
-                const sameDate =
-                  campaignParticipationInfo.sharedAt &&
-                  campaignParticipationInfo.sharedAt.getTime() ===
-                    knowledElementForSharedParticipation.snappedAt.getTime();
-
-                return sameUserId && sameDate;
-              },
-            );
-
-            participantKnowledgeElementsByCompetenceId =
-              campaignLearningContent.getKnowledgeElementsGroupedByCompetence(sharedResultInfo.knowledgeElements);
-          } else if (campaignParticipationInfo.isCompleted === false) {
-            const othersResultInfo = othersKnowledgeElementsByUserIdAndCompetenceId.find(
-              (knowledElementForOtherParticipation) =>
-                campaignParticipationInfo.userId === knowledElementForOtherParticipation.userId,
-            );
-            participantKnowledgeElementsByCompetenceId =
-              campaignLearningContent.getKnowledgeElementsGroupedByCompetence(othersResultInfo.knowledgeElements);
-          }
-
-          const acquiredBadges =
-            acquiredBadgesByCampaignParticipations &&
-            acquiredBadgesByCampaignParticipations[campaignParticipationInfo.campaignParticipationId]
-              ? acquiredBadgesByCampaignParticipations[campaignParticipationInfo.campaignParticipationId].map(
-                  (badge) => badge.title,
-                )
-              : [];
-
-          return campaignCsvExportService.createOneCsvLine({
-            organization,
-            campaign,
-            campaignParticipationInfo,
-            targetProfile,
-            learningContent: campaignLearningContent,
-            stageCollection,
-            participantKnowledgeElementsByCompetenceId,
-            acquiredBadges,
-            translate,
-          });
+        return campaignCsvExportService.createOneCsvLine({
+          organization,
+          campaign,
+          campaignParticipationInfo,
+          additionalHeaders,
+          targetProfile,
+          learningContent: campaignLearningContent,
+          stageCollection,
+          participantKnowledgeElementsByCompetenceId,
+          acquiredBadges,
+          translate,
         });
+      });
 
-        writableStream.write(csvLines.join(''));
-      },
-      { concurrency: CONCURRENCY_HEAVY_OPERATIONS },
-    )
+      writableStream.write(csvLines.join(''));
+    },
+    { concurrency: CONCURRENCY_HEAVY_OPERATIONS },
+  )
     .then(() => {
       writableStream.end();
     })
@@ -163,9 +205,19 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
 
 export { startWritingCampaignAssessmentResultsToStream };
 
-function _createHeaderOfCSV(targetProfile, idPixLabel, organization, translate, learningContent, stageCollection) {
+function _createHeaderOfCSV({
+  targetProfile,
+  idPixLabel,
+  organization,
+  translate,
+  learningContent,
+  stageCollection,
+  additionalHeaders,
+}) {
   const forSupStudents = organization.isSup && organization.isManagingStudents;
   const displayDivision = organization.isSco && organization.isManagingStudents;
+
+  const extraHeaders = additionalHeaders.map((header) => header.columnName);
 
   return [
     translate('campaign-export.common.organization-name'),
@@ -175,6 +227,7 @@ function _createHeaderOfCSV(targetProfile, idPixLabel, organization, translate, 
     translate('campaign-export.assessment.target-profile-name'),
     translate('campaign-export.common.participant-lastname'),
     translate('campaign-export.common.participant-firstname'),
+    ...extraHeaders,
     ...(displayDivision ? [translate('campaign-export.common.participant-division')] : []),
     ...(forSupStudents ? [translate('campaign-export.common.participant-group')] : []),
     ...(forSupStudents ? [translate('campaign-export.common.participant-student-number')] : []),

@@ -18,10 +18,11 @@ const buildEnrolledCandidate = function ({
   externalId = 'externalId',
   userId = 789,
   sessionId = 456,
-  organizationLearnerId,
+  organizationLearnerId = null,
   billingMode = null,
   prepaymentCode = null,
   subscriptions = [],
+  accessibilityAdjustmentNeeded = false,
   hasSeenCertificationInstructions = false,
 } = {}) {
   return new EnrolledCandidate({
@@ -47,6 +48,7 @@ const buildEnrolledCandidate = function ({
     userId,
     subscriptions,
     hasSeenCertificationInstructions,
+    accessibilityAdjustmentNeeded,
   });
 };
 

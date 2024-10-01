@@ -1,6 +1,6 @@
 services:
   postgres:
-    image: postgres:15.7-alpine
+    image: postgres:15.8-alpine
     container_name: pix-api-postgres
     ports:
       - '${PIX_DATABASE_PORT:-5432}:5432'
@@ -14,7 +14,7 @@ services:
       - '${PIX_CACHE_PORT:-6379}:6379'
 
   s3:
-    image: adobe/s3mock:3.9.1
+    image: adobe/s3mock:3.10.1
     container_name: pix-api-s3
     environment:
       - initialBuckets=pix-import-dev, pix-import-test

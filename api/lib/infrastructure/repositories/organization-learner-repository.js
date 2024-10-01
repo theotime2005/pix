@@ -80,23 +80,14 @@ const findByOrganizationIdAndUpdatedAtOrderByDivision = async function ({ organi
 };
 
 const findByUserId = async function ({ userId }) {
-  const rawOrganizationLearners = await knex
+  const knexConn = DomainTransaction.getConnection();
+  const rawOrganizationLearners = await knexConn
     .select('*')
     .from('view-active-organization-learners')
     .where({ userId })
     .orderBy('id');
 
   return rawOrganizationLearners.map((rawOrganizationLearner) => new OrganizationLearner(rawOrganizationLearner));
-};
-
-const isOrganizationLearnerIdLinkedToUserAndSCOOrganization = async function ({ userId, organizationLearnerId }) {
-  const exist = await knex('view-active-organization-learners')
-    .select('view-active-organization-learners.id')
-    .join('organizations', 'view-active-organization-learners.organizationId', 'organizations.id')
-    .where({ userId, type: 'SCO', 'view-active-organization-learners.id': organizationLearnerId })
-    .first();
-
-  return Boolean(exist);
 };
 
 const _reconcileOrganizationLearners = async function (studentsToImport, allOrganizationLearnersInSameOrganization) {
@@ -149,27 +140,6 @@ const reconcileUserToOrganizationLearner = async function ({ userId, organizatio
     const [rawOrganizationLearner] = await knexConn('organization-learners')
       .where({ id: organizationLearnerId })
       .where('isDisabled', false)
-      .update({ userId, updatedAt: knex.fn.now() })
-      .returning('*');
-    if (!rawOrganizationLearner) throw new Error();
-    return new OrganizationLearner(rawOrganizationLearner);
-  } catch (error) {
-    throw new UserCouldNotBeReconciledError();
-  }
-};
-
-const reconcileUserByNationalStudentIdAndOrganizationId = async function ({
-  nationalStudentId,
-  userId,
-  organizationId,
-}) {
-  try {
-    const [rawOrganizationLearner] = await knex('organization-learners')
-      .where({
-        organizationId,
-        nationalStudentId,
-        isDisabled: false,
-      })
       .update({ userId, updatedAt: knex.fn.now() })
       .returning('*');
     if (!rawOrganizationLearner) throw new Error();
@@ -366,11 +336,38 @@ const findAllLearnerWithAtLeastOneParticipationByOrganizationId = async function
   return new ParticipantRepartition(result);
 };
 
+const findAllLearnerWithAtLeastOneParticipationByOrganizationIds = async function (organizationIds) {
+  const knexConn = DomainTransaction.getConnection();
+  const results = await knexConn
+    .select('users.isAnonymous', 'view-active-organization-learners.organizationId')
+    .distinct('view-active-organization-learners.id')
+    .from('view-active-organization-learners')
+    .join('users', 'users.id', 'view-active-organization-learners.userId')
+    .join('campaign-participations', function () {
+      this.on('campaign-participations.organizationLearnerId', 'view-active-organization-learners.id').andOnVal(
+        'campaign-participations.deletedAt',
+        knex.raw('IS'),
+        knex.raw('NULL'),
+      );
+    })
+    .whereIn('organizationId', organizationIds);
+
+  const resultByOrganization = {};
+
+  organizationIds.forEach((organizationId) => {
+    const participants = results.filter((result) => result.organizationId === organizationId);
+    resultByOrganization[organizationId] = new ParticipantRepartition(participants);
+  });
+
+  return resultByOrganization;
+};
+
 export {
   _reconcileOrganizationLearners,
   countByOrganizationsWhichNeedToComputeCertificability,
   dissociateAllStudentsByUserId,
   findAllLearnerWithAtLeastOneParticipationByOrganizationId,
+  findAllLearnerWithAtLeastOneParticipationByOrganizationIds,
   findByIds,
   findByOrganizationId,
   findByOrganizationIdAndBirthdate,
@@ -380,8 +377,6 @@ export {
   get,
   getLatestOrganizationLearner,
   isActive,
-  isOrganizationLearnerIdLinkedToUserAndSCOOrganization,
-  reconcileUserByNationalStudentIdAndOrganizationId,
   reconcileUserToOrganizationLearner,
   updateCertificability,
   updateUserIdWhereNull,

@@ -63,6 +63,13 @@
       "label": "Agree Pix terms of use and personal data protection policy",
       "message": "I agree to the '<'a href=\"{cguUrl}\" class=\"link\" target=\"_blank\" rel=\"noopener noreferrer\"'>'Pix terms of use'</a>' and '<'a href=\"{dataProtectionPolicyUrl}\" class=\"link\" target=\"_blank\" rel=\"noopener noreferrer\"'>'personal data protection policy'</a>'"
     },
+    "companion": {
+      "not-detected": {
+        "title": "The Pix Companion extension<br /> is not detected",
+        "description": " The extension may not be installed or enabled. Read the following documentation in order to resume your certification session.  If necessary ask your invigilator.",
+        "link": "Go to documentation"
+      }
+    },
     "data-protection-policy-information-banner": {
       "title": "Please note that our personal data protection policy has been updated. To take a look at what's changing, click here: ",
       "url-label": "Personal data protection policy."
@@ -145,6 +152,7 @@
       "help-center": "Help center",
       "label": "Footer menu",
       "legal-notice": "Legal notice",
+      "server-status": "Status service",
       "sitemap": "Site map",
       "student-data-protection-policy": "Student data protection policy",
       "student-data-protection-policy-url": "https://cloud.pix.fr/s/nqgBodTkbtsGb39"
@@ -320,6 +328,11 @@
       },
       "answers": {
         "header": "Your answers"
+      }
+    },
+    "authentication": {
+      "login": {
+        "signup-button": "Sign up to Pix"
       }
     },
     "autonomous-course": {
@@ -1084,6 +1097,19 @@
       "content-text": "'<p>'Please refresh the page or return to homepage.'</p><p>'You can also contact us via '<a href=\"https://pix.org/en/contact-form\">'the help centre form'</a>'specifying the error code below in the description.'</p><p>'Please excuse any inconvenience caused.'</p><p>'The Pix team.'</p>'",
       "first-title": "Oops, an error occurred!"
     },
+    "evaluation-results": {
+      "quit-results": {
+        "modal": {
+          "title": "Oups, vous n’avez pas encore envoyé vos résultats !",
+          "content-information": "Envoyer vos résultats à l’organisateur du parcours est essentiel pour votre accompagnement. Restez sur cette page et cliquez sur ‘Envoyer mes résultats’ pour les transmettre.",
+          "content-instruction": "Voulez-vous vraiment quitter sans les envoyer ?",
+          "actions": {
+            "quit-without-sharing": "Quitter sans envoyer",
+            "cancel-to-share": "Rester pour envoyer"
+          }
+        }
+      }
+    },
     "fill-in-campaign-code": {
       "title": "I have a code",
       "description": "This code contains 9 letters and/or numbers. It is given by your school/organisation and can be used to start a customised test or to submit your profile",
@@ -1333,6 +1359,11 @@
             "name": "Start"
           }
         },
+        "flashcards": {
+          "seeAnswer" : "See the answer",
+          "seeAgain": "Review the question",
+          "nextCard": "Next"
+        },
         "grain": {
           "continue": "Continue",
           "skip": "Skip",
@@ -1353,6 +1384,12 @@
         "explanationTitle": "What is a module?",
         "level": "Level",
         "objectives": "Objectives",
+        "smallScreenModal": {
+          "title": "You seem to be using a small screen",
+          "cancel": "Return to details",
+          "description": "Some of the activities in this module may be difficult to perform on a small screen. For the best experience, we recommend that you use a computer.",
+          "startModule": "Start"
+        },
         "startModule": "Start module"
       },
       "download": {
@@ -1363,6 +1400,10 @@
         "format": "{format} format ",
         "intro": "Choose the file format you would like to use.",
         "label": "Download file in {format} format"
+      },
+      "flashcards": {
+        "direction": "Look for the answer then turn the card",
+        "position": "Card {currentCardPosition}/{totalCards}"
       },
       "grain": {
         "tag": {
@@ -1553,12 +1594,14 @@
         "submit": "Log in"
       },
       "error": {
-        "message": "There was an error in the email address or username/password entered."
+        "message": "There was an error in the email address or username/password entered.",
+        "unexpected": "Unable to connect. Please try again in a few moments. If the problem persists, '<'a href=\"https://pix.org/en/support\" target=\"blank\"'>'please contact us'</a>'."
       },
       "fields": {
         "legend": "Information required for sign in.",
         "login": {
-          "label": "Email address or username"
+          "label": "Email address or username",
+          "placeholder": "ex: jean.dupont@email.com"
         },
         "password": {
           "label": "Password"
@@ -1711,7 +1754,7 @@
         "results-details": {
           "title": "Results details",
           "description": "Explore your skills in detail, organized by specific areas, to better understand your strengths and areas for improvement. Identify your strengths and areas where you can focus your efforts to improve further.",
-          "tab-label": "Results details"
+          "tab-label": "Details"
         },
         "rewards": {
           "title": "Rewards and expectations of the organizer",
@@ -1721,7 +1764,11 @@
         "trainings": {
           "title": "Want to learn more?",
           "description": "Get personalized training recommendations to continue progressing and feed your curiosity to help you achieve your full potential.",
-          "tab-label": "Trainings"
+          "tab-label": "Trainings",
+          "modal": {
+            "content": "Send us your results to enable the course organizer to support you.'<br />'After sharing, you'll have access to these training courses!",
+            "share-error": "There was an error sending your results. Please try again."
+          }
         }
       },
       "trainings": {

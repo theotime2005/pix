@@ -1,4 +1,6 @@
-import Joi from 'joi';
+import JoiDate from '@joi/date';
+import BaseJoi from 'joi';
+const Joi = BaseJoi.extend(JoiDate);
 
 import { securityPreHandlers } from '../../../shared/application/security-pre-handlers.js';
 import { identifiersType } from '../../../shared/domain/types/identifiers-type.js';
@@ -32,7 +34,7 @@ const register = async function (server) {
     },
     {
       method: 'GET',
-      path: '/api/sessions/{id}',
+      path: '/api/sessions/{sessionId}',
       config: {
         pre: [
           {
@@ -42,7 +44,7 @@ const register = async function (server) {
         ],
         handler: sessionController.get,
         validate: {
-          params: Joi.object({ id: identifiersType.sessionId }),
+          params: Joi.object({ sessionId: identifiersType.sessionId }),
         },
         tags: ['api', 'sessions', 'session enrolment'],
         notes: [
@@ -53,11 +55,11 @@ const register = async function (server) {
     },
     {
       method: 'PATCH',
-      path: '/api/sessions/{id}',
+      path: '/api/sessions/{sessionId}',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.sessionId,
+            sessionId: identifiersType.sessionId,
           }),
         },
         pre: [
@@ -77,11 +79,11 @@ const register = async function (server) {
     },
     {
       method: 'DELETE',
-      path: '/api/sessions/{id}',
+      path: '/api/sessions/{sessionId}',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.sessionId,
+            sessionId: identifiersType.sessionId,
           }),
         },
         pre: [
@@ -96,6 +98,37 @@ const register = async function (server) {
             "- Supprime la session et les candidats si la session n'a pas démarrée",
         ],
         tags: ['api', 'session'],
+      },
+    },
+    {
+      method: 'POST',
+      path: '/api/sessions/{sessionId}/candidate-participation',
+      config: {
+        validate: {
+          params: Joi.object({
+            sessionId: identifiersType.sessionId,
+          }),
+          options: {
+            allowUnknown: true,
+          },
+          payload: Joi.object({
+            data: {
+              type: Joi.string().valid('certification-candidates').required(),
+              attributes: Joi.object({
+                'first-name': Joi.string().empty(['', null]).required(),
+                'last-name': Joi.string().empty(['', null]).required(),
+                birthdate: Joi.date().format('YYYY-MM-DD').raw().required(),
+              }),
+            },
+          }),
+        },
+        handler: sessionController.createCandidateParticipation,
+        tags: ['api', 'sessions', 'certification-candidates'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          'Elle associe un candidat de certification\n' +
+            "à un utilisateur à l'aide des informations d'identité de celui-ci (nom, prénom et date de naissance).",
+        ],
       },
     },
   ]);

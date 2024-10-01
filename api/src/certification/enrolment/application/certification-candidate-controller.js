@@ -1,12 +1,11 @@
 import { normalize } from '../../../shared/infrastructure/utils/string-utils.js';
 import * as certificationCandidateSerializer from '../../shared/infrastructure/serializers/jsonapi/certification-candidate-serializer.js';
 import { usecases } from '../domain/usecases/index.js';
-import * as enrolledCandidateRepository from '../infrastructure/repositories/enrolled-candidate-repository.js';
 import * as candidateSerializer from '../infrastructure/serializers/candidate-serializer.js';
 import * as enrolledCandidateSerializer from '../infrastructure/serializers/enrolled-candidate-serializer.js';
 
 const addCandidate = async function (request, h, dependencies = { candidateSerializer }) {
-  const sessionId = request.params.id;
+  const sessionId = request.params.sessionId;
   const candidate = await dependencies.candidateSerializer.deserialize(request.payload);
   const candidateId = await usecases.addCandidateToSession({
     sessionId,
@@ -19,7 +18,7 @@ const addCandidate = async function (request, h, dependencies = { candidateSeria
 };
 
 const getEnrolledCandidates = async function (request, h, dependencies = { enrolledCandidateSerializer }) {
-  const sessionId = request.params.id;
+  const sessionId = request.params.sessionId;
   const enrolledCandidates = await usecases.getEnrolledCandidatesInSession({ sessionId });
   return dependencies.enrolledCandidateSerializer.serialize(enrolledCandidates);
 };
@@ -32,6 +31,21 @@ const deleteCandidate = async function (request, h) {
   return h.response().code(204);
 };
 
+const updateEnrolledCandidate = async function (request, h, dependencies = { enrolledCandidateSerializer }) {
+  const candidateId = request.params.certificationCandidateId;
+  const enrolledCandidateData = request.payload.data.attributes;
+  const editedCandidate = dependencies.enrolledCandidateSerializer.deserialize({
+    candidateId,
+    candidateData: enrolledCandidateData,
+  });
+
+  await usecases.updateEnrolledCandidate({
+    editedCandidate,
+  });
+
+  return h.response().code(204);
+};
+
 const validateCertificationInstructions = async function (
   request,
   h,
@@ -39,12 +53,11 @@ const validateCertificationInstructions = async function (
 ) {
   const certificationCandidateId = request.params.certificationCandidateId;
 
-  await usecases.candidateHasSeenCertificationInstructions({
+  const candidate = await usecases.candidateHasSeenCertificationInstructions({
     certificationCandidateId,
   });
-  const enrolledCandidate = await enrolledCandidateRepository.get(certificationCandidateId);
 
-  return dependencies.certificationCandidateSerializer.serialize(enrolledCandidate);
+  return dependencies.certificationCandidateSerializer.serialize(candidate);
 };
 
 const certificationCandidateController = {
@@ -52,5 +65,6 @@ const certificationCandidateController = {
   getEnrolledCandidates,
   deleteCandidate,
   validateCertificationInstructions,
+  updateEnrolledCandidate,
 };
 export { certificationCandidateController };

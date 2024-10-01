@@ -25,7 +25,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
       const response = await certificationReportController.saveCertificationIssueReport(
         {
           params: {
-            id: certificationReportId,
+            certificationCourseId: certificationReportId,
           },
           auth: {
             credentials: { userId },
@@ -65,7 +65,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
       const certificationCourseId = 123;
       const request = {
         params: {
-          id: certificationCourseId,
+          certificationCourseId,
         },
         payload: {
           data: {

@@ -30,6 +30,18 @@ const update = async function (request, h, dependencies = { requestResponseUtils
   return h.response(dependencies.membershipSerializer.serialize(updatedMembership));
 };
 
-const membershipController = { create, update };
+const findPaginatedFilteredMemberships = async function (request) {
+  const organizationId = request.params.id;
+  const options = request.query;
+
+  const { models: memberships, pagination } = await usecases.findPaginatedFilteredOrganizationMemberships({
+    organizationId,
+    filter: options.filter,
+    page: options.page,
+  });
+  return membershipSerializer.serialize(memberships, pagination);
+};
+
+const membershipController = { create, findPaginatedFilteredMemberships, update };
 
 export { membershipController };

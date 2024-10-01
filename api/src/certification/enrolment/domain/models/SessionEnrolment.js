@@ -1,13 +1,14 @@
+/**
+ * @typedef {import('./Candidate.js').Candidate} Candidate
+ */
 import _ from 'lodash';
 
-import { config } from '../../../../shared/config.js';
 import { CERTIFICATION_CENTER_TYPES } from '../../../../shared/domain/constants.js';
 import { SESSION_STATUSES } from '../../../shared/domain/constants.js';
 import { CERTIFICATION_VERSIONS } from '../../../shared/domain/models/CertificationVersion.js';
 
-const availableCharactersForPasswordGeneration =
-  `${config.availableCharacterForCode.numbers}${config.availableCharacterForCode.letters}`.split('');
-const NB_CHAR = 5;
+const INVIGILATOR_PASSWORD_LENGTH = 6;
+const INVIGILATOR_PASSWORD_CHARS = '23456789bcdfghjkmpqrstvwxyBCDFGHJKMPQRSTVWXY!*?'.split('');
 
 class SessionEnrolment {
   constructor({
@@ -23,7 +24,7 @@ class SessionEnrolment {
     time,
     certificationCandidates,
     certificationCenterId,
-    supervisorPassword = SessionEnrolment.generateSupervisorPassword(),
+    invigilatorPassword,
     version = CERTIFICATION_VERSIONS.V2,
     createdBy,
     finalizedAt,
@@ -40,7 +41,7 @@ class SessionEnrolment {
     this.time = time;
     this.certificationCandidates = certificationCandidates;
     this.certificationCenterId = certificationCenterId;
-    this.supervisorPassword = supervisorPassword;
+    this.invigilatorPassword = invigilatorPassword ?? this.#generateInvigilatorPassword();
     this.version = version;
     this.createdBy = createdBy;
     this.canEnrolCandidate = !finalizedAt;
@@ -54,8 +55,8 @@ class SessionEnrolment {
     return this.certificationCenterType === CERTIFICATION_CENTER_TYPES.SCO;
   }
 
-  static generateSupervisorPassword() {
-    return _.times(NB_CHAR, _randomCharacter).join('');
+  #generateInvigilatorPassword() {
+    return _.sampleSize(INVIGILATOR_PASSWORD_CHARS, INVIGILATOR_PASSWORD_LENGTH).join('');
   }
 
   isSessionScheduledInThePast() {
@@ -63,28 +64,26 @@ class SessionEnrolment {
     return sessionDate < new Date();
   }
 
-  isCandidateAlreadyEnrolled({
-    candidates,
-    candidatePersonalInfo: { firstName, lastName, birthdate },
-    normalizeStringFnc,
-  }) {
-    const normalizedInputNames = {
-      lastName: normalizeStringFnc(lastName),
-      firstName: normalizeStringFnc(firstName),
-    };
-    return _.some(candidates, (enrolledCandidate) => {
-      const enrolledCandidatesNormalizedNames = {
-        lastName: normalizeStringFnc(enrolledCandidate.lastName),
-        firstName: normalizeStringFnc(enrolledCandidate.firstName),
-      };
-      return (
-        _.isEqual(normalizedInputNames, enrolledCandidatesNormalizedNames) && birthdate === enrolledCandidate.birthdate
-      );
-    });
+  isCandidateAlreadyEnrolled({ candidates, candidatePersonalInfo, normalizeStringFnc }) {
+    const matchingCandidates = findMatchingCandidates({ candidates, candidatePersonalInfo, normalizeStringFnc });
+    return matchingCandidates.length > 0;
   }
 
-  hasLinkedCandidate({ candidates }) {
-    return candidates.some((candidate) => candidate.isLinkedToAUser());
+  /**
+   * @param {Object} params
+   * @param {Array<Candidate>} params.candidates
+   */
+  hasReconciledCandidate({ candidates }) {
+    return candidates.some((candidate) => candidate.isReconciled());
+  }
+
+  /**
+   * @param {Object} params
+   * @param {Array<Candidate>} params.candidates
+   * @param {number} params.user
+   */
+  hasReconciledCandidateTo({ candidates, userId }) {
+    return candidates.some((candidate) => candidate.isReconciledTo(userId));
   }
 
   updateInfo(sessionData) {
@@ -96,10 +95,30 @@ class SessionEnrolment {
     this.time = sessionData.time;
     this.description = sessionData.description;
   }
+
+  findCandidatesByPersonalInfo({ candidates, candidatePersonalInfo, normalizeStringFnc }) {
+    return findMatchingCandidates({ candidates, candidatePersonalInfo, normalizeStringFnc });
+  }
+}
+
+function findMatchingCandidates({
+  candidates,
+  candidatePersonalInfo: { firstName, lastName, birthdate },
+  normalizeStringFnc,
+}) {
+  const normalizedInputNames = {
+    lastName: normalizeStringFnc(lastName),
+    firstName: normalizeStringFnc(firstName),
+  };
+  return candidates.filter((enrolledCandidate) => {
+    const enrolledCandidatesNormalizedNames = {
+      lastName: normalizeStringFnc(enrolledCandidate.lastName),
+      firstName: normalizeStringFnc(enrolledCandidate.firstName),
+    };
+    return (
+      _.isEqual(normalizedInputNames, enrolledCandidatesNormalizedNames) && birthdate === enrolledCandidate.birthdate
+    );
+  });
 }
 
 export { SessionEnrolment };
-
-function _randomCharacter() {
-  return _.sample(availableCharactersForPasswordGeneration);
-}

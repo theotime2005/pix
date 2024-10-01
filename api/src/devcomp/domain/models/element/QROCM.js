@@ -1,4 +1,5 @@
 import { assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
+import { ModuleInstantiationError } from '../../errors.js';
 import { Element } from './Element.js';
 
 class QROCM extends Element {
@@ -18,13 +19,13 @@ class QROCM extends Element {
 
   #assertProposalsAreNotEmpty(proposals) {
     if (proposals.length === 0) {
-      throw new Error('Les propositions sont obligatoires pour un QROCM');
+      throw new ModuleInstantiationError('Les propositions sont obligatoires pour un QROCM');
     }
   }
 
   #assertProposalsIsAnArray(proposals) {
     if (!Array.isArray(proposals)) {
-      throw new Error('Les propositions doivent apparaître dans une liste');
+      throw new ModuleInstantiationError('Les propositions doivent apparaître dans une liste');
     }
   }
 }

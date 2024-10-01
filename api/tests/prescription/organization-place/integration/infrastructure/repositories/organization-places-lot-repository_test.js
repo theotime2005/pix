@@ -1,6 +1,6 @@
 import { knex } from '../../../../../../db/knex-database-connection.js';
 import * as categories from '../../../../../../src/prescription/organization-place/domain/constants/organization-places-categories.js';
-import { OrganizationPlacesLot } from '../../../../../../src/prescription/organization-place/domain/models/OrganizationPlacesLot.js';
+import { OrganizationPlacesLotForManagement } from '../../../../../../src/prescription/organization-place/domain/models/OrganizationPlacesLotForManagement.js';
 import { OrganizationPlacesLotManagement } from '../../../../../../src/prescription/organization-place/domain/read-models/OrganizationPlacesLotManagement.js';
 import { PlacesLot } from '../../../../../../src/prescription/organization-place/domain/read-models/PlacesLot.js';
 import * as organizationPlacesLotRepository from '../../../../../../src/prescription/organization-place/infrastructure/repositories/organization-places-lot-repository.js';
@@ -218,7 +218,7 @@ describe('Integration | Repository | Organization Places Lot', function () {
       await databaseBuilder.commit();
     });
 
-    it('should return array of PlaceLot model', async function () {
+    it('should return array of PlacesLot model', async function () {
       databaseBuilder.factory.buildOrganizationPlace({ organizationId });
       await databaseBuilder.commit();
 
@@ -227,7 +227,7 @@ describe('Integration | Repository | Organization Places Lot', function () {
       expect(places[0]).to.be.instanceOf(PlacesLot);
     });
 
-    it('should return empty array if there is no places', async function () {
+    it('should return empty array if there is no placeslots', async function () {
       await databaseBuilder.commit();
 
       const places = await organizationPlacesLotRepository.findAllByOrganizationId(organizationId);
@@ -235,7 +235,7 @@ describe('Integration | Repository | Organization Places Lot', function () {
       expect(places).to.be.empty;
     });
 
-    it('should return places if there are places for given organizationId', async function () {
+    it('should return placeslots if there are places for given organizationId', async function () {
       databaseBuilder.factory.buildOrganizationPlace({
         organizationId,
         count: 7,
@@ -266,13 +266,74 @@ describe('Integration | Repository | Organization Places Lot', function () {
     });
   });
 
+  describe('#findAllByOrganizationIds', function () {
+    let firstOrganizationId;
+    let secondOrganizationId;
+
+    beforeEach(async function () {
+      firstOrganizationId = databaseBuilder.factory.buildOrganization().id;
+      secondOrganizationId = databaseBuilder.factory.buildOrganization().id;
+      await databaseBuilder.commit();
+    });
+
+    it('should return empty array if there is no placesLot', async function () {
+      const organizationIds = [firstOrganizationId, secondOrganizationId];
+
+      const places = await organizationPlacesLotRepository.findAllByOrganizationIds(organizationIds);
+
+      expect(places).to.be.empty;
+    });
+
+    it('should return places if there are places for given organizationIds', async function () {
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId: firstOrganizationId,
+        count: 7,
+      });
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId: secondOrganizationId,
+        count: 3,
+      });
+      await databaseBuilder.commit();
+      const organizationIds = [firstOrganizationId, secondOrganizationId];
+
+      const places = await organizationPlacesLotRepository.findAllByOrganizationIds(organizationIds);
+
+      expect(places.length).to.equal(2);
+      expect(places[0]).to.be.an.instanceOf(PlacesLot);
+      expect(places[1]).to.be.an.instanceOf(PlacesLot);
+
+      const firstOrganizationIdPlaces = places.find((place) => place.organizationId === firstOrganizationId);
+      expect(firstOrganizationIdPlaces.count).to.equal(7);
+
+      const secondOrganizationIdPlaces = places.find((place) => place.organizationId === secondOrganizationId);
+      expect(secondOrganizationIdPlaces.count).to.equal(3);
+    });
+
+    it('should not return places for others organization than given', async function () {
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId: firstOrganizationId,
+        count: 7,
+      });
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId: secondOrganizationId,
+        count: 3,
+      });
+      await databaseBuilder.commit();
+      const organizationIds = [firstOrganizationId];
+
+      const places = await organizationPlacesLotRepository.findAllByOrganizationIds(organizationIds);
+      expect(places.length).to.equal(1);
+      expect(places[0].organizationId).to.equal(firstOrganizationId);
+    });
+  });
+
   describe('#create', function () {
     it('should create the given lot of places', async function () {
       // given
       const organizationId = databaseBuilder.factory.buildOrganization().id;
       const user = databaseBuilder.factory.buildUser.withRole({ firstName: 'Gareth', lastName: 'Edwards' });
 
-      const placesToSave = new OrganizationPlacesLot({
+      const placesToSave = new OrganizationPlacesLotForManagement({
         organizationId,
         count: 66,
         category: categories.FREE_RATE,
@@ -388,6 +449,217 @@ describe('Integration | Repository | Organization Places Lot', function () {
       const error = await catchErr(organizationPlacesLotRepository.get)(organizationPlaceId);
 
       expect(error).to.be.an.instanceOf(NotFoundError);
+    });
+  });
+
+  describe('#findAllNotDeletedByOrganizationId', function () {
+    let clock;
+
+    beforeEach(function () {
+      clock = sinon.useFakeTimers({
+        now: new Date('2024-09-10'),
+        toFake: ['Date'],
+      });
+    });
+
+    afterEach(function () {
+      clock.restore();
+    });
+
+    it('should return organization places for given id', async function () {
+      // given
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+      const otherOrganizationId = databaseBuilder.factory.buildOrganization().id;
+
+      const placeSG1 = databaseBuilder.factory.buildOrganizationPlace({
+        organizationId,
+        count: 12,
+        deletedAt: null,
+      });
+
+      const placeAtlantis = databaseBuilder.factory.buildOrganizationPlace({
+        organizationId,
+        count: 120,
+        deletedAt: null,
+      });
+
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId: otherOrganizationId,
+        count: 34,
+        deletedAt: null,
+      });
+
+      await databaseBuilder.commit();
+
+      // when
+      const foundOrganizationPlace =
+        await organizationPlacesLotRepository.findAllNotDeletedByOrganizationId(organizationId);
+
+      // then
+      expect(foundOrganizationPlace.length).to.equal(2);
+      expect([foundOrganizationPlace[0].count, foundOrganizationPlace[1].count]).to.have.members([
+        placeSG1.count,
+        placeAtlantis.count,
+      ]);
+    });
+
+    it('should return empty when no places defined', async function () {
+      // given
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+      await databaseBuilder.commit();
+
+      // when
+      const foundOrganizationPlace = await organizationPlacesLotRepository.findByOrganizationId(organizationId);
+      // then
+      expect(foundOrganizationPlace.length).to.equal(0);
+    });
+
+    it('should not take into account deleted places', async function () {
+      // given
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+      databaseBuilder.factory.buildOrganizationPlace({
+        organizationId,
+        count: 12,
+        deletedAt: new Date('2020-01-10'),
+      });
+
+      await databaseBuilder.commit();
+
+      // when
+      const foundOrganizationPlace = await organizationPlacesLotRepository.findByOrganizationId(organizationId);
+
+      // then
+      expect(foundOrganizationPlace.length).to.equal(0);
+    });
+
+    describe('the right order', function () {
+      it('should ordered by status ACTIVE, PENDING and then EXPIRED', async function () {
+        // given
+        const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+        const organizationPlaceActive = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2025-09-10'),
+        });
+
+        const organizationPlaceExpired = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 12,
+          activationDate: new Date('2022-09-10'),
+          expirationDate: new Date('2023-09-10'),
+        });
+
+        const organizationPlacePending = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2025-09-10'),
+          expirationDate: new Date('2026-09-10'),
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        const foundOrganizationPlace =
+          await organizationPlacesLotRepository.findAllNotDeletedByOrganizationId(organizationId);
+
+        // then
+        expect(foundOrganizationPlace[0].activationDate).to.deep.equal(organizationPlaceActive.activationDate);
+        expect(foundOrganizationPlace[1].activationDate).to.deep.equal(organizationPlacePending.activationDate);
+        expect(foundOrganizationPlace[2].activationDate).to.deep.equal(organizationPlaceExpired.activationDate);
+      });
+
+      it('should return organization places in descending order of expirationDate if same status', async function () {
+        // given
+        const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+        const organizationPlaceActive1 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2025-09-10'),
+        });
+
+        const organizationPlaceActive2 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2026-09-10'),
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        const foundOrganizationPlace =
+          await organizationPlacesLotRepository.findAllNotDeletedByOrganizationId(organizationId);
+
+        // then
+        expect(foundOrganizationPlace[0].expirationDate).to.deep.equal(organizationPlaceActive2.expirationDate);
+        expect(foundOrganizationPlace[1].expirationDate).to.deep.equal(organizationPlaceActive1.expirationDate);
+      });
+
+      it('should return organization places in descending order of activationDate if same status and expiration date', async function () {
+        // given
+        const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+        const organizationPlaceActive1 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2022-09-10'),
+          expirationDate: new Date('2025-09-10'),
+        });
+
+        const organizationPlaceActive2 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 22,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2025-09-10'),
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        const foundOrganizationPlace =
+          await organizationPlacesLotRepository.findAllNotDeletedByOrganizationId(organizationId);
+
+        // then
+        expect(foundOrganizationPlace[0].activationDate).to.deep.equal(organizationPlaceActive2.activationDate);
+        expect(foundOrganizationPlace[1].activationDate).to.deep.equal(organizationPlaceActive1.activationDate);
+      });
+
+      it('should return organization places in ascending order of createdAt if same status, expiration date and activationDate', async function () {
+        // given
+        const organizationId = databaseBuilder.factory.buildOrganization().id;
+
+        const organizationPlaceActive1 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 12,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2025-09-10'),
+          createdAt: new Date('2023-07-10'),
+        });
+
+        const organizationPlaceActive2 = databaseBuilder.factory.buildOrganizationPlace({
+          organizationId,
+          count: 20,
+          activationDate: new Date('2023-09-10'),
+          expirationDate: new Date('2025-09-10'),
+          createdAt: new Date('2023-08-10'),
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        const foundOrganizationPlace =
+          await organizationPlacesLotRepository.findAllNotDeletedByOrganizationId(organizationId);
+
+        // then
+        expect(foundOrganizationPlace[0].count).to.deep.equal(organizationPlaceActive2.count);
+        expect(foundOrganizationPlace[1].count).to.deep.equal(organizationPlaceActive1.count);
+      });
     });
   });
 });

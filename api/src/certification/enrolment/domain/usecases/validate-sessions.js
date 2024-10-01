@@ -2,15 +2,13 @@
  * @typedef {import ("./index.js").dependencies} deps
  */
 
-import bluebird from 'bluebird';
-
+import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
 import { Candidate } from '../models/Candidate.js';
 import { SessionEnrolment } from '../models/SessionEnrolment.js';
 import { SessionMassImportReport } from '../models/SessionMassImportReport.js';
 
 /**
  * @param {Object} params
- * @param {deps["certificationCenterRepository"]} params.certificationCenterRepository
  * @param {deps["sessionRepository"]} params.sessionRepository
  * @param {deps["certificationCpfCountryRepository"]} params.certificationCpfCountryRepository
  * @param {deps["certificationCpfCityRepository"]} params.certificationCpfCityRepository
@@ -42,7 +40,7 @@ const validateSessions = async function ({
   const sessionsMassImportReport = new SessionMassImportReport();
   const translate = i18n.__;
 
-  const validatedSessions = await bluebird.mapSeries(sessionsData, async (sessionDTO) => {
+  const validatedSessions = await PromiseUtils.mapSeries(sessionsData, async (sessionDTO) => {
     const { sessionId } = sessionDTO;
 
     const accessCode = sessionCodeService.getNewSessionCode();
@@ -80,6 +78,7 @@ const validateSessions = async function ({
         complementaryCertificationRepository,
         translate,
         sessionsImportValidationService,
+        isCoreComplementaryCompatibilityEnabled: center.isCoreComplementaryCompatibilityEnabled,
       });
 
       session.certificationCandidates = validatedCandidates;
@@ -113,6 +112,7 @@ async function _createValidCertificationCandidates({
   complementaryCertificationRepository,
   translate,
   sessionsImportValidationService,
+  isCoreComplementaryCompatibilityEnabled,
 }) {
   const { uniqueCandidates, duplicateCandidateErrors } =
     sessionsImportValidationService.getUniqueCandidates(candidatesDTO);
@@ -120,7 +120,7 @@ async function _createValidCertificationCandidates({
     sessionsMassImportReport.addErrorReports(duplicateCandidateErrors);
   }
 
-  return bluebird.mapSeries(uniqueCandidates, async (candidateDTO) => {
+  return PromiseUtils.mapSeries(uniqueCandidates, async (candidateDTO) => {
     const billingMode = Candidate.parseBillingMode({
       billingMode: candidateDTO.billingMode,
       translate,
@@ -133,6 +133,7 @@ async function _createValidCertificationCandidates({
         subscriptionLabels: candidateDTO.subscriptionLabels,
         line: candidateDTO.line,
         complementaryCertificationRepository,
+        isCoreComplementaryCompatibilityEnabled,
       });
 
     certificationCandidateErrors.push(...certificationCandidateComplementaryErrors);
@@ -144,19 +145,19 @@ async function _createValidCertificationCandidates({
       subscriptions,
       id: null,
       userId: null,
+      reconciledAt: null,
       organizationLearnerId: null,
       createdAt: null,
     });
 
-    const candidateBirthInformationValidation =
-      await sessionsImportValidationService.getValidatedCandidateBirthInformation({
-        candidate,
-        isSco,
-        isSessionsMassImport: true,
-        line: candidateDTO.line,
-        certificationCpfCountryRepository,
-        certificationCpfCityRepository,
-      });
+    const candidateBirthInformationValidation = await sessionsImportValidationService.getValidatedCandidateInformation({
+      candidate,
+      isSco,
+      isSessionsMassImport: true,
+      line: candidateDTO.line,
+      certificationCpfCountryRepository,
+      certificationCpfCityRepository,
+    });
 
     certificationCandidateErrors.push(...candidateBirthInformationValidation.certificationCandidateErrors);
 

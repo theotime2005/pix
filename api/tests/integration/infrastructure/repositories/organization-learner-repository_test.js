@@ -11,10 +11,10 @@ import {
   UserCouldNotBeReconciledError,
   UserNotFoundError,
 } from '../../../../src/shared/domain/errors.js';
-import { OrganizationLearner } from '../../../../src/shared/domain/models/OrganizationLearner.js';
+import { OrganizationLearner } from '../../../../src/shared/domain/models/index.js';
 import { catchErr, databaseBuilder, domainBuilder, expect, knex, sinon } from '../../../test-helper.js';
 
-describe('Integration | Infrastructure | Repository | organization-learner-repository', function () {
+describe('Integration ¨| Infrastructure | Repository | organization-learner-repository', function () {
   describe('#findByIds', function () {
     it('should return all the organizationLearners for given organizationLearner IDs', async function () {
       // given
@@ -216,12 +216,14 @@ describe('Integration | Infrastructure | Repository | organization-learner-repos
       const firstOrganizationLearner = databaseBuilder.factory.buildOrganizationLearner({
         organizationId: organization_1.id,
         division: '3A',
+        lastName: 'last-name-1',
         updatedAt: new Date(),
       });
       const secondOrganizationLearner = databaseBuilder.factory.buildOrganizationLearner({
         organizationId: organization_1.id,
         userId: user.id,
         division: '3A',
+        lastName: 'last-name-2',
         updatedAt: new Date(),
       });
       databaseBuilder.factory.buildOrganizationLearner({ organizationId: organization_2.id });
@@ -518,48 +520,6 @@ describe('Integration | Infrastructure | Repository | organization-learner-repos
     });
   });
 
-  describe('#isOrganizationLearnerIdLinkedToUserAndSCOOrganization', function () {
-    it('should return true when an organizationLearnermatches an id and matches also a given user id and a SCO organization', async function () {
-      // given
-      const userId = databaseBuilder.factory.buildUser().id;
-      const otherUserId = databaseBuilder.factory.buildUser().id;
-      const firstScoOrganizationId = databaseBuilder.factory.buildOrganization({ type: 'SCO' }).id;
-      const secondScoOrganizationId = databaseBuilder.factory.buildOrganization({ type: 'SCO' }).id;
-      const supOrganizationId = databaseBuilder.factory.buildOrganization({ type: 'SUP' }).id;
-      const matchingOrganizationLearnerId = databaseBuilder.factory.buildOrganizationLearner({
-        userId,
-        organizationId: firstScoOrganizationId,
-      }).id;
-      databaseBuilder.factory.buildOrganizationLearner({ userId, organizationId: secondScoOrganizationId });
-      databaseBuilder.factory.buildOrganizationLearner({
-        userId: otherUserId,
-        organizationId: secondScoOrganizationId,
-      });
-      databaseBuilder.factory.buildOrganizationLearner({ userId, organizationId: supOrganizationId });
-      await databaseBuilder.commit();
-
-      // when
-      const isLinked = await organizationLearnerRepository.isOrganizationLearnerIdLinkedToUserAndSCOOrganization({
-        userId,
-        organizationLearnerId: matchingOrganizationLearnerId,
-      });
-
-      // then
-      expect(isLinked).to.be.true;
-    });
-
-    it('should return false when no organizationLearner matches an id and matches also a given user id and a SCO organization', async function () {
-      // when
-      const isLinked = await organizationLearnerRepository.isOrganizationLearnerIdLinkedToUserAndSCOOrganization({
-        userId: 42,
-        organizationLearnerId: 42,
-      });
-
-      // then
-      expect(isLinked).to.be.false;
-    });
-  });
-
   describe('#findByOrganizationIdAndBirthdate', function () {
     let organization;
 
@@ -821,112 +781,6 @@ describe('Integration | Infrastructure | Repository | organization-learner-repos
 
       // then
       expect(error).to.be.instanceOf(UserCouldNotBeReconciledError);
-    });
-  });
-
-  describe('#reconcileUserAndOrganization', function () {
-    context('when the organizationLearner is active', function () {
-      let organization;
-      let organizationLearner;
-      let user;
-      let initialDate;
-
-      beforeEach(async function () {
-        initialDate = new Date('2023-01-01');
-        organization = databaseBuilder.factory.buildOrganization();
-        organizationLearner = databaseBuilder.factory.buildOrganizationLearner({
-          organizationId: organization.id,
-          userId: null,
-          firstName: 'Steeve',
-          lastName: 'Roger',
-          isDisabled: false,
-        });
-        user = databaseBuilder.factory.buildUser({ firstName: 'Steeve', lastName: 'Roger' });
-        await databaseBuilder.commit();
-      });
-
-      it('should save association between user and organization', async function () {
-        // when
-        const organizationLearnerPatched =
-          await organizationLearnerRepository.reconcileUserByNationalStudentIdAndOrganizationId({
-            userId: user.id,
-            nationalStudentId: organizationLearner.nationalStudentId,
-            organizationId: organization.id,
-          });
-
-        // then
-        expect(organizationLearnerPatched).to.be.instanceof(OrganizationLearner);
-        expect(organizationLearnerPatched.updatedAt).to.be.above(initialDate);
-        expect(organizationLearnerPatched.userId).to.equal(user.id);
-      });
-
-      it('should return an error when we don’t find the organizationLearner for this organization to update', async function () {
-        // given
-        const fakeOrganizationId = 1;
-
-        // when
-        const error = await catchErr(organizationLearnerRepository.reconcileUserByNationalStudentIdAndOrganizationId)({
-          userId: user.id,
-          nationalStudentId: organizationLearner.nationalStudentId,
-          organizationId: fakeOrganizationId,
-        });
-
-        // then
-        expect(error).to.be.instanceof(UserCouldNotBeReconciledError);
-      });
-
-      it('should return an error when we don’t find the organizationLearner for this nationalStudentId to update', async function () {
-        // given
-        const fakeNationalStudentId = 1;
-
-        // when
-        const error = await catchErr(organizationLearnerRepository.reconcileUserByNationalStudentIdAndOrganizationId)({
-          userId: user.id,
-          nationalStudentId: fakeNationalStudentId,
-          organizationId: organization.id,
-        });
-
-        // then
-        expect(error).to.be.instanceof(UserCouldNotBeReconciledError);
-      });
-
-      it('should return an error when the userId to link don’t match a user', async function () {
-        // given
-        const fakeUserId = 1;
-
-        // when
-        const error = await catchErr(organizationLearnerRepository.reconcileUserByNationalStudentIdAndOrganizationId)({
-          userId: fakeUserId,
-          nationalStudentId: organizationLearner.nationalStudentId,
-          organizationId: organization.id,
-        });
-
-        // then
-        expect(error).to.be.instanceof(UserCouldNotBeReconciledError);
-      });
-    });
-
-    context('when the organizationLearner is disabled', function () {
-      it('should return an error', async function () {
-        const { id: organizationId } = databaseBuilder.factory.buildOrganization();
-        const { id: userId } = databaseBuilder.factory.buildUser({ firstName: 'Natasha', lastName: 'Romanoff' });
-        const organizationLearner = databaseBuilder.factory.buildOrganizationLearner({
-          organizationId,
-          userId: null,
-          firstName: 'Natasha',
-          lastName: 'Romanoff',
-          isDisabled: true,
-        });
-        // when
-        const error = await catchErr(organizationLearnerRepository.reconcileUserByNationalStudentIdAndOrganizationId)({
-          userId,
-          nationalStudentId: organizationLearner.nationalStudentId,
-          organizationId,
-        });
-
-        // then
-        expect(error).to.be.instanceof(UserCouldNotBeReconciledError);
-      });
     });
   });
 
@@ -1860,6 +1714,172 @@ describe('Integration | Infrastructure | Repository | organization-learner-repos
         await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationId(organizationId);
 
       expect(result.totalRegisteredParticipant).to.equal(0);
+    });
+  });
+
+  describe('#findAllLearnerWithAtLeastOneParticipationByOrganizationIds', function () {
+    let firstRegisteredParticipantId,
+      secondRegisteredParticipantId,
+      firstUnRegisteredParticipantId,
+      secondUnRegisteredParticipantId,
+      firstOrganizationId,
+      secondOrganizationId;
+
+    beforeEach(async function () {
+      const firstAnonymousUserId = databaseBuilder.factory.buildUser({
+        lastName: '',
+        firstName: '',
+        isAnonymous: true,
+      }).id;
+      const secondAnonymousUserId = databaseBuilder.factory.buildUser({
+        lastName: '',
+        firstName: '',
+        isAnonymous: true,
+      }).id;
+      firstOrganizationId = databaseBuilder.factory.buildOrganization().id;
+      secondOrganizationId = databaseBuilder.factory.buildOrganization().id;
+      firstRegisteredParticipantId = databaseBuilder.factory.buildOrganizationLearner({
+        organizationId: firstOrganizationId,
+      }).id;
+      firstUnRegisteredParticipantId = databaseBuilder.factory.buildOrganizationLearner({
+        organizationId: firstOrganizationId,
+        userId: firstAnonymousUserId,
+      }).id;
+      secondRegisteredParticipantId = databaseBuilder.factory.buildOrganizationLearner({
+        organizationId: secondOrganizationId,
+      }).id;
+      secondUnRegisteredParticipantId = databaseBuilder.factory.buildOrganizationLearner({
+        organizationId: secondOrganizationId,
+        userId: secondAnonymousUserId,
+      }).id;
+      await databaseBuilder.commit();
+    });
+
+    it('should return count of active linked learner on account with at least one participation for given organizationIds', async function () {
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: firstRegisteredParticipantId,
+      });
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: secondRegisteredParticipantId,
+      });
+
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+        secondOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(1);
+      expect(result[firstOrganizationId].totalUnRegisteredParticipant).to.equal(0);
+      expect(result[secondOrganizationId].totalRegisteredParticipant).to.equal(1);
+      expect(result[secondOrganizationId].totalUnRegisteredParticipant).to.equal(0);
+    });
+
+    it('should return count of active not linked learner on account with at least one participation for given organizationIds', async function () {
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: firstUnRegisteredParticipantId,
+      });
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: secondUnRegisteredParticipantId,
+      });
+
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+        secondOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(0);
+      expect(result[firstOrganizationId].totalUnRegisteredParticipant).to.equal(1);
+      expect(result[secondOrganizationId].totalRegisteredParticipant).to.equal(0);
+      expect(result[secondOrganizationId].totalUnRegisteredParticipant).to.equal(1);
+    });
+
+    it('should not count an active learner several times for given organizationIds', async function () {
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: firstRegisteredParticipantId,
+      });
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: firstRegisteredParticipantId,
+      });
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: secondRegisteredParticipantId,
+      });
+
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+        secondOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(1);
+    });
+
+    it('should return 0 for active learner without participation', async function () {
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+        secondOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(0);
+      expect(result[secondOrganizationId].totalRegisteredParticipant).to.equal(0);
+    });
+
+    it('should return 0 for active learner with deleted participation', async function () {
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: firstRegisteredParticipantId,
+        deletedAt: new Date(),
+      });
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: secondRegisteredParticipantId,
+        deletedAt: new Date(),
+      });
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+        secondOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(0);
+      expect(result[secondOrganizationId].totalRegisteredParticipant).to.equal(0);
+    });
+
+    it('should return 0 for active learner with at least one participation from another organization', async function () {
+      const { id: activeOrganizationLearnerFromAnotherOrganizationId } =
+        databaseBuilder.factory.buildOrganizationLearner();
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: activeOrganizationLearnerFromAnotherOrganizationId,
+      });
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(0);
+    });
+
+    it('should return 0 for deleted learner', async function () {
+      const deletedById = databaseBuilder.factory.buildUser().id;
+      const deletedLearnerId = databaseBuilder.factory.buildOrganizationLearner({
+        organizationId: firstOrganizationId,
+        deletedAt: new Date(),
+        deletedBy: deletedById,
+      }).id;
+      databaseBuilder.factory.buildCampaignParticipation({
+        organizationLearnerId: deletedLearnerId,
+      });
+      await databaseBuilder.commit();
+
+      const result = await organizationLearnerRepository.findAllLearnerWithAtLeastOneParticipationByOrganizationIds([
+        firstOrganizationId,
+      ]);
+
+      expect(result[firstOrganizationId].totalRegisteredParticipant).to.equal(0);
     });
   });
 });

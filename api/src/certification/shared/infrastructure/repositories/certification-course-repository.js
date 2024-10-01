@@ -1,10 +1,10 @@
-import lodash from 'lodash';
-
-const { _ } = lodash;
-
-import bluebird from 'bluebird';
+import _ from 'lodash';
 
 import { knex } from '../../../../../db/knex-database-connection.js';
+import {
+  logErrorWithCorrelationIds,
+  logInfoWithCorrelationIds,
+} from '../../../../../src/shared/infrastructure/monitoring-tools.js';
 import { config } from '../../../../shared/config.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
@@ -20,7 +20,20 @@ async function save({ certificationCourse }) {
   const certificationCourseToSaveDTO = _adaptModelToDb(certificationCourse);
   const [{ id: certificationCourseId }] = await knexConn('certification-courses')
     .insert(certificationCourseToSaveDTO)
-    .returning('id');
+    .returning('id')
+    .on('query', function (data) {
+      logInfoWithCorrelationIds({
+        event: 'save-certification-course',
+        message: `A certification course will be inserted with transaction ${data.__knexTxId}`,
+      });
+    })
+    .on('query-error', function (data) {
+      logErrorWithCorrelationIds({
+        event: 'save-certification-course',
+        message: `A certification course could not be inserted`,
+        data: _(data).pick(['code', 'constraint', 'detail']),
+      });
+    });
 
   const complementaryCertificationCourses = certificationCourse
     .toDTO()
@@ -34,15 +47,15 @@ async function save({ certificationCourse }) {
     await knexConn('complementary-certification-courses').insert(complementaryCertificationCourses);
   }
 
-  await bluebird.mapSeries(certificationCourse.toDTO().challenges, (certificationChallenge) => {
+  for (const certificationChallenge of certificationCourse.toDTO().challenges) {
     const certificationChallengeWithCourseId = {
       ...certificationChallenge,
       courseId: certificationCourseId,
     };
-    return certificationChallengeRepository.save({
+    await certificationChallengeRepository.save({
       certificationChallenge: certificationChallengeWithCourseId,
     });
-  });
+  }
 
   return get({ id: certificationCourseId });
 }
@@ -132,7 +145,9 @@ async function _getV3ConfigurationForCertificationCreationDate(createdAt, knexCo
 }
 
 async function getSessionId({ id }) {
-  const row = await knex('certification-courses').select('sessionId').where({ id }).first();
+  const knexConn = DomainTransaction.getConnection();
+
+  const row = await knexConn('certification-courses').select('sessionId').where({ id }).first();
   if (!row) {
     throw new NotFoundError(`Certification course of id ${id} does not exist`);
   }
@@ -176,7 +191,7 @@ async function findOneCertificationCourseByUserIdAndSessionId({ userId, sessionI
 }
 
 async function update({ certificationCourse }) {
-  const knexConn = knex;
+  const knexConn = DomainTransaction.getConnection();
 
   const certificationCourseData = _pickUpdatableProperties(certificationCourse);
 
@@ -192,7 +207,9 @@ async function update({ certificationCourse }) {
 }
 
 async function isVerificationCodeAvailable({ verificationCode }) {
-  const exist = await knex('certification-courses')
+  const knexConn = DomainTransaction.getConnection();
+
+  const exist = await knexConn('certification-courses')
     .select('id')
     .whereRaw('UPPER(??)=?', ['verificationCode', verificationCode.toUpperCase()])
     .first();
@@ -201,7 +218,9 @@ async function isVerificationCodeAvailable({ verificationCode }) {
 }
 
 async function findCertificationCoursesBySessionId({ sessionId }) {
-  const certificationCoursesDTO = await knex('certification-courses').where({ sessionId });
+  const knexConn = DomainTransaction.getConnection();
+
+  const certificationCoursesDTO = await knexConn('certification-courses').where({ sessionId });
 
   return certificationCoursesDTO.map((certificationCourseDTO) => _toDomain({ certificationCourseDTO }));
 }

@@ -1,5 +1,6 @@
 import { IMPORT_KEY_FIELD } from '../../../../../../src/prescription/learner-management/domain/constants.js';
 import { OrganizationLearnerImportFormat } from '../../../../../../src/prescription/learner-management/domain/models/OrganizationLearnerImportFormat.js';
+import { EntityValidationError } from '../../../../../../src/shared/domain/errors.js';
 import { expect } from '../../../../../test-helper.js';
 
 describe('Unit | Models | OrganizationLearnerImportFormat', function () {
@@ -30,9 +31,21 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
         headers: [
           { key: 1, name: 'Nom apprenant', property: 'lastName', required: true },
           { key: 2, name: 'Prénom apprenant', property: 'firstName', required: true },
-          { key: 3, name: 'catégorie', required: true },
-          { key: 4, name: 'Date de naissance', required: true },
+          { key: 3, name: 'catégorie', required: true, config: { exportable: true } },
+          { key: 4, name: 'Date de naissance', required: true, config: { exportable: true } },
           { key: 5, name: 'unicity key', required: true },
+        ],
+        filterableColumns: [
+          {
+            key: 4,
+            position: 2,
+            name: IMPORT_KEY_FIELD.COMMON_BIRTHDATE,
+          },
+          {
+            key: 3,
+            position: 1,
+            name: IMPORT_KEY_FIELD.COMMON_DIVISION,
+          },
         ],
         displayableColumns: [
           {
@@ -50,6 +63,80 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
       createdAt: new Date('2024-01-01'),
       createdBy: 666,
     };
+  });
+
+  describe('#constructor', function () {
+    it('should initialize valid object', function () {
+      //when
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat({
+        name: 'SAY_MY_NAME',
+        config: { basic_config: 'toto' },
+        fileType: 'csv',
+      });
+      // then
+      expect(organizationLearnerImportFormat).to.deep.equal({
+        name: 'SAY_MY_NAME',
+        config: { basic_config: 'toto' },
+        fileType: 'csv',
+      });
+    });
+
+    context('Validation Cases', function () {
+      it('returns an EntityValidator when missing fileType', function () {
+        //when
+        try {
+          new OrganizationLearnerImportFormat({
+            name: 'SAY_MY_NAME',
+            config: { basic_config: 'toto' },
+            fileType: 'incalif_file_type',
+          });
+        } catch (error) {
+          // then
+          expect(error).to.be.instanceOf(EntityValidationError);
+          expect(error.invalidAttributes[0].attribute).to.be.equal('fileType');
+        }
+      });
+
+      it('returns an EntityValidator when missing name', function () {
+        //when
+        try {
+          new OrganizationLearnerImportFormat({
+            config: { basic_config: 'toto' },
+            fileType: 'csv',
+          });
+        } catch (error) {
+          // then
+          expect(error).to.be.instanceOf(EntityValidationError);
+          expect(error.invalidAttributes[0].attribute).to.be.equal('name');
+        }
+      });
+
+      it('returns an EntityValidator when missing config', function () {
+        //when
+        try {
+          new OrganizationLearnerImportFormat({
+            name: 'SAY_MY_NAME',
+            fileType: 'csv',
+          });
+        } catch (error) {
+          // then
+          expect(error).to.be.instanceOf(EntityValidationError);
+          expect(error.invalidAttributes[0].attribute).to.be.equal('config');
+        }
+      });
+
+      it('returns multiple EntityValidator when missing multiple config', function () {
+        //when
+        try {
+          new OrganizationLearnerImportFormat({
+            fileType: 'csv',
+          });
+        } catch (error) {
+          // then
+          expect(error.invalidAttributes).to.be.lengthOf(2);
+        }
+      });
+    });
   });
 
   describe('#extraColumns', function () {
@@ -73,6 +160,27 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
     });
   });
 
+  describe('#orderedFilterableColumns', function () {
+    it('should return filters in right order', function () {
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
+        organizationLearnerImportFormatPayload,
+      );
+      expect(organizationLearnerImportFormat.orderedFilterableColumns).to.deep.equal([
+        { key: 3, name: IMPORT_KEY_FIELD.COMMON_DIVISION, position: 1 },
+        { key: 4, name: IMPORT_KEY_FIELD.COMMON_BIRTHDATE, position: 2 },
+      ]);
+    });
+
+    it('should return empty when filterableColumns is not defined', function () {
+      delete organizationLearnerImportFormatPayload.config.filterableColumns;
+
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
+        organizationLearnerImportFormatPayload,
+      );
+      expect(organizationLearnerImportFormat.orderedFilterableColumns).lengthOf(0);
+    });
+  });
+
   describe('#orderedDisplayabledColumns', function () {
     it('should return columns in right order for displayed', function () {
       const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
@@ -91,6 +199,18 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
         organizationLearnerImportFormatPayload,
       );
       expect(organizationLearnerImportFormat.orderedDisplayabledColumns).lengthOf(0);
+    });
+  });
+
+  describe('#filtersToDisplay', function () {
+    it('should return filters in right order for displayed', function () {
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
+        organizationLearnerImportFormatPayload,
+      );
+      expect(organizationLearnerImportFormat.filtersToDisplay).to.deep.equal([
+        IMPORT_KEY_FIELD.COMMON_DIVISION,
+        IMPORT_KEY_FIELD.COMMON_BIRTHDATE,
+      ]);
     });
   });
 
@@ -136,8 +256,8 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
       expect(organizationLearnerImportFormat.headersFields).to.deep.equal([
         { key: 1, name: 'Nom apprenant', property: 'lastName', required: true },
         { key: 2, name: 'Prénom apprenant', property: 'firstName', required: true },
-        { key: 3, name: 'catégorie', required: true },
-        { key: 4, name: 'Date de naissance', required: true },
+        { key: 3, name: 'catégorie', required: true, config: { exportable: true } },
+        { key: 4, name: 'Date de naissance', required: true, config: { exportable: true } },
         { key: 5, name: 'unicity key', required: true },
       ]);
     });
@@ -161,6 +281,29 @@ describe('Unit | Models | OrganizationLearnerImportFormat', function () {
           'Date de naissance': 'value3',
         },
       });
+    });
+  });
+
+  describe('#exportableColumns', function () {
+    it('should return exportable columns', function () {
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
+        organizationLearnerImportFormatPayload,
+      );
+      expect(organizationLearnerImportFormat.exportableColumns).to.deep.equals([
+        { columnName: 'catégorie' },
+        { columnName: 'Date de naissance' },
+      ]);
+    });
+
+    it('should return empty when there is no exportable columns', function () {
+      organizationLearnerImportFormatPayload.config.headers = [
+        { key: 1, name: 'Nom apprenant', property: 'lastName', required: true },
+      ];
+
+      const organizationLearnerImportFormat = new OrganizationLearnerImportFormat(
+        organizationLearnerImportFormatPayload,
+      );
+      expect(organizationLearnerImportFormat.exportableColumns).lengthOf(0);
     });
   });
 });

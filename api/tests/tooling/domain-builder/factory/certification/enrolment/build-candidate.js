@@ -16,7 +16,8 @@ const buildCandidate = function ({
   birthdate = '1990-05-06',
   extraTimePercentage = 0.3,
   externalId = 'externalId',
-  userId = 789,
+  userId,
+  reconciledAt,
   sessionId = 456,
   organizationLearnerId = null,
   authorizedToStart = false,
@@ -24,6 +25,7 @@ const buildCandidate = function ({
   prepaymentCode = null,
   hasSeenCertificationInstructions = false,
   subscriptions = [],
+  accessibilityAdjustmentNeeded,
 } = {}) {
   return new Candidate({
     id,
@@ -42,6 +44,7 @@ const buildCandidate = function ({
     extraTimePercentage,
     externalId,
     userId,
+    reconciledAt,
     sessionId,
     organizationLearnerId,
     authorizedToStart,
@@ -49,6 +52,7 @@ const buildCandidate = function ({
     prepaymentCode,
     hasSeenCertificationInstructions,
     subscriptions,
+    accessibilityAdjustmentNeeded,
   });
 };
 

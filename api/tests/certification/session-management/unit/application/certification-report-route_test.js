@@ -6,7 +6,7 @@ import { securityPreHandlers } from '../../../../../src/shared/application/secur
 import { expect, HttpTestServer, sinon } from '../../../../test-helper.js';
 
 describe('Certification | Session Management | Unit | Application | Routes | Certification Report', function () {
-  describe('POST /api/certification-reports/{id}/certification-issue-reports', function () {
+  describe('POST /api/certification-reports/{certificationCourseId}/certification-issue-reports', function () {
     it('should return a 200', async function () {
       // given
       sinon
@@ -53,7 +53,7 @@ describe('Certification | Session Management | Unit | Application | Routes | Cer
     );
   });
 
-  describe('POST /api/certification-reports/{id}/abort', function () {
+  describe('POST /api/certification-reports/{certificationCourseId}/abort', function () {
     it('Returns HTTP 200 if the logged user has access to the session', async function () {
       // given
       sinon.stub(authorization, 'verifyCertificationSessionAuthorization').returns('ok');

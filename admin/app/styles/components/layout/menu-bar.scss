@@ -1,0 +1,45 @@
+/* stylelint-disable selector-class-pattern */
+.menu-bar {
+  width: 100%;
+  color: var(--pix-neutral-0);
+
+  > ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    .menu-bar__entry {
+      margin: 10px 0 0;
+      padding: 0 15px;
+
+      a {
+        position: relative;
+        display: block;
+        width: 50px;
+        padding: 0;
+        color: var(--pix-neutral-100);
+        font-size: 1.25rem;
+        line-height: 50px;
+        text-align: center;
+        border-radius: 5px;
+        cursor: pointer;
+
+        i.fa {
+          width: 32px;
+          margin: 0 10px;
+        }
+
+        &:hover {
+          color: var(--pix-neutral-0);
+          text-decoration: none;
+        }
+
+        &.active {
+          color: var(--pix-neutral-0);
+          font-weight: 600;
+          background-color: var(--pix-neutral-500);
+        }
+      }
+    }
+  }
+}

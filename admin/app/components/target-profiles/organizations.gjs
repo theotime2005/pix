@@ -6,6 +6,7 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import pick from 'ember-composable-helpers/helpers/pick';
+import { t } from 'ember-intl';
 import set from 'ember-set-helper/helpers/set';
 import uniq from 'lodash/uniq';
 
@@ -16,6 +17,7 @@ export default class Organizations extends Component {
   @service notifications;
   @service router;
   @service currentUser;
+  @service intl;
 
   @tracked organizationsToAttach = '';
   @tracked existingTargetProfile = '';
@@ -38,8 +40,12 @@ export default class Organizations extends Component {
     if (this.isDisabledAttachOrganizations) return;
 
     const targetProfile = this.args.targetProfile;
+    const adapter = this.store.adapterFor('target-profile');
     try {
-      const response = await targetProfile.attachOrganizations({ 'organization-ids': this._getUniqueOrganizations() });
+      const response = await adapter.attachOrganizations({
+        organizationIds: this._getUniqueOrganizations(),
+        targetProfileId: targetProfile.id,
+      });
 
       const { 'attached-ids': attachedIds, 'duplicated-ids': duplicatedIds } = response.data.attributes;
 
@@ -71,14 +77,16 @@ export default class Organizations extends Component {
   }
 
   @action
-  async attachOrganizationsFromExistingTargetProfile(e) {
+  async organizationsFromExistingTargetProfileToAttach(e) {
     e.preventDefault();
     if (this.isDisabledAttachOrganizationsFromExistingTargetProfile) return;
 
     const targetProfile = this.args.targetProfile;
+    const adapter = this.store.adapterFor('target-profile');
     try {
-      await targetProfile.attachOrganizationsFromExistingTargetProfile({
-        'target-profile-id': this.existingTargetProfile,
+      await adapter.attachOrganizationsFromExistingTargetProfile({
+        targetProfileId: targetProfile.id,
+        targetProfileIdToCopy: this.existingTargetProfile,
       });
       this.existingTargetProfile = '';
       await this.notifications.success('Organisation(s) rattaché(es) avec succès.');
@@ -89,14 +97,16 @@ export default class Organizations extends Component {
   }
 
   _handleResponseError({ errors }) {
+    const genericErrorMessage = this.intl.t('common.notifications.generic-error');
+
     if (!errors) {
-      return this.notifications.error('Une erreur est survenue.');
+      return this.notifications.error(genericErrorMessage);
     }
     errors.forEach((error) => {
       if (['404', '412'].includes(error.status)) {
         return this.notifications.error(error.detail);
       }
-      return this.notifications.error('Une erreur est survenue.');
+      return this.notifications.error(genericErrorMessage);
     });
   }
 
@@ -128,12 +138,12 @@ export default class Organizations extends Component {
               aria-label="Valider le rattachement"
               @isDisabled={{this.isDisabledAttachOrganizations}}
             >
-              Valider
+              {{t "common.actions.validate"}}
             </PixButton>
           </div>
         </form>
 
-        <form class="organization__form" {{on "submit" this.attachOrganizationsFromExistingTargetProfile}}>
+        <form class="organization__form" {{on "submit" this.organizationsFromExistingTargetProfileToAttach}}>
           <label for="attach-organizations-from-existing-target-profile">Rattacher les organisations d'un profil cible
             existant</label>
           <div class="organization__sub-form">
@@ -152,7 +162,7 @@ export default class Organizations extends Component {
               aria-label="Valider le rattachement à partir de ce profil cible"
               @isDisabled={{this.isDisabledAttachOrganizationsFromExistingTargetProfile}}
             >
-              Valider
+              {{t "common.actions.validate"}}
             </PixButton>
           </div>
         </form>

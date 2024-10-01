@@ -1,6 +1,7 @@
+import { FREE_RATE } from '../../../../../../../src/prescription/organization-place/domain/constants/organization-places-categories.js';
 import * as organizationPlacesLotCategories from '../../../../../../../src/prescription/organization-place/domain/constants/organization-places-categories.js';
 import { OrganizationPlacesLotManagement } from '../../../../../../../src/prescription/organization-place/domain/read-models/OrganizationPlacesLotManagement.js';
-import * as organizationPlaceLotManagementSerializer from '../../../../../../../src/prescription/organization-place/infrastructure/serializers/jsonapi/organization-places-lot-management-serializer.js';
+import * as organizationPlacesLotManagementSerializer from '../../../../../../../src/prescription/organization-place/infrastructure/serializers/jsonapi/organization-places-lot-management-serializer.js';
 import { domainBuilder, expect } from '../../../../../../test-helper.js';
 
 describe('Unit | Serializer | JSONAPI | organization-places-lot-management-serializer', function () {
@@ -62,10 +63,45 @@ describe('Unit | Serializer | JSONAPI | organization-places-lot-management-seria
       };
 
       // when
-      const json = organizationPlaceLotManagementSerializer.serialize(organizationPlaces);
+      const json = organizationPlacesLotManagementSerializer.serialize(organizationPlaces);
 
       // then
       expect(json).to.deep.equal(expectedJSON);
+    });
+  });
+
+  describe('#deserialize', function () {
+    //given
+    const jsonOrganizationPlacesSet = {
+      data: {
+        attributes: {
+          'organization-id': 2,
+          count: 10,
+          'activation-date': '2022-01-02',
+          'expiration-date': '2023-01-01',
+          reference: 'ABC123',
+          category: FREE_RATE,
+          'created-by': '122',
+        },
+      },
+    };
+
+    const expectedJsonOrganizationPlacesSet = {
+      organizationId: 2,
+      count: 10,
+      activationDate: '2022-01-02',
+      expirationDate: '2023-01-01',
+      reference: 'ABC123',
+      category: FREE_RATE,
+      createdBy: '122',
+    };
+
+    it('should convert JSON API data into an organization place set object', function () {
+      //when
+      const organizationPlaceSet = organizationPlacesLotManagementSerializer.deserialize(jsonOrganizationPlacesSet);
+
+      //then
+      expect(organizationPlaceSet).to.be.deep.equal(expectedJsonOrganizationPlacesSet);
     });
   });
 });

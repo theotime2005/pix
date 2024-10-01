@@ -3,6 +3,7 @@ import BaseJoi from 'joi';
 const Joi = BaseJoi.extend(JoiDate);
 import { securityPreHandlers } from '../../../shared/application/security-pre-handlers.js';
 import { identifiersType } from '../../../shared/domain/types/identifiers-type.js';
+import { filterType } from '../../shared/domain/types/identifiers-type.js';
 import { learnerListController } from './learner-list-controller.js';
 
 const register = async function (server) {
@@ -26,8 +27,9 @@ const register = async function (server) {
               number: Joi.number().integer().empty(''),
             }).default({}),
             filter: Joi.object({
+              extra: Joi.object().default({}),
               fullName: Joi.string().empty(''),
-              certificability: [Joi.string(), Joi.array().items(Joi.string())],
+              certificability: [filterType.certificability, Joi.array().items(filterType.certificability)],
             }).default({}),
             sort: Joi.object({
               participationCount: Joi.string().empty(''),
@@ -41,6 +43,28 @@ const register = async function (server) {
         notes: [
           '- **Cette route est restreinte aux utilisateurs authentifiés**\n' +
             "- Récupération des participants d'une organisation sans import\n",
+        ],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/organizations/{id}/divisions',
+      config: {
+        pre: [
+          {
+            method: securityPreHandlers.checkUserBelongsToScoOrganizationAndManagesStudents,
+          },
+        ],
+        validate: {
+          params: Joi.object({
+            id: identifiersType.organizationId,
+          }),
+        },
+        handler: learnerListController.getDivisions,
+        tags: ['api', 'organizations'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          'Elle retourne les classes rattachées à l’organisation.',
         ],
       },
     },

@@ -1,5 +1,7 @@
+import { CertificationCompletedJob } from '../../../../../lib/domain/events/CertificationCompleted.js';
 import { CertificationScoringCompleted } from '../../../../../lib/domain/events/CertificationScoringCompleted.js';
 import * as events from '../../../../../lib/domain/events/index.js';
+import { JobController } from '../../../../shared/application/jobs/job-controller.js';
 import { V3_REPRODUCIBILITY_RATE } from '../../../../shared/domain/constants.js';
 import { CertificationComputeError } from '../../../../shared/domain/errors.js';
 import { AssessmentResult } from '../../../../shared/domain/models/index.js';
@@ -19,9 +21,13 @@ import * as certificationAssessmentHistoryRepository from '../../infrastructure/
 import * as certificationChallengeForScoringRepository from '../../infrastructure/repositories/certification-challenge-for-scoring-repository.js';
 import * as scoringConfigurationRepository from '../../infrastructure/repositories/scoring-configuration-repository.js';
 
-export class CertificationCompletedJobController {
-  async handle(
-    certificationCompletedJob,
+export class CertificationCompletedJobController extends JobController {
+  constructor() {
+    super(CertificationCompletedJob.name);
+  }
+
+  async handle({
+    data,
     dependencies = {
       answerRepository,
       assessmentResultRepository,
@@ -38,8 +44,8 @@ export class CertificationCompletedJobController {
       scoringDegradationService,
       events,
     },
-  ) {
-    const { assessmentId, locale } = certificationCompletedJob;
+  }) {
+    const { assessmentId, locale } = data;
 
     const {
       assessmentResultRepository,

@@ -24,11 +24,13 @@ export class Candidate {
     authorizedToStart = false,
     sessionId,
     userId,
+    reconciledAt,
     organizationLearnerId,
     billingMode,
     prepaymentCode,
     hasSeenCertificationInstructions = false,
     subscriptions = [],
+    accessibilityAdjustmentNeeded,
   } = {}) {
     this.id = id;
     this.firstName = firstName;
@@ -53,14 +55,25 @@ export class Candidate {
     this.prepaymentCode = prepaymentCode;
     this.hasSeenCertificationInstructions = hasSeenCertificationInstructions;
     this.subscriptions = subscriptions;
+    this.accessibilityAdjustmentNeeded = accessibilityAdjustmentNeeded;
+    this.reconciledAt = reconciledAt;
   }
 
-  isLinkedToAUser() {
-    return !_.isNil(this.userId);
+  isReconciled() {
+    return !!this.userId && !!this.reconciledAt;
   }
 
-  isLinkedTo(userId) {
-    return this.userId === userId;
+  isReconciledTo(userId) {
+    return this.isReconciled() && this.userId === userId;
+  }
+
+  reconcile(userId) {
+    this.userId = userId;
+    this.reconciledAt = new Date();
+  }
+
+  updateAccessibilityAdjustmentNeededStatus(newAdjustmentStatus) {
+    this.accessibilityAdjustmentNeeded = newAdjustmentStatus;
   }
 
   validateCertificationInstructions() {
@@ -123,5 +136,9 @@ export class Candidate {
 
   convertExtraTimePercentageToDecimal() {
     this.extraTimePercentage = this.extraTimePercentage / 100;
+  }
+
+  hasCoreSubscription() {
+    return this.subscriptions.some((subscription) => subscription.isCore());
   }
 }

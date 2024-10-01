@@ -1,4 +1,6 @@
 import { clickByName, render } from '@1024pix/ember-testing-library';
+import Service from '@ember/service';
+import { t } from 'ember-intl/test-support';
 import ModulixStepper from 'mon-pix/components/module/stepper';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
@@ -38,9 +40,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
       // then
       assert.strictEqual(screen.getAllByRole('heading', { level: 3 }).length, 1);
       assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 1 sur 2' })).exists();
-      assert
-        .dom(screen.getByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
-        .exists();
+      assert.dom(screen.getByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') })).exists();
     });
 
     module('When step contains answerable elements', function () {
@@ -92,7 +92,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
 
           // then
           assert
-            .dom(screen.queryByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
+            .dom(screen.queryByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') }))
             .doesNotExist();
         });
       });
@@ -146,7 +146,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
 
           // then
           await clickByName('radio1');
-          await clickByName(this.intl.t('pages.modulix.buttons.activity.verify'));
+          await clickByName(t('pages.modulix.buttons.activity.verify'));
           sinon.assert.calledOnce(onElementAnswerStub);
           assert.ok(true);
         });
@@ -215,7 +215,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
 
           // then
           await clickByName('radio1');
-          await clickByName(this.intl.t('pages.modulix.buttons.activity.retry'));
+          await clickByName(t('pages.modulix.buttons.activity.retry'));
           sinon.assert.calledOnce(onElementRetryStub);
           assert.ok(true);
         });
@@ -285,7 +285,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
 
           // then
           assert
-            .dom(screen.queryByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
+            .dom(screen.queryByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') }))
             .doesNotExist();
         });
       });
@@ -343,7 +343,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
 
           // then
           assert
-            .dom(screen.queryByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
+            .dom(screen.queryByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') }))
             .exists();
         });
       });
@@ -394,7 +394,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
           assert.strictEqual(screen.getAllByRole('heading', { level: 3 }).length, 1);
           assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 1 sur 1' })).exists();
           assert
-            .dom(screen.queryByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
+            .dom(screen.queryByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') }))
             .doesNotExist();
         });
       });
@@ -483,7 +483,7 @@ module('Integration | Component | Module | Stepper', function (hooks) {
         );
 
         // when
-        await clickByName(this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel'));
+        await clickByName(t('pages.modulix.buttons.stepper.next.ariaLabel'));
 
         // then
         assert.strictEqual(screen.getAllByRole('heading', { level: 3 }).length, 2);
@@ -526,10 +526,94 @@ module('Integration | Component | Module | Stepper', function (hooks) {
         );
 
         // when
-        await clickByName(this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel'));
+        await clickByName(t('pages.modulix.buttons.stepper.next.ariaLabel'));
         assert
-          .dom(screen.queryByRole('button', { name: this.intl.t('pages.modulix.buttons.stepper.next.ariaLabel') }))
+          .dom(screen.queryByRole('button', { name: t('pages.modulix.buttons.stepper.next.ariaLabel') }))
           .doesNotExist();
+      });
+    });
+
+    module('when preview mode is enabled', function () {
+      test('should display all the steps', async function (assert) {
+        // given
+        const steps = [
+          {
+            elements: [
+              {
+                id: '342183f7-af51-4e4e-ab4c-ebed1e195063',
+                type: 'text',
+                content: '<p>Text 1</p>',
+              },
+            ],
+          },
+          {
+            elements: [
+              {
+                id: '768441a5-a7d6-4987-ada9-7253adafd842',
+                type: 'text',
+                content: '<p>Text 2</p>',
+              },
+            ],
+          },
+        ];
+        class PreviewModeServiceStub extends Service {
+          isEnabled = true;
+        }
+        this.owner.register('service:modulixPreviewMode', PreviewModeServiceStub);
+
+        // when
+        const screen = await render(<template><ModulixStepper @steps={{steps}} /></template>);
+
+        // then
+        assert.strictEqual(screen.getAllByRole('heading', { level: 3 }).length, 2);
+        assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 1 sur 2' })).exists();
+        assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 2 sur 2' })).exists();
+      });
+
+      module('when has unsupported elements', function () {
+        test('should display all the steps but filter out unsupported element', async function (assert) {
+          // given
+          const steps = [
+            {
+              elements: [
+                {
+                  id: '342183f7-af51-4e4e-ab4c-ebed1e195063',
+                  type: 'text',
+                  content: '<p>Text 1</p>',
+                },
+              ],
+            },
+            {
+              elements: [
+                {
+                  id: '768441a5-a7d6-4987-ada9-7253adafd842',
+                  type: 'text',
+                  content: '<p>Text 2</p>',
+                },
+              ],
+            },
+            {
+              elements: [
+                {
+                  id: 'd7870bf4-e018-482a-829c-6a124066b352',
+                  type: 'nope',
+                },
+              ],
+            },
+          ];
+          class PreviewModeServiceStub extends Service {
+            isEnabled = true;
+          }
+          this.owner.register('service:modulixPreviewMode', PreviewModeServiceStub);
+
+          // when
+          const screen = await render(<template><ModulixStepper @steps={{steps}} /></template>);
+
+          // then
+          assert.strictEqual(screen.getAllByRole('heading', { level: 3 }).length, 2);
+          assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 1 sur 2' })).exists();
+          assert.dom(screen.getByRole('heading', { level: 3, name: 'Étape 2 sur 2' })).exists();
+        });
       });
     });
   });

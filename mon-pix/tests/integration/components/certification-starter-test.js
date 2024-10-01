@@ -2,6 +2,7 @@ import { render } from '@1024pix/ember-testing-library';
 import Service from '@ember/service';
 import { click, fillIn } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
+import { t } from 'ember-intl/test-support';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 
@@ -164,11 +165,11 @@ module('Integration | Component | certification-starter', function (hooks) {
             'service:focused-certification-challenge-warning-manager',
             FocusedCertificationChallengeWarningManagerStub,
           );
-          const postMessageStub = sinon.stub();
-          class WindowPostMessageServiceStub extends Service {
-            startCertification = postMessageStub;
+          const startCertificationStub = sinon.stub();
+          class PixCompanionServiceStub extends Service {
+            startCertification = startCertificationStub;
           }
-          this.owner.register('service:window-post-message', WindowPostMessageServiceStub);
+          this.owner.register('service:pix-companion', PixCompanionServiceStub);
 
           const routerObserver = this.owner.lookup('service:router');
           routerObserver.replaceWith = sinon.stub();
@@ -181,7 +182,7 @@ module('Integration | Component | certification-starter', function (hooks) {
           routerObserver.replaceWith.returns('ok');
 
           // when
-          await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+          await clickByLabel(t('pages.certification-start.actions.submit'));
 
           // then
           sinon.assert.calledWithExactly(createRecordStub, 'certification-course', {
@@ -191,7 +192,7 @@ module('Integration | Component | certification-starter', function (hooks) {
 
           sinon.assert.calledOnce(certificationCourse.save);
           sinon.assert.calledOnce(resetStub);
-          sinon.assert.calledOnce(postMessageStub);
+          sinon.assert.calledOnce(startCertificationStub);
           sinon.assert.calledWithExactly(routerObserver.replaceWith, 'authenticated.certifications.resume', 456);
 
           assert.ok(true);
@@ -199,14 +200,14 @@ module('Integration | Component | certification-starter', function (hooks) {
       });
 
       module('when the creation of certification course is in error', function () {
-        test('should not send a postMessage', async function (assert) {
+        test('should not notify pix companion', async function (assert) {
           // given
           const replaceWithStub = sinon.stub();
-          const postMessageStub = sinon.stub();
-          class WindowPostMessageServiceStub extends Service {
-            startCertification = postMessageStub;
+          const startCertificationStub = sinon.stub();
+          class PixCompanionServiceStub extends Service {
+            startCertification = startCertificationStub;
           }
-          this.owner.register('service:window-post-message', WindowPostMessageServiceStub);
+          this.owner.register('service:pix-companion', PixCompanionServiceStub);
 
           class RouterServiceStub extends Service {
             replaceWith = replaceWithStub;
@@ -228,22 +229,18 @@ module('Integration | Component | certification-starter', function (hooks) {
           };
           createRecordStub.returns(certificationCourse);
           this.set('certificationCandidateSubscription', { sessionId: 123 });
-          this.set('postMessageStub', postMessageStub);
           const screen = await render(
-            hbs`<CertificationStarter
-  @certificationCandidateSubscription={{this.certificationCandidateSubscription}}
-  @postMessage={{this.postMessageStub}}
-/>`,
+            hbs`<CertificationStarter @certificationCandidateSubscription={{this.certificationCandidateSubscription}} />`,
           );
           await fillIn('#certificationStarterSessionCode', 'ABC123');
           certificationCourse.save.rejects({ errors: [{ status: '404' }] });
 
           // when
-          await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+          await clickByLabel(t('pages.certification-start.actions.submit'));
 
           // then
           assert.ok(screen.getByText('Ce code n’existe pas ou n’est plus valide.'));
-          sinon.assert.notCalled(postMessageStub);
+          sinon.assert.notCalled(startCertificationStub);
         });
 
         test('should display the appropriate error message when error status is 404', async function (assert) {
@@ -276,7 +273,7 @@ module('Integration | Component | certification-starter', function (hooks) {
           certificationCourse.save.rejects({ errors: [{ status: '404' }] });
 
           // when
-          await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+          await clickByLabel(t('pages.certification-start.actions.submit'));
 
           // then
           assert.ok(screen.getByText('Ce code n’existe pas ou n’est plus valide.'));
@@ -312,7 +309,7 @@ module('Integration | Component | certification-starter', function (hooks) {
           certificationCourse.save.rejects({ errors: [{ status: '412' }] });
 
           // when
-          await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+          await clickByLabel(t('pages.certification-start.actions.submit'));
 
           // then
           assert.ok(screen.getByText("La session de certification n'est plus accessible."));
@@ -351,13 +348,11 @@ module('Integration | Component | certification-starter', function (hooks) {
             });
 
             // when
-            await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+            await clickByLabel(t('pages.certification-start.actions.submit'));
 
             // then
             assert.ok(
-              screen.getByText(
-                this.intl.t('pages.certification-start.error-messages.candidate-not-authorized-to-start'),
-              ),
+              screen.getByText(t('pages.certification-start.error-messages.candidate-not-authorized-to-start')),
             );
           });
 
@@ -393,13 +388,11 @@ module('Integration | Component | certification-starter', function (hooks) {
             });
 
             // when
-            await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+            await clickByLabel(t('pages.certification-start.actions.submit'));
 
             // then
             assert.ok(
-              screen.getByText(
-                this.intl.t('pages.certification-start.error-messages.candidate-not-authorized-to-resume'),
-              ),
+              screen.getByText(t('pages.certification-start.error-messages.candidate-not-authorized-to-resume')),
             );
           });
         });
@@ -435,7 +428,7 @@ module('Integration | Component | certification-starter', function (hooks) {
             certificationCourse.save.throws(new Error("Détails de l'erreur à envoyer à Pix"));
 
             // when
-            await clickByLabel(this.intl.t('pages.certification-start.actions.submit'));
+            await clickByLabel(t('pages.certification-start.actions.submit'));
 
             // then
             assert.ok(screen.getByText('Une erreur serveur inattendue vient de se produire.'));

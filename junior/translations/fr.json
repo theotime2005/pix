@@ -20,6 +20,9 @@
       "illustration": {
         "placeholder": "Chargement de l'image en cours"
       },
+      "media": {
+        "placeholder": "Chargement en cours"
+      },
       "messages": {
         "correct-answer": "Bien joué, tu as répondu correctement !",
         "wrong-answer": "Mauvaise réponse. Tu peux passer à la suite."
@@ -72,11 +75,22 @@
         "start-mission": "C'est parti !",
         "welcome": "Prépare-toi à résoudre des épreuves et relever des défis."
       },
+      "introduction-page": {
+        "title": "Introduction",
+        "welcome": "Avant de commencer, voici une présentation de ta mission",
+        "start-mission": "Démarrer la mission"
+      },
       "end-page": {
         "title": "Fin de mission",
         "congratulations": "Bravo ! <br> Tu as terminé ta mission !",
         "back-to-missions": "Voir d'autres missions",
-        "details-list": "Tu as pu travailler :"
+        "details-list": "Tu as pu travailler :",
+        "result": {
+          "exceeded": "Waouh, tu sembles être incollable sur ce sujet ! Tu as relevé le défi.",
+          "reached": "Bravo, tu as réussi !",
+          "partially-reached": "Il te manque quelques épreuves, reviens vite pour réessayer.",
+          "not-reached": "Cette mission semble difficile, n’hésite pas à réessayer dès que tu te sens prêt."
+        }
       }
     },
     "error": {
@@ -85,7 +99,10 @@
       "backHome": "Retour à l'accueil"
     },
     "school": {
-      "not-found": "Session inactive ou école non trouvée. Demande de l’aide à ton enseignant pour accéder à tes missions.",
+      "not-found": {
+        "sentence-1": "Session inactive ou école non trouvée.",
+        "sentence-2": "Demande de l’aide à ton enseignant pour accéder à tes missions."
+      },
       "division-list": {
         "page-title": "Liste des classes",
         "welcome": "Bienvenue sur la page de l'école : <strong>{schoolName}</strong><br>Maintenant, choisis ta classe."

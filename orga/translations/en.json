@@ -46,11 +46,13 @@
       "birthdate-required": "Student with {nationalStudentId} INE has no date of birth filled out. This field is mandatory for each student.",
       "empty": "Each student must have an INE and a class.",
       "encoding-not-supported": "File encoding not supported.",
+      "first-name-required": "Student with {nationalStudentId} INE has no first name filled out. This field is mandatory for each student.",
       "ine-required": "INE is mandatory for each student.",
       "ine-unique": "The INE {nationalStudentId} is repeated several times within the file for several students.",
       "invalid-birthdate-format": "Student with {nationalStudentId} INE has the wrong date of birth format. It must be in 'DD/MM/YYYY' format.",
       "invalid-file": "File does not match the requirements.",
       "invalid-file-extension": "File with extension {fileExtension} not supported.",
+      "last-name-required": "Student with {nationalStudentId} INE has no last name filled out. This field is mandatory for each student.",
       "payload-too-large": "The file must be less than {maxSize}MB.",
       "sex-code-required": "Student with {nationalStudentId} INE has no sex code filled out. This field is mandatory for each student.",
       "uai-mismatched": "The UAI of your SIECLE file does not match your school."
@@ -64,10 +66,18 @@
       "message": "'<strong>'Certifications :'</strong>' n’oubliez pas de '<'a href={documentationLink} class=\"{linkClasses}\" target=\"_blank\" rel=\"noopener noreferrer\"'>'finaliser les sessions dans Pix Certif'</a>' puis de télécharger les attestations ici via l'onglet “Certifications” avant la rentrée {year}."
     },
     "import": {
-      "message": "The administrator can download certification results and '<'a href=\"/import-participants\" class=\"{linkClasses}\"'>'import'</a>' the students database to create back-to-school campaigns by year level. '<'a href={documentationLink} class=\"{linkClasses}\" target=\"_blank\" rel=\"noopener noreferrer\"'>'Learn more'</a>'"
+      "message": "The main stages of the school year :",
+      "step1a": " Setting up&nbsp;: '<'a href='https://cloud.pix.fr/s/WjTnkSbFs9TDcSC' title='Downloading results how-to' class='link link--banner link--bold link--underlined' '>'downloading certification results'</a>' and",
+      "step1b": "importing",
+      "step1c": "the student database (admin)",
+      "step2": "'<'a href='https://cloud.pix.fr/s/RaPpKjFHNX2kSR4' title='Back-to-school how-to' class='link link--banner link--bold link--underlined' '>'Create campaigns'</a>' (back-to-school, 6th grade, thematic, subject-based, targeted courses, etc.).",
+      "step3": "'<'a href='https://cloud.pix.fr/s/2q4c4QT9jGbGbEq' title='Preparing and organising student certification how-to' class='link link--banner link--bold link--underlined' '>'Certify learners'</a>'."
     },
     "language-availability": {
       "message": "Your language is not yet available on Pix Orga. For your convenience, the application will be presented in English. The entire Pix team is working to add your language."
+    },
+    "last-places-lot-available": {
+      "message": "Please note that your seats will expire in {days, number} days."
     },
     "over-capacity": {
       "message": "Please note that you are using more seats than your total capacity."
@@ -118,6 +128,11 @@
   "charts": {
     "participants-by-day": {
       "title": "Participant's activity",
+      "captions": {
+        "shared": "Submitted results by day",
+        "shared-profile": "Submitted profiles by day",
+        "started": "Total participants by day"
+      },
       "labels-a11y": {
         "date": "Date",
         "shared": "Submitted results",
@@ -848,46 +863,6 @@
     },
     "missions": {
       "title": "Missions",
-      "details": {
-        "title": "Mission's information",
-        "competence": {
-          "title": "Competence :"
-        },
-        "learners": {
-          "title": "List of students",
-          "list": {
-            "aria-label": "Student",
-            "caption": "List of students with their result for the mission {missionName}",
-            "filters": {
-              "aria-label": "Filter on students",
-              "learners-count": "{count, plural, =0 {No student} =1 {1 student} other {{count} students}}"
-            },
-            "headers": {
-              "division": "Division",
-              "first-name": "First name",
-              "last-name": "Last name",
-              "result": "Positioning",
-              "status": "Mission status"
-            },
-            "mission-result": {
-              "exceeded": "Exceeded",
-              "not-reached": "Not reached",
-              "partially-reached": "Partially reached",
-              "reached": "Reached",
-              "undefined": "-"
-            },
-            "mission-status": {
-              "completed": "Completed",
-              "not-started": "Not started",
-              "started": "In progress"
-            }
-          },
-          "no-data": "There is not any participants"
-        },
-        "objective": {
-          "title": "Objectives :"
-        }
-      },
       "list": {
         "aria-label": "Mission",
         "banner": {
@@ -910,7 +885,7 @@
             "title": "Step 2 : To enable pupils to access your school's Pix Junior space, you can :",
             "option1": "use the&nbsp'<'a href=\"{pixJuniorUrl}\"'>'junior.pix.fr'</a>'&nbsplink. You will be asked for your school's code each time you connect.",
             "option2": {
-              "body" : "or use the direct link &nbsp'<'a href=\"{pixJuniorUrl}\" target=_blank '>'junior.pix.fr/schools/{code}'</a>'",
+              "body": "or use the direct link &nbsp'<'a href=\"{pixJuniorUrl}\" target=_blank '>'junior.pix.fr/schools/{code}'</a>'",
               "hint": "You can save this bookmark on your computers."
             }
           },
@@ -920,11 +895,95 @@
         "caption": "List of missions",
         "empty-state": "There is not any mission",
         "headers": {
-          "competences": "Targeted competence",
+          "competences": "Targeted DigComp competence",
           "name": "Mission",
           "started-by": "Started by"
         },
         "no-division": "No division yet"
+      },
+      "mission": {
+        "title": "Mission's information",
+        "details": {
+          "button-label": "View the mission documentation",
+          "competence": {
+            "title": "Competence :"
+          },
+          "objective": {
+            "title": "Objectives :"
+          }
+        },
+        "table": {
+          "activities": {
+            "aria-label": "Student",
+            "caption": "List of students with their activity for the mission {missionName}",
+            "filters": {
+              "aria-label": "Filter on students",
+              "learners-count": "{count, plural, =0 {No student} =1 {1 student} other {{count} students}}"
+            },
+            "headers": {
+              "division": "Division",
+              "first-name": "First name",
+              "last-name": "Last name",
+              "status": "Mission status"
+            },
+            "mission-status": {
+              "completed": "Completed",
+              "not-started": "Not started",
+              "started": "In progress"
+            },
+            "no-data": "There is not any participants"
+          },
+          "result": {
+            "aria-label": "Student",
+            "caption": "List of students with their result for the mission {missionName}",
+            "filters": {
+              "aria-label": "Filter on students",
+              "global-result": {
+                "label": "Mission assessment",
+                "options": {
+                  "exceeded": "Exceeded",
+                  "no-result": "No assessment",
+                  "not-reached": "Not reached",
+                  "partially-reached": "Partially reached",
+                  "reached": "Reached"
+                }
+              },
+              "learners-count": "{count, plural, =0 {No student} =1 {1 student} other {{count} students}}"
+            },
+            "headers": {
+              "dare-challenge": "Dare challenge",
+              "division": "Division",
+              "first-name": "First name",
+              "last-name": "Last name",
+              "result": "Mission assessment",
+              "step": "Step {number}"
+            },
+            "mission-dare-result": {
+              "not-reached": "NR",
+              "reached": "R",
+              "undefined": "-"
+            },
+            "mission-result": {
+              "exceeded": "Exceeded",
+              "not-reached": "Not reached",
+              "partially-reached": "Partially reached",
+              "reached": "Reached",
+              "undefined": "-"
+            },
+            "no-data": "There is not any participants",
+            "step-result": {
+              "not-reached": "NR",
+              "partially-reached": "PR",
+              "reached": "R",
+              "undefined": "-"
+            }
+          }
+        },
+        "tabs": {
+          "activities": "Activities",
+          "aria-label": "Navigation between the activity or results of the mission",
+          "results": "Results"
+        }
       }
     },
     "organization-learner": {
@@ -1100,7 +1159,25 @@
     },
     "places": {
       "title": "Seats",
-      "before-date": "on"
+      "before-date": "on",
+      "places-lots": {
+        "statuses": {
+          "active": "Active",
+          "expired": "Expired",
+          "pending": "Pending"
+        },
+        "table": {
+          "title": "Seats purchase history",
+          "caption": "Table listing your organisation's seat purchases. For each purchase, it shows: the number of tickets, the activation date, the expiry date and the status (active, coming soon or expired). It is ordered according to the status of the purchases and their expiry date.",
+          "empty-state": "No seats yet!",
+          "headers": {
+            "activation-date": "Activation date",
+            "count": "Seats count",
+            "expiration-date": "Expiration date",
+            "status": "Status"
+          }
+        }
+      }
     },
     "preselect-target-profile": {
       "title": "Topic selection",
@@ -1167,6 +1244,7 @@
     "sco-organization-participants": {
       "title": "{count, plural, =0 {Students} =1 {Student ({count})} other {Students ({count})}}",
       "action-bar": {
+        "generate-username-password-button": "Generate logins and/or passwords for selected students",
         "information": "{count, plural, =1 {{count} student selected} other {{count} students selected}}",
         "reset-password-button": "Reset passwords for selected students"
       },
@@ -1203,6 +1281,13 @@
           "label": "Search by log in method"
         },
         "students-count": "{count, plural, =0 {0 students} =1 {1 student} other {{count} students}}"
+      },
+      "generate-username-password-modal": {
+        "title": "Generate logins and/or passwords for selected students",
+        "content-message-1": "Students who do not yet have a login method must go through a campaign at your school to create their PIX account.",
+        "content-message-2": "A CSV file containing login details and one-time passwords will be generated.",
+        "content-message-3": "Give these new one-time passwords to the students. When they log in with this password, Pix will ask them to enter a new one.",
+        "warning-message": "A login and password will be generated for students who have access to the Mediacentre and/or an e-mail address. Students who already have a login will have their password reset."
       },
       "manage-authentication-method-modal": {
         "title": "Managing the student's Pix account",
@@ -1484,7 +1569,8 @@
       "success": {
         "invitation": "An invitation has been sent to the email address {email}.",
         "multiple-invitations": "An invitation has been sent to the listed email addresses."
-      }
+      },
+      "warning": "The members you add below will have access to participant results and campaign analysis. Please ensure that the people you invite are members of your organisation."
     },
     "team-new-item": {
       "input-label": "Email address(es)",

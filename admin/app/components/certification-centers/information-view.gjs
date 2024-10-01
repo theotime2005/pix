@@ -69,7 +69,7 @@ export default class InformationView extends Component {
   }
 
   <template>
-    <h2 class="certification-center-information-display__name">{{@certificationCenter.name}}</h2>
+    <h1 class="certification-center-information-display__name">{{@certificationCenter.name}}</h1>
 
     <dl class="certification-center-information-display__list">
       <dt class="label">Type :</dt>
@@ -116,7 +116,7 @@ export default class InformationView extends Component {
     <ul class="certification-center-information-display__action-buttons">
       <li>
         <PixButton @size="small" @triggerAction={{@toggleEditMode}}>
-          Modifier
+          {{t "common.actions.edit"}}
         </PixButton>
       </li>
       <li>

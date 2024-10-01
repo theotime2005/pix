@@ -96,6 +96,7 @@
     },
     "forms": {
       "certification-labels": {
+        "accessibility": "Accessibilité",
         "additional-certification": "Choix de la certification",
         "additional-certification-old": "Certification complémentaire",
         "candidate-status": {
@@ -147,6 +148,7 @@
         "prepaid": "Prépayée"
       },
       "candidate": {
+        "accessibility-adjusted-certification-needed": "Oui",
         "birth-city": "Commune de naissance",
         "birth-city-insee-code": "Code INSEE de naissance",
         "birth-city-postcode": "Code postal de naissance",
@@ -450,9 +452,6 @@
           }
         },
         "candidate-options": "Options du candidat",
-        "companion": {
-          "active": "{firstName} {lastName} a l’extension Companion activée"
-        },
         "complementary-certification-enrolment": "Inscription à {complementaryCertification}",
         "complementary-certification-non-eligibility-warning": "Candidat pas ou plus éligible à la certification complémentaire. Il passe la certification Pix.",
         "default-modal-title": "Information",
@@ -577,6 +576,18 @@
               "close-extra-information": "Fermer la fenêtre de détail du candidat"
             }
           },
+          "edit-modal": {
+            "title": "Modifier les informations d'un candidat",
+            "accessibility-adjustment": {
+              "title": "Aménagement d'accessibilité numérique",
+              "details": "L'aménagement consiste à retirer les questions non accessibles",
+              "label": "Le candidat a besoin d'un aménagement"
+            },
+            "notifications": {
+              "error": "Un problème est survenu pendant la mise à jour du candidat. Merci de réessayer ultérieurement.",
+              "success": "Données mises à jour avec succès."
+            }
+          },
           "list": {
             "title": "Liste des candidats",
             "actions": {
@@ -587,6 +598,10 @@
               "details": {
                 "extra-information": "Voir le détail du candidat",
                 "label": "Voir le détail"
+              },
+              "edit": {
+                "extra-information": "Editer le candidat",
+                "tooltip": "Ce candidat a déjà rejoint la session. Vous ne pouvez pas l'éditer."
               },
               "inscription": {
                 "label": "Inscrire un candidat"
@@ -731,7 +746,7 @@
             }
           },
           "blocking-errors": {
-            "title": "{blockingErrorReportsCount} {blockingErrorReportsCount, plural,one {erreur bloquante} other {erreurs bloquantes}}",
+            "title": "{blockingErrorReportsCount, plural,one {Erreur bloquante} other {Erreurs bloquantes}}",
             "errors": {
               "CANDIDATE_BILLING_MODE_NOT_VALID": "Donnée du champ \"Tarification part Pix\" invalide (formats acceptés \"Gratuite\", \"Payante\" ou \"Prépayée\")",
               "CANDIDATE_BILLING_MODE_REQUIRED": "Champ obligatoire \"Tarification part Pix\" manquant",
@@ -777,17 +792,19 @@
               "SESSION_WITH_DATE_AND_TIME_ALREADY_EXISTS": "Une session a déjà été créée avec ces informations. Pour ajouter des candidats à une session, indiquer uniquement le numéro de session sans les informations de session"
             },
             "information": "Veuillez corriger toutes les erreurs bloquantes avant de re-importer le fichier .csv :",
-            "line": "Ligne"
+            "line": "Ligne",
+            "tag-information": "{blockingErrorReportsCount} {blockingErrorReportsCount, plural,one {erreur} other {erreurs}}"
           },
           "candidates-count": "{candidatesCount} {candidatesCount, plural,one {candidat} other {candidats}}",
           "non-blocking-errors": {
-            "title": "{nonBlockingErrorReportsCount} {nonBlockingErrorReportsCount, plural,one {point d’attention non bloquant} other {points d’attention non bloquants}}",
+            "title": "{nonBlockingErrorReportsCount, plural,one {Point d’attention non bloquant} other {Points d’attention non bloquants}}",
             "errors": {
               "DUPLICATE_CANDIDATE_IN_SESSION": "Le candidat est inscrit plusieurs fois à la même session, une seule inscription sera prise en compte.",
               "EMPTY_SESSION": "La session ne contient pas de candidat"
             },
             "information": "Nous avons détecté {nonBlockingErrorReportsCount, plural,one {un point d’attention non bloquant} other {des points d’attention non bloquants}} lors de l’import, consultez-{nonBlockingErrorReportsCount, plural,one {le} other {les}} avant de procéder à la création ou l’édition de vos sessions :",
-            "line": "Ligne"
+            "line": "Ligne",
+            "tag-information": "{nonBlockingErrorReportsCount} {nonBlockingErrorReportsCount, plural,one {erreur} other {erreurs}}"
           },
           "sessions-and-empty-sessions-count": "{sessionsCount} {sessionsCount, plural,one {session} other {sessions}} dont {sessionsWithoutCandidatesCount} {sessionsWithoutCandidatesCount, plural,one {session} other {sessions}} sans candidat"
         },

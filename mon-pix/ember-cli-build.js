@@ -11,7 +11,7 @@ const sourceMapConfig = {
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     sassOptions: {
-      includePaths: ['node_modules/@1024pix/pix-ui/addon/styles'],
+      includePaths: ['node_modules/@1024pix/pix-ui/addon/styles', 'app/components'],
     },
     babel: {
       plugins: [require.resolve('ember-auto-import/babel-plugin')],
@@ -23,12 +23,8 @@ module.exports = function (defaults) {
     'ember-simple-auth': {
       useSessionSetupMethod: true,
     },
-    '@embroider/macros': {
-      setConfig: {
-        '@ember-data/store': {
-          polyfillUUID: true,
-        },
-      },
+    emberData: {
+      polyfillUUID: true,
     },
   });
 
@@ -54,9 +50,9 @@ module.exports = function (defaults) {
   return require('@embroider/compat').compatBuild(app, Webpack, {
     staticAddonTestSupportTrees: true,
     staticAddonTrees: true,
-    staticHelpers: true,
     staticModifiers: true,
-    staticComponents: true,
+    staticHelpers: app.env === 'production',
+    staticComponents: app.env === 'production',
     packagerOptions: {
       webpackConfig: {
         devtool: sourceMapConfig[process.env.CI ? 'test' : (process.env.NODE_ENV ?? 'default')],

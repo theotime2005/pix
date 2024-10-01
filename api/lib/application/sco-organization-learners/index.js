@@ -53,34 +53,6 @@ const register = async function (server) {
       },
     },
     {
-      method: 'POST',
-      path: '/api/sco-organization-learners/association/auto',
-      config: {
-        handler: scoOrganizationLearnerController.reconcileScoOrganizationLearnerAutomatically,
-        validate: {
-          options: {
-            allowUnknown: false,
-          },
-          payload: Joi.object({
-            data: {
-              attributes: {
-                'campaign-code': Joi.string().empty(Joi.string().regex(/^\s*$/)).required(),
-              },
-              type: 'sco-organization-learners',
-            },
-          }),
-          failAction: (request, h) => {
-            return sendJsonApiError(new UnprocessableEntityError('Un des champs saisis n’est pas valide.'), h);
-          },
-        },
-        notes: [
-          '- **Cette route est restreinte aux utilisateurs authentifiés**\n' +
-            '- Elle essaye d’associer automatiquement l’utilisateur à l’inscription de l’élève dans cette organisation',
-        ],
-        tags: ['api', 'sco-organization-learners'],
-      },
-    },
-    {
       method: 'PUT',
       path: '/api/sco-organization-learners/possibilities',
       config: {
@@ -211,6 +183,43 @@ const register = async function (server) {
     },
     {
       method: 'POST',
+      path: '/api/sco-organization-learners/batch-username-password-generate',
+      config: {
+        pre: [
+          {
+            method: securityPreHandlers.checkUserBelongsToScoOrganizationAndManagesStudents,
+            assign: 'belongsToScoOrganizationAndManageStudents',
+          },
+        ],
+        handler: scoOrganizationLearnerController.batchGenerateOrganizationLearnersUsernameWithTemporaryPassword,
+        validate: {
+          options: {
+            allowUnknown: true,
+          },
+          payload: Joi.object({
+            data: {
+              attributes: {
+                'organization-id': identifiersType.campaignId,
+                'organization-learners-id': Joi.array().items(identifiersType.organizationLearnerId),
+              },
+            },
+          }),
+          failAction: (request, h) => {
+            return sendJsonApiError(
+              new BadRequestError('The server could not understand the request due to invalid syntax.'),
+              h,
+            );
+          },
+        },
+        notes: [
+          "- Réinitialise, avec un mot de passe à usage unique, les mots de passe des élèves dont les identifiants sont passés en paramètre et qui ont un identifiant comme méthode d'authentification\n" +
+            "- La demande de modification du mot de passe doit être effectuée par un membre de l'organisation à laquelle appartiennent les élèves.",
+        ],
+        tags: ['api', 'sco-organization-learners'],
+      },
+    },
+    {
+      method: 'POST',
       path: '/api/sco-organization-learners/password-reset',
       config: {
         pre: [
@@ -219,7 +228,7 @@ const register = async function (server) {
             assign: 'belongsToScoOrganizationAndManageStudents',
           },
         ],
-        handler: scoOrganizationLearnerController.updateOrganizationLearnersPassword,
+        handler: scoOrganizationLearnerController.batchGenerateOrganizationLearnersUsernameWithTemporaryPassword,
         validate: {
           options: {
             allowUnknown: true,

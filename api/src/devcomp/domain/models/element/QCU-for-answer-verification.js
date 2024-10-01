@@ -2,6 +2,7 @@ import Joi from 'joi';
 
 import { EntityValidationError } from '../../../../shared/domain/errors.js';
 import { assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
+import { ModuleInstantiationError } from '../../errors.js';
 import { Feedbacks } from '../Feedbacks.js';
 import { QcuCorrectionResponse } from '../QcuCorrectionResponse.js';
 import { ValidatorQCU } from '../validator/ValidatorQCU.js';
@@ -31,7 +32,7 @@ class QCUForAnswerVerification extends QCU {
   #assertSolutionIsAnExistingProposal(solution, proposals) {
     const isSolutionAnExistingProposal = proposals.find(({ id: proposalId }) => proposalId === solution);
     if (!isSolutionAnExistingProposal) {
-      throw new Error('The QCU solution id is not an existing proposal id');
+      throw new ModuleInstantiationError('The QCU solution id is not an existing proposal id');
     }
   }
 
@@ -45,7 +46,7 @@ class QCUForAnswerVerification extends QCU {
 
     return new QcuCorrectionResponse({
       status: validation.result,
-      feedback: validation.result.isOK() ? this.feedbacks.valid : this.feedbacks.invalid,
+      feedback: this.#getFeedback(validation),
       solution: this.solution.value,
     });
   }
@@ -61,6 +62,22 @@ class QCUForAnswerVerification extends QCU {
     if (error) {
       throw EntityValidationError.fromJoiErrors(error.details);
     }
+  }
+
+  #getSpecificFeedbackByProposalId(proposalId) {
+    const proposalFound = this.proposals.find((proposal) => proposal.id === proposalId);
+    if (proposalFound) {
+      return proposalFound.feedback;
+    }
+  }
+
+  #getFeedback(validation) {
+    const specificFeedback = this.#getSpecificFeedbackByProposalId(this.userResponse);
+    if (specificFeedback) {
+      return specificFeedback;
+    }
+
+    return validation.result.isOK() ? this.feedbacks.valid : this.feedbacks.invalid;
   }
 }
 

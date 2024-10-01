@@ -5,16 +5,13 @@
  *
  * @typedef {import('../../../session-management/domain/usecases/index.js').CertificationReportRepository} CertificationReportRepository
  */
-
-import bluebird from 'bluebird';
-
-import { SessionFinalized } from '../../../../../lib/domain/events/SessionFinalized.js';
 import {
   SessionAlreadyFinalizedError,
   SessionWithAbortReasonOnCompletedCertificationCourseError,
   SessionWithMissingAbortReasonError,
   SessionWithoutStartedCertificationError,
 } from '../errors.js';
+import { SessionFinalized } from '../read-models/SessionFinalized.js';
 
 /**
  * @param {Object} params
@@ -114,18 +111,16 @@ async function _removeAbortReasonFromCompletedCertificationCourses({
     sessionId,
   });
   for (const sessionCertificationCourse of sessionCertificationCourses) {
-    await bluebird.mapSeries(
-      certificationReports,
-      async ({ certificationCourseId: abortReasonCertificationCourseId, abortReason }) => {
-        if (
-          sessionCertificationCourse.getId() === abortReasonCertificationCourseId &&
-          abortReason &&
-          sessionCertificationCourse.isCompleted()
-        ) {
-          sessionCertificationCourse.unabort();
-          await certificationCourseRepository.update({ certificationCourse: sessionCertificationCourse });
-        }
-      },
-    );
+    for (const certificationReport of certificationReports) {
+      const { certificationCourseId: abortReasonCertificationCourseId, abortReason } = certificationReport;
+      if (
+        sessionCertificationCourse.getId() === abortReasonCertificationCourseId &&
+        abortReason &&
+        sessionCertificationCourse.isCompleted()
+      ) {
+        sessionCertificationCourse.unabort();
+        await certificationCourseRepository.update({ certificationCourse: sessionCertificationCourse });
+      }
+    }
   }
 }

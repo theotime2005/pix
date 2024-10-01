@@ -1,12 +1,13 @@
 import { InvalidCertificationReportForFinalization } from '../../../src/certification/shared/domain/errors.js';
 import * as EvaluationDomainErrors from '../../../src/evaluation/domain/errors.js';
-import { CompetenceResetError } from '../../../src/evaluation/domain/errors.js';
+import { AnswerEvaluationError, CompetenceResetError } from '../../../src/evaluation/domain/errors.js';
 import {
   MissingOrInvalidCredentialsError,
   UserShouldChangePasswordError,
 } from '../../../src/identity-access-management/domain/errors.js';
 import { CampaignParticipationDeletedError } from '../../../src/prescription/campaign-participation/domain/errors.js';
 import * as DomainErrors from '../../../src/shared/domain/errors.js';
+import { AlreadyAcceptedOrCancelledInvitationError } from '../../../src/team/domain/errors.js';
 import { expect, HttpTestServer, sinon } from '../../test-helper.js';
 
 describe('Integration | API | Controller Error', function () {
@@ -259,7 +260,7 @@ describe('Integration | API | Controller Error', function () {
     });
 
     it('responds Conflict when an AlreadyAcceptedOrCancelledInvitationError occurs', async function () {
-      routeHandler.throws(new DomainErrors.AlreadyAcceptedOrCancelledInvitationError());
+      routeHandler.throws(new AlreadyAcceptedOrCancelledInvitationError());
       const response = await server.requestObject(request);
 
       expect(response.statusCode).to.equal(CONFLICT_ERROR);
@@ -728,18 +729,30 @@ describe('Integration | API | Controller Error', function () {
       expect(response.statusCode).to.equal(INTERNAL_SERVER_ERROR);
       expect(payload.message).to.equal('An internal server error occurred');
     });
+
+    it('responds InternalServerError when a AnswerEvaluationError error occurs', async function () {
+      const challenge = {
+        id: 123456,
+      };
+      routeHandler.throws(new AnswerEvaluationError(challenge));
+
+      const response = await server.requestObject(request);
+
+      expect(response.statusCode).to.equal(INTERNAL_SERVER_ERROR);
+      expect(responseDetail(response)).to.equal('Problème lors de l\'évaluation de la réponse du challenge: "123456"');
+    });
   });
 
   context('503 Service Unavailable Error', function () {
     const SERVICE_UNAVAILABLE_ERROR = 503;
 
     it('responds ServiceUnavailable when a SendingEmailError error occurs', async function () {
-      routeHandler.throws(new DomainErrors.SendingEmailError(['toto@pix.fr', 'titi@pix.fr']));
+      routeHandler.throws(new DomainErrors.SendingEmailError('toto@pix.fr'));
 
       const response = await server.requestObject(request);
 
       expect(response.statusCode).to.equal(SERVICE_UNAVAILABLE_ERROR);
-      expect(responseDetail(response)).to.equal("Échec lors de l'envoi de l'email.");
+      expect(responseDetail(response)).to.equal('Failed to send email to "toto@pix.fr" for some unknown reason.');
     });
 
     it('responds ServiceUnavailable when a SendingEmailToResultRecipientError error occurs', async function () {

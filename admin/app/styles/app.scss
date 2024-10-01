@@ -4,7 +4,6 @@
 /* global */
 @import 'globals/global';
 @import 'globals/form';
-@import 'globals/nav';
 @import 'globals/page';
 @import 'globals/tables';
 @import 'globals/table-admin';
@@ -61,7 +60,8 @@
 @import 'components/complementary-certifications/search-bar';
 @import 'components/complementary-certifications/selected-target-profile';
 @import 'components/confirm-popup';
-@import 'components/menu-bar';
+@import 'components/layout/breadcrumb';
+@import 'components/layout/menu-bar';
 @import 'components/organization-information-section';
 @import 'components/organization-invitations';
 @import 'components/organization-team-section';
@@ -111,3 +111,4 @@
 @import 'certification-centers/member-item';
 @import 'certification-centers/membership-item';
 @import 'certification-centers/invitations-action';
+@import 'administration/nav';

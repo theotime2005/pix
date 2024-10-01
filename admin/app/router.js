@@ -50,6 +50,7 @@ Router.map(function () {
       this.route('list');
       this.route('get', { path: '/:user_id' }, function () {
         this.route('information', { path: '/' });
+        this.route('authentication-methods');
         this.route('profile');
         this.route('campaign-participations', { path: '/participations' });
         this.route('organizations');
@@ -122,11 +123,8 @@ Router.map(function () {
     });
 
     this.route('autonomous-courses', function () {
-      this.route('list');
       this.route('new');
-      this.route('autonomous-course', { path: '/:autonomous_course_id' }, function () {
-        this.route('details');
-      });
+      this.route('details', { path: '/:autonomous_course_id' });
     });
 
     this.route('trainings', function () {
@@ -142,7 +140,10 @@ Router.map(function () {
 
     this.route('administration', function () {
       this.route('common');
+      this.route('campaigns');
       this.route('certification');
+      this.route('deployment');
+      this.route('access');
     });
 
     this.route('tools');

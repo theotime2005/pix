@@ -146,75 +146,6 @@ const register = async function (server) {
     },
     {
       method: 'GET',
-      path: '/api/admin/organizations/{id}/target-profile-summaries',
-      config: {
-        pre: [
-          {
-            method: (request, h) =>
-              securityPreHandlers.hasAtLeastOneAccessOf([
-                securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
-                securityPreHandlers.checkAdminMemberHasRoleCertif,
-                securityPreHandlers.checkAdminMemberHasRoleSupport,
-                securityPreHandlers.checkAdminMemberHasRoleMetier,
-              ])(request, h),
-            assign: 'hasAuthorizationToAccessAdminScope',
-          },
-        ],
-        validate: {
-          params: Joi.object({
-            id: identifiersType.organizationId,
-          }),
-        },
-        handler: organizationController.findTargetProfileSummariesForAdmin,
-        tags: ['api', 'organizations', 'target-profiles'],
-        notes: [
-          `- **Cette route est restreinte aux utilisateurs authentifiés ayant les droits d'accès**\n- Elle retourne la liste des profil cibles d'une organisation`,
-        ],
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/admin/organizations/{id}/memberships',
-      config: {
-        pre: [
-          {
-            method: (request, h) =>
-              securityPreHandlers.hasAtLeastOneAccessOf([
-                securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
-                securityPreHandlers.checkAdminMemberHasRoleCertif,
-                securityPreHandlers.checkAdminMemberHasRoleSupport,
-                securityPreHandlers.checkAdminMemberHasRoleMetier,
-              ])(request, h),
-            assign: 'belongsToOrganization',
-          },
-        ],
-        validate: {
-          params: Joi.object({
-            id: identifiersType.organizationId,
-          }),
-          query: Joi.object({
-            filter: Joi.object({
-              firstName: Joi.string().empty('').allow(null).optional(),
-              lastName: Joi.string().empty('').allow(null).optional(),
-              email: Joi.string().empty('').allow(null).optional(),
-              organizationRole: Joi.string().empty('').allow(null).optional(),
-            }).default({}),
-            page: Joi.object({
-              number: Joi.number().integer().empty('').allow(null).optional(),
-              size: Joi.number().integer().empty('').allow(null).optional(),
-            }).default({}),
-          }),
-        },
-        handler: organizationController.findPaginatedFilteredMembershipsForAdmin,
-        tags: ['api', 'organizations'],
-        notes: [
-          'Cette route est restreinte aux utilisateurs de Pix Admin',
-          'Elle retourne les rôles des membres rattachés à l’organisation de manière paginée.',
-        ],
-      },
-    },
-    {
-      method: 'GET',
       path: '/api/admin/organizations/{organizationId}/children',
       config: {
         pre: [
@@ -245,41 +176,6 @@ const register = async function (server) {
   ];
 
   const orgaRoutes = [
-    {
-      method: 'GET',
-      path: '/api/organizations/{id}/memberships',
-      config: {
-        pre: [
-          {
-            method: securityPreHandlers.checkUserBelongsToOrganization,
-            assign: 'belongsToOrganization',
-          },
-        ],
-        validate: {
-          params: Joi.object({
-            id: identifiersType.organizationId,
-          }),
-          query: Joi.object({
-            filter: Joi.object({
-              firstName: Joi.string().empty('').allow(null).optional(),
-              lastName: Joi.string().empty('').allow(null).optional(),
-              email: Joi.string().empty('').allow(null).optional(),
-              organizationRole: Joi.string().empty('').allow(null).optional(),
-            }).default({}),
-            page: Joi.object({
-              number: Joi.number().integer().empty('').allow(null).optional(),
-              size: Joi.number().integer().empty('').allow(null).optional(),
-            }).default({}),
-          }),
-        },
-        handler: organizationController.findPaginatedFilteredMemberships,
-        tags: ['api', 'organizations'],
-        notes: [
-          "Cette route est restreinte aux membres authentifiés d'une organisation",
-          'Elle retourne les rôles des membres rattachés à l’organisation de manière paginée.',
-        ],
-      },
-    },
     {
       method: 'PATCH',
       path: '/api/organizations/{id}/resend-invitation',
@@ -333,28 +229,6 @@ const register = async function (server) {
         notes: [
           'Cette route est restreinte aux utilisateurs authentifiés',
           "Elle retourne l'identité des membres rattachés à l’organisation.",
-        ],
-      },
-    },
-    {
-      method: 'GET',
-      path: '/api/organizations/{id}/divisions',
-      config: {
-        pre: [
-          {
-            method: securityPreHandlers.checkUserBelongsToScoOrganizationAndManagesStudents,
-          },
-        ],
-        validate: {
-          params: Joi.object({
-            id: identifiersType.organizationId,
-          }),
-        },
-        handler: organizationController.getDivisions,
-        tags: ['api', 'organizations'],
-        notes: [
-          'Cette route est restreinte aux utilisateurs authentifiés',
-          'Elle retourne les classes rattachées à l’organisation.',
         ],
       },
     },

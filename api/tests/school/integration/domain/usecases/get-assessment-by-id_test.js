@@ -9,7 +9,16 @@ import { databaseBuilder, expect } from '../../../../test-helper.js';
 describe('Integration | UseCase | getAssessmentById', function () {
   it('should return the missionAssessment corresponding to the assessmentId', async function () {
     const assessmentId = databaseBuilder.factory.buildPix1dAssessment().id;
-    const missionAssessment = databaseBuilder.factory.buildMissionAssessment({ assessmentId });
+    const missionAssessment = databaseBuilder.factory.buildMissionAssessment({
+      assessmentId,
+      status: Assessment.states.COMPLETED,
+      result: {
+        global: Assessment.results.NOT_REACHED,
+        dare: undefined,
+        steps: ['not-reached'],
+      },
+    });
+
     await databaseBuilder.commit();
 
     const result = await usecases.getAssessmentById({
@@ -23,6 +32,11 @@ describe('Integration | UseCase | getAssessmentById', function () {
       organizationLearnerId: missionAssessment.organizationLearnerId,
       missionId: missionAssessment.missionId,
       state: Assessment.states.STARTED,
+      result: {
+        global: Assessment.results.NOT_REACHED,
+        dare: undefined,
+        steps: ['not-reached'],
+      },
     };
 
     expect(_.pick(result, Object.keys(expectedMissionAssessment))).to.deep.equal(expectedMissionAssessment);

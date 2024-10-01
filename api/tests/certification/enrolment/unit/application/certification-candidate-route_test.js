@@ -7,7 +7,7 @@ import { NotFoundError } from '../../../../../src/shared/domain/errors.js';
 import { expect, HttpTestServer, sinon } from '../../../../test-helper.js';
 
 describe('Unit | Application | Sessions | Routes', function () {
-  describe('POST /api/sessions/{id}/certification-candidates', function () {
+  describe('POST /api/sessions/{sessionId}/certification-candidates', function () {
     let correctAttributes;
 
     beforeEach(function () {
@@ -116,7 +116,7 @@ describe('Unit | Application | Sessions | Routes', function () {
     });
   });
 
-  describe('GET /api/sessions/{id}/certification-candidates', function () {
+  describe('GET /api/sessions/{sessionId}/certification-candidates', function () {
     it('should exist', async function () {
       // given
       sinon.stub(authorization, 'verifySessionAuthorization').returns(null);
@@ -132,7 +132,7 @@ describe('Unit | Application | Sessions | Routes', function () {
     });
   });
 
-  describe('DELETE /api/sessions/{id}/certification-candidates/{certificationCandidateId}', function () {
+  describe('DELETE /api/sessions/{sessionId}/certification-candidates/{certificationCandidateId}', function () {
     it('should return 404 if the user is not authorized on the session', async function () {
       // given
       sinon.stub(authorization, 'verifySessionAuthorization').throws(new NotFoundError());
@@ -211,6 +211,120 @@ describe('Unit | Application | Sessions | Routes', function () {
       );
       // then
       expect(response.statusCode).to.equal(200);
+    });
+  });
+
+  describe('PATCH /api/sessions/{sessionId}/certification-candidates/{certificationCandidateId}', function () {
+    const method = 'PATCH';
+
+    it('should return 204', async function () {
+      // given
+      sinon.stub(authorization, 'verifySessionAuthorization').returns(null);
+      sinon
+        .stub(certificationCandidateController, 'updateEnrolledCandidate')
+        .callsFake((_, h) => h.response().code(204));
+      const httpTestServer = new HttpTestServer();
+      await httpTestServer.register(moduleUnderTest);
+
+      const id = 123;
+      const certificationCandidateId = 456;
+      const url = `/api/sessions/${id}/certification-candidates/${certificationCandidateId}`;
+      const payload = {
+        data: {
+          attributes: {
+            'accessibility-adjustment-needed': true,
+          },
+        },
+      };
+
+      // when
+      const response = await httpTestServer.request(method, url, payload);
+
+      // then
+      expect(response.statusCode).to.equal(204);
+    });
+
+    context('when the user is not authorized on the session', function () {
+      it('should return 404', async function () {
+        // given
+        sinon.stub(authorization, 'verifySessionAuthorization').throws(new NotFoundError());
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        const id = 123;
+        const certificationCandidateId = 456;
+        const url = `/api/sessions/${id}/certification-candidates/${certificationCandidateId}`;
+        const payload = {
+          data: {
+            attributes: {
+              'accessibility-adjustment-needed': true,
+            },
+          },
+        };
+
+        // when
+        const response = await httpTestServer.request(method, url, payload);
+
+        // then
+        expect(response.statusCode).to.equal(404);
+      });
+    });
+
+    context('when id params is not a number', function () {
+      it('should return 400', async function () {
+        // given
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        const id = 'wrongType';
+        const certificationCandidateId = 456;
+        const url = `/api/sessions/${id}/certification-candidates/${certificationCandidateId}`;
+
+        // when
+        const response = await httpTestServer.request(method, url);
+
+        // then
+        expect(response.statusCode).to.equal(400);
+      });
+    });
+
+    context('when certificationCandidateId params is not a number', function () {
+      it('should return 400', async function () {
+        // given
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        const id = 123;
+        const certificationCandidateId = 'wrongType';
+        const url = `/api/sessions/${id}/certification-candidates/${certificationCandidateId}`;
+
+        // when
+        const response = await httpTestServer.request(method, url);
+
+        // then
+        expect(response.statusCode).to.equal(400);
+      });
+    });
+
+    context('when the payload is incorrect', function () {
+      it('should return 400', async function () {
+        // given
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        const id = 123;
+        const certificationCandidateId = 456;
+        const url = `/api/sessions/${id}/certification-candidates/${certificationCandidateId}`;
+        const payload = {
+          accessibilityAdjustmentNeeded: 'wrongType',
+        };
+
+        // when
+        const response = await httpTestServer.request(method, url, payload);
+
+        // then
+        expect(response.statusCode).to.equal(400);
+      });
     });
   });
 

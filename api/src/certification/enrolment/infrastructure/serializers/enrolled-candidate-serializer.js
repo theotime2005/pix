@@ -1,5 +1,14 @@
 import { Serializer } from 'jsonapi-serializer';
 
+import { EditedCandidate } from '../../domain/models/EditedCandidate.js';
+
+const deserialize = function ({ candidateId, candidateData }) {
+  return new EditedCandidate({
+    id: candidateId,
+    accessibilityAdjustmentNeeded: candidateData['accessibility-adjustment-needed'],
+  });
+};
+
 const serialize = function (enrolledCandidates) {
   return new Serializer('certification-candidate', {
     transform: function (enrolledCandidate) {
@@ -34,6 +43,7 @@ const serialize = function (enrolledCandidates) {
       'billingMode',
       'prepaymentCode',
       'hasSeenCertificationInstructions',
+      'accessibilityAdjustmentNeeded',
     ],
     subscriptions: {
       include: true,
@@ -43,4 +53,4 @@ const serialize = function (enrolledCandidates) {
   }).serialize(enrolledCandidates);
 };
 
-export { serialize };
+export { deserialize, serialize };

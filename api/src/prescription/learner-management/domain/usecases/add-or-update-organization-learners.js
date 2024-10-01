@@ -1,4 +1,3 @@
-import bluebird from 'bluebird';
 import lodash from 'lodash';
 
 import { DomainTransaction } from '../../../../../lib/infrastructure/DomainTransaction.js';
@@ -13,8 +12,8 @@ async function addOrUpdateOrganizationLearners({
   organizationLearnerRepository,
   organizationImportRepository,
   importStorage,
+  logger,
   chunkSize = ORGANIZATION_LEARNER_CHUNK_SIZE,
-  logErrorWithCorrelationIds,
 }) {
   const errors = [];
   const organizationImport = await organizationImportRepository.get(organizationImportId);
@@ -22,7 +21,9 @@ async function addOrUpdateOrganizationLearners({
   return DomainTransaction.execute(async () => {
     try {
       const readableStream = await importStorage.readFile({ filename: organizationImport.filename });
+
       const siecleFileStreamer = await SiecleFileStreamer.create(readableStream, organizationImport.encoding);
+
       const parser = SiecleParser.create(siecleFileStreamer);
 
       const organizationLearnerData = await parser.parse();
@@ -36,12 +37,12 @@ async function addOrUpdateOrganizationLearners({
         nationalStudentIds: nationalStudentIdData,
       });
 
-      await bluebird.mapSeries(organizationLearnersChunks, (chunk) => {
-        return organizationLearnerRepository.addOrUpdateOrganizationOfOrganizationLearners(
+      for (const chunk of organizationLearnersChunks) {
+        await organizationLearnerRepository.addOrUpdateOrganizationOfOrganizationLearners(
           chunk,
           organizationImport.organizationId,
         );
-      });
+      }
     } catch (error) {
       errors.push(error);
       throw error;
@@ -50,8 +51,8 @@ async function addOrUpdateOrganizationLearners({
       await organizationImportRepository.save(organizationImport);
       try {
         await importStorage.deleteFile({ filename: organizationImport.filename });
-      } catch (e) {
-        logErrorWithCorrelationIds(e);
+      } catch (error) {
+        logger.error(error);
       }
     }
   });

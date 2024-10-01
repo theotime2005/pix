@@ -1,239 +1,161 @@
-import { CertificationCompletedJob } from '../../lib/domain/events/CertificationCompleted.js';
-import { CertificationCompletedJobController } from '../../src/certification/scoring/application/jobs/certification-completed-job-controller.js';
-import { CertificationRescoringByScriptJobController } from '../../src/certification/session-management/application/jobs/certification-rescoring-by-script-job-controller.js';
-import { CertificationRescoringByScriptJob } from '../../src/certification/session-management/domain/models/CertificationRescoringByScriptJob.js';
 import { UserAnonymizedEventLoggingJob } from '../../src/identity-access-management/domain/models/UserAnonymizedEventLoggingJob.js';
-import { ParticipationResultCalculationJobController } from '../../src/prescription/campaign-participation/application/jobs/participation-result-calculation-job-controller.js';
-import { PoleEmploiParticipationCompletedJobController } from '../../src/prescription/campaign-participation/application/jobs/pole-emploi-participation-completed-job-controller.js';
-import { ParticipationResultCalculationJob } from '../../src/prescription/campaign-participation/domain/models/ParticipationResultCalculationJob.js';
-import { PoleEmploiParticipationCompletedJob } from '../../src/prescription/campaign-participation/domain/models/PoleEmploiParticipationCompletedJob.js';
-import { ComputeCertificabilityJobController } from '../../src/prescription/learner-management/application/jobs/compute-certificability-job-controller.js';
-import { ImportOrganizationLearnersJobController } from '../../src/prescription/learner-management/application/jobs/import-organization-learners-job-controller.js';
+import { ScheduleComputeOrganizationLearnersCertificabilityJobController } from '../../src/prescription/learner-management/application/jobs/schedule-compute-organization-learners-certificability-job-controller.js';
 import { ValidateOrganizationLearnersImportFileJobController } from '../../src/prescription/learner-management/application/jobs/validate-organization-learners-import-file-job-controller.js';
-import { ComputeCertificabilityJob } from '../../src/prescription/learner-management/domain/models/ComputeCertificabilityJob.js';
-import { ImportOrganizationLearnersJob } from '../../src/prescription/learner-management/domain/models/ImportOrganizationLearnersJob.js';
 import { ValidateOrganizationImportFileJob } from '../../src/prescription/learner-management/domain/models/ValidateOrganizationImportFileJob.js';
 import { UserAnonymizedEventLoggingJobController } from '../../src/shared/application/jobs/audit-log/user-anonymized-event-logging-job-controller.js';
-import { LcmsRefreshCacheJobController } from '../../src/shared/application/jobs/lcms-refresh-cache-job-controller.js';
+import { JobGroup } from '../../src/shared/application/jobs/job-controller.js';
 import { config } from '../../src/shared/config.js';
-import { LcmsRefreshCacheJob } from '../../src/shared/domain/models/LcmsRefreshCacheJob.js';
-import { runJobs } from '../../worker.js';
-import { expect, sinon } from '../test-helper.js';
+import { registerJobs } from '../../worker.js';
+import { catchErr, expect, sinon } from '../test-helper.js';
 
-describe('#runjobs', function () {
-  let startPgBossStub, createMonitoredJobQueueStub, scheduleCpfJobsStub, monitoredJobQueueStub;
+describe('#registerJobs', function () {
+  let startPgBossStub, createJobQueuesStub, jobQueueStub;
 
   beforeEach(function () {
-    const pgBossStub = { schedule: sinon.stub() };
-    monitoredJobQueueStub = { performJob: sinon.stub() };
+    const pgBossStub = Symbol('pgBoss');
+    jobQueueStub = { register: sinon.stub(), scheduleCronJob: sinon.stub(), unscheduleCronJob: sinon.stub() };
     startPgBossStub = sinon.stub();
     startPgBossStub.resolves(pgBossStub);
-    createMonitoredJobQueueStub = sinon.stub();
-    createMonitoredJobQueueStub.withArgs(pgBossStub).returns(monitoredJobQueueStub);
-    scheduleCpfJobsStub = sinon.stub();
+    createJobQueuesStub = sinon.stub();
+    createJobQueuesStub.withArgs(pgBossStub).returns(jobQueueStub);
   });
 
-  describe('Acces', function () {
-    it('should register UserAnonymizedEventLoggingJob', async function () {
-      // when
-      await runJobs({
+  afterEach(function () {
+    sinon.restore();
+  });
+
+  it('should register UserAnonymizedEventLoggingJob', async function () {
+    // when
+    await registerJobs({
+      jobGroup: JobGroup.DEFAULT,
+      dependencies: {
         startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
-      });
-
-      // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === UserAnonymizedEventLoggingJob.name);
-
-      expect(calls.args[1]).to.equal(UserAnonymizedEventLoggingJobController);
+        createJobQueues: createJobQueuesStub,
+      },
     });
+
+    // then
+    expect(jobQueueStub.register).to.have.been.calledWithExactly(
+      UserAnonymizedEventLoggingJob.name,
+      UserAnonymizedEventLoggingJobController,
+    );
   });
 
-  describe('Contenu', function () {
-    it('should register LcmsRefreshCacheJob', async function () {
-      // when
-      await runJobs({
+  it('should register legacyName from UserAnonymizedEventLoggingJob', async function () {
+    // when
+    sinon
+      .stub(UserAnonymizedEventLoggingJobController.prototype, 'legacyName')
+      .get(() => 'legyNameForUserAnonymizedEventLoggingJobController');
+    await registerJobs({
+      jobGroup: JobGroup.DEFAULT,
+      dependencies: {
         startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
-      });
-
-      // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === LcmsRefreshCacheJob.name);
-
-      expect(calls.args[1]).to.equal(LcmsRefreshCacheJobController);
+        createJobQueues: createJobQueuesStub,
+      },
     });
+
+    // then
+    expect(jobQueueStub.register).to.have.been.calledWithExactly(
+      'legyNameForUserAnonymizedEventLoggingJobController',
+      UserAnonymizedEventLoggingJobController,
+    );
   });
 
-  describe('Certification', function () {
-    it('should register CertificationCompletedJob', async function () {
+  it('should register ValidateOrganizationImportFileJob when job is enabled', async function () {
+    //given
+    sinon.stub(config.pgBoss, 'validationFileJobEnabled').value(true);
+
+    // when
+    await registerJobs({
+      jobGroup: JobGroup.DEFAULT,
+      dependencies: {
+        startPgBoss: startPgBossStub,
+        createJobQueues: createJobQueuesStub,
+      },
+    });
+
+    // then
+    expect(jobQueueStub.register).to.have.been.calledWithExactly(
+      ValidateOrganizationImportFileJob.name,
+      ValidateOrganizationLearnersImportFileJobController,
+    );
+  });
+
+  it('should not register ValidateOrganizationImportFileJob when job is disabled', async function () {
+    //given
+    sinon.stub(config.pgBoss, 'validationFileJobEnabled').value(false);
+
+    // when
+    await registerJobs({
+      jobGroup: JobGroup.DEFAULT,
+      dependencies: {
+        startPgBoss: startPgBossStub,
+        createJobQueues: createJobQueuesStub,
+      },
+    });
+
+    // then
+    expect(jobQueueStub.register).to.not.have.been.calledWithExactly(
+      ValidateOrganizationImportFileJob.name,
+      ValidateOrganizationLearnersImportFileJobController,
+    );
+  });
+
+  it('should throws an error when group is invalid', async function () {
+    // given
+    const error = await catchErr(registerJobs)({
+      dependencies: {
+        startPgBoss: startPgBossStub,
+        createJobQueues: createJobQueuesStub,
+      },
+    });
+
+    // then
+    expect(error).to.be.instanceOf(Error);
+    expect(error.message).to.equal(`Job group invalid, allowed Job groups are [${Object.values(JobGroup)}]`);
+  });
+
+  describe('cron Job', function () {
+    it('schedule ScheduleComputeOrganizationLearnersCertificabilityJob', async function () {
       //given
-      // when
-      await runJobs({
-        startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
+      sinon.stub(config.features.scheduleComputeOrganizationLearnersCertificability, 'cron').value('0 21 * * *');
+
+      await registerJobs({
+        jobGroup: JobGroup.DEFAULT,
+        dependencies: {
+          startPgBoss: startPgBossStub,
+          createJobQueues: createJobQueuesStub,
+        },
       });
 
       // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === CertificationCompletedJob.name);
-
-      expect(calls.args[1]).to.equal(CertificationCompletedJobController);
+      expect(jobQueueStub.scheduleCronJob).to.have.been.calledWithExactly({
+        name: 'ScheduleComputeOrganizationLearnersCertificabilityJob',
+        cron: '0 21 * * *',
+        options: { tz: 'Europe/Paris' },
+      });
     });
 
-    it('should register CertificationRescoringByScriptJob', async function () {
+    it('unschedule legacyName from ScheduleComputeOrganizationLearnersCertificabilityJob', async function () {
       //given
-      // when
-      await runJobs({
-        startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
+      sinon
+        .stub(ScheduleComputeOrganizationLearnersCertificabilityJobController.prototype, 'legacyName')
+        .get(() => 'legyNameForScheduleComputeOrganizationLearnersCertificabilityJobController');
+
+      sinon.stub(config.features.scheduleComputeOrganizationLearnersCertificability, 'cron').value('0 21 * * *');
+
+      await registerJobs({
+        jobGroup: JobGroup.DEFAULT,
+        dependencies: {
+          startPgBoss: startPgBossStub,
+          createJobQueues: createJobQueuesStub,
+        },
       });
 
       // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === CertificationRescoringByScriptJob.name);
-
-      expect(calls.args[1]).to.equal(CertificationRescoringByScriptJobController);
-    });
-  });
-
-  describe('Prescription', function () {
-    it('should register CampaignParticipationCompletedJob', async function () {
-      //given
-
-      // when
-      await runJobs({
-        startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
-      });
-
-      // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === PoleEmploiParticipationCompletedJob.name);
-
-      expect(calls.args[1]).to.equal(PoleEmploiParticipationCompletedJobController);
-    });
-
-    it('should register ComputeCertificabilityJob', async function () {
-      // when
-      await runJobs({
-        startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
-      });
-
-      // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === ComputeCertificabilityJob.name);
-
-      expect(calls.args[1]).to.equal(ComputeCertificabilityJobController);
-    });
-
-    it('should register ParticipationResultCalculationJob', async function () {
-      // when
-      await runJobs({
-        startPgBoss: startPgBossStub,
-        createMonitoredJobQueue: createMonitoredJobQueueStub,
-        scheduleCpfJobs: scheduleCpfJobsStub,
-      });
-
-      // then
-      const calls = monitoredJobQueueStub.performJob
-        .getCalls()
-        .find(({ args }) => args[0] === ParticipationResultCalculationJob.name);
-
-      expect(calls.args[1]).to.equal(ParticipationResultCalculationJobController);
-    });
-
-    describe('Import jobs', function () {
-      it('should register ValidateOrganizationImportFileJob', async function () {
-        //given
-        sinon.stub(config.pgBoss, 'validationFileJobEnabled').value(true);
-
-        // when
-        await runJobs({
-          startPgBoss: startPgBossStub,
-          createMonitoredJobQueue: createMonitoredJobQueueStub,
-          scheduleCpfJobs: scheduleCpfJobsStub,
-        });
-
-        // then
-        const calls = monitoredJobQueueStub.performJob
-          .getCalls()
-          .find(({ args }) => args[0] === ValidateOrganizationImportFileJob.name);
-
-        expect(calls.args[1]).to.equal(ValidateOrganizationLearnersImportFileJobController);
-      });
-
-      it('should not register import job if PGBOSS_IMPORT_FILE_JOB_ENABLED is false', async function () {
-        //given
-        sinon.stub(config.pgBoss, 'importFileJobEnabled').value(false);
-        // when
-        await runJobs({
-          startPgBoss: startPgBossStub,
-          createMonitoredJobQueue: createMonitoredJobQueueStub,
-          scheduleCpfJobs: scheduleCpfJobsStub,
-        });
-
-        // then
-        const calls = monitoredJobQueueStub.performJob.getCalls();
-
-        const validatationJob = calls.find(({ args }) => args[0] === ValidateOrganizationImportFileJob.name);
-        const importJob = calls.find(({ args }) => args[0] === ImportOrganizationLearnersJob.name);
-
-        expect(validatationJob).to.exist;
-        expect(importJob).to.be.undefined;
-      });
-
-      it('should not register validation job if PGBOSS_VALIDATION_FILE_JOB_ENABLED is false', async function () {
-        //given
-        sinon.stub(config.pgBoss, 'validationFileJobEnabled').value(false);
-        // when
-        await runJobs({
-          startPgBoss: startPgBossStub,
-          createMonitoredJobQueue: createMonitoredJobQueueStub,
-          scheduleCpfJobs: scheduleCpfJobsStub,
-        });
-
-        // then
-        const calls = monitoredJobQueueStub.performJob.getCalls();
-
-        const validatationJob = calls.find(({ args }) => args[0] === ValidateOrganizationImportFileJob.name);
-        const importJob = calls.find(({ args }) => args[0] === ImportOrganizationLearnersJob.name);
-
-        expect(validatationJob).to.be.undefined;
-        expect(importJob).to.exist;
-      });
-
-      it('should register ImportOrganizationLearnersJob', async function () {
-        //given
-        sinon.stub(config.pgBoss, 'importFileJobEnabled').value(true);
-
-        // when
-        await runJobs({
-          startPgBoss: startPgBossStub,
-          createMonitoredJobQueue: createMonitoredJobQueueStub,
-          scheduleCpfJobs: scheduleCpfJobsStub,
-        });
-
-        // then
-        const calls = monitoredJobQueueStub.performJob
-          .getCalls()
-          .find(({ args }) => args[0] === ImportOrganizationLearnersJob.name);
-
-        expect(calls.args[1]).to.equal(ImportOrganizationLearnersJobController);
-      });
+      expect(jobQueueStub.unscheduleCronJob).to.have.been.calledWithExactly(
+        'legyNameForScheduleComputeOrganizationLearnersCertificabilityJobController',
+      );
     });
   });
 });

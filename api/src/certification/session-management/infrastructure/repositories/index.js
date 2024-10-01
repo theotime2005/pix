@@ -17,11 +17,14 @@ import * as sharedCompetenceMarkRepository from '../../../shared/infrastructure/
 import * as complementaryCertificationCourseResultRepository from '../../../shared/infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as flashAlgorithmConfigurationRepository from '../../../shared/infrastructure/repositories/flash-algorithm-configuration-repository.js';
 import * as certificationCandidateForSupervisingRepository from './certification-candidate-for-supervising-repository.js';
+import * as certificationCandidateRepository from './certification-candidate-repository.js';
 import * as certificationOfficerRepository from './certification-officer-repository.js';
 import * as competenceMarkRepository from './competence-mark-repository.js';
 import * as courseAssessmentResultRepository from './course-assessment-result-repository.js';
+import * as cpfExportRepository from './cpf-export-repository.js';
 import * as finalizedSessionRepository from './finalized-session-repository.js';
 import * as juryCertificationRepository from './jury-certification-repository.js';
+import * as juryCertificationSummaryRepository from './jury-certification-summary-repository.js';
 import * as jurySessionRepository from './jury-session-repository.js';
 import * as sessionForInvigilatorKitRepository from './session-for-invigilator-kit-repository.js';
 import * as sessionForSupervisingRepository from './session-for-supervising-repository.js';
@@ -63,6 +66,9 @@ import * as v3CertificationCourseDetailsForAdministrationRepository from './v3-c
  * @typedef {certificationCpfCityRepository} CertificationCpfCityRepository
  * @typedef {certificationCpfCountryRepository} CertificationCpfCountryRepository
  * @typedef {flashAlgorithmConfigurationRepository} FlashAlgorithmConfigurationRepository
+ * @typedef {cpfExportRepository} CpfExportRepository
+ * @typedef {juryCertificationSummaryRepository} JuryCertificationSummaryRepository
+ * @typedef {certificationCandidateRepository} CertificationCandidateRepository
  */
 const repositoriesWithoutInjectedDependencies = {
   assessmentRepository,
@@ -73,6 +79,7 @@ const repositoriesWithoutInjectedDependencies = {
   certificationOfficerRepository,
   finalizedSessionRepository,
   juryCertificationRepository,
+  juryCertificationSummaryRepository,
   jurySessionRepository,
   sessionForInvigilatorKitRepository,
   issueReportCategoryRepository,
@@ -92,6 +99,7 @@ const repositoriesWithoutInjectedDependencies = {
   complementaryCertificationCourseResultRepository,
   certificationCpfCityRepository,
   certificationCpfCountryRepository,
+  certificationCandidateRepository,
 };
 
 /**
@@ -107,6 +115,7 @@ export {
   certificationChallengeRepository,
   challengeRepository,
   competenceMarkRepository,
+  cpfExportRepository,
   flashAlgorithmConfigurationRepository,
   sessionRepositories,
   sharedCompetenceMarkRepository,

@@ -10,48 +10,6 @@ const CODE_IDENTITY_PROVIDER_POLE_EMPLOI = OidcIdentityProviders.POLE_EMPLOI.cod
 const oidcProviderCode = 'genericOidcProviderCode';
 
 describe('Unit | Router | user-router', function () {
-  describe('GET /api/users/{id}/is-certifiable', function () {
-    const method = 'GET';
-    const url = '/api/users/42/is-certifiable';
-
-    it('exists', async function () {
-      // given
-      sinon.stub(userController, 'isCertifiable').returns('ok');
-      sinon
-        .stub(securityPreHandlers, 'checkRequestedUserIsAuthenticatedUser')
-        .callsFake((request, h) => h.response(true));
-      const httpTestServer = new HttpTestServer();
-      await httpTestServer.register(moduleUnderTest);
-
-      // when
-      await httpTestServer.request(method, url);
-
-      // then
-      sinon.assert.calledOnce(userController.isCertifiable);
-    });
-  });
-
-  describe('GET /api/users/{id}/profile', function () {
-    const method = 'GET';
-    const url = '/api/users/42/profile';
-
-    it('exists', async function () {
-      // given
-      sinon.stub(userController, 'getProfile').returns('ok');
-      sinon
-        .stub(securityPreHandlers, 'checkRequestedUserIsAuthenticatedUser')
-        .callsFake((request, h) => h.response(true));
-      const httpTestServer = new HttpTestServer();
-      await httpTestServer.register(moduleUnderTest);
-
-      // when
-      await httpTestServer.request(method, url);
-
-      // then
-      sinon.assert.calledOnce(userController.getProfile);
-    });
-  });
-
   describe('GET /api/users/{userId}/campaigns/{campaignId}/profile', function () {
     const method = 'GET';
 
@@ -247,79 +205,6 @@ describe('Unit | Router | user-router', function () {
   });
 
   context('Routes /admin', function () {
-    describe('GET /api/admin/users', function () {
-      it('returns an HTTP status code 200', async function () {
-        // given
-        sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
-        sinon.stub(userController, 'findPaginatedFilteredUsers').returns('ok');
-        const httpTestServer = new HttpTestServer();
-        await httpTestServer.register(moduleUnderTest);
-
-        // when
-        const response = await httpTestServer.request(
-          'GET',
-          '/api/admin/users?filter[firstName]=Bruce&filter[lastName]=Wayne&filter[email]=batman@gotham.city&page[number]=3&page[size]=25',
-        );
-
-        // then
-        expect(response.statusCode).to.equal(200);
-        sinon.assert.calledOnce(securityPreHandlers.hasAtLeastOneAccessOf);
-        sinon.assert.calledOnce(userController.findPaginatedFilteredUsers);
-      });
-
-      it('returns an HTTP status code 403', async function () {
-        // given
-        sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns((request, h) =>
-          h
-            .response({ errors: new Error('') })
-            .code(403)
-            .takeover(),
-        );
-        const httpTestServer = new HttpTestServer();
-        await httpTestServer.register(moduleUnderTest);
-
-        // when
-        const response = await httpTestServer.request(
-          'GET',
-          '/api/admin/users?filter[firstName]=Bruce&filter[lastName]=Wayne&filter[email]=batman@gotham.city&page[number]=3&page[size]=25',
-        );
-
-        // then
-        expect(response.statusCode).to.equal(403);
-        sinon.assert.calledOnce(securityPreHandlers.hasAtLeastOneAccessOf);
-      });
-
-      describe('when the search value in the search email field in users filter is a string and not a full email', function () {
-        it('is accepted and the search is performed', async function () {
-          // given
-          sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
-          sinon.stub(userController, 'findPaginatedFilteredUsers').returns('ok');
-          const httpTestServer = new HttpTestServer();
-          await httpTestServer.register(moduleUnderTest);
-
-          // when
-          const response = await httpTestServer.request('GET', '/api/admin/users?filter[email]=some-value');
-
-          // then
-          expect(response.statusCode).to.equal(200);
-        });
-      });
-
-      describe('when the id provided in users filter is not numeric', function () {
-        it('returns a BadRequest error (400)', async function () {
-          // given
-          const httpTestServer = new HttpTestServer();
-          await httpTestServer.register(moduleUnderTest);
-
-          // when
-          const response = await httpTestServer.request('GET', '/api/admin/users?filter[id]=mmmm');
-
-          // then
-          expect(response.statusCode).to.equal(400);
-        });
-      });
-    });
-
     describe('GET /api/admin/users/{id}', function () {
       it('returns an HTTP status code 200', async function () {
         // given

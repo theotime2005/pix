@@ -7,12 +7,12 @@ import { cancellationController } from './cancellation-controller.js';
 const register = async function (server) {
   server.route([
     {
-      method: 'POST',
-      path: '/api/admin/certification-courses/{id}/cancel',
+      method: 'PATCH',
+      path: '/api/admin/certification-courses/{certificationCourseId}/cancel',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.certificationCourseId,
+            certificationCourseId: identifiersType.certificationCourseId,
           }),
         },
         pre: [
@@ -31,12 +31,12 @@ const register = async function (server) {
       },
     },
     {
-      method: 'POST',
-      path: '/api/admin/certification-courses/{id}/uncancel',
+      method: 'PATCH',
+      path: '/api/admin/certification-courses/{certificationCourseId}/uncancel',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.certificationCourseId,
+            certificationCourseId: identifiersType.certificationCourseId,
           }),
         },
         pre: [

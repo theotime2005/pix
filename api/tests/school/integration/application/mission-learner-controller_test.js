@@ -4,7 +4,7 @@ import { usecases } from '../../../../src/school/domain/usecases/index.js';
 import { expect, hFake, sinon } from '../../../test-helper.js';
 
 describe('Integration | Controller | mission-learner-controller', function () {
-  describe('#findPaginatedMissionLearners', function () {
+  describe('#findMissionLearners', function () {
     it('should return missionLearners', async function () {
       const organizationId = 1;
       const missionId = 1;
@@ -14,8 +14,8 @@ describe('Integration | Controller | mission-learner-controller', function () {
         lastName: 'Musk',
         organizationId,
         division: 'CP',
-        status: 'not-started',
-        result: undefined,
+        missionStatus: 'not-started',
+        result: { global: 'reached', steps: ['reached'] },
       });
       const pagination = {
         page: 1,
@@ -37,6 +37,7 @@ describe('Integration | Controller | mission-learner-controller', function () {
             page: { size: 50, number: 1 },
             filter: {
               divisions: 'CP',
+              results: 'reached',
               name: 'Léa',
             },
           },
@@ -51,8 +52,8 @@ describe('Integration | Controller | mission-learner-controller', function () {
             'last-name': missionLearner.lastName,
             division: missionLearner.division,
             'organization-id': missionLearner.organizationId,
-            status: missionLearner.status,
-            result: undefined,
+            'mission-status': missionLearner.missionStatus,
+            result: missionLearner.result,
           },
           id: missionLearner.id.toString(),
           type: 'mission-learners',
@@ -63,7 +64,7 @@ describe('Integration | Controller | mission-learner-controller', function () {
         organizationId,
         missionId,
         page: { size: 50, number: 1 },
-        filter: { divisions: ['CP'], name: 'Léa' },
+        filter: { divisions: ['CP'], results: ['reached'], name: 'Léa' },
       });
     });
 

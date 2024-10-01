@@ -253,53 +253,6 @@ describe('Integration | Repository | Organization', function () {
     });
   });
 
-  describe('#getScoOrganizationByExternalId', function () {
-    describe('when there is an organization with given externalId', function () {
-      it('should return the organization', async function () {
-        // given
-        databaseBuilder.factory.buildOrganization({
-          id: 1,
-          type: 'SCO',
-          name: 'organization 1',
-          externalId: '1234567',
-          isManagingStudents: true,
-        });
-        await databaseBuilder.commit();
-
-        // when
-        const result = await organizationRepository.getScoOrganizationByExternalId('1234567');
-
-        // then
-        expect(result).to.be.instanceOf(Organization);
-        expect(result.id).to.deep.equal(1);
-        expect(result.type).to.deep.equal('SCO');
-        expect(result.externalId).to.deep.equal('1234567');
-        expect(result.isManagingStudents).to.deep.equal(true);
-      });
-    });
-
-    describe('when there is no organization with given externalId', function () {
-      it('should throw an error if the externalId does not match an organization ', async function () {
-        // given
-        databaseBuilder.factory.buildOrganization({
-          id: 1,
-          type: 'SCO',
-          name: 'organization 1',
-          externalId: '1234567',
-          isManagingStudents: true,
-        });
-        await databaseBuilder.commit();
-
-        // when
-        const error = await catchErr(organizationRepository.getScoOrganizationByExternalId)('AAAAAA');
-
-        // then
-        expect(error).to.be.instanceOf(NotFoundError);
-        expect(error.message).to.equal('Could not find organization for externalId AAAAAA.');
-      });
-    });
-  });
-
   describe('#findByExternalIdsFetchingIdsOnly', function () {
     let organizations;
 
@@ -1143,7 +1096,7 @@ describe('Integration | Repository | Organization', function () {
       expect(organizationsWithPlaces[0].type).to.equal(firstOrganization.type);
     });
 
-    it('should return only once an organization with many placeLots', async function () {
+    it('should return only once an organization with many placesLots', async function () {
       // given
       const superAdminUserId = databaseBuilder.factory.buildUser().id;
 
@@ -1185,22 +1138,22 @@ describe('Integration | Repository | Organization', function () {
       expect(organizationsWithPlaces.length).to.equal(1);
     });
 
-    it('should not return organization with null place count', async function () {
+    it('should return organization instead if they have unlimited places', async function () {
       // given
       const superAdminUserId = databaseBuilder.factory.buildUser().id;
 
-      const firstOrganization = databaseBuilder.factory.buildOrganization({
+      const organizationId = databaseBuilder.factory.buildOrganization({
         type: 'SCO',
-        name: 'Organization of the dark side',
+        name: 'Organization du sud de la France avec le plus beau stade de France',
         archivedAt: null,
         isArchived: false,
-      });
+      }).id;
 
       databaseBuilder.factory.buildOrganizationPlace({
         count: null,
-        organizationId: firstOrganization.id,
-        activationDate: new Date(),
-        expirationDate: new Date(),
+        organizationId,
+        activationDate: new Date('2024-01-01'),
+        expirationDate: new Date('2025-12-31'),
         createdBy: superAdminUserId,
         createdAt: new Date(),
         deletedAt: null,
@@ -1213,7 +1166,7 @@ describe('Integration | Repository | Organization', function () {
       const organizationsWithPlaces = await organizationRepository.getOrganizationsWithPlaces();
 
       // then
-      expect(organizationsWithPlaces.length).to.equal(0);
+      expect(organizationsWithPlaces.length).to.equal(1);
     });
   });
 });

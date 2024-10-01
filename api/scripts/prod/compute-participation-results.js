@@ -11,12 +11,11 @@ import { CampaignParticipationStatuses } from '../../src/prescription/shared/dom
 import { ParticipantResultsShared } from '../../src/shared/domain/models/ParticipantResultsShared.js';
 
 const { SHARED } = CampaignParticipationStatuses;
-import bluebird from 'bluebird';
 import _ from 'lodash';
 
 import { disconnect, knex } from '../../db/knex-database-connection.js';
-import { constants } from '../../lib/infrastructure/constants.js';
 import * as placementProfileService from '../../src/shared/domain/services/placement-profile-service.js';
+import { CHUNK_SIZE_CAMPAIGN_RESULT_PROCESSING } from '../../src/shared/infrastructure/constants.js';
 import * as competenceRepository from '../../src/shared/infrastructure/repositories/competence-repository.js';
 import { PromiseUtils } from '../../src/shared/infrastructure/utils/promise-utils.js';
 
@@ -85,7 +84,7 @@ async function _computeCampaignParticipationResults(campaign) {
   const skillIds = await campaignRepository.findSkillIds({ campaignId: campaign.id });
   const computeResultsWithTargetedSkillIds = _.partial(_computeResults, skillIds, competences);
 
-  const participantsResults = await bluebird.mapSeries(
+  const participantsResults = await PromiseUtils.mapSeries(
     campaignParticipationInfosChunks,
     computeResultsWithTargetedSkillIds,
   );
@@ -99,7 +98,7 @@ async function _getCampaignParticipationChunks(campaign) {
     .join('campaigns', 'campaign-participations.campaignId', 'campaigns.id')
     .where({ campaignId: campaign.id, status: SHARED, pixScore: null, 'campaigns.type': 'ASSESSMENT' })
     .orWhere({ campaignId: campaign.id, status: SHARED, isCertifiable: null, 'campaigns.type': 'PROFILES_COLLECTION' });
-  return _.chunk(campaignParticipations, constants.CHUNK_SIZE_CAMPAIGN_RESULT_PROCESSING);
+  return _.chunk(campaignParticipations, CHUNK_SIZE_CAMPAIGN_RESULT_PROCESSING);
 }
 
 async function _computeResults(skillIds, competences, campaignParticipations) {

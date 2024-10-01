@@ -4,15 +4,11 @@
  * @typedef {import('./index.js').ComplementaryCertificationHabilitationRepository} ComplementaryCertificationHabilitationRepository
  * @typedef {import('./index.js').DataProtectionOfficerRepository} DataProtectionOfficerRepository
  */
-import bluebird from 'bluebird';
-
 import { CenterForAdminFactory } from '../../../src/certification/enrolment/domain/models/factories/CenterForAdminFactory.js';
-import { CertificationCenterPilotFeaturesConflictError } from '../../../src/shared/domain/errors.js';
 import {
   ComplementaryCertificationHabilitation,
   DataProtectionOfficer,
 } from '../../../src/shared/domain/models/index.js';
-import { withTransaction } from '../../infrastructure/DomainTransaction.js';
 import * as certificationCenterCreationValidator from '../validators/certification-center-creation-validator.js';
 
 /**
@@ -60,45 +56,25 @@ const updateCertificationCenter = async function ({
 
 export { updateCertificationCenter };
 
-const _updateCenter = withTransaction(
-  /**
-   * @param {Object} params
-   * @param {CenterRepository} params.centerRepository
-   * @param {CertificationCenterForAdminRepository} params.certificationCenterForAdminRepository
-   * @param {ComplementaryCertificationHabilitationRepository} params.complementaryCertificationHabilitationRepository
-   */
-  async ({
-    certificationCenterInformation,
+/**
+ * @param {Object} params
+ * @param {CertificationCenterForAdminRepository} params.certificationCenterForAdminRepository
+ * @param {ComplementaryCertificationHabilitationRepository} params.complementaryCertificationHabilitationRepository
+ */
+const _updateCenter = async ({
+  certificationCenterInformation,
+  certificationCenterId,
+  complementaryCertificationIds,
+  certificationCenterForAdminRepository,
+  complementaryCertificationHabilitationRepository,
+}) => {
+  await certificationCenterForAdminRepository.update(certificationCenterInformation);
+
+  await _updateHabilitations({
     certificationCenterId,
     complementaryCertificationIds,
-    centerRepository,
-    certificationCenterForAdminRepository,
     complementaryCertificationHabilitationRepository,
-  }) => {
-    const certificationCenter = await centerRepository.getById({
-      id: certificationCenterId,
-    });
-
-    _verifyCenterPilotFeaturesCompatibility({
-      currentCenter: certificationCenter,
-      newCenterData: certificationCenterInformation,
-    });
-
-    await certificationCenterForAdminRepository.update(certificationCenterInformation);
-
-    await _updateHabilitations({
-      certificationCenterId,
-      complementaryCertificationIds,
-      complementaryCertificationHabilitationRepository,
-    });
-  },
-  { isolationLevel: 'repeatable read' },
-);
-
-const _verifyCenterPilotFeaturesCompatibility = ({ currentCenter, newCenterData }) => {
-  if (currentCenter.isComplementaryAlonePilot && !newCenterData.isV3Pilot) {
-    throw new CertificationCenterPilotFeaturesConflictError();
-  }
+  });
 };
 
 /**
@@ -113,38 +89,39 @@ const _updateHabilitations = async ({
   await complementaryCertificationHabilitationRepository.deleteByCertificationCenterId(certificationCenterId);
 
   if (complementaryCertificationIds) {
-    await bluebird.mapSeries(complementaryCertificationIds, (complementaryCertificationId) => {
+    for (const complementaryCertificationId of complementaryCertificationIds) {
       const complementaryCertificationHabilitation = new ComplementaryCertificationHabilitation({
         complementaryCertificationId: parseInt(complementaryCertificationId),
         certificationCenterId,
       });
-      return complementaryCertificationHabilitationRepository.save(complementaryCertificationHabilitation);
-    });
+      await complementaryCertificationHabilitationRepository.save(complementaryCertificationHabilitation);
+    }
   }
 };
 
-const _addOrUpdateDataProtectionOfficer = withTransaction(
-  /**
-   * @param {Object} params
-   * @param {DataProtectionOfficerRepository} params.dataProtectionOfficerRepository
-   */
-  async ({ certificationCenterId, certificationCenterInformation, dataProtectionOfficerRepository }) => {
-    const dataProtectionOfficer = new DataProtectionOfficer({
-      firstName: certificationCenterInformation.dataProtectionOfficerFirstName ?? '',
-      lastName: certificationCenterInformation.dataProtectionOfficerLastName ?? '',
-      email: certificationCenterInformation.dataProtectionOfficerEmail ?? '',
-      certificationCenterId,
-    });
+/**
+ * @param {Object} params
+ * @param {DataProtectionOfficerRepository} params.dataProtectionOfficerRepository
+ */
+const _addOrUpdateDataProtectionOfficer = async ({
+  certificationCenterId,
+  certificationCenterInformation,
+  dataProtectionOfficerRepository,
+}) => {
+  const dataProtectionOfficer = new DataProtectionOfficer({
+    firstName: certificationCenterInformation.dataProtectionOfficerFirstName ?? '',
+    lastName: certificationCenterInformation.dataProtectionOfficerLastName ?? '',
+    email: certificationCenterInformation.dataProtectionOfficerEmail ?? '',
+    certificationCenterId,
+  });
 
-    const dataProtectionOfficerFound = await dataProtectionOfficerRepository.get({
-      certificationCenterId,
-    });
+  const dataProtectionOfficerFound = await dataProtectionOfficerRepository.get({
+    certificationCenterId,
+  });
 
-    if (dataProtectionOfficerFound) {
-      return dataProtectionOfficerRepository.update(dataProtectionOfficer);
-    }
+  if (dataProtectionOfficerFound) {
+    return dataProtectionOfficerRepository.update(dataProtectionOfficer);
+  }
 
-    return dataProtectionOfficerRepository.create(dataProtectionOfficer);
-  },
-  { isolationLevel: 'repeatable read' },
-);
+  return dataProtectionOfficerRepository.create(dataProtectionOfficer);
+};

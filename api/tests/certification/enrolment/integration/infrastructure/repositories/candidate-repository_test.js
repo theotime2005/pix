@@ -58,7 +58,7 @@ describe('Integration | Certification | Session | Repository | Candidate', funct
 
   describe('#findBySessionId', function () {
     context('when there are candidates', function () {
-      it('should return the candidate', async function () {
+      it('should return the candidates', async function () {
         // given
         const sessionId = databaseBuilder.factory.buildSession().id;
         databaseBuilder.factory.buildComplementaryCertification({
@@ -279,6 +279,7 @@ describe('Integration | Certification | Session | Repository | Candidate', funct
             complementaryCertificationKey: 'Chose',
           },
         ],
+        reconciledAt: null,
       };
       databaseBuilder.factory.buildSession({ id: candidateData.sessionId });
       databaseBuilder.factory.buildComplementaryCertification({ id: 22, label: 'Quelque', key: 'Chose' });

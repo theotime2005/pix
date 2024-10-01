@@ -16,7 +16,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
       rejectCertificationCourse.withArgs({ certificationCourseId, juryId }).resolves(certificationCourseRejectedEvent);
 
       const request = {
-        params: { id: certificationCourseId },
+        params: { certificationCourseId },
         auth: {
           credentials: { userId: juryId },
         },
@@ -29,7 +29,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
         juryId,
       });
       expect(events.eventDispatcher.dispatch).to.have.been.calledWithExactly(certificationCourseRejectedEvent);
-      expect(response.statusCode).to.equal(200);
+      expect(response.statusCode).to.equal(204);
     });
   });
 
@@ -45,7 +45,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
         .resolves(certificationCourseRejectedEvent);
 
       const request = {
-        params: { id: certificationCourseId },
+        params: { certificationCourseId },
         auth: {
           credentials: { userId: juryId },
         },
@@ -58,7 +58,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
         juryId,
       });
       expect(events.eventDispatcher.dispatch).to.have.been.calledWithExactly(certificationCourseRejectedEvent);
-      expect(response.statusCode).to.equal(200);
+      expect(response.statusCode).to.equal(204);
     });
   });
 
@@ -73,7 +73,7 @@ describe('Certification | Session Management | Unit | Application | Controller |
           },
         },
         params: {
-          id: 123,
+          certificationCourseId: 123,
         },
         payload: {
           data: {

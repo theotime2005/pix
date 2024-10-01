@@ -1,16 +1,15 @@
 import { fillByLabel, visit } from '@1024pix/ember-testing-library';
 import { click, currentURL } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
+import { setupIntl } from 'ember-intl/test-support';
 import { setupApplicationTest } from 'ember-qunit';
 import { authenticateAdminMemberWithRole } from 'pix-admin/tests/helpers/test-init';
 import { module, test } from 'qunit';
 
-import setupIntl from '../../../helpers/setup-intl';
-
 module('Acceptance | Autonomous courses', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
-  setupIntl(hooks);
+  setupIntl(hooks, 'fr');
 
   module('When admin member is logged in', function (hooks) {
     hooks.beforeEach(async function () {
@@ -48,14 +47,14 @@ module('Acceptance | Autonomous courses', function (hooks) {
         await click(submitButton);
 
         //then
-        assert.strictEqual(currentURL(), '/autonomous-courses/1/details');
+        assert.strictEqual(currentURL(), '/autonomous-courses/1');
       });
     });
 
     module('list page', function () {
       test('it should set autonomous course menubar item active', async function (assert) {
         // when
-        const screen = await visit('/autonomous-courses/list');
+        const screen = await visit('/autonomous-courses');
 
         // then
         assert.dom(screen.getByRole('link', { name: 'Parcours autonomes' })).hasClass('active');
@@ -77,17 +76,17 @@ module('Acceptance | Autonomous courses', function (hooks) {
         }
 
         // when
-        const screen = await visit('/autonomous-courses/list');
+        const screen = await visit('/autonomous-courses');
 
         await click(screen.getByRole('link', { name: 'Parcours autonome n°3' }));
 
         // then
-        assert.strictEqual(currentURL(), '/autonomous-courses/3/details');
+        assert.strictEqual(currentURL(), '/autonomous-courses/3');
       });
 
       test('it should display a button to create a new autonomous course', async function (assert) {
         // when
-        const screen = await visit('/autonomous-courses/list');
+        const screen = await visit('/autonomous-courses');
 
         await click(screen.getByRole('link', { name: 'Nouveau parcours autonome' }));
 
@@ -114,7 +113,7 @@ module('Acceptance | Autonomous courses', function (hooks) {
         const screen = await visit('/autonomous-courses/1');
 
         // then
-        assert.strictEqual(currentURL(), '/autonomous-courses/1/details');
+        assert.strictEqual(currentURL(), '/autonomous-courses/1');
         assert.dom(screen.getAllByRole('heading', { name: 'Parcours SUP SCO 2023', level: 1 })[0]).exists();
         assert.dom(screen.getByText('Bienvenue dans votre parcours')).exists();
 
@@ -125,8 +124,8 @@ module('Acceptance | Autonomous courses', function (hooks) {
       test('it displays the update form when requested', async function (assert) {
         // when
         const screen = await visit('/autonomous-courses/1');
-
         const button = screen.getByText('Modifier');
+
         await click(button);
 
         // then

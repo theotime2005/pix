@@ -1,7 +1,6 @@
-import { OrganizationCantGetPlacesStatisticsError } from '../../../../../../src/prescription/organization-place/domain/errors.js';
 import { PlacesLot } from '../../../../../../src/prescription/organization-place/domain/read-models/PlacesLot.js';
 import { PlaceStatistics } from '../../../../../../src/prescription/organization-place/domain/read-models/PlaceStatistics.js';
-import { catchErr, expect, sinon } from '../../../../../test-helper.js';
+import { expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
   let clock;
@@ -53,6 +52,7 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 1,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
@@ -69,12 +69,14 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 1,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
             deletedAt: null,
           }),
           new PlacesLot({
+            id: 2,
             count: 1,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
@@ -119,6 +121,7 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 1,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
@@ -135,6 +138,7 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 2,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
@@ -150,45 +154,18 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
     it('should return 0 when there are more participant than total places', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
-          { count: 2, expirationDate: new Date('2021-05-02'), activationDate: new Date('2021-04-01'), deletedAt: null },
+          {
+            id: 1,
+            count: 2,
+            expirationDate: new Date('2021-05-02'),
+            activationDate: new Date('2021-04-01'),
+            deletedAt: null,
+          },
         ],
         placeRepartition: { totalUnRegisteredParticipant: 0, totalRegisteredParticipant: 3 },
       });
 
       expect(statistics.available).to.equal(0);
-    });
-  });
-
-  describe('#validate', function () {
-    it('should throw an error if all places count are null', async function () {
-      const error = await catchErr(() => {
-        new PlaceStatistics({
-          placesLots: [
-            new PlacesLot({
-              count: null,
-              expirationDate: new Date('2021-05-02'),
-              activationDate: new Date('2021-04-01'),
-              deletedAt: null,
-            }),
-            new PlacesLot({
-              count: null,
-              expirationDate: new Date('2021-03-02'),
-              activationDate: new Date('2021-02-01'),
-              deletedAt: new Date('2021-01-01'),
-            }),
-            new PlacesLot({
-              count: null,
-              expirationDate: new Date('2022-04-02'),
-              activationDate: new Date('2022-04-01'),
-              deletedAt: null,
-            }),
-          ],
-          placeRepartition: { totalUnRegisteredParticipant: 0, totalRegisteredParticipant: 0 },
-        });
-      })();
-
-      expect(error).to.be.an.instanceof(OrganizationCantGetPlacesStatisticsError);
-      expect(error.message).to.equal("L'organisation ne peut pas avoir de statistiques sur ses lots de places.");
     });
   });
 
@@ -203,6 +180,7 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 3,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
@@ -218,18 +196,21 @@ describe('Unit | Domain | ReadModels | PlaceStatistics', function () {
       const statistics = new PlaceStatistics({
         placesLots: [
           new PlacesLot({
+            id: 1,
             count: 1,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
             deletedAt: null,
           }),
           new PlacesLot({
+            id: 2,
             count: 10,
             expirationDate: new Date('2021-05-02'),
             activationDate: new Date('2021-04-01'),
             deletedAt: null,
           }),
           new PlacesLot({
+            id: 3,
             count: 10,
             expirationDate: new Date('2020-05-02'),
             activationDate: new Date('2019-04-01'),

@@ -40,11 +40,15 @@ module('Acceptance | Session Details Certification Candidates', function (hooks)
     const complementaryCertificationId = 123;
 
     hooks.beforeEach(async () => {
+      server.create('feature-toggle', {
+        isNeedToAdjustCertificationAccessibilityEnabled: false,
+      });
       allowedCertificationCenterAccess = server.create('allowed-certification-center-access', {
         isAccessBlockedCollege: false,
         isAccessBlockedLycee: false,
         isAccessBlockedAEFE: false,
         isAccessBlockedAgri: false,
+        isV3Pilot: false,
         habilitations: [
           {
             id: complementaryCertificationId,
@@ -71,7 +75,7 @@ module('Acceptance | Session Details Certification Candidates', function (hooks)
       await click(screen.getByRole('link', { name: 'Revenir à la liste des sessions' }));
 
       // then
-      assert.deepEqual(currentURL(), '/sessions/liste');
+      assert.deepEqual(currentURL(), '/sessions');
     });
 
     module('when current certification center is blocked', function () {
@@ -152,7 +156,7 @@ module('Acceptance | Session Details Certification Candidates', function (hooks)
         assert.dom(screen.getByRole('button', { name: 'Voir le détail du candidat Alin Cendy' })).exists();
       });
 
-      test('it should display the list of certification candidates ', async function (assert) {
+      test('it should display the list of certification candidates', async function (assert) {
         // given
         const dayjs = this.owner.lookup('service:dayjs');
 
@@ -160,17 +164,84 @@ module('Acceptance | Session Details Certification Candidates', function (hooks)
         const screen = await visit(`/sessions/${sessionWithCandidates.id}/candidats`);
 
         // then
-        assert.strictEqual(screen.getAllByRole('row').length, 3);
-        assert.dom(screen.getByRole('cell', { name: 'Cendy' })).exists();
-        assert.dom(screen.getByRole('cell', { name: 'Alin' })).exists();
-        assert.dom(screen.getByRole('cell', { name: 'cendy@example.com' })).exists();
+        const table = screen.getByRole('table', {
+          name: 'Liste des candidats inscrits à la session, triée par nom de naissance, avec un lien pour voir les détails du candidat et la possibilité de supprimer un candidat dans la dernière colonne.',
+        });
+        const rows = await within(table).findAllByRole('row');
+        assert.strictEqual(rows.length, 3);
+        assert.dom(within(rows[0]).queryByRole('columnheader', { name: 'Accessibilité' })).doesNotExist();
+        assert.dom(within(rows[1]).getByRole('cell', { name: 'Cendy' })).exists();
+        assert.dom(within(rows[1]).getByRole('cell', { name: 'Alin' })).exists();
+        assert.dom(within(rows[1]).getByRole('cell', { name: 'cendy@example.com' })).exists();
         assert
-          .dom(screen.getByRole('cell', { name: dayjs.self('10-10-2000', 'YYYY-MM-DD').format('DD/MM/YYYY') }))
+          .dom(within(rows[1]).getByRole('cell', { name: dayjs.self('10-10-2000', 'YYYY-MM-DD').format('DD/MM/YYYY') }))
           .exists();
-        assert.dom(screen.getByRole('cell', { name: 'EXTERNAL-ID' })).exists();
-        assert.dom(screen.getByRole('cell', { name: 'Certification Pix' })).exists();
-        assert.strictEqual(screen.getAllByRole('cell', { name: 'Pix+Droit' }).length, 1);
+        assert.dom(within(rows[1]).getByRole('cell', { name: 'EXTERNAL-ID' })).exists();
+        assert.dom(within(rows[1]).getByRole('cell', { name: '30 %' })).exists();
+        assert.dom(within(rows[1]).getByRole('cell', { name: 'Certification Pix' })).exists();
+        assert.dom(within(rows[2]).getByRole('cell', { name: 'Pix+Droit' })).exists();
       });
+
+      module(
+        'when feature toggle isNeedToAdjustCertificationAccessibilityEnabled is true and center is v3 pilot',
+        function (hooks) {
+          let allowedCertificationCenterAccess;
+          let certificationPointOfContact;
+          let session;
+
+          hooks.beforeEach(async () => {
+            server.create('feature-toggle', {
+              isNeedToAdjustCertificationAccessibilityEnabled: true,
+            });
+            allowedCertificationCenterAccess = server.create('allowed-certification-center-access', {
+              isV3Pilot: true,
+            });
+            certificationPointOfContact = server.create('certification-point-of-contact', {
+              firstName: 'Lena',
+              lastName: 'Rine',
+              allowedCertificationCenterAccesses: [allowedCertificationCenterAccess],
+              pixCertifTermsOfServiceAccepted: true,
+            });
+            session = server.create('session-enrolment', {
+              certificationCenterId: allowedCertificationCenterAccess.id,
+            });
+            server.create('certification-candidate', {
+              firstName: 'John',
+              lastName: 'Doe',
+              sessionId: session.id,
+              accessibilityAdjustedCertificationNeeded: true,
+            });
+            server.create('session-management', {
+              id: session.id,
+            });
+            await authenticateSession(certificationPointOfContact.id);
+          });
+
+          test('should display accessibility adjusted certification needed information', async function (assert) {
+            // given
+            const screen = await visit(`/sessions/${session.id}/candidats`);
+
+            // then
+            assert.dom(screen.getByRole('columnheader', { name: 'Accessibilité' })).exists();
+            assert.dom(screen.getByRole('cell', { name: 'Oui' })).exists();
+          });
+
+          test('should be possible to update candidate information', async function (assert) {
+            // given
+            const screen = await visit(`/sessions/${session.id}/candidats`);
+            assert.dom(screen.getByRole('columnheader', { name: 'Accessibilité' })).exists();
+            assert.dom(screen.getByRole('cell', { name: 'Oui' })).exists();
+
+            // when
+            await click(screen.getByRole('button', { name: 'Editer le candidat John Doe' }));
+            await click(screen.getByText("Le candidat a besoin d'un aménagement"));
+            await click(screen.getByText('Modifier'));
+
+            // then
+            assert.dom(screen.queryByRole('cell', { name: 'Oui' })).doesNotExist();
+          });
+        },
+      );
 
       module('when the details button is clicked', function () {
         test('it should display the candidate details modal', async function (assert) {
@@ -420,7 +491,7 @@ module('Acceptance | Session Details Certification Candidates', function (hooks)
           assert.strictEqual(screen.getByLabelText('* Code INSEE de naissance').value, '');
           assert.strictEqual(screen.getByLabelText('Temps majoré (%)').value, '');
           assert.strictEqual(screen.getByLabelText('* Tarification part Pix').value, '');
-          assert.strictEqual(screen.getByLabelText('Code de prépaiement').value, '');
+          assert.dom(screen.queryByLabelText('Code de prépaiement')).doesNotExist();
           assert.strictEqual(
             screen.getByLabelText('E-mail du destinataire des résultats (formateur, enseignant...)').value,
             '',

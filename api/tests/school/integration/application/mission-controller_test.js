@@ -13,7 +13,11 @@ describe('Integration | Controller | mission-controller', function () {
         areaCode: 1,
         learningObjectives: 'learningObjectives',
         validatedObjectives: 'validatedObjectives',
+        introductionMediaUrl: 'http://monimage.pix.fr',
+        introductionMediaType: 'image',
+        introductionMediaAlt: "Alt à l'image",
         startedBy: '',
+        documentationUrl: 'http://madoc.pix.fr',
       });
       sinon.stub(usecases, 'getMission').resolves(mission);
 
@@ -36,7 +40,22 @@ describe('Integration | Controller | mission-controller', function () {
           'learning-objectives': mission.learningObjectives,
           'validated-objectives': mission.validatedObjectives,
           'competence-name': mission.competenceName,
+          'introduction-media-url': mission.introductionMediaUrl,
+          'introduction-media-type': mission.introductionMediaType,
+          'introduction-media-alt': mission.introductionMediaAlt,
+          'documentation-url': mission.documentationUrl,
           'started-by': '',
+          content: {
+            dareChallenges: [],
+            steps: [
+              {
+                name: undefined,
+                trainingChallenges: [],
+                tutorialChallenges: [],
+                validationChallenges: [],
+              },
+            ],
+          },
         },
         id: `${mission.id}`,
         type: 'missions',
@@ -51,7 +70,13 @@ describe('Integration | Controller | mission-controller', function () {
   describe('#findAllActive', function () {
     it('should find all active missions', async function () {
       // given
-      const mission = new Mission({ id: 1, name: 'TAG1', color: 'Green', startedBy: 'CM1' });
+      const mission = new Mission({
+        id: 1,
+        name: 'TAG1',
+        color: 'Green',
+        startedBy: 'CM1',
+        documentationUrl: 'http://madoc.pix.fr',
+      });
       sinon.stub(usecases, 'findAllActiveMissions').resolves([mission]);
 
       // when
@@ -66,7 +91,22 @@ describe('Integration | Controller | mission-controller', function () {
             'learning-objectives': mission.learningObjectives,
             'validated-objectives': mission.validatedObjectives,
             'competence-name': mission.competenceName,
+            'introduction-media-url': mission.introductionMediaUrl,
+            'introduction-media-type': mission.introductionMediaType,
+            'introduction-media-alt': mission.introductionMediaAlt,
+            'documentation-url': mission.documentationUrl,
             'started-by': mission.startedBy,
+            content: {
+              dareChallenges: [],
+              steps: [
+                {
+                  name: undefined,
+                  trainingChallenges: [],
+                  tutorialChallenges: [],
+                  validationChallenges: [],
+                },
+              ],
+            },
           },
           id: `${mission.id}`,
           type: 'missions',

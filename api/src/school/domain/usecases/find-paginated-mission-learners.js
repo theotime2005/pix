@@ -1,39 +1,51 @@
-import { MissionLearner } from '../models/MissionLearner.js';
-import { getMissionResult } from '../services/get-mission-result.js';
+export { filterByGlobalResult, findPaginatedMissionLearners };
 
 const findPaginatedMissionLearners = async function ({
   missionLearnerRepository,
   missionAssessmentRepository,
-  activityRepository,
   organizationId,
   missionId,
   page,
   filter,
 } = {}) {
-  const { pagination, missionLearners } = await missionLearnerRepository.findPaginatedMissionLearners({
+  const { missionLearners } = await missionLearnerRepository.findMissionLearners({
     organizationId,
-    page,
-    filter,
+    filter: { divisions: filter.divisions, name: filter.name },
   });
 
   const missionLearnersWithStatus = await missionAssessmentRepository.getStatusesForLearners(
     missionId,
     missionLearners,
-    async (learner, status, assessmentId) => {
-      const missionLearner = new MissionLearner({
-        ...learner,
-        status: status ?? 'not-started',
-      });
-      if (assessmentId && status === 'completed') {
-        const activities = await activityRepository.getAllByAssessmentId(assessmentId);
-
-        missionLearner.result = getMissionResult({ activities });
-      }
-      return missionLearner;
-    },
   );
 
-  return { pagination, missionLearners: missionLearnersWithStatus };
+  return _paginateMissionLearner(filterByGlobalResult(missionLearnersWithStatus, filter.results), page);
 };
 
-export { findPaginatedMissionLearners };
+function filterByGlobalResult(missionLearners, resultFilter) {
+  if (!resultFilter) {
+    return missionLearners;
+  }
+  return missionLearners.filter(
+    (missionLearner) =>
+      (resultFilter.includes('no-result') && missionLearner.result?.global === undefined) ||
+      resultFilter.includes(missionLearner.result?.global),
+  );
+}
+
+function _paginateMissionLearner(missionLearners, page) {
+  const rowCount = missionLearners.length;
+  const firstLearnerIndex = ((page.number || 1) - 1) * page.size;
+  const lastLearnerIndex = firstLearnerIndex + page.size;
+  const missionLearnersPaginated = missionLearners.slice(firstLearnerIndex, lastLearnerIndex);
+  const pageCount = Math.ceil(missionLearners.length / page.size);
+
+  return {
+    pagination: {
+      page: page.number,
+      pageCount,
+      pageSize: page.size,
+      rowCount,
+    },
+    missionLearners: missionLearnersPaginated,
+  };
+}

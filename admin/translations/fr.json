@@ -5,6 +5,7 @@
       "cancel": "Annuler",
       "close": "Fermer",
       "deactivate": "Désactiver",
+      "edit": "Modifier",
       "save": "Enregistrer",
       "validate": "Valider"
     },
@@ -19,6 +20,7 @@
     },
     "forms": {
       "loading": "Chargement...",
+      "mandatory": "Champ obligatoire",
       "mandatory-fields": "Les champs marqués de '<abbr title=\"obligatoire\" class=\"mandatory-mark\">'*'</abbr>' sont obligatoires"
     },
     "notifications": {
@@ -141,6 +143,81 @@
         "upload-button": "Importer un fichier CSV"
       }
     },
+    "autonomous-courses": {
+      "title": "Tous les parcours autonomes",
+      "actions": {
+        "new": "Nouveau parcours autonome"
+      },
+      "list": {
+        "title": "Liste des parcours autonomes",
+        "headers": {
+          "createdAt": "Date de création",
+          "id": "Id",
+          "name": "Nom",
+          "status": "Statut"
+        },
+        "no-result": "Aucun résultat",
+        "status": {
+          "active": "Actif",
+          "archived": "Archivé"
+        }
+      },
+      "new": {
+        "title": "Nouveau parcours autonome",
+        "create-autonomous-course": "Créer le parcours autonome",
+        "target-profile": {
+          "category-label": "Sélectionner une ou plusieurs catégories de profils cibles",
+          "label": "Quel profil cible voulez-vous associer à ce parcours autonome ?",
+          "placeholder": "Choisir un profil cible",
+          "search-label": "Recherchez un profil cible",
+          "sub-label": "Le profil cible doit être en accès simplifié et relié à l’organisation \"Organisation pour les parcours autonomes\""
+        },
+        "technical-informations": {
+          "title": "Informations techniques",
+          "label": "Nom interne"
+        },
+        "user-information": {
+          "title": "Informations pour les utilisateurs",
+          "homepage": {
+            "label": "Texte de la page d'accueil",
+            "placeholder": "Exemple : description, objectifs..."
+          },
+          "public-name": {
+            "label": "Nom public <small>(50 caractères maximum)</small>",
+            "placeholder": "Exemple : Le super nom de mon parcours autonome",
+            "sub-label": "Le nom du parcours autonome sera affiché sur la page de démarrage du candidat."
+          }
+        }
+      },
+      "update": {
+        "custom-landing-page": {
+          "label": "Texte de la page d'accueil",
+          "placeholder": "Exemple : description, objectifs..."
+        },
+        "internal-title": {
+          "label": "Nom interne"
+        },
+        "public-title": {
+          "label": "Nom public <small>(50 caractères maximum)</small>",
+          "placeholder": "Exemple : Le super nom de mon parcours autonome",
+          "sublabel": "Le nom du parcours autonome sera affiché sur la page de démarrage du candidat."
+        },
+        "save": "Sauvegarder les modifications"
+      },
+      "view": {
+        "labels": {
+          "created-date": "Date de création",
+          "custom-landing-page": "Texte de la page d'accueil",
+          "id": "Id",
+          "internal-title": "Nom interne",
+          "public-title": "Nom public"
+        },
+        "link-copy-action": "Copier le lien de la campagne",
+        "link-copy-validation": "Lien copié !",
+        "link-label": "Lien vers la campagne {code} (nouvelle fenêtre)",
+        "link-title": "Lien public"
+      }
+    },
     "badges": {
       "api-error-messages": {
         "key-already-exists": "La clé de badge {badgeKey} est déjà utilisée"
@@ -178,6 +255,26 @@
             "name": "Nom du badge certifié"
           }
         }
+      }
+    },
+    "layout": {
+      "menu-bar": {
+        "entries": {
+          "administration": "Administration",
+          "autonomous-courses": "Parcours autonomes",
+          "certification-centers": "Centres de certification",
+          "certifications": "Certifications",
+          "complementary-certifications": "Certifications complémentaires",
+          "logout": "Se déconnecter",
+          "organizations": "Organisations",
+          "sessions": "Sessions de certifications",
+          "target-profiles": "Profils cibles",
+          "team": "Équipe",
+          "tools": "Outils",
+          "trainings": "Contenus formatifs",
+          "users": "Utilisateurs"
+        },
+        "label": "Navigation principale"
       }
     },
     "memberships-section": {
@@ -305,12 +402,21 @@
         }
       },
       "navigation": {
+        "access": {
+          "label": "Accès"
+        },
         "aria-label": "Navigation de la section administration",
+        "campaigns": {
+          "label": "Campagnes"
+        },
         "certification": {
           "label": "Certification"
         },
         "common": {
           "label": "Commun"
+        },
+        "deployment": {
+          "label": "Déploiement"
         }
       }
     },
@@ -565,8 +671,9 @@
     },
     "user-details": {
       "navbar": {
+        "authentication-methods": "Méthodes de connexion",
         "certification-centers-list": "Pix Certif",
-        "details": "Détails",
+        "details": "Informations prescrit",
         "organizations-list": "Pix Orga",
         "participations-list": "Participations",
         "profile": "Profil"

@@ -8,6 +8,7 @@ import { usecases as prescriptionTargetProfileUsecases } from '../domain/usecase
 import * as targetProfileAttachOrganizationSerializer from '../infrastructure/serializers/jsonapi/target-profile-attach-organization-serializer.js';
 import * as targetProfileDetachOrganizationsSerializer from '../infrastructure/serializers/jsonapi/target-profile-detach-organizations-serializer.js';
 import * as targetProfileSerializer from '../infrastructure/serializers/jsonapi/target-profile-serializer.js';
+import * as targetProfileSummaryForAdminSerializer from '../infrastructure/serializers/jsonapi/target-profile-summary-for-admin-serializer.js';
 import * as learningContentPDFPresenter from './presenter/pdf/learning-content-pdf-presenter.js';
 
 const getContentAsJsonFile = async function (request, h) {
@@ -142,6 +143,28 @@ const copyTargetProfile = withTransaction(async (request) => {
   return copiedTargetProfileId;
 });
 
+const findTargetProfileSummariesForAdmin = async function (request) {
+  const organizationId = request.params.id;
+  const targetProfileSummaries = await prescriptionTargetProfileUsecases.findOrganizationTargetProfileSummariesForAdmin(
+    {
+      organizationId,
+    },
+  );
+  return targetProfileSummaryForAdminSerializer.serialize(targetProfileSummaries);
+};
+
+const findPaginatedFilteredTargetProfileSummariesForAdmin = async function (request) {
+  const options = request.query;
+
+  const { models: targetProfileSummaries, meta } =
+    await prescriptionTargetProfileUsecases.findPaginatedFilteredTargetProfileSummariesForAdmin({
+      filter: options.filter,
+      page: options.page,
+    });
+
+  return targetProfileSummaryForAdminSerializer.serialize(targetProfileSummaries, meta);
+};
+
 const targetProfileController = {
   outdateTargetProfile,
   markTargetProfileAsSimplifiedAccess,
@@ -152,7 +175,9 @@ const targetProfileController = {
   getContentAsJsonFile,
   getLearningContentAsPdf,
   findPaginatedFilteredTargetProfileOrganizations,
+  findPaginatedFilteredTargetProfileSummariesForAdmin,
   copyTargetProfile,
+  findTargetProfileSummariesForAdmin,
 };
 
 export { targetProfileController };

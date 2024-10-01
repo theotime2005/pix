@@ -1,5 +1,6 @@
+import * as organizationLearnerRepository from '../../../../../../lib/infrastructure/repositories/organization-learner-repository.js';
 import { getDataOrganizationsPlacesStatistics } from '../../../../../../src/prescription/organization-place/domain/usecases/get-data-organizations-places-statistics.js';
-import { usecases as organizationPlacesUsecases } from '../../../../../../src/prescription/organization-place/domain/usecases/index.js';
+import * as organizationPlacesLotRepository from '../../../../../../src/prescription/organization-place/infrastructure/repositories/organization-places-lot-repository.js';
 import * as organizationRepository from '../../../../../../src/shared/infrastructure/repositories/organization-repository.js';
 import { databaseBuilder, expect, sinon } from '../../../../../test-helper.js';
 
@@ -35,7 +36,7 @@ describe('Integration | UseCases | get-data-organizations-places-statistics', fu
     });
     const secondOrganization = databaseBuilder.factory.buildOrganization({ id: 2, name: 'Pole Emploi', type: 'PRO' });
     databaseBuilder.factory.buildOrganizationPlace({
-      count: 5,
+      count: null,
       organizationId: secondOrganization.id,
       activationDate: new Date('2021-04-01'),
       expirationDate: new Date('2021-05-15'),
@@ -44,8 +45,9 @@ describe('Integration | UseCases | get-data-organizations-places-statistics', fu
 
     // when
     const dataOrganizationsPlacesStatistics = await getDataOrganizationsPlacesStatistics({
-      getOrganizationPlacesStatistics: organizationPlacesUsecases.getOrganizationPlacesStatistics,
       organizationRepository,
+      organizationPlacesLotRepository,
+      organizationLearnerRepository,
     });
 
     // then
@@ -58,7 +60,7 @@ describe('Integration | UseCases | get-data-organizations-places-statistics', fu
 
     expect(dataOrganizationsPlacesStatistics[1].organizationId).to.equal(secondOrganization.id);
     expect(dataOrganizationsPlacesStatistics[1].organizationActivePlacesLotCount).to.equal(1);
-    expect(dataOrganizationsPlacesStatistics[1].organizationPlacesCount).to.equal(5);
+    expect(dataOrganizationsPlacesStatistics[1].organizationPlacesCount).to.equal(null);
     expect(dataOrganizationsPlacesStatistics[1].organizationName).to.equal('Pole Emploi');
     expect(dataOrganizationsPlacesStatistics[1].organizationType).to.equal('PRO');
     expect(dataOrganizationsPlacesStatistics[1].organizationOccupiedPlacesCount).to.equal(0);

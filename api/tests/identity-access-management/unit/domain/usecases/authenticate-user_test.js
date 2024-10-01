@@ -3,6 +3,7 @@ import {
   MissingOrInvalidCredentialsError,
   UserShouldChangePasswordError,
 } from '../../../../../src/identity-access-management/domain/errors.js';
+import { RefreshToken } from '../../../../../src/identity-access-management/domain/models/RefreshToken.js';
 import { User } from '../../../../../src/identity-access-management/domain/models/User.js';
 import { authenticateUser } from '../../../../../src/identity-access-management/domain/usecases/authenticate-user.js';
 import { UserNotFoundError } from '../../../../../src/shared/domain/errors.js';
@@ -11,7 +12,8 @@ import { AdminMember } from '../../../../../src/shared/domain/models/AdminMember
 import { catchErr, domainBuilder, expect, sinon } from '../../../../test-helper.js';
 
 describe('Unit | Identity Access Management | Domain | UseCases | authenticate-user', function () {
-  let refreshTokenService;
+  let refreshTokenRepository;
+  let tokenService;
   let userRepository;
   let userLoginRepository;
   let adminMemberRepository;
@@ -22,9 +24,11 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
   const localeFromCookie = 'fr';
 
   beforeEach(function () {
-    refreshTokenService = {
-      createRefreshTokenFromUserId: sinon.stub(),
-      createAccessTokenFromRefreshToken: sinon.stub(),
+    refreshTokenRepository = {
+      save: sinon.stub(),
+    };
+    tokenService = {
+      createAccessTokenFromUser: sinon.stub(),
     };
     userRepository = {
       getByUsernameOrEmailWithRoles: sinon.stub(),
@@ -57,6 +61,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           pixAuthenticationService,
           userRepository,
           userLoginRepository,
+          refreshTokenRepository,
         });
 
         // then
@@ -82,6 +87,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           userRepository,
           userLoginRepository,
           adminMemberRepository,
+          refreshTokenRepository,
         });
 
         // then
@@ -116,6 +122,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           userRepository,
           userLoginRepository,
           adminMemberRepository,
+          refreshTokenRepository,
         });
 
         // then
@@ -143,18 +150,14 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
         pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
         adminMemberRepository.get.withArgs({ userId: user.id }).resolves(adminMember);
 
-        const refreshToken = '';
+        const refreshToken = { value: 'jwt.refresh.token', userId: user.id, scope };
+        sinon.stub(RefreshToken, 'generate').returns(refreshToken);
+
         const accessToken = '';
         const expirationDelaySeconds = '';
 
-        refreshTokenService.createRefreshTokenFromUserId
-          .withArgs({
-            userId: user.id,
-            source,
-          })
-          .returns(refreshToken);
-        refreshTokenService.createAccessTokenFromRefreshToken
-          .withArgs({ refreshToken })
+        tokenService.createAccessTokenFromUser
+          .withArgs(user.id, source)
           .resolves({ accessToken, expirationDelaySeconds });
 
         // when
@@ -167,7 +170,8 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           userRepository,
           userLoginRepository,
           adminMemberRepository,
-          refreshTokenService,
+          refreshTokenRepository,
+          tokenService,
         });
 
         // then
@@ -176,7 +180,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           password,
           userRepository,
         });
-        expect(result).to.deep.equal({ accessToken, refreshToken, expirationDelaySeconds });
+        expect(result).to.deep.equal({ accessToken, refreshToken: refreshToken.value, expirationDelaySeconds });
       });
     });
 
@@ -186,7 +190,6 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           // given
           const scope = PIX_CERTIF.SCOPE;
           const accessToken = 'jwt.access.token';
-          const refreshToken = 'jwt.refresh.token';
           const expirationDelaySeconds = 1;
           const source = 'pix';
           const user = domainBuilder.buildUser({
@@ -195,14 +198,12 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           });
 
           pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-          refreshTokenService.createRefreshTokenFromUserId
-            .withArgs({
-              userId: user.id,
-              source,
-            })
-            .returns(refreshToken);
-          refreshTokenService.createAccessTokenFromRefreshToken
-            .withArgs({ refreshToken })
+
+          const refreshToken = { value: 'jwt.refresh.token', userId: '456', scope };
+          sinon.stub(RefreshToken, 'generate').returns(refreshToken);
+
+          tokenService.createAccessTokenFromUser
+            .withArgs(user.id, source)
             .resolves({ accessToken, expirationDelaySeconds });
 
           // when
@@ -212,7 +213,8 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
             scope,
             source,
             pixAuthenticationService,
-            refreshTokenService,
+            tokenService,
+            refreshTokenRepository,
             userRepository,
             userLoginRepository,
           });
@@ -231,29 +233,27 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
   it('should resolves a valid JWT access token when authentication succeeded', async function () {
     // given
     const accessToken = 'jwt.access.token';
-    const refreshToken = 'jwt.refresh.token';
     const source = 'pix';
+    const scope = 'mon-pix';
     const expirationDelaySeconds = 1;
     const user = domainBuilder.buildUser({ email: userEmail });
 
     pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-    refreshTokenService.createRefreshTokenFromUserId
-      .withArgs({
-        userId: user.id,
-        source,
-      })
-      .returns(refreshToken);
-    refreshTokenService.createAccessTokenFromRefreshToken
-      .withArgs({ refreshToken })
-      .resolves({ accessToken, expirationDelaySeconds });
+
+    const refreshToken = { value: 'jwt.refresh.token', userId: '456', scope };
+    sinon.stub(RefreshToken, 'generate').returns(refreshToken);
+
+    tokenService.createAccessTokenFromUser.withArgs(user.id, source).resolves({ accessToken, expirationDelaySeconds });
 
     // when
     const result = await authenticateUser({
       username: userEmail,
       password,
       source,
+      scope,
       pixAuthenticationService,
-      refreshTokenService,
+      refreshTokenRepository,
+      tokenService,
       userRepository,
       userLoginRepository,
     });
@@ -264,26 +264,29 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
       password,
       userRepository,
     });
-    expect(result).to.deep.equal({ accessToken, refreshToken, expirationDelaySeconds });
+    expect(result).to.deep.equal({ accessToken, refreshToken: refreshToken.value, expirationDelaySeconds });
   });
 
   it('should save the last date of login when authentication succeeded', async function () {
     // given
     const accessToken = 'jwt.access.token';
     const source = 'pix';
+    const scope = 'mon-pix';
     const expirationDelaySeconds = 1;
     const user = domainBuilder.buildUser({ email: userEmail });
 
     pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-    refreshTokenService.createAccessTokenFromRefreshToken.resolves({ accessToken, expirationDelaySeconds });
+    tokenService.createAccessTokenFromUser.withArgs(user.id, source).resolves({ accessToken, expirationDelaySeconds });
 
     // when
     await authenticateUser({
       username: userEmail,
       password,
       source,
+      scope,
       pixAuthenticationService,
-      refreshTokenService,
+      refreshTokenRepository,
+      tokenService,
       userRepository,
       userLoginRepository,
     });
@@ -303,6 +306,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
       password,
       userRepository,
       userLoginRepository,
+      refreshTokenRepository,
     });
 
     // then
@@ -319,6 +323,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
       password,
       userRepository,
       userLoginRepository,
+      refreshTokenRepository,
     });
 
     // then
@@ -354,6 +359,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
         userRepository,
         userLoginRepository,
         pixAuthenticationService,
+        refreshTokenRepository,
         tokenService,
       });
 
@@ -373,7 +379,7 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
         const user = domainBuilder.buildUser({ email: userEmail, locale: 'fr-FR' });
 
         pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-        refreshTokenService.createAccessTokenFromRefreshToken.resolves({ accessToken, expirationDelaySeconds });
+        tokenService.createAccessTokenFromUser.resolves({ accessToken, expirationDelaySeconds });
 
         // when
         await authenticateUser({
@@ -382,7 +388,8 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           source,
           localeFromCookie,
           pixAuthenticationService,
-          refreshTokenService,
+          refreshTokenRepository,
+          tokenService,
           userRepository,
           userLoginRepository,
         });
@@ -398,21 +405,24 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           // given
           const accessToken = 'jwt.access.token';
           const source = 'pix';
+          const scope = 'mon-pix';
           const expirationDelaySeconds = 1;
           const user = domainBuilder.buildUser({ email: userEmail, locale: null });
           const setLocaleIfNotAlreadySetStub = sinon.stub(user, 'setLocaleIfNotAlreadySet');
 
           pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-          refreshTokenService.createAccessTokenFromRefreshToken.resolves({ accessToken, expirationDelaySeconds });
+          tokenService.createAccessTokenFromUser.resolves({ accessToken, expirationDelaySeconds });
 
           // when
           await authenticateUser({
             username: userEmail,
             password,
             source,
+            scope,
             localeFromCookie: 'localeFromCookie',
             pixAuthenticationService,
-            refreshTokenService,
+            tokenService,
+            refreshTokenRepository,
             userRepository,
             userLoginRepository,
           });
@@ -427,20 +437,23 @@ describe('Unit | Identity Access Management | Domain | UseCases | authenticate-u
           // given
           const accessToken = 'jwt.access.token';
           const source = 'pix';
+          const scope = 'mon-pix';
           const expirationDelaySeconds = 1;
           const user = domainBuilder.buildUser({ email: userEmail, locale: undefined });
 
           pixAuthenticationService.getUserByUsernameAndPassword.resolves(user);
-          refreshTokenService.createAccessTokenFromRefreshToken.resolves({ accessToken, expirationDelaySeconds });
+          tokenService.createAccessTokenFromUser.resolves({ accessToken, expirationDelaySeconds });
 
           // when
           await authenticateUser({
             username: userEmail,
             password,
             source,
+            scope,
             localeFromCookie: undefined,
             pixAuthenticationService,
-            refreshTokenService,
+            refreshTokenRepository,
+            tokenService,
             userRepository,
             userLoginRepository,
           });

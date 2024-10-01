@@ -103,7 +103,9 @@ const update = async function (organization) {
 };
 
 const get = async function (id) {
-  const organizationDB = await knex(ORGANIZATIONS_TABLE_NAME).where({ id }).first();
+  const knexConn = DomainTransaction.getConnection();
+
+  const organizationDB = await knexConn(ORGANIZATIONS_TABLE_NAME).where({ id }).first();
   if (!organizationDB) {
     throw new NotFoundError(`Not found organization for ID ${id}`);
   }
@@ -132,18 +134,6 @@ const getIdByCertificationCenterId = async function (certificationCenterId) {
   if (organizationIds.length !== 1)
     throw new NotFoundError(`Not found organization for certification center id ${certificationCenterId}`);
   return organizationIds[0];
-};
-
-const getScoOrganizationByExternalId = async function (externalId) {
-  const organizationDB = await knex(ORGANIZATIONS_TABLE_NAME)
-    .where({ type: Organization.types.SCO })
-    .whereRaw('LOWER("externalId") = ?', externalId.toLowerCase())
-    .first();
-
-  if (!organizationDB) {
-    throw new NotFoundError(`Could not find organization for externalId ${externalId}.`);
-  }
-  return _toDomain(organizationDB);
 };
 
 const findByExternalIdsFetchingIdsOnly = async function (externalIds) {
@@ -199,7 +189,6 @@ const getOrganizationsWithPlaces = async function () {
   const organizations = await knexConn('organizations')
     .select('organizations.id', 'name', 'type')
     .innerJoin('organization-places', 'organizations.id', 'organization-places.organizationId')
-    .whereNotNull('organization-places.count')
     .whereNull('archivedAt')
     .distinct();
 
@@ -216,6 +205,5 @@ export {
   get,
   getIdByCertificationCenterId,
   getOrganizationsWithPlaces,
-  getScoOrganizationByExternalId,
   update,
 };

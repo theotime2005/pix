@@ -1,10 +1,7 @@
-import lodash from 'lodash';
-
-const { get } = lodash;
-
 import { PIX_ADMIN, PIX_ORGA } from '../../../authorization/domain/constants.js';
 import { ForbiddenAccess, LocaleFormatError, LocaleNotSupportedError } from '../../../shared/domain/errors.js';
 import { MissingOrInvalidCredentialsError, UserShouldChangePasswordError } from '../errors.js';
+import { RefreshToken } from '../models/RefreshToken.js';
 
 async function _checkUserAccessScope(scope, user, adminMemberRepository) {
   if (scope === PIX_ORGA.SCOPE && !user.isLinkedToOrganizations()) {
@@ -25,7 +22,7 @@ const authenticateUser = async function ({
   source,
   username,
   localeFromCookie,
-  refreshTokenService,
+  refreshTokenRepository,
   pixAuthenticationService,
   tokenService,
   userRepository,
@@ -39,21 +36,17 @@ const authenticateUser = async function ({
       userRepository,
     });
 
-    const shouldChangePassword = get(
-      foundUser,
-      'authenticationMethods[0].authenticationComplement.shouldChangePassword',
-    );
-
-    if (shouldChangePassword) {
+    if (foundUser.shouldChangePassword) {
       const passwordResetToken = tokenService.createPasswordResetToken(foundUser.id);
       throw new UserShouldChangePasswordError(undefined, passwordResetToken);
     }
 
     await _checkUserAccessScope(scope, foundUser, adminMemberRepository);
-    const refreshToken = await refreshTokenService.createRefreshTokenFromUserId({ userId: foundUser.id, source });
-    const { accessToken, expirationDelaySeconds } = await refreshTokenService.createAccessTokenFromRefreshToken({
-      refreshToken,
-    });
+
+    const refreshToken = RefreshToken.generate({ userId: foundUser.id, scope, source });
+    await refreshTokenRepository.save({ refreshToken });
+
+    const { accessToken, expirationDelaySeconds } = await tokenService.createAccessTokenFromUser(foundUser.id, source);
 
     foundUser.setLocaleIfNotAlreadySet(localeFromCookie);
     if (foundUser.hasBeenModified) {
@@ -62,7 +55,7 @@ const authenticateUser = async function ({
 
     await userLoginRepository.updateLastLoggedAt({ userId: foundUser.id });
 
-    return { accessToken, refreshToken, expirationDelaySeconds };
+    return { accessToken, refreshToken: refreshToken.value, expirationDelaySeconds };
   } catch (error) {
     if (
       error instanceof ForbiddenAccess ||

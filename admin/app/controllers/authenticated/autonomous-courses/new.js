@@ -9,12 +9,12 @@ export default class NewController extends Controller {
 
   @action
   goBackToAutonomousCoursesList() {
-    this.router.transitionTo('authenticated.autonomous-courses.list');
+    this.router.transitionTo('authenticated.autonomous-courses');
   }
 
   @action
   goToAutonomousCourseDetails(autonomousCourseId) {
-    this.router.transitionTo('authenticated.autonomous-courses.autonomous-course', autonomousCourseId);
+    this.router.transitionTo('authenticated.autonomous-courses.details', autonomousCourseId);
   }
 
   @action

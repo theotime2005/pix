@@ -1,5 +1,11 @@
 import { DomainError } from '../../shared/domain/errors.js';
 
+class InvalidStageError extends DomainError {
+  constructor(message) {
+    super(message);
+  }
+}
+
 class StageWithLinkedCampaignError extends DomainError {
   constructor() {
     super('The stage is part of a target profile linked to a campaign');
@@ -41,11 +47,19 @@ class StageModificationForbiddenForLinkedTargetProfileError extends DomainError 
   }
 }
 
+class AnswerEvaluationError extends DomainError {
+  constructor(challenge) {
+    super(`Problème lors de l'évaluation de la réponse du challenge: "${challenge.id}"`, '', challenge);
+  }
+}
+
 export {
   AcquiredBadgeForbiddenUpdateError,
+  AnswerEvaluationError,
   CompetenceResetError,
   EmptyAnswerError,
   ImproveCompetenceEvaluationForbiddenError,
+  InvalidStageError,
   StageModificationForbiddenForLinkedTargetProfileError,
   StageWithLinkedCampaignError,
 };

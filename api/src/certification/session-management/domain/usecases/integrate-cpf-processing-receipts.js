@@ -1,9 +1,9 @@
 /**
- * @typedef {import('../../../shared/domain/usecases/index.js').CpfReceiptsStorage} CpfReceiptsStorage
+ * @typedef {import('./index.js').CpfReceiptsStorage} CpfReceiptsStorage
  *
  * @typedef {import('../../../shared/domain/usecases/index.js').CpfCertificationResultRepository} CpfCertificationResultRepository
  */
-import { CONCURRENCY_HEAVY_OPERATIONS } from '../../../../../lib/infrastructure/constants.js';
+import { CONCURRENCY_HEAVY_OPERATIONS } from '../../../../shared/infrastructure/constants.js';
 import { logger } from '../../../../shared/infrastructure/utils/logger.js';
 import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
 

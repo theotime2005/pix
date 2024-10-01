@@ -1,5 +1,6 @@
 import { render } from '@1024pix/ember-testing-library';
 import { hbs } from 'ember-cli-htmlbars';
+import { t } from 'ember-intl/test-support';
 import { module, test } from 'qunit';
 
 import setupIntlRenderingTest from '../../../../helpers/setup-intl-rendering';
@@ -21,6 +22,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
           disabledAt: '2020-01-03',
           status: 'STARTED',
           campaignTitle: 'My campaign',
+          campaignCode: 'CAMPAIGN',
           organizationName: 'My organization',
           masteryRate: null,
         });
@@ -37,12 +39,8 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
         assert.ok(
           screen.getByText('Parcours désactivé par votre organisation.Vous ne pouvez plus envoyer vos résultats.'),
         );
-        assert.ok(screen.getByText(this.intl.t('pages.campaign-participation-overview.card.tag.disabled')));
-        assert.ok(
-          screen.getByText(
-            this.intl.t('pages.campaign-participation-overview.card.started-at', { date: '01/01/2020' }),
-          ),
-        );
+        assert.ok(screen.getByText(t('pages.campaign-participation-overview.card.tag.disabled')));
+        assert.ok(screen.getByText(t('pages.campaign-participation-overview.card.started-at', { date: '01/01/2020' })));
       });
 
       test('should render explanatory text given to_share status', async function (assert) {
@@ -52,6 +50,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
           disabledAt: '2020-01-03',
           status: 'TO_SHARE',
           campaignTitle: 'My campaign',
+          campaignCode: 'CAMPAIGN',
           organizationName: 'My organization',
           masteryRate: null,
         });
@@ -68,12 +67,8 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
         assert.ok(
           screen.getByText('Parcours désactivé par votre organisation.Vous ne pouvez plus envoyer vos résultats.'),
         );
-        assert.ok(screen.getByText(this.intl.t('pages.campaign-participation-overview.card.tag.disabled')));
-        assert.ok(
-          screen.getByText(
-            this.intl.t('pages.campaign-participation-overview.card.started-at', { date: '01/01/2020' }),
-          ),
-        );
+        assert.ok(screen.getByText(t('pages.campaign-participation-overview.card.tag.disabled')));
+        assert.ok(screen.getByText(t('pages.campaign-participation-overview.card.started-at', { date: '01/01/2020' })));
       });
 
       test('should not display go to details link', async function (assert) {
@@ -83,6 +78,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
           disabledAt: '2020-01-03',
           status: 'TO_SHARE',
           campaignTitle: 'My campaign',
+          campaignCode: 'CAMPAIGN',
           organizationName: 'My organization',
           masteryRate: null,
         });
@@ -107,6 +103,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
           status: 'SHARED',
           isShared: true,
           campaignTitle: 'My campaign',
+          campaignCode: 'CAMPAIGN',
           organizationName: 'My organization',
           masteryRate: 0.56,
         });
@@ -130,6 +127,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
             status: 'SHARED',
             isShared: true,
             campaignTitle: 'My campaign',
+            campaignCode: 'CAMPAIGN',
             organizationName: 'My organization',
             masteryRate: 0.56,
           });
@@ -154,6 +152,7 @@ module('Integration | Component | CampaignParticipationOverview | Card | Archive
             status: 'SHARED',
             isShared: true,
             campaignTitle: 'My campaign',
+            campaignCode: 'CAMPAIGN',
             organizationName: 'My organization',
             masteryRate: '0.56',
             totalStagesCount: 4,

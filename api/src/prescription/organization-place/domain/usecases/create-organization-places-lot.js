@@ -1,4 +1,4 @@
-import { OrganizationPlacesLot } from '../models/OrganizationPlacesLot.js';
+import { OrganizationPlacesLotForManagement } from '../models/OrganizationPlacesLotForManagement.js';
 
 const createOrganizationPlacesLot = async function ({
   organizationPlacesLotData,
@@ -9,13 +9,13 @@ const createOrganizationPlacesLot = async function ({
 }) {
   await organizationRepository.get(organizationId);
 
-  const organizationPlaceLot = new OrganizationPlacesLot({
+  const organizationPlacesLot = new OrganizationPlacesLotForManagement({
     ...organizationPlacesLotData,
     organizationId,
     createdBy,
   });
 
-  const id = await organizationPlacesLotRepository.create(organizationPlaceLot);
+  const id = await organizationPlacesLotRepository.create(organizationPlacesLot);
   return await organizationPlacesLotRepository.get(id);
 };
 

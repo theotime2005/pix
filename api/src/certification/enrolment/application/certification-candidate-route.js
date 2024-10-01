@@ -13,11 +13,11 @@ const register = async function (server) {
   server.route([
     {
       method: 'POST',
-      path: '/api/sessions/{id}/certification-candidates',
+      path: '/api/sessions/{sessionId}/certification-candidates',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.sessionId,
+            sessionId: identifiersType.sessionId,
           }),
           payload: Joi.object({
             data: {
@@ -63,7 +63,7 @@ const register = async function (server) {
           },
         ],
         handler: certificationCandidateController.addCandidate,
-        tags: ['api', 'sessions', 'certification-candidates', 'deprecated'],
+        tags: ['api', 'sessions', 'certification-candidates'],
         notes: [
           'Cette route est restreinte aux utilisateurs authentifiés',
           'Elle ajoute un candidat de certification à la session.',
@@ -72,11 +72,11 @@ const register = async function (server) {
     },
     {
       method: 'GET',
-      path: '/api/sessions/{id}/certification-candidates',
+      path: '/api/sessions/{sessionId}/certification-candidates',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.sessionId,
+            sessionId: identifiersType.sessionId,
           }),
         },
         pre: [
@@ -95,11 +95,11 @@ const register = async function (server) {
     },
     {
       method: 'DELETE',
-      path: '/api/sessions/{id}/certification-candidates/{certificationCandidateId}',
+      path: '/api/sessions/{sessionId}/certification-candidates/{certificationCandidateId}',
       config: {
         validate: {
           params: Joi.object({
-            id: identifiersType.sessionId,
+            sessionId: identifiersType.sessionId,
             certificationCandidateId: identifiersType.certificationCandidateId,
           }),
         },
@@ -137,6 +137,37 @@ const register = async function (server) {
         notes: [
           'Cette route est restreinte aux utilisateurs authentifiés',
           'Elle permet à un candidat de valider les instructions de certification',
+        ],
+      },
+    },
+    {
+      method: 'PATCH',
+      path: '/api/sessions/{sessionId}/certification-candidates/{certificationCandidateId}',
+      config: {
+        validate: {
+          params: Joi.object({
+            sessionId: identifiersType.sessionId,
+            certificationCandidateId: identifiersType.certificationCandidateId,
+          }),
+          payload: Joi.object({
+            data: {
+              attributes: {
+                'accessibility-adjustment-needed': Joi.boolean().required(),
+              },
+            },
+          }),
+        },
+        pre: [
+          {
+            method: authorization.verifySessionAuthorization,
+            assign: 'authorizationCheck',
+          },
+        ],
+        handler: certificationCandidateController.updateEnrolledCandidate,
+        tags: ['api', 'sessions', 'certification-candidates'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          "Elle permet de modifier les informations d'un candidat",
         ],
       },
     },

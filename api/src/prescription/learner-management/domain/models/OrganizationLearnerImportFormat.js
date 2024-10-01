@@ -1,8 +1,33 @@
+import Joi from 'joi';
+
+import { EntityValidationError } from '../../../../shared/domain/errors.js';
+
+const organizationLearnerImportFormatSchame = Joi.object({
+  name: Joi.string().required(),
+  config: Joi.object().required(),
+  fileType: Joi.string().valid('csv', 'xml'),
+});
 class OrganizationLearnerImportFormat {
+  /**
+   * @param data
+   * @param {string} data.name
+   * @param {string} data.fileType
+   * @param {Object} data.config
+   */
   constructor({ name, fileType, config } = {}) {
     this.name = name;
     this.fileType = fileType;
     this.config = config;
+
+    this.#validate();
+  }
+
+  #validate() {
+    const { error } = organizationLearnerImportFormatSchame.validate(this, { abortEarly: false });
+
+    if (error) {
+      throw EntityValidationError.fromJoiErrors(error.details);
+    }
   }
 
   #sortObject = (columnA, columnB) => columnA.position - columnB.position;
@@ -27,8 +52,18 @@ class OrganizationLearnerImportFormat {
     return this.config.displayableColumns.slice().sort(this.#sortObject);
   }
 
+  get orderedFilterableColumns() {
+    if (!this.config.filterableColumns) return [];
+
+    return this.config.filterableColumns.slice().sort(this.#sortObject);
+  }
+
   get columnsToDisplay() {
     return this.orderedDisplayabledColumns.map((column) => column.name);
+  }
+
+  get filtersToDisplay() {
+    return this.orderedFilterableColumns.map((column) => column.name);
   }
 
   get extraColumns() {
@@ -39,6 +74,9 @@ class OrganizationLearnerImportFormat {
         key,
       };
     });
+  }
+  get exportableColumns() {
+    return this.config.headers.flatMap(({ name, config }) => (config?.exportable ? { columnName: name } : []));
   }
 
   /**
@@ -52,7 +90,6 @@ class OrganizationLearnerImportFormat {
    * @param {Object} params
    * @returns {Promise<boolean>}
    */
-
   transformReconciliationData(params) {
     return Object.entries(params).reduce((obj, [fieldId, value]) => {
       const reconciliationField = this.config.reconciliationMappingColumns.find((column) => column.fieldId === fieldId);

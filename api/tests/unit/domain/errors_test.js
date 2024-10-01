@@ -28,16 +28,8 @@ describe('Unit | Domain | Errors', function () {
     expect(errors.CertificationCandidateByPersonalInfoTooManyMatchesError).to.exist;
   });
 
-  it('should export a CertificationCandidateCreationOrUpdateError', function () {
-    expect(errors.CertificationCandidateCreationOrUpdateError).to.exist;
-  });
-
   it('should export a CertificationCandidateDeletionError', function () {
     expect(errors.CertificationCandidateDeletionError).to.exist;
-  });
-
-  it('should export a CertificationCandidateMultipleUserLinksWithinSessionError', function () {
-    expect(errors.CertificationCandidateMultipleUserLinksWithinSessionError).to.exist;
   });
 
   it('should export a CertificationCandidatePersonalInfoFieldMissingError', function () {
@@ -252,10 +244,6 @@ describe('Unit | Domain | Errors', function () {
 
   it('should export an OrganizationLearnerCannotBeDissociatedError', function () {
     expect(errors.OrganizationLearnerCannotBeDissociatedError).to.exist;
-  });
-
-  it('should export an AlreadyAcceptedOrCancelledInvitationError', function () {
-    expect(errors.AlreadyAcceptedOrCancelledInvitationError).to.exist;
   });
 
   it('should export an MissingAttributesError', function () {

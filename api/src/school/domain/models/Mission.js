@@ -9,6 +9,10 @@ class Mission {
     thematicId,
     learningObjectives,
     validatedObjectives,
+    introductionMediaUrl,
+    introductionMediaType,
+    introductionMediaAlt,
+    documentationUrl,
     areaCode,
     startedBy,
     content,
@@ -21,6 +25,10 @@ class Mission {
     this.areaCode = areaCode;
     this.learningObjectives = learningObjectives;
     this.validatedObjectives = validatedObjectives;
+    this.introductionMediaUrl = introductionMediaUrl;
+    this.introductionMediaType = introductionMediaType;
+    this.introductionMediaAlt = introductionMediaAlt;
+    this.documentationUrl = documentationUrl;
     this.startedBy = startedBy;
     this.content = new MissionContent(content);
   }
@@ -65,10 +73,12 @@ class MissionContent {
 }
 
 class MissionStep {
-  constructor({ tutorialChallenges = [], trainingChallenges = [], validationChallenges = [] } = {}) {
+  constructor({ name, tutorialChallenges = [], trainingChallenges = [], validationChallenges = [] } = {}) {
+    this.name = name;
     this.tutorialChallenges = tutorialChallenges;
     this.trainingChallenges = trainingChallenges;
     this.validationChallenges = validationChallenges;
   }
 }
-export { Mission };
+
+export { Mission, MissionContent, MissionStep };

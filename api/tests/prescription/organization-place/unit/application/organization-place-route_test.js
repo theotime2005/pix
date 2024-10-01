@@ -33,8 +33,9 @@ describe('Unit | Router | organization-place-route', function () {
         .takeover();
     sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf');
     sinon.stub(usecases, 'findOrganizationPlacesLot');
-    sinon.stub(organizationPlaceController, 'createOrganizationPlacesLot');
     sinon.stub(securityPreHandlers, 'checkAdminMemberHasRoleSuperAdmin');
+    sinon.stub(securityPreHandlers, 'checkUserBelongsToOrganization');
+    sinon.stub(organizationPlaceController, 'createOrganizationPlacesLot');
     sinon.stub(organizationPlaceController, 'getOrganizationPlacesStatistics');
     httpTestServer = new HttpTestServer();
     httpTestServer.setupAuthentication();
@@ -165,13 +166,14 @@ describe('Unit | Router | organization-place-route', function () {
   });
 
   describe('GET /api/organizations/{id}/places-statistics', function () {
-    it('should return HTTP code 200 when organization has the right feature activated', async function () {
+    it('should return HTTP code 200 when organization has the right feature activated and user belong to the orga', async function () {
       // given
       const method = 'GET';
       const url = '/api/organizations/1/place-statistics';
       const payload = {};
 
       checkOrganizationHasPlacesFeature.resolves(true);
+      securityPreHandlers.checkUserBelongsToOrganization.resolves(true);
 
       organizationPlaceController.getOrganizationPlacesStatistics.callsFake((_, h) => h.response('ok').code(200));
 
@@ -185,12 +187,31 @@ describe('Unit | Router | organization-place-route', function () {
       expect(response.statusCode).to.equal(200);
     });
 
+    it('should return HTTP code 403 if user do not belong of the organization', async function () {
+      // given
+      const method = 'GET';
+      const url = '/api/organizations/1/place-statistics';
+      const payload = {};
+
+      securityPreHandlers.checkUserBelongsToOrganization.callsFake(respondWithError);
+      checkOrganizationHasPlacesFeature.resolves(true);
+
+      // when
+      const response = await httpTestServer.request(method, url, payload, null, {
+        authorization: generateValidRequestAuthorizationHeader(),
+      });
+
+      // then
+      expect(response.statusCode).to.equal(403);
+    });
+
     it('should return HTTP code 403 if organization doesnt have the right feature activated', async function () {
       // given
       const method = 'GET';
       const url = '/api/organizations/1/place-statistics';
       const payload = {};
 
+      securityPreHandlers.checkUserBelongsToOrganization.resolves(true);
       checkOrganizationHasPlacesFeature.callsFake(respondWithError);
 
       // when

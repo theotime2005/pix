@@ -2,6 +2,8 @@
 
 <Places::Title />
 
-<Places::CapacityAlert @occupied={{@model.occupied}} @total={{@model.total}} />
-<Places::Statistics @model={{@model}} />
-<Places::PlaceInfo @hasAnonymousSeat={{@model.hasAnonymousSeat}} />
+<Places::PlacesLotAlert @placesLots={{@model.placesLots}} />
+<Places::CapacityAlert @occupied={{@model.statistics.occupied}} @total={{@model.statistics.total}} />
+<Places::Statistics @model={{@model.statistics}} />
+<Places::PlaceInfo @hasAnonymousSeat={{@model.statistics.hasAnonymousSeat}} />
+<Places::PlacesLotTable @placesLots={{@model.placesLots}} />

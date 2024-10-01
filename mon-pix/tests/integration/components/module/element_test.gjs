@@ -1,5 +1,6 @@
 import { render } from '@1024pix/ember-testing-library';
 import { findAll } from '@ember/test-helpers';
+import { t } from 'ember-intl/test-support';
 import ModulixElement from 'mon-pix/components/module/element';
 import { module, test } from 'qunit';
 
@@ -81,9 +82,9 @@ module('Integration | Component | Module | Element', function (hooks) {
 
     // then
     const downloadElement = screen.getByRole('link', {
-      name: this.intl.t('pages.modulix.download.label', { format: '.jpg' }),
+      name: t('pages.modulix.download.label', { format: '.jpg' }),
     });
-    assert.dom(downloadElement).hasText(this.intl.t('pages.modulix.download.button'));
+    assert.dom(downloadElement).hasText(t('pages.modulix.download.button'));
   });
 
   test('should display an element with an embed element', async function (assert) {
@@ -102,6 +103,20 @@ module('Integration | Component | Module | Element', function (hooks) {
 
     // then
     assert.dom(screen.getByTitle(element.title)).exists();
+  });
+
+  test('should display an element with a separator element', async function (assert) {
+    // given
+    const element = {
+      id: '11f382f1-d36a-48d2-a99d-4aa052ab7841',
+      type: 'separator',
+    };
+
+    // when
+    await render(<template><ModulixElement @element={{element}} /></template>);
+
+    // then
+    assert.dom('hr').exists();
   });
 
   test('should display an element with a qcu element', async function (assert) {
@@ -201,5 +216,42 @@ module('Integration | Component | Module | Element', function (hooks) {
 
     // then
     assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).exists();
+  });
+
+  test('should display an element with a flashcards element', async function (assert) {
+    // given
+    const element = {
+      id: '71de6394-ff88-4de3-8834-a40057a50ff4',
+      type: 'flashcards',
+      title: "Introduction à l'adresse e-mail",
+      instruction: '<p>...</p>',
+      introImage: { url: 'https://images.pix.fr/modulix/placeholder-details.svg' },
+      cards: [
+        {
+          id: 'e1de6394-ff88-4de3-8834-a40057a50ff4',
+          recto: {
+            image: {
+              url: 'https://images.pix.fr/modulix/bien-ecrire-son-adresse-mail-explication-les-parties-dune-adresse-mail.svg',
+            },
+            text: "A quoi sert l'arobase dans mon adresse email ?",
+          },
+          verso: {
+            image: { url: 'https://images.pix.fr/modulix/didacticiel/ordi-spatial.svg' },
+            text: "Parce que c'est joli",
+          },
+        },
+      ],
+    };
+    const getLastCorrectionForElementStub = () => {};
+
+    // when
+    const screen = await render(
+      <template>
+        <ModulixElement @element={{element}} @getLastCorrectionForElement={{getLastCorrectionForElementStub}} />
+      </template>,
+    );
+
+    // then
+    assert.dom(screen.getByRole('button', { name: 'Voir la réponse' })).exists();
   });
 });

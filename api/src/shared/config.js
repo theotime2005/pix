@@ -100,6 +100,12 @@ const configuration = (function () {
       secret: process.env.AUTH_SECRET,
       accessTokenLifespanMs: ms(process.env.ACCESS_TOKEN_LIFESPAN || '20m'),
       refreshTokenLifespanMs: ms(process.env.REFRESH_TOKEN_LIFESPAN || '7d'),
+      refreshTokenLifespanMsByScope: {
+        'mon-pix': ms(process.env.REFRESH_TOKEN_LIFESPAN_MON_PIX || '7d'),
+        'pix-orga': ms(process.env.REFRESH_TOKEN_LIFESPAN_PIX_ORGA || '7d'),
+        'pix-certif': ms(process.env.REFRESH_TOKEN_LIFESPAN_PIX_CERTIF || '7d'),
+        'pix-admin': ms(process.env.REFRESH_TOKEN_LIFESPAN_PIX_ADMIN || '7d'),
+      },
       tokenForCampaignResultLifespan: process.env.CAMPAIGN_RESULT_ACCESS_TOKEN_LIFESPAN || '1h',
       tokenForStudentReconciliationLifespan: '1h',
       passwordResetTokenLifespan: '1h',
@@ -184,25 +190,27 @@ const configuration = (function () {
       pixCertifScoBlockedAccessDateCollege: process.env.PIX_CERTIF_SCO_BLOCKED_ACCESS_DATE_COLLEGE,
       scheduleComputeOrganizationLearnersCertificability: {
         cron: process.env.SCHEDULE_COMPUTE_LEARNERS_CERTIFICABILITY_JOB_CRON || '0 21 * * *',
-        chunkSize: process.env.SCHEDULE_COMPUTE_LEARNERS_CERTIFICABILITY_CHUNK_SIZE || 50000,
+        chunkSize: process.env.SCHEDULE_COMPUTE_LEARNERS_CERTIFICABILITY_CHUNK_SIZE || 1000,
       },
       scoAccountRecoveryKeyLifetimeMinutes: process.env.SCO_ACCOUNT_RECOVERY_KEY_LIFETIME_MINUTES,
     },
     featureToggles: {
       areV3InfoScreensEnabled: toBoolean(process.env.FT_ENABLE_V3_INFO_SCREENS),
+      isV3EligibilityCheckEnabled: toBoolean(process.env.FT_ENABLE_V3_ELIGIBILITY_CHECK),
+      deprecatePoleEmploiPushNotification: toBoolean(process.env.DEPRECATE_PE_PUSH_NOTIFICATION),
       isAlwaysOkValidateNextChallengeEndpointEnabled: toBoolean(
         process.env.FT_ALWAYS_OK_VALIDATE_NEXT_CHALLENGE_ENDPOINT,
       ),
-      isPix1dEnabled: toBoolean(process.env.FT_PIX_1D_ENABLED),
-      isPixPlusLowerLeverEnabled: toBoolean(process.env.FT_ENABLE_PIX_PLUS_LOWER_LEVEL),
       isCertificationTokenScopeEnabled: toBoolean(process.env.FT_ENABLE_CERTIF_TOKEN_SCOPE),
-      deprecatePoleEmploiPushNotification: toBoolean(process.env.DEPRECATE_PE_PUSH_NOTIFICATION),
-      isTextToSpeechButtonEnabled: toBoolean(process.env.FT_ENABLE_TEXT_TO_SPEECH_BUTTON),
       isNeedToAdjustCertificationAccessibilityEnabled: toBoolean(
         process.env.FT_ENABLE_NEED_TO_ADJUST_CERTIFICATION_ACCESSIBILITY,
       ),
-      showNewResultPage: toBoolean(process.env.FT_SHOW_NEW_RESULT_PAGE),
+      isNewAuthenticationDesignEnabled: toBoolean(process.env.FT_NEW_AUTHENTICATION_DESIGN_ENABLED),
+      isPix1dEnabled: toBoolean(process.env.FT_PIX_1D_ENABLED),
+      isPixPlusLowerLeverEnabled: toBoolean(process.env.FT_ENABLE_PIX_PLUS_LOWER_LEVEL),
+      isTextToSpeechButtonEnabled: toBoolean(process.env.FT_ENABLE_TEXT_TO_SPEECH_BUTTON),
       showExperimentalMissions: toBoolean(process.env.FT_SHOW_EXPERIMENTAL_MISSIONS),
+      showNewResultPage: toBoolean(process.env.FT_SHOW_NEW_RESULT_PAGE),
     },
     hapi: {
       options: {},
@@ -325,9 +333,6 @@ const configuration = (function () {
       tokenLifespan: '1d',
       payload: 'PixResetPassword',
     },
-    temporaryCompanionStorage: {
-      expirationDelaySeconds: parseInt(process.env.TEMPORARY_COMPANION_STORAGE_EXP_DELAY_SECONDS, 10) || 45,
-    },
     temporarySessionsStorageForMassImport: {
       expirationDelaySeconds:
         parseInt(process.env.SESSIONS_MASS_IMPORT_TEMPORARY_STORAGE_EXP_DELAY_SECONDS, 10) || 7200,
@@ -392,6 +397,7 @@ const configuration = (function () {
     config.features.pixCertifScoBlockedAccessDateCollege = null;
 
     config.featureToggles.areV3InfoScreensEnabled = false;
+    config.featureToggles.isV3EligibilityCheckEnabled = false;
     config.featureToggles.isAlwaysOkValidateNextChallengeEndpointEnabled = false;
     config.featureToggles.isPix1dEnabled = true;
     config.featureToggles.isCertificationTokenScopeEnabled = false;

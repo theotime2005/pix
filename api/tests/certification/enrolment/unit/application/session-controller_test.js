@@ -1,9 +1,11 @@
+import { services } from '../../../../../src/certification/enrolment/application/services/index.js';
 import { sessionController } from '../../../../../src/certification/enrolment/application/session-controller.js';
 import { SessionEnrolment } from '../../../../../src/certification/enrolment/domain/models/SessionEnrolment.js';
 import { usecases } from '../../../../../src/certification/enrolment/domain/usecases/index.js';
+import { normalize } from '../../../../../src/shared/infrastructure/utils/string-utils.js';
 import { expect, hFake, sinon } from '../../../../test-helper.js';
 
-describe('Unit | Controller | session-controller', function () {
+describe('Certification | Enrolment | Unit | Application | Controller | session-controller', function () {
   describe('#createSession', function () {
     let request;
     let expectedSession;
@@ -89,22 +91,17 @@ describe('Unit | Controller | session-controller', function () {
   });
 
   describe('#update', function () {
-    let request, updatedSession, updateSessionArgs;
+    let request, updatedSession;
 
     beforeEach(function () {
       request = {
         auth: { credentials: { userId: 1 } },
-        params: { id: 1 },
+        params: { sessionId: 345 },
         payload: {},
       };
 
       updatedSession = {
-        id: request.params.id,
-      };
-
-      updateSessionArgs = {
-        userId: request.auth.credentials.userId,
-        session: updatedSession,
+        id: request.params.sessionId,
       };
 
       sinon.stub(usecases, 'updateSession');
@@ -114,7 +111,9 @@ describe('Unit | Controller | session-controller', function () {
       // given
       const sessionSerializer = { serialize: sinon.stub(), deserialize: sinon.stub() };
       sessionSerializer.deserialize.withArgs(request.payload).returns({});
-      usecases.updateSession.withArgs(updateSessionArgs).resolves(updatedSession);
+      usecases.updateSession
+        .withArgs({ userId: request.auth.credentials.userId, session: updatedSession })
+        .resolves(updatedSession);
       sessionSerializer.serialize.withArgs(updatedSession).returns(updatedSession);
 
       // when
@@ -132,7 +131,7 @@ describe('Unit | Controller | session-controller', function () {
       const userId = 1;
       sinon.stub(usecases, 'deleteSession');
       const request = {
-        params: { id: sessionId },
+        params: { sessionId },
         auth: {
           credentials: {
             userId,
@@ -161,7 +160,7 @@ describe('Unit | Controller | session-controller', function () {
       request = {
         auth: { credentials: { userId } },
         params: {
-          id: sessionId,
+          sessionId,
         },
       };
     });
@@ -182,6 +181,67 @@ describe('Unit | Controller | session-controller', function () {
 
         // then
         expect(response).to.deep.equal(serializedSession);
+      });
+    });
+  });
+
+  describe('#createCandidateParticipation', function () {
+    it('should return candidate information', async function () {
+      // given
+      const sessionId = 123;
+      const userId = 274939274;
+      const firstName = 'Jeanne';
+      const lastName = 'Serge';
+      const birthdate = '2020-10-10';
+
+      const request = {
+        payload: {
+          data: {
+            attributes: {
+              'first-name': firstName,
+              'last-name': lastName,
+              birthdate,
+            },
+          },
+        },
+        auth: { credentials: { userId } },
+        params: { sessionId },
+      };
+      const candidate = {
+        firstName,
+        lastName,
+        birthdate,
+        sessionId,
+        hasSeenCertificationInstructions: false,
+      };
+
+      sinon.stub(services, 'registerCandidateParticipation');
+      services.registerCandidateParticipation
+        .withArgs({
+          userId,
+          sessionId,
+          firstName,
+          lastName,
+          birthdate,
+          normalizeStringFnc: normalize,
+        })
+        .resolves(candidate);
+
+      // when
+      const response = await sessionController.createCandidateParticipation(request, hFake);
+
+      // then
+      expect(response.source).to.deep.equal({
+        data: {
+          attributes: {
+            birthdate,
+            'first-name': firstName,
+            'has-seen-certification-instructions': false,
+            'last-name': lastName,
+            'session-id': sessionId,
+          },
+          type: 'certification-candidates',
+        },
       });
     });
   });

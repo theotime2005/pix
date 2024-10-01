@@ -1,8 +1,8 @@
 import { PoleEmploiSending } from '../../../src/shared/domain/models/PoleEmploiSending.js';
+import { logger } from '../../../src/shared/infrastructure/utils/logger.js';
 import { PoleEmploiPayload } from '../../infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
 import * as httpErrorsHelper from '../../infrastructure/http/errors-helper.js';
 import { httpAgent } from '../../infrastructure/http/http-agent.js';
-import * as monitoringTools from '../../infrastructure/monitoring-tools.js';
 
 const sendSharedParticipationResultsToPoleEmploi = async ({
   campaignParticipationId,
@@ -20,7 +20,7 @@ const sendSharedParticipationResultsToPoleEmploi = async ({
   notifierDependencies = {
     httpAgent,
     httpErrorsHelper,
-    monitoringTools,
+    logger,
   },
 }) => {
   const participation = await campaignParticipationRepository.get(campaignParticipationId);

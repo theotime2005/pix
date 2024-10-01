@@ -31,6 +31,7 @@
 @import 'components/certifications-list';
 @import 'components/certifications-list-item';
 @import 'components/certifications/certification-ender';
+@import 'components/companion/blocker';
 @import 'components/congratulations-certification-banner';
 @import 'components/challenge-actions';
 @import 'components/challenge-illustration';
@@ -45,6 +46,7 @@
 
 /* we need this to be before competence-card-default because of a mix
 of an adaptative/mobile-first approach — refactoring is welcome here */
+@import 'components/common/responsive-list-wide-wrap';
 @import 'components/competence-card-mobile';
 @import 'components/competence-card-default';
 @import 'components/competence-card/list';
@@ -61,19 +63,21 @@ of an adaptative/mobile-first approach — refactoring is welcome here */
 @import 'components/login-or-register';
 @import 'components/module/beta-banner';
 @import 'components/module/details';
-@import 'components/module/download';
 @import 'components/module/grain';
 @import 'components/module/grain/tag';
 @import 'components/module/objectives';
 @import 'components/module/passage';
 @import 'components/module/recap';
 @import 'components/module/stepper';
-@import 'components/module/image';
-@import 'components/module/video';
+@import 'components/module/download';
 @import 'components/module/embed';
+@import 'components/module/flashcards';
+@import 'components/module/image';
 @import 'components/module/qcu';
 @import 'components/module/qcm';
 @import 'components/module/qrocm';
+@import 'components/module/separator';
+@import 'components/module/video';
 @import 'components/navbar-burger-menu';
 @import 'components/navbar-desktop-menu';
 @import 'components/navbar-desktop-header';
@@ -102,6 +106,7 @@ of an adaptative/mobile-first approach — refactoring is welcome here */
 @import 'components/result-item';
 @import 'components/rounded-panel';
 @import 'components/scorecard-details';
+@import 'components/show-more-text';
 @import 'components/signup-form';
 @import 'components/sitemap/content';
 @import 'components/timed-challenge-instructions';
@@ -126,6 +131,10 @@ of an adaptative/mobile-first approach — refactoring is welcome here */
 @import 'components/skip-link';
 @import 'components/campaigns';
 @import 'components/modulix/feedback';
+
+/* Styles for colocated components */
+@import 'authentication-layout';
+@import 'authentication/signin-form';
 
 /* pages */
 @import 'pages/assessment-results';

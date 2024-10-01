@@ -130,7 +130,7 @@ describe('Certification | Session Management | Acceptance | Application | Route 
     });
   });
 
-  describe('GET /api/admin/sessions/{id}', function () {
+  describe('GET /api/admin/sessions/{sessionId}', function () {
     let expectedJurySession;
     let certificationCenter;
 
@@ -233,6 +233,65 @@ describe('Certification | Session Management | Acceptance | Application | Route 
 
         // then
         expect(response.statusCode).to.equal(401);
+      });
+    });
+  });
+
+  describe('GET /sessions/{sessionId}/management', function () {
+    it('should respond with 200', async function () {
+      // given
+      const server = await createServer();
+      const userId = databaseBuilder.factory.buildUser().id;
+
+      const { id: certificationCenterId, name: certificationCenter } = databaseBuilder.factory.buildCertificationCenter(
+        { id: 123 },
+      );
+
+      const sessionId = databaseBuilder.factory.buildSession({
+        id: 456,
+        certificationCenterId,
+        certificationCenter,
+      }).id;
+      databaseBuilder.factory.buildCertificationCenterMembership({ userId, certificationCenterId });
+
+      await databaseBuilder.commit();
+      const options = {
+        headers: {
+          authorization: generateValidRequestAuthorizationHeader(userId),
+        },
+        method: 'GET',
+        url: `/api/sessions/${sessionId}/management`,
+      };
+
+      // when
+      const response = await server.inject(options);
+
+      // then
+      expect(response.statusCode).to.equal(200);
+      expect(JSON.parse(response.payload)).to.deep.equal({
+        data: {
+          type: 'session-managements',
+          id: '456',
+          relationships: {
+            'certification-reports': {
+              links: {
+                related: '/api/sessions/456/certification-reports',
+              },
+            },
+          },
+          attributes: {
+            status: 'created',
+            'examiner-global-comment': '',
+            'has-incident': false,
+            'has-joining-issue': false,
+            'finalized-at': null,
+            'results-sent-to-prescriber-at': null,
+            'published-at': null,
+            'has-supervisor-access': false,
+            'has-some-clea-acquired': false,
+            version: 2,
+          },
+        },
       });
     });
   });

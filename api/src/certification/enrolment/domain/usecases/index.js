@@ -2,13 +2,13 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import * as organizationRepository from '../../../../shared/infrastructure/repositories/organization-repository.js';
+import * as languageService from '../../../../shared/domain/services/language-service.js';
+import * as placementProfileService from '../../../../shared/domain/services/placement-profile-service.js';
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
 import * as attendanceSheetPdfUtils from '../../../enrolment/infrastructure/utils/pdf/attendance-sheet-pdf.js';
 import * as certificationBadgesService from '../../../shared/domain/services/certification-badges-service.js';
 import * as certificationCpfService from '../../../shared/domain/services/certification-cpf-service.js';
-import * as temporaryCompanionStorageService from '../../../shared/domain/services/temporary-companion-storage-service.js';
 import * as sessionValidator from '../../../shared/domain/validators/session-validator.js';
 import { enrolmentRepositories } from '../../infrastructure/repositories/index.js';
 import * as certificationCandidatesOdsService from '../services/certification-candidates-ods-service.js';
@@ -30,14 +30,15 @@ import * as temporarySessionsStorageForMassImportService from '../services/tempo
  * @typedef {import('../../infrastructure/repositories/index.js').CountryRepository} CountryRepository
  * @typedef {import('../../infrastructure/repositories/index.js').ScoCertificationCandidateRepository} ScoCertificationCandidateRepository
  * @typedef {import('../../infrastructure/repositories/index.js').OrganizationLearnerRepository} OrganizationLearnerRepository
- * @typedef {import('../../infrastructure/repositories/index.js').OrganizationRepository} OrganizationRepository
+ * @typedef {import('../../infrastructure/repositories/index.js').UserRepository} UserRepository
  * @typedef {import('../../../shared/domain/validators/session-validator.js')} SessionValidator
  * @typedef {import('../../../shared/domain/services/certification-cpf-service.js')} CertificationCpfService
  * @typedef {import('../../infrastructure/utils/pdf/attendance-sheet-pdf.js')} AttendanceSheetPdfUtils
  * @typedef {import('../services/temporary-sessions-storage-for-mass-import-service.js').TemporarySessionsStorageForMassImportService} TemporarySessionsStorageForMassImportService
- * @typedef {import('../../../shared/domain/services/temporary-companion-storage-service.js')} TemporaryCompanionStorageService
  * @typedef {import('../../../shared/domain/services/certification-badges-service.js')} CertificationBadgesService
  * @typedef {import('../services/certification-candidates-ods-service.js')} CertificationCandidatesOdsService
+ * @typedef {import('../../../../shared/domain/services/placement-profile-service.js')} PlacementProfileService
+ * @typedef {import('../../../../shared/domain/services/language-service.js')} languageService
  **/
 
 /**
@@ -56,16 +57,17 @@ import * as temporarySessionsStorageForMassImportService from '../services/tempo
  * @typedef {SessionForAttendanceSheetRepository} SessionForAttendanceSheetRepository
  * @typedef {CountryRepository} CountryRepository
  * @typedef {OrganizationLearnerRepository} OrganizationLearnerRepository
- * @typedef {OrganizationRepository} OrganizationRepository
+ * @typedef {UserRepository} UserRepository
  * @typedef {ScoCertificationCandidateRepository} ScoCertificationCandidateRepository
  * @typedef {certificationCpfService} CertificationCpfService
  * @typedef {SessionForInvigilatorKitRepository} SessionForInvigilatorKitRepository
  * @typedef {TemporarySessionsStorageForMassImportService} TemporarySessionsStorageForMassImportService
  * @typedef {SessionValidator} SessionValidator
  * @typedef {AttendanceSheetPdfUtils} AttendanceSheetPdfUtils
- * @typedef {TemporaryCompanionStorageService} TemporaryCompanionStorageService
  * @typedef {CertificationBadgesService} CertificationBadgesService
  * @typedef {CertificationCandidatesOdsService} CertificationCandidatesOdsService
+ * @typedef {PlacementProfileService} PlacementProfileService
+ * @typedef {LanguageService} LanguageService
  **/
 const dependencies = {
   certificationBadgesService,
@@ -76,9 +78,9 @@ const dependencies = {
   sessionValidator,
   attendanceSheetPdfUtils,
   certificationCpfService,
-  temporaryCompanionStorageService,
-  organizationRepository,
   certificationCandidatesOdsService,
+  placementProfileService,
+  languageService,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));

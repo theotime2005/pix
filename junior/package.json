@@ -1,6 +1,6 @@
 {
   "name": "junior",
-  "version": "4.200.0",
+  "version": "4.218.0",
   "private": false,
   "description": "Version de Pix à destination des élèves du premier degré",
   "repository": {
@@ -10,7 +10,7 @@
   "license": "AGPL-3.0",
   "author": "GIP Pix",
   "engines": {
-    "node": "^20.16.0"
+    "node": "^20.17.0"
   },
   "directories": {
     "doc": "doc",
@@ -36,9 +36,9 @@
   },
   "devDependencies": {
     "@1024pix/ember-testing-library": "^3.0.6",
-    "@1024pix/eslint-config": "^1.3.7",
-    "@1024pix/pix-ui": "^46.12.18",
-    "@1024pix/stylelint-config": "^5.1.16",
+    "@1024pix/eslint-config": "^1.3.8",
+    "@1024pix/pix-ui": "^46.12.27",
+    "@1024pix/stylelint-config": "^5.1.19",
     "@1024pix/web-components": "^0.2.6",
     "@babel/eslint-parser": "^7.11.0",
     "@ember/optional-features": "^2.0.0",

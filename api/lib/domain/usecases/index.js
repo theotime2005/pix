@@ -3,19 +3,19 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import * as complementaryCertificationCourseRepository from '../../../src/certification/complementary-certification/infrastructure/repositories/complementary-certification-course-repository.js';
 import * as complementaryCertificationRepository from '../../../src/certification/complementary-certification/infrastructure/repositories/complementary-certification-repository.js';
-import * as targetProfileHistoryRepository from '../../../src/certification/complementary-certification/infrastructure/repositories/target-profile-history-repository.js';
 import * as sessionCodeService from '../../../src/certification/enrolment/domain/services/session-code-service.js';
 import { getCenterForAdmin } from '../../../src/certification/enrolment/domain/usecases/get-center-for-admin.js';
 import * as centerRepository from '../../../src/certification/enrolment/infrastructure/repositories/center-repository.js';
 import * as certificationCandidateRepository from '../../../src/certification/enrolment/infrastructure/repositories/certification-candidate-repository.js';
 import * as certificationCpfCityRepository from '../../../src/certification/enrolment/infrastructure/repositories/certification-cpf-city-repository.js';
 import * as sessionEnrolmentRepository from '../../../src/certification/enrolment/infrastructure/repositories/session-repository.js';
+import * as certificationEvaluationCandidateRepository from '../../../src/certification/evaluation/infrastructure/repositories/certification-candidate-repository.js';
 import * as flashAlgorithmService from '../../../src/certification/flash-certification/domain/services/algorithm-methods/flash.js';
 import * as certificationOfficerRepository from '../../../src/certification/session-management/infrastructure/repositories/certification-officer-repository.js';
 import * as finalizedSessionRepository from '../../../src/certification/session-management/infrastructure/repositories/finalized-session-repository.js';
 import * as juryCertificationRepository from '../../../src/certification/session-management/infrastructure/repositories/jury-certification-repository.js';
+import * as juryCertificationSummaryRepository from '../../../src/certification/session-management/infrastructure/repositories/jury-certification-summary-repository.js';
 import * as jurySessionRepository from '../../../src/certification/session-management/infrastructure/repositories/jury-session-repository.js';
 import * as sessionRepository from '../../../src/certification/session-management/infrastructure/repositories/session-repository.js';
 import * as sessionSummaryRepository from '../../../src/certification/session-management/infrastructure/repositories/session-summary-repository.js';
@@ -48,13 +48,14 @@ import * as stageRepository from '../../../src/evaluation/infrastructure/reposit
 import { authenticationSessionService } from '../../../src/identity-access-management/domain/services/authentication-session.service.js';
 import { OidcAuthenticationServiceRegistry } from '../../../src/identity-access-management/domain/services/oidc-authentication-service-registry.js';
 import { pixAuthenticationService } from '../../../src/identity-access-management/domain/services/pix-authentication-service.js';
-import { refreshTokenService } from '../../../src/identity-access-management/domain/services/refresh-token-service.js';
 import * as resetPasswordService from '../../../src/identity-access-management/domain/services/reset-password.service.js';
 import { scoAccountRecoveryService } from '../../../src/identity-access-management/domain/services/sco-account-recovery.service.js';
 import { accountRecoveryDemandRepository } from '../../../src/identity-access-management/infrastructure/repositories/account-recovery-demand.repository.js';
 import * as authenticationMethodRepository from '../../../src/identity-access-management/infrastructure/repositories/authentication-method.repository.js';
 import { emailValidationDemandRepository } from '../../../src/identity-access-management/infrastructure/repositories/email-validation-demand.repository.js';
 import * as oidcProviderRepository from '../../../src/identity-access-management/infrastructure/repositories/oidc-provider-repository.js';
+import { organizationLearnerIdentityRepository } from '../../../src/identity-access-management/infrastructure/repositories/organization-learner-identity.repository.js';
+import { refreshTokenRepository } from '../../../src/identity-access-management/infrastructure/repositories/refresh-token.repository.js';
 import { resetPasswordDemandRepository } from '../../../src/identity-access-management/infrastructure/repositories/reset-password-demand.repository.js';
 import * as userRepository from '../../../src/identity-access-management/infrastructure/repositories/user.repository.js';
 import { userEmailRepository } from '../../../src/identity-access-management/infrastructure/repositories/user-email.repository.js';
@@ -67,11 +68,12 @@ import * as campaignAssessmentParticipationRepository from '../../../src/prescri
 import * as campaignAssessmentParticipationResultRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-assessment-participation-result-repository.js';
 import * as campaignParticipationBCRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-participation-repository.js';
 import * as campaignProfileRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-profile-repository.js';
-import { poleEmploiParticipationCompletedJobRepository } from '../../../src/prescription/campaign-participation/infrastructure/repositories/jobs/pole-emploi-participation-completed-job-repository.js';
+import { participationCompletedJobRepository } from '../../../src/prescription/campaign-participation/infrastructure/repositories/jobs/participation-completed-job-repository.js';
 import * as supOrganizationLearnerRepository from '../../../src/prescription/learner-management/infrastructure/repositories/sup-organization-learner-repository.js';
 import * as organizationLearnerActivityRepository from '../../../src/prescription/organization-learner/infrastructure/repositories/organization-learner-activity-repository.js';
 import * as registrationOrganizationLearnerRepository from '../../../src/prescription/organization-learner/infrastructure/repositories/registration-organization-learner-repository.js';
 import * as targetProfileAdministrationRepository from '../../../src/prescription/target-profile/infrastructure/repositories/target-profile-administration-repository.js';
+import * as targetProfileSummaryForAdminRepository from '../../../src/prescription/target-profile/infrastructure/repositories/target-profile-summary-for-admin-repository.js';
 import * as activityAnswerRepository from '../../../src/school/infrastructure/repositories/activity-answer-repository.js';
 import * as missionRepository from '../../../src/school/infrastructure/repositories/mission-repository.js';
 import * as schoolRepository from '../../../src/school/infrastructure/repositories/school-repository.js';
@@ -105,6 +107,8 @@ import { importNamedExportsFromDirectory } from '../../../src/shared/infrastruct
 import * as certificationCenterInvitationService from '../../../src/team/domain/services/certification-center-invitation-service.js';
 import { organizationInvitationService } from '../../../src/team/domain/services/organization-invitation.service.js';
 import * as certificationCenterInvitationRepository from '../../../src/team/infrastructure/repositories/certification-center-invitation-repository.js';
+import { certificationCenterInvitedUserRepository } from '../../../src/team/infrastructure/repositories/certification-center-invited-user.repository.js';
+import { certificationCenterMembershipRepository } from '../../../src/team/infrastructure/repositories/certification-center-membership.repository.js';
 import { organizationInvitationRepository } from '../../../src/team/infrastructure/repositories/organization-invitation.repository.js';
 import { userOrgaSettingsRepository } from '../../../src/team/infrastructure/repositories/user-orga-settings-repository.js';
 import * as certificationChallengesService from '../../domain/services/certification-challenges-service.js';
@@ -123,8 +127,6 @@ import { campaignParticipationResultRepository } from '../../infrastructure/repo
 import * as campaignRepository from '../../infrastructure/repositories/campaign-repository.js';
 import * as certifiableProfileForLearningContentRepository from '../../infrastructure/repositories/certifiable-profile-for-learning-content-repository.js';
 import * as certificationCenterForAdminRepository from '../../infrastructure/repositories/certification-center-for-admin-repository.js';
-import * as certificationCenterInvitedUserRepository from '../../infrastructure/repositories/certification-center-invited-user-repository.js';
-import * as certificationCenterMembershipRepository from '../../infrastructure/repositories/certification-center-membership-repository.js';
 import * as certificationPointOfContactRepository from '../../infrastructure/repositories/certification-point-of-contact-repository.js';
 import * as certificationRepository from '../../infrastructure/repositories/certification-repository.js';
 import * as complementaryCertificationCourseResultRepository from '../../infrastructure/repositories/complementary-certification-course-result-repository.js';
@@ -135,7 +137,6 @@ import * as frameworkRepository from '../../infrastructure/repositories/framewor
 import { repositories } from '../../infrastructure/repositories/index.js';
 import { certificationCompletedJobRepository } from '../../infrastructure/repositories/jobs/certification-completed-job-repository.js';
 import { userAnonymizedEventLoggingJobRepository } from '../../infrastructure/repositories/jobs/user-anonymized-event-logging-job-repository.js';
-import * as juryCertificationSummaryRepository from '../../infrastructure/repositories/jury-certification-summary-repository.js';
 import * as knowledgeElementRepository from '../../infrastructure/repositories/knowledge-element-repository.js';
 import * as learningContentRepository from '../../infrastructure/repositories/learning-content-repository.js';
 import * as membershipRepository from '../../infrastructure/repositories/membership-repository.js';
@@ -149,7 +150,6 @@ import * as studentRepository from '../../infrastructure/repositories/student-re
 import * as targetProfileForUpdateRepository from '../../infrastructure/repositories/target-profile-for-update-repository.js';
 import * as targetProfileRepository from '../../infrastructure/repositories/target-profile-repository.js';
 import * as targetProfileShareRepository from '../../infrastructure/repositories/target-profile-share-repository.js';
-import * as targetProfileSummaryForAdminRepository from '../../infrastructure/repositories/target-profile-summary-for-admin-repository.js';
 import * as targetProfileTrainingRepository from '../../infrastructure/repositories/target-profile-training-repository.js';
 import * as thematicRepository from '../../infrastructure/repositories/thematic-repository.js';
 import * as tubeRepository from '../../infrastructure/repositories/tube-repository.js';
@@ -176,6 +176,7 @@ function requirePoleEmploiNotifier() {
  * @typedef {certificationBadgesService} CertificationBadgesService
  * @typedef {certificationCenterRepository} CertificationCenterRepository
  * @typedef {certificationRepository} CertificationRepository
+ * @typedef {certificationEvaluationCandidateRepository} CertificationEvaluationCandidateRepository
  * @typedef {complementaryCertificationRepository} ComplementaryCertificationRepository
  * @typedef {complementaryCertificationCourseRepository} ComplementaryCertificationCourseRepository
  * @typedef {finalizedSessionRepository} FinalizedSessionRepository
@@ -189,8 +190,13 @@ function requirePoleEmploiNotifier() {
  * @typedef {complementaryCertificationHabilitationRepository} ComplementaryCertificationHabilitationRepository
  * @typedef {dataProtectionOfficerRepository} DataProtectionOfficerRepository
  * @typedef {userAnonymizedEventLoggingJobRepository} UserAnonymizedEventLoggingJobRepository
+ * @typedef {certificationCandidateRepository} CertificationCandidateRepository
+ * @typedef {certificationCourseRepository} CertificationCourseRepository
+ * @typedef {userRepository} UserRepository
+ * @typedef {certificationChallengesService} CertificationChallengesService
+ * @typedef {verifyCertificateCodeService} VerifyCertificateCodeService
+ * @typedef {assessmentRepository} AssessmentRepository
  */
-
 const dependencies = {
   accountRecoveryDemandRepository,
   certificationCompletedJobRepository,
@@ -210,7 +216,7 @@ const dependencies = {
   campaignAssessmentParticipationResultRepository,
   campaignManagementRepository,
   campaignParticipationBCRepository,
-  poleEmploiParticipationCompletedJobRepository,
+  participationCompletedJobRepository,
   campaignParticipationOverviewRepository,
   campaignParticipationRepository,
   campaignParticipationResultRepository,
@@ -221,6 +227,7 @@ const dependencies = {
   certificationAssessmentRepository,
   certificationBadgesService,
   certificationCandidateRepository,
+  certificationEvaluationCandidateRepository,
   certificationCenterForAdminRepository,
   certificationCenterInvitationRepository,
   certificationCenterInvitationService,
@@ -241,7 +248,6 @@ const dependencies = {
   codeUtils,
   competenceEvaluationRepository,
   competenceRepository,
-  complementaryCertificationCourseRepository,
   complementaryCertificationCourseResultRepository,
   complementaryCertificationHabilitationRepository,
   complementaryCertificationRepository,
@@ -278,6 +284,7 @@ const dependencies = {
   organizationInvitationRepository,
   organizationInvitationService,
   organizationLearnerActivityRepository,
+  organizationLearnerIdentityRepository,
   organizationLearnerRepository,
   organizationMemberIdentityRepository,
   organizationRepository,
@@ -292,7 +299,7 @@ const dependencies = {
   placementProfileService,
   poleEmploiNotifier: requirePoleEmploiNotifier(),
   poleEmploiSendingRepository,
-  refreshTokenService,
+  refreshTokenRepository,
   registrationOrganizationLearnerRepository,
   resetPasswordDemandRepository,
   resetPasswordService,
@@ -319,7 +326,6 @@ const dependencies = {
   targetProfileAdministrationRepository,
   targetProfileForAdminRepository,
   targetProfileForUpdateRepository,
-  targetProfileHistoryRepository,
   targetProfileRepository,
   targetProfileShareRepository,
   targetProfileSummaryForAdminRepository,

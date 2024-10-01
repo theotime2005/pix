@@ -39,22 +39,6 @@ const reconcileScoOrganizationLearnerManually = async function (
   return response;
 };
 
-const reconcileScoOrganizationLearnerAutomatically = async function (
-  request,
-  h,
-  dependencies = { scoOrganizationLearnerSerializer },
-) {
-  const authenticatedUserId = request.auth.credentials.userId;
-  const payload = request.payload.data.attributes;
-  const campaignCode = payload['campaign-code'];
-  const organizationLearner = await usecases.reconcileScoOrganizationLearnerAutomatically({
-    userId: authenticatedUserId,
-    campaignCode,
-  });
-
-  return h.response(dependencies.scoOrganizationLearnerSerializer.serializeIdentity(organizationLearner));
-};
-
 const generateUsername = async function (request, h, dependencies = { scoOrganizationLearnerSerializer }) {
   const payload = request.payload.data.attributes;
   const { 'campaign-code': campaignCode } = payload;
@@ -180,14 +164,14 @@ const checkScoAccountRecovery = async function (
   );
 };
 
-const updateOrganizationLearnersPassword = async function (request, h) {
+const batchGenerateOrganizationLearnersUsernameWithTemporaryPassword = async function (request, h) {
   const payload = request.payload.data.attributes;
   const userId = request.auth.credentials.userId;
   const organizationId = payload['organization-id'];
   const organizationLearnersId = payload['organization-learners-id'];
 
   const generatedCsvContent = await DomainTransaction.execute(async () => {
-    const organizationLearnersPasswordResets = await usecases.resetOrganizationLearnersPassword({
+    const organizationLearnersPasswordResets = await usecases.generateOrganizationLearnersUsernameAndTemporaryPassword({
       userId,
       organizationId,
       organizationLearnersId,
@@ -208,14 +192,13 @@ const updateOrganizationLearnersPassword = async function (request, h) {
 
 const scoOrganizationLearnerController = {
   reconcileScoOrganizationLearnerManually,
-  reconcileScoOrganizationLearnerAutomatically,
   generateUsername,
   createAndReconcileUserToOrganizationLearner,
   createUserAndReconcileToOrganizationLearnerFromExternalUser,
   updatePassword,
   generateUsernameWithTemporaryPassword,
   checkScoAccountRecovery,
-  updateOrganizationLearnersPassword,
+  batchGenerateOrganizationLearnersUsernameWithTemporaryPassword,
 };
 
 export { scoOrganizationLearnerController };

@@ -3,9 +3,10 @@ import ENV from 'mon-pix/config/environment';
 import { decodeToken } from 'mon-pix/helpers/jwt';
 import RSVP from 'rsvp';
 
-export default OAuth2PasswordGrant.extend({
-  serverTokenEndpoint: `${ENV.APP.API_HOST}/api/token`,
-  serverTokenRevocationEndpoint: `${ENV.APP.API_HOST}/api/revoke`,
+export default class OAuth2 extends OAuth2PasswordGrant {
+  serverTokenEndpoint = `${ENV.APP.API_HOST}/api/token`;
+  serverTokenRevocationEndpoint = `${ENV.APP.API_HOST}/api/revoke`;
+  refreshAccessTokensWithScope = true;
 
   authenticate({ login, password, scope, token }) {
     if (token) {
@@ -18,9 +19,14 @@ export default OAuth2PasswordGrant.extend({
         access_token: token,
         user_id,
         source,
+        scope,
       });
     }
 
-    return this._super(login, password, scope);
-  },
-});
+    return super.authenticate(login, password, scope);
+  }
+
+  restore(data) {
+    return super.restore({ ...data, scope: ENV.APP.AUTHENTICATION.SCOPE });
+  }
+}
