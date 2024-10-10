@@ -12,6 +12,14 @@ import { t } from 'ember-intl';
 import get from 'lodash/get';
 import ENV from 'mon-pix/config/environment';
 
+const HTTP_ERROR_MESSAGES = {
+  400: { key: ENV.APP.API_ERROR_MESSAGES.BAD_REQUEST.I18N_KEY },
+  401: { key: ENV.APP.API_ERROR_MESSAGES.LOGIN_UNAUTHORIZED.I18N_KEY },
+  422: { key: ENV.APP.API_ERROR_MESSAGES.BAD_REQUEST.I18N_KEY },
+  504: { key: ENV.APP.API_ERROR_MESSAGES.GATEWAY_TIMEOUT.I18N_KEY },
+  default: { key: 'common.api-error-messages.login-unexpected-error', values: { htmlSafe: true } },
+};
+
 export default class SigninForm extends Component {
   @service url;
   @service session;
@@ -92,7 +100,7 @@ export default class SigninForm extends Component {
         };
         break;
       default:
-        this.error = this._getI18nKeyByStatus(responseError.status);
+        this.error = HTTP_ERROR_MESSAGES[responseError.status] || HTTP_ERROR_MESSAGES['default'];
     }
   }
 
@@ -101,25 +109,10 @@ export default class SigninForm extends Component {
     return this.router.replaceWith('update-expired-password');
   }
 
-  _getI18nKeyByStatus(status) {
-    switch (status) {
-      case 400:
-        return { key: ENV.APP.API_ERROR_MESSAGES.BAD_REQUEST.I18N_KEY };
-      case 401:
-        return { key: ENV.APP.API_ERROR_MESSAGES.LOGIN_UNAUTHORIZED.I18N_KEY };
-      case 422:
-        return { key: ENV.APP.API_ERROR_MESSAGES.BAD_REQUEST.I18N_KEY };
-      case 504:
-        return { key: ENV.APP.API_ERROR_MESSAGES.GATEWAY_TIMEOUT.I18N_KEY };
-      default:
-        return { key: 'pages.sign-in.error.unexpected', values: { htmlSafe: true } };
-    }
-  }
-
   <template>
     <form {{on "submit" this.signin}} class="signin-form">
       {{#if this.error}}
-        <PixMessage id="sign-in-error-message" @type="error" @withIcon="true" role="alert">
+        <PixMessage @type="error" @withIcon="true" role="alert" aria-live="polite">
           {{t this.error.key this.error.values}}
         </PixMessage>
       {{/if}}
