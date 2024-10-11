@@ -141,6 +141,15 @@
           "contains-uppercase": "at least one capital letter",
           "min-length": "at least 8 characters"
         }
+      },
+      "password-reset-demand": {
+        "contact-us-link": {
+          "link-text": "Contact us",
+          "link-url": "https://support.pix.org/en/support/tickets/new"
+        },
+        "actions": {
+          "receive-reset-link": "Receive a reset link"
+        }
       }
     },
     "invited": {
@@ -1506,7 +1515,7 @@
       "username": "Username"
     },
     "password-reset-demand": {
-      "title": "Forgot your password?",
+      "title": "Forgotten password",
       "actions": {
         "back-home": "Return to homepage",
         "back-sign-in": "Return to log in page",
