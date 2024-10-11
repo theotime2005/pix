@@ -53,6 +53,7 @@ import { cpfReceiptsStorage } from '../../infrastructure/storage/cpf-receipts-st
  * @typedef {import('../../infrastructure/repositories/index.js').CertificationCpfCityRepository} CertificationCpfCityRepository
  * @typedef {import('../../infrastructure/repositories/index.js').CertificationCpfCountryRepository} CertificationCpfCountryRepository
  * @typedef {import('../../infrastructure/repositories/index.js').CertificationCandidateRepository} CertificationCandidateRepository
+ * @typedef {import('../../infrastructure/repositories/index.js').CertificationCompanionAlertRepository} CertificationCompanionAlertRepository
  * @typedef {import('../../infrastructure/storage/cpf-receipts-storage.js').cpfReceiptsStorage} CpfReceiptsStorage
  * @typedef {import('../../infrastructure/storage/cpf-exports-storage.js').cpfExportsStorage} CpfExportsStorage
  * @typedef {import('../../../shared/domain/services/certification-badges-service.js')} CertificationBadgesService
@@ -73,6 +74,7 @@ import { cpfReceiptsStorage } from '../../infrastructure/storage/cpf-receipts-st
  * @typedef {competenceMarkRepository} CompetenceMarkRepository
  * @typedef {certificationCourseRepository} CertificationCourseRepository
  * @typedef {certificationChallengeLiveAlertRepository} CertificationChallengeLiveAlertRepository
+ * @typedef {certificationCompanionLiveAlertRepository} CertificationCompanionLiveAlertRepository
  * @typedef {certificationOfficerRepository} CertificationOfficerRepository
  * @typedef {certificationChallengeRepository} CertificationChallengeRepository
  * @typedef {challengeRepository} ChallengeRepository
