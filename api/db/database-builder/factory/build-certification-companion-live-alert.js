@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { CertificationCompanionLiveAlertStatus } from '../../../src/certification/session-management/domain/models/CertificationCompanionLiveAlert.js';
 import { Assessment } from '../../../src/shared/domain/models/index.js';
 import { databaseBuffer } from '../database-buffer.js';
 import { buildAssessment } from './build-assessment.js';
@@ -7,7 +8,7 @@ import { buildAssessment } from './build-assessment.js';
 const buildCertificationCompanionLiveAlert = function ({
   id = databaseBuffer.getNextId(),
   assessmentId,
-  status = 'ONGOING',
+  status = CertificationCompanionLiveAlertStatus.ONGOING,
   createdAt = new Date('2020-01-01'),
   updatedAt = new Date('2020-02-01'),
 } = {}) {
