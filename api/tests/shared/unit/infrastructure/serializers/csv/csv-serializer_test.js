@@ -1609,6 +1609,71 @@ describe('Unit | Serializer | CSV | csv-serializer', function () {
         expect(error.meta).to.equal('"empty" is not a valid value for "Nom de la campagne*"');
       });
     });
+
+    describe('when idPixLabel is provided', function () {
+      const headerWithidPixtype =
+        "Identifiant de l'organisation*;Nom de la campagne*;Identifiant du profil cible*;Libellé de l'identifiant externe;Type de l'identifiant externe;Identifiant du créateur*;Titre du parcours;Descriptif du parcours;Envoi multiple;Identifiant du propriétaire*;Texte de la page de fin de parcours;Texte du bouton de la page de fin de parcours;URL du bouton de la page de fin de parcours\n";
+
+      describe('if idPixType is present', function () {
+        it('should default to STRING', async function () {
+          // given
+          const csv = `${headerWithidPixtype}1;chaussette;1234;numéro étudiant;;789;titre 1;descriptif 1;Oui;45`;
+
+          // when
+          const parsedData = await csvSerializer.parseForCampaignsImport(csv);
+
+          // then
+          const expectedParsedData = [
+            {
+              organizationId: 1,
+              name: 'chaussette',
+              targetProfileId: 1234,
+              idPixLabel: 'numéro étudiant',
+              idPixType: 'STRING',
+              title: 'titre 1',
+              customLandingPageText: 'descriptif 1',
+              creatorId: 789,
+              multipleSendings: true,
+              ownerId: 45,
+              customResultPageText: null,
+              customResultPageButtonText: null,
+              customResultPageButtonUrl: null,
+            },
+          ];
+          expect(parsedData).to.have.deep.members(expectedParsedData);
+        });
+      });
+
+      describe('if idPixType i not present', function () {
+        it('should default to STRING', async function () {
+          // given
+          const csv = `${headerCsv}1;chaussette;1234;numéro étudiant;789;titre 1;descriptif 1;Oui;45`;
+
+          // when
+          const parsedData = await csvSerializer.parseForCampaignsImport(csv);
+
+          // then
+          const expectedParsedData = [
+            {
+              organizationId: 1,
+              name: 'chaussette',
+              targetProfileId: 1234,
+              idPixLabel: 'numéro étudiant',
+              idPixType: 'STRING',
+              title: 'titre 1',
+              customLandingPageText: 'descriptif 1',
+              creatorId: 789,
+              multipleSendings: true,
+              ownerId: 45,
+              customResultPageText: null,
+              customResultPageButtonText: null,
+              customResultPageButtonUrl: null,
+            },
+          ];
+          expect(parsedData).to.have.deep.members(expectedParsedData);
+        });
+      });
+    });
   });
 });
 
