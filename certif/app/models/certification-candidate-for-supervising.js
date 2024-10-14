@@ -20,7 +20,7 @@ export default class CertificationCandidateForSupervising extends Model {
   @attr('string') enrolledComplementaryCertificationLabel;
   @attr('string') userId;
   @attr('boolean') isStillEligibleToComplementaryCertification;
-  @attr() liveAlert;
+  @attr() liveAlerts;
 
   get hasStarted() {
     return this.assessmentStatus === 'started';
@@ -32,6 +32,14 @@ export default class CertificationCandidateForSupervising extends Model {
 
   get hasCompleted() {
     return [assessmentStates.COMPLETED, assessmentStates.ENDED_BY_SUPERVISOR].includes(this.assessmentStatus);
+  }
+
+  get hasOngoingChallengeLiveAlert() {
+    return this.challengeLiveAlert?.status === 'ongoing';
+  }
+
+  get challengeLiveAlert() {
+    return this.liveAlerts?.find((liveAlert) => liveAlert.type === 'challenge');
   }
 
   updateAuthorizedToStart = memberAction({

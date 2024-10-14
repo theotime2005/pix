@@ -103,9 +103,12 @@ module('Integration | Component | handle-live-alert-modal', function (hooks) {
     const candidate = store.createRecord('certification-candidate', {
       firstName: 'Jean-Paul',
       lastName: 'Candidat',
-      liveAlert: {
-        status: 'ongoing',
-      },
+      liveAlerts: [
+        {
+          type: 'challenge',
+          status: 'ongoing',
+        },
+      ],
     });
 
     this.set('isModalDisplayed', sinon.stub());

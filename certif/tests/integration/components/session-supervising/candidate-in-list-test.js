@@ -328,9 +328,12 @@ module('Integration | Component | SessionSupervising::CandidateInList', function
           extraTimePercentage: 0.12,
           authorizedToStart: false,
           assessmentStatus: 'started',
-          liveAlert: {
-            status: 'ongoing',
-          },
+          liveAlerts: [
+            {
+              type: 'challenge',
+              status: 'ongoing',
+            },
+          ],
         });
 
         // when
@@ -398,61 +401,64 @@ module('Integration | Component | SessionSupervising::CandidateInList', function
   });
 
   module('when the candidate has alerted the invigilator', function () {
-    test('it displays the live alert tag', async function (assert) {
-      // given
-      this.candidate = store.createRecord('certification-candidate-for-supervising', {
-        id: '456',
-        startDateTime: new Date('2022-10-19T14:30:15Z'),
-        theoricalEndDateTime: new Date('2022-10-19T16:00:00Z'),
-        extraTimePercentage: 0.12,
-        authorizedToStart: false,
-        assessmentStatus: 'started',
-        liveAlert: {
-          status: 'ongoing',
-        },
+    module('when the live alert type is challenge', function () {
+      test('it displays the live alert tag', async function (assert) {
+        // given
+        this.candidate = store.createRecord('certification-candidate-for-supervising', {
+          id: '456',
+          startDateTime: new Date('2022-10-19T14:30:15Z'),
+          theoricalEndDateTime: new Date('2022-10-19T16:00:00Z'),
+          extraTimePercentage: 0.12,
+          authorizedToStart: false,
+          assessmentStatus: 'started',
+          liveAlerts: [{ type: 'challenge', status: 'ongoing' }],
+        });
+
+        // when
+        const screen = await renderScreen(hbs`<SessionSupervising::CandidateInList @candidate={{this.candidate}} />`);
+
+        // then
+        assert.dom(screen.getByText('Signalement en cours')).exists();
+        assert.dom(screen.queryByText('En cours')).doesNotExist();
+        assert.dom(screen.queryByText('Autorisé à reprendre')).doesNotExist();
+        assert.dom(screen.queryByText('Terminé')).doesNotExist();
       });
 
-      // when
-      const screen = await renderScreen(hbs`<SessionSupervising::CandidateInList @candidate={{this.candidate}} />`);
+      test('it displays the alert', async function (assert) {
+        // given
+        this.candidate = store.createRecord('certification-candidate-for-supervising', {
+          id: '456',
+          startDateTime: new Date('2022-10-19T14:30:15Z'),
+          theoricalEndDateTime: new Date('2022-10-19T16:00:00Z'),
+          extraTimePercentage: 0.12,
+          authorizedToStart: false,
+          assessmentStatus: 'started',
+          liveAlerts: [
+            {
+              type: 'challenge',
+              status: 'ongoing',
+            },
+          ],
+        });
 
-      // then
-      assert.dom(screen.getByText('Signalement en cours')).exists();
-      assert.dom(screen.queryByText('En cours')).doesNotExist();
-      assert.dom(screen.queryByText('Autorisé à reprendre')).doesNotExist();
-      assert.dom(screen.queryByText('Terminé')).doesNotExist();
-    });
+        // when
+        const screen = await renderScreen(hbs`<SessionSupervising::CandidateInList @candidate={{this.candidate}} />`);
+        await click(screen.getByRole('button', { name: 'Afficher les options du candidat' }));
+        await click(screen.getByRole('button', { name: 'Gérer le signalement' }));
 
-    test('it displays the alert', async function (assert) {
-      // given
-      this.candidate = store.createRecord('certification-candidate-for-supervising', {
-        id: '456',
-        startDateTime: new Date('2022-10-19T14:30:15Z'),
-        theoricalEndDateTime: new Date('2022-10-19T16:00:00Z'),
-        extraTimePercentage: 0.12,
-        authorizedToStart: false,
-        assessmentStatus: 'started',
-        liveAlert: {
-          status: 'ongoing',
-        },
+        // then
+        assert
+          .dom(screen.getByText('Refuser le signalement permet la reprise de la question en cours.', { exact: false }))
+          .exists();
+        assert
+          .dom(
+            screen.getByText(
+              'Sélectionnez un motif pour valider le signalement et permettre le changement de question.',
+              { exact: false },
+            ),
+          )
+          .exists();
       });
-
-      // when
-      const screen = await renderScreen(hbs`<SessionSupervising::CandidateInList @candidate={{this.candidate}} />`);
-      await click(screen.getByRole('button', { name: 'Afficher les options du candidat' }));
-      await click(screen.getByRole('button', { name: 'Gérer le signalement' }));
-
-      // then
-      assert
-        .dom(screen.getByText('Refuser le signalement permet la reprise de la question en cours.', { exact: false }))
-        .exists();
-      assert
-        .dom(
-          screen.getByText(
-            'Sélectionnez un motif pour valider le signalement et permettre le changement de question.',
-            { exact: false },
-          ),
-        )
-        .exists();
     });
   });
 });

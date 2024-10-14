@@ -141,6 +141,56 @@ module('Unit | Model | certification-candidate-for-supervising', function (hooks
     });
   });
 
+  module('#challengeLiveAlert', function () {
+    test('it returns a challenge live alert', function (assert) {
+      // given
+      const store = this.owner.lookup('service:store');
+      const challengeLiveAlert = { type: 'challenge', status: 'ongoing' };
+      const companionLiveAlert = { type: 'companion', status: 'ONGOING' };
+      // when
+      const certificationCandidateForSupervising = store.createRecord('certification-candidate-for-supervising', {
+        liveAlerts: [challengeLiveAlert, companionLiveAlert],
+      });
+
+      // then
+      assert.deepEqual(certificationCandidateForSupervising.challengeLiveAlert, challengeLiveAlert);
+    });
+  });
+
+  module('#hasOngoingChallengeLiveAlert', function () {
+    module('when the live alert type is challenge', function () {
+      test('it returns true', function (assert) {
+        // given
+        const store = this.owner.lookup('service:store');
+        const challengeLiveAlert = { type: 'challenge', status: 'ongoing' };
+
+        // when
+        const certificationCandidateForSupervising = store.createRecord('certification-candidate-for-supervising', {
+          liveAlerts: [challengeLiveAlert],
+        });
+
+        // then
+        assert.true(certificationCandidateForSupervising.hasOngoingChallengeLiveAlert);
+      });
+    });
+
+    module('when the live alert type is not challenge', function () {
+      test('it returns false', function (assert) {
+        // given
+        const store = this.owner.lookup('service:store');
+        const companionLiveAlert = { type: 'companion', status: 'ONGOING' };
+
+        // when
+        const certificationCandidateForSupervising = store.createRecord('certification-candidate-for-supervising', {
+          liveAlerts: [companionLiveAlert],
+        });
+
+        // then
+        assert.false(certificationCandidateForSupervising.hasOngoingChallengeLiveAlert);
+      });
+    });
+  });
+
   function _pickModelData(certificationCandidate) {
     return pick(certificationCandidate, [
       'firstName',
