@@ -35,7 +35,8 @@ const get = async function ({ id }) {
           'authorizedToStart', "certification-candidates"."authorizedToStart",
           'assessmentStatus', "assessments"."state",
           'startDateTime', "certification-courses"."createdAt",
-          'liveAlert', json_build_object(
+          'challengeLiveAlert', json_build_object(
+            'type', 'challenge',
             'status', "ongoing-live-alerts".status,
             'hasImage',"ongoing-live-alerts"."hasImage",
             'hasAttachment', "ongoing-live-alerts"."hasAttachment",

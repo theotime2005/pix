@@ -360,7 +360,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             'authorizedToStart',
             'assessmentStatus',
             'startDateTime',
-            'liveAlert',
+            'liveAlerts',
           ]),
         );
         expect(actualCandidates).to.have.deep.ordered.members([
@@ -371,13 +371,16 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: true,
             assessmentStatus: Assessment.states.STARTED,
             startDateTime: '2022-10-19T13:37:00+00:00',
-            liveAlert: {
-              hasAttachment: false,
-              hasImage: false,
-              hasEmbed: false,
-              isFocus: false,
-              status: CertificationChallengeLiveAlertStatus.ONGOING,
-            },
+            liveAlerts: [
+              {
+                type: 'challenge',
+                hasAttachment: false,
+                hasImage: false,
+                hasEmbed: false,
+                isFocus: false,
+                status: CertificationChallengeLiveAlertStatus.ONGOING,
+              },
+            ],
           },
           {
             userId: 33333,
@@ -386,7 +389,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: false,
             assessmentStatus: null,
             startDateTime: null,
-            liveAlert: null,
+            liveAlerts: null,
           },
           {
             userId: 11111,
@@ -395,7 +398,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: true,
             assessmentStatus: null,
             startDateTime: null,
-            liveAlert: null,
+            liveAlerts: null,
           },
           {
             userId: 22222,
@@ -404,7 +407,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: false,
             assessmentStatus: null,
             startDateTime: null,
-            liveAlert: null,
+            liveAlerts: null,
           },
         ]);
       });

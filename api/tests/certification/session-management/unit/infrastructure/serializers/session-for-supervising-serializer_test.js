@@ -48,7 +48,7 @@ describe('Unit | Serializer | JSONAPI | session-for-supervising-serializer', fun
                 'enrolled-complementary-certification-label': 'Super Certification Complémentaire',
                 'is-still-eligible-to-complementary-certification': true,
                 'user-id': 6789,
-                'live-alert': null,
+                'live-alerts': null,
               },
               id: '1234',
               type: 'certification-candidate-for-supervising',
@@ -139,13 +139,16 @@ describe('Unit | Serializer | JSONAPI | session-for-supervising-serializer', fun
                 'enrolled-complementary-certification-label': 'Super Certification Complémentaire',
                 'is-still-eligible-to-complementary-certification': true,
                 'user-id': 6789,
-                'live-alert': {
-                  status: 'ongoing',
-                  hasAttachment: false,
-                  hasImage: false,
-                  hasEmbed: false,
-                  isFocus: false,
-                },
+                'live-alerts': [
+                  {
+                    type: 'challenge',
+                    status: 'ongoing',
+                    hasAttachment: false,
+                    hasImage: false,
+                    hasEmbed: false,
+                    isFocus: false,
+                  },
+                ],
               },
               id: '1234',
               type: 'certification-candidate-for-supervising',
@@ -183,7 +186,8 @@ describe('Unit | Serializer | JSONAPI | session-for-supervising-serializer', fun
                   complementaryCertificationBadgeLabel: 'Super Certification Complémentaire',
                 }),
               ],
-              liveAlert: {
+              challengeLiveAlert: {
+                type: 'challenge',
                 status: CertificationChallengeLiveAlertStatus.ONGOING,
                 hasImage: false,
                 hasAttachment: false,

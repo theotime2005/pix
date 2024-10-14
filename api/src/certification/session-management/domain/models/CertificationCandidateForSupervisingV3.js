@@ -1,8 +1,8 @@
 import { CertificationCandidateForSupervising } from './CertificationCandidateForSupervising.js';
 
 export class CertificationCandidateForSupervisingV3 extends CertificationCandidateForSupervising {
-  constructor({ liveAlert = null, ...rest }) {
+  constructor({ challengeLiveAlert, ...rest }) {
     super({ ...rest });
-    this.liveAlert = liveAlert?.status ? liveAlert : null;
+    this.liveAlerts = challengeLiveAlert?.status ? [challengeLiveAlert] : null;
   }
 }
