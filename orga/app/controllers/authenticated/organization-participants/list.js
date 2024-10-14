@@ -72,6 +72,9 @@ export default class ListController extends Controller {
 
   @action
   goToLearnerPage(learnerId, event) {
+    if (this.currentUser.canAccessMissionsPage) {
+      return;
+    }
     event.preventDefault();
     this.router.transitionTo('authenticated.organization-participants.organization-participant', learnerId);
   }

@@ -28,12 +28,19 @@ export default class TableRow extends Component {
     }
   }
 
+  get rowClass() {
+    if (this.currentUser.canAccessMissionsPage) {
+      return '';
+    }
+    return "tr--clickable";
+  }
+
   <template>
-    <tr
-      aria-label={{t "pages.organization-participants.table.row-title"}}
-      {{on "click" @onClickLearner}}
-      class="tr--clickable"
-    >
+      <tr aria-label={{t "pages.organization-participants.table.row-title"}}
+        {{on "click" @onClickLearner}}
+        class={{this.rowClass}}
+      >
+
       {{#if @showCheckbox}}
         <td class="table__column" {{on "click" @onToggleParticipant}}>
           <PixCheckbox @screenReaderOnly={{true}} @checked={{@isParticipantSelected}}>
