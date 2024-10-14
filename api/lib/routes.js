@@ -1,3 +1,4 @@
+import * as frameworks from '../src/shared/application/frameworks/index.js';
 import * as healthcheck from '../src/shared/application/healthcheck/index.js';
 import * as authentication from './application/authentication/index.js';
 import * as cache from './application/cache/index.js';
@@ -8,7 +9,6 @@ import * as certificationCenters from './application/certification-centers/index
 import * as certificationCourses from './application/certification-courses/index.js';
 import * as certificationPointOfContacts from './application/certification-point-of-contacts/index.js';
 import * as certifications from './application/certifications/index.js';
-import * as frameworks from './application/frameworks/index.js';
 import * as memberships from './application/memberships/index.js';
 import * as organizations from './application/organizations/index.js';
 import * as passwords from './application/passwords/index.js';
