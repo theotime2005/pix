@@ -4,6 +4,7 @@ import Service from '@ember/service';
 import { click } from '@ember/test-helpers';
 import { hbs } from 'ember-cli-htmlbars';
 import { t } from 'ember-intl/test-support';
+import { ID_PIX_TYPES } from 'pix-orga/helpers/id-pix-types.js';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 
@@ -897,6 +898,61 @@ module('Integration | Component | Campaign::CreateForm', function (hooks) {
       // then
       const label = screen.getByLabelText(new RegExp(t('pages.campaign-creation.external-id-label.label')));
       assert.true(label.hasAttribute('aria-required', false));
+    });
+    test('it asks for external id type', async function (assert) {
+      // when
+      const screen = await render(
+        hbs`<Campaign::CreateForm
+  @campaign={{this.campaign}}
+  @onSubmit={{this.createCampaignSpy}}
+  @onCancel={{this.cancelSpy}}
+  @errors={{this.errors}}
+  @targetProfiles={{this.targetProfiles}}
+  @membersSortedByFullName={{this.defaultMembers}}
+/>`,
+      );
+      await clickByName(t('pages.campaign-creation.yes'));
+
+      // then
+      const radioGroup = screen.getByRole('radiogroup', {
+        name: t('pages.campaign-creation.external-id-type.question-label'),
+      });
+      assert.ok(radioGroup);
+    });
+    test('it preselects string external id type', async function (assert) {
+      // when
+      const screen = await render(
+        hbs`<Campaign::CreateForm
+  @campaign={{this.campaign}}
+  @onSubmit={{this.createCampaignSpy}}
+  @onCancel={{this.cancelSpy}}
+  @errors={{this.errors}}
+  @targetProfiles={{this.targetProfiles}}
+  @membersSortedByFullName={{this.defaultMembers}}
+/>`,
+      );
+      await clickByName(t('pages.campaign-creation.yes'));
+
+      const checkedRadio = screen.getByLabelText(t('pages.campaign-settings.external-user-id-types.string'));
+      assert.true(checkedRadio.checked);
+    });
+    test('it updates campaign model when select a type', async function (assert) {
+      // when
+      const screen = await render(
+        hbs`<Campaign::CreateForm
+  @campaign={{this.campaign}}
+  @onSubmit={{this.createCampaignSpy}}
+  @onCancel={{this.cancelSpy}}
+  @errors={{this.errors}}
+  @targetProfiles={{this.targetProfiles}}
+  @membersSortedByFullName={{this.defaultMembers}}
+/>`,
+      );
+      await clickByName(t('pages.campaign-creation.yes'));
+
+      const checkedRadio = screen.getByLabelText(t('pages.campaign-settings.external-user-id-types.email'));
+      await checkedRadio.click();
+      assert.strictEqual(this.campaign.idPixtype, ID_PIX_TYPES.EMAIL);
     });
   });
 

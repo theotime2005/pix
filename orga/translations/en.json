@@ -497,6 +497,9 @@
         "required": "The external user ID label is mandatory.",
         "suggestion": "Example : \"Student Number\" or \"Email address\" *"
       },
+      "external-id-type": {
+        "question-label": "What is the type of the external ID ?"
+      },
       "landing-page-text": {
         "label": "Text to display on the starting page"
       },
@@ -687,8 +690,8 @@
       "direct-link": "Direct link",
       "external-user-id-label": "External user ID label",
       "external-user-id-types": {
-        "email": "email",
-        "string": "free text"
+        "email": "Email",
+        "string": "Other"
       },
       "landing-page-text": "Text to display on the starting page",
       "multiple-sendings": {

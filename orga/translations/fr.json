@@ -497,6 +497,9 @@
         "required": "L'id externe est obligatoire",
         "suggestion": "Exemple: \"Numéro de l'étudiant\" ou \"Adresse e-mail professionnelle\" *"
       },
+      "external-id-type": {
+        "question-label": "Quel est le type de l'identifiant externe ?"
+      },
       "landing-page-text": {
         "label": "Texte de la page d'accueil"
       },
@@ -687,8 +690,8 @@
       "direct-link": "Lien direct",
       "external-user-id-label": "Libellé de l'identifiant",
       "external-user-id-types": {
-        "email": "email",
-        "string": "texte libre"
+        "email": "Email",
+        "string": "Autre"
       },
       "landing-page-text": "Texte de la page d'accueil",
       "multiple-sendings": {

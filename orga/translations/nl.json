@@ -460,6 +460,9 @@
         "required": "De externe id is verplicht",
         "suggestion": "Voorbeeld: \"Studentnummer\" of \"Professioneel e-mailadres\" *."
       },
+      "external-id-type": {
+        "question-label": "Wat is het type externe identifier?"
+      },
       "landing-page-text": {
         "label": "Tekst op de startpagina"
       },
@@ -650,8 +653,8 @@
       "direct-link": "Directe link",
       "external-user-id-label": "Type externe user-ID",
       "external-user-id-types": {
-        "string": "vrije tekst",
-        "email": "e-mail"
+        "string": "Andere",
+        "email": "E-mail"
       },
       "landing-page-text": "Tekst op de startpagina",
       "multiple-sendings": {
