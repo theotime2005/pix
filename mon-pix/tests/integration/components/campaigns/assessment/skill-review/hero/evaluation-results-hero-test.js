@@ -189,6 +189,44 @@ module('Integration | Components | Campaigns | Assessment | Skill Review | Evalu
         assert.dom(screen.getByText(t('pages.skill-review.hero.explanations.improve'))).exists();
         assert.dom(screen.getByRole('button', { name: t('pages.skill-review.actions.improve') })).exists();
       });
+
+      test('on improve button click, it should restart the campaign', async function (assert) {
+        // given
+        const store = this.owner.lookup('service:store');
+
+        const router = this.owner.lookup('service:router');
+        router.transitionTo = sinon.stub();
+
+        const adapter = store.adapterFor('campaign-participation-result');
+        const beginImprovementStub = sinon.stub(adapter, 'beginImprovement');
+
+        const campaignParticipationResult = store.createRecord('campaign-participation-result', {
+          masteryRate: 0.75,
+          canImprove: true,
+        });
+        campaignParticipationResult.id = 'campaignParticipationResultId';
+        this.set('campaignParticipationResult', campaignParticipationResult);
+
+        const campaign = this.set('campaign', { organizationId: 1, code: 'ABC' });
+
+        // when
+        const screen = await render(
+          hbs`<Campaigns::Assessment::SkillReview::EvaluationResultsHero
+  @campaign={{this.campaign}}
+  @campaignParticipationResult={{this.campaignParticipationResult}}
+/>`,
+        );
+
+        // when
+        await click(screen.getByRole('button', { name: t('pages.skill-review.actions.improve') }));
+
+        // then
+        sinon.assert.calledWithExactly(beginImprovementStub, campaignParticipationResult.id);
+        assert.ok(beginImprovementStub.calledOnce);
+
+        sinon.assert.calledWithExactly(router.transitionTo, 'campaigns.entry-point', campaign.code);
+        assert.ok(router.transitionTo.calledOnce);
+      });
     });
 
     module('when user can not improve results', function () {

@@ -5,6 +5,7 @@ import PixStars from '@1024pix/pix-ui/components/pix-stars';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
 import { t } from 'ember-intl';
 import { or } from 'ember-truth-helpers';
 import ENV from 'mon-pix/config/environment';
@@ -16,6 +17,10 @@ import RetryOrResetBlock from './retry-or-reset-block';
 
 export default class EvaluationResultsHero extends Component {
   @service currentUser;
+  @service router;
+  @service store;
+
+  @tracked isImproveButtonLoading = false;
 
   get isAutonomousCourse() {
     return this.args.campaign.organizationId === ENV.APP.AUTONOMOUS_COURSES_ORGANIZATION_ID;
@@ -42,6 +47,22 @@ export default class EvaluationResultsHero extends Component {
   @action
   handleSeeTrainingsClick() {
     this.args.showTrainings();
+  }
+
+  @action
+  async improveResults() {
+    if (this.isLoading) return;
+
+    try {
+      this.isImproveButtonLoading = true;
+      const campaignParticipationResult = this.args.campaignParticipationResult;
+      const adapter = this.store.adapterFor('campaign-participation-result');
+      await adapter.beginImprovement(campaignParticipationResult.id);
+      this.router.transitionTo('campaigns.entry-point', this.args.campaign.code);
+      return;
+    } finally {
+      this.isImproveButtonLoading = false;
+    }
   }
 
   <template>
