@@ -1430,7 +1430,7 @@ describe('Unit | Serializer | CSV | csv-serializer', function () {
 
     it('should return parsed campaign data', async function () {
       // given
-      const csv = `${headerCsv}1;chaussette;1234;numéro étudiant;789;titre 1;descriptif 1;Oui;45\n2;chapeau;1234;identifiant;666;titre 2;descriptif 2;Non;77\n3;chausson;1234;identifiant;123;titre 3;descriptif 3;Non;88;Bravo !;Cliquez ici;https://hmpg.net/`;
+      const csv = `${headerCsv}1;chaussette;1234;numéro étudiant;789;titre 1;descriptif 1;Oui;45\n2;chapeau;1234;identifiant;666;titre 2;descriptif 2;Non;77\n3;chausson;1234;;123;titre 3;descriptif 3;Non;88;Bravo !;Cliquez ici;https://hmpg.net/`;
 
       // when
       const parsedData = await csvSerializer.parseForCampaignsImport(csv);
@@ -1442,6 +1442,7 @@ describe('Unit | Serializer | CSV | csv-serializer', function () {
           name: 'chaussette',
           targetProfileId: 1234,
           idPixLabel: 'numéro étudiant',
+          idPixType: 'STRING',
           title: 'titre 1',
           customLandingPageText: 'descriptif 1',
           creatorId: 789,
@@ -1456,6 +1457,7 @@ describe('Unit | Serializer | CSV | csv-serializer', function () {
           name: 'chapeau',
           targetProfileId: 1234,
           idPixLabel: 'identifiant',
+          idPixType: 'STRING',
           title: 'titre 2',
           customLandingPageText: 'descriptif 2',
           creatorId: 666,
@@ -1469,7 +1471,8 @@ describe('Unit | Serializer | CSV | csv-serializer', function () {
           organizationId: 3,
           name: 'chausson',
           targetProfileId: 1234,
-          idPixLabel: 'identifiant',
+          idPixLabel: '',
+          idPixType: '',
           title: 'titre 3',
           customLandingPageText: 'descriptif 3',
           creatorId: 123,

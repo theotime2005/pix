@@ -231,7 +231,7 @@ async function parseForCampaignsImport(cleanedData, { parseCsvData } = csvHelper
     idPixType:
       data["Libellé de l'identifiant externe"]?.trim()?.length > 0
         ? data["Type de l'identifiant externe"] || 'STRING'
-        : null,
+        : '',
     creatorId: data['Identifiant du créateur*'],
     title: data['Titre du parcours'],
     customLandingPageText: data['Descriptif du parcours'],
