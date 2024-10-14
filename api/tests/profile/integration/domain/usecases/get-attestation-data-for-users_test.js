@@ -40,10 +40,10 @@ describe('Profile | Integration | Domain | get-attestation-data-for-users', func
         locale,
       });
 
-      expect(results).to.deep.equal([
-        firstUser.toForm(firstCreatedAt, locale),
-        secondUser.toForm(secondCreatedAt, locale),
-      ]);
+      expect(results).to.deep.equal({
+        data: [firstUser.toForm(firstCreatedAt, locale), secondUser.toForm(secondCreatedAt, locale)],
+        templateName: attestation.templateName,
+      });
     });
   });
 });
