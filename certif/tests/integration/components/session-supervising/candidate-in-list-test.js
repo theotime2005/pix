@@ -460,5 +460,27 @@ module('Integration | Component | SessionSupervising::CandidateInList', function
           .exists();
       });
     });
+
+    module('when the live alert type is companion', function () {
+      test('it displays the live alert tag', async function (assert) {
+        // given
+        this.candidate = store.createRecord('certification-candidate-for-supervising', {
+          id: '456',
+          startDateTime: new Date('2022-10-19T14:30:15Z'),
+          theoricalEndDateTime: new Date('2022-10-19T16:00:00Z'),
+          extraTimePercentage: 0.12,
+          authorizedToStart: false,
+          assessmentStatus: 'started',
+          liveAlerts: [{ type: 'companion', status: 'ONGOING' }],
+        });
+
+        // when
+        const screen = await renderScreen(hbs`<SessionSupervising::CandidateInList @candidate={{this.candidate}} />`);
+
+        // then
+        assert.dom(screen.getByText('Extension non détectée')).exists();
+        assert.dom(screen.queryByText('Signalement en cours')).doesNotExist();
+      });
+    });
   });
 });

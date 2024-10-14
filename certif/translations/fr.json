@@ -106,6 +106,9 @@
           "live-alerts": {
             "challenge": {
               "ongoing": "Signalement en cours"
+            },
+            "companion": {
+              "ongoing": "Extension non détectée"
             }
           },
           "ongoing": "En cours",

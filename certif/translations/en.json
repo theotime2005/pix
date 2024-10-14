@@ -106,6 +106,9 @@
           "live-alerts": {
             "challenge": {
               "ongoing": "Report in progress"
+            },
+            "companion": {
+              "ongoing": "Extension not detected"
             }
           },
           "ongoing": "In progress",
