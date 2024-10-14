@@ -9,8 +9,7 @@ const serialize = function (sessions) {
       const cloneSession = _.cloneDeep(currentSessionForSupervising);
 
       cloneSession.certificationCandidates.forEach((candidate) => {
-        candidate.enrolledComplementaryCertificationLabel ??= candidate.enrolledComplementaryCertification?.label;
-        candidate.liveAlerts ??= null;
+        candidate.enrolledComplementaryCertificationLabel = candidate.enrolledComplementaryCertification?.label ?? null;
       });
 
       return cloneSession;

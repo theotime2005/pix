@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+import { CertificationCompanionLiveAlertStatus } from '../../../../../../src/certification/session-management/domain/models/CertificationCompanionLiveAlert.js';
 import { SessionForSupervising } from '../../../../../../src/certification/session-management/domain/read-models/SessionForSupervising.js';
 import * as sessionForSupervisingRepository from '../../../../../../src/certification/session-management/infrastructure/repositories/session-for-supervising-repository.js';
 import { CertificationChallengeLiveAlertStatus } from '../../../../../../src/certification/shared/domain/models/CertificationChallengeLiveAlert.js';
@@ -327,20 +328,39 @@ describe('Integration | Repository | SessionForSupervising', function () {
         });
         databaseBuilder.factory.buildCoreSubscription({ certificationCandidateId: candidateD.id });
 
-        const certificationCourse = databaseBuilder.factory.buildCertificationCourse({
+        const certificationCourseWithBothLiveAlerts = databaseBuilder.factory.buildCertificationCourse({
           version: CERTIFICATION_VERSIONS.V3,
           userId: 12345,
           sessionId: session.id,
           createdAt: new Date('2022-10-19T13:37:00Z'),
         });
 
-        const assessmentWithLiveAlert = databaseBuilder.factory.buildAssessment({
-          certificationCourseId: certificationCourse.id,
+        const assessmentWithBothLiveAlerts = databaseBuilder.factory.buildAssessment({
+          certificationCourseId: certificationCourseWithBothLiveAlerts.id,
           state: Assessment.states.STARTED,
         });
 
         databaseBuilder.factory.buildCertificationChallengeLiveAlert({
-          assessmentId: assessmentWithLiveAlert.id,
+          assessmentId: assessmentWithBothLiveAlerts.id,
+        });
+        databaseBuilder.factory.buildCertificationCompanionLiveAlert({
+          assessmentId: assessmentWithBothLiveAlerts.id,
+        });
+
+        const certificationCourseWithChallengeLiveAlert = databaseBuilder.factory.buildCertificationCourse({
+          version: CERTIFICATION_VERSIONS.V3,
+          userId: 22222,
+          sessionId: session.id,
+          createdAt: new Date('2022-10-19T13:37:00Z'),
+        });
+
+        const assessmentWithChallengeLiveAlert = databaseBuilder.factory.buildAssessment({
+          certificationCourseId: certificationCourseWithChallengeLiveAlert.id,
+          state: Assessment.states.STARTED,
+        });
+
+        databaseBuilder.factory.buildCertificationChallengeLiveAlert({
+          assessmentId: assessmentWithChallengeLiveAlert.id,
         });
 
         const candidate = databaseBuilder.factory.buildCertificationCandidate();
@@ -373,6 +393,28 @@ describe('Integration | Repository | SessionForSupervising', function () {
             startDateTime: '2022-10-19T13:37:00+00:00',
             liveAlerts: [
               {
+                type: 'companion',
+                status: CertificationCompanionLiveAlertStatus.ONGOING,
+              },
+              {
+                type: 'challenge',
+                hasAttachment: false,
+                hasImage: false,
+                hasEmbed: false,
+                isFocus: false,
+                status: CertificationChallengeLiveAlertStatus.ONGOING,
+              },
+            ],
+          },
+          {
+            userId: 22222,
+            lastName: 'Stardust',
+            firstName: 'Ziggy',
+            authorizedToStart: false,
+            assessmentStatus: Assessment.states.STARTED,
+            startDateTime: '2022-10-19T13:37:00+00:00',
+            liveAlerts: [
+              {
                 type: 'challenge',
                 hasAttachment: false,
                 hasImage: false,
@@ -389,7 +431,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: false,
             assessmentStatus: null,
             startDateTime: null,
-            liveAlerts: null,
+            liveAlerts: [],
           },
           {
             userId: 11111,
@@ -398,16 +440,7 @@ describe('Integration | Repository | SessionForSupervising', function () {
             authorizedToStart: true,
             assessmentStatus: null,
             startDateTime: null,
-            liveAlerts: null,
-          },
-          {
-            userId: 22222,
-            lastName: 'Stardust',
-            firstName: 'Ziggy',
-            authorizedToStart: false,
-            assessmentStatus: null,
-            startDateTime: null,
-            liveAlerts: null,
+            liveAlerts: [],
           },
         ]);
       });
