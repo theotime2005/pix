@@ -24,3 +24,9 @@ export const getAllFeaturesFromOrganization = async (organizationId) => {
     features: organizationFeatures.map((organizationFeature) => new OrganizationFeatureItemDTO(organizationFeature)),
   });
 };
+
+export const getFeatureByKey = async (featureKey, organizationId) => {
+  const organizationFeature = await usecases.getOrganizationFeatureByKey({ featureKey, organizationId });
+
+  return new OrganizationFeatureItemDTO(organizationFeature);
+};

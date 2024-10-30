@@ -1,6 +1,6 @@
 import { OrganizationLearner } from '../../../../../src/prescription/organization-learner/domain/read-models/OrganizationLearner.js';
 import * as organizationLearnerFeatureRepository from '../../../../../src/prescription/organization-learner/infrastructure/repositories/organization-learner-feature-repository.js';
-import { databaseBuilder, expect } from '../../../../test-helper.js';
+import { databaseBuilder, expect, knex } from '../../../../test-helper.js';
 
 describe('Prescription | OrganizationLearner | Integration | Infrastructure | OrganizationLearnerFeatureRepository', function () {
   describe('#getOrganizationLearnersByFeature', function () {
@@ -79,6 +79,54 @@ describe('Prescription | OrganizationLearner | Integration | Infrastructure | Or
       });
 
       expect(result).to.deep.equal([learner]);
+    });
+  });
+
+  describe('#create', function () {
+    it('should return the newly created OrganizationLearnerFeature link', async function () {
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+      const organizationLearnerId = databaseBuilder.factory.buildOrganizationLearner({ organizationId }).id;
+      const featureId = databaseBuilder.factory.buildFeature({ key: 'A_KEY', organizationId }).id;
+      await databaseBuilder.commit();
+
+      const newlyCreatedOrganizationLearnerFeature = await organizationLearnerFeatureRepository.create({
+        organizationLearnerId,
+        featureId,
+      });
+      expect([
+        newlyCreatedOrganizationLearnerFeature.featureId,
+        newlyCreatedOrganizationLearnerFeature.organizationLearnerId,
+      ]).to.deep.equal([featureId, organizationLearnerId]);
+    });
+  });
+
+  describe('#unlink', function () {
+    it('should delete OrganizationLearnerFeature link', async function () {
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+      const organizationLearnerId = databaseBuilder.factory.buildOrganizationLearner({ organizationId }).id;
+      const otherOrganizationLearnerId = databaseBuilder.factory.buildOrganizationLearner({ organizationId }).id;
+      const featureId = databaseBuilder.factory.buildFeature({ key: 'A_KEY', organizationId }).id;
+      const notUnlinkOrganizationLearnerFeatureLink =
+        databaseBuilder.factory.prescription.organizationLearners.buildOrganizationLearnerFeature({
+          featureId,
+          otherOrganizationLearnerId,
+        });
+      databaseBuilder.factory.prescription.organizationLearners.buildOrganizationLearnerFeature({
+        featureId,
+        organizationLearnerId,
+      });
+      await databaseBuilder.commit();
+
+      await organizationLearnerFeatureRepository.unlink({
+        organizationLearnerId,
+        featureId,
+      });
+
+      const remainingOrganizationLearnerFeatures = await knex('organization-learner-features').whereExists(function () {
+        this.select('*').from('organization-learner-features');
+      });
+
+      expect(remainingOrganizationLearnerFeatures).to.deep.equal([notUnlinkOrganizationLearnerFeatureLink]);
     });
   });
 });

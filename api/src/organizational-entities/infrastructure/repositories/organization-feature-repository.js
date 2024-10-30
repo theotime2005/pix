@@ -60,4 +60,16 @@ async function findAllOrganizationFeaturesFromOrganizationId({ organizationId })
   return organizationFeatures.map((organizationFeature) => new OrganizationFeatureItem(organizationFeature));
 }
 
-export { findAllOrganizationFeaturesFromOrganizationId, saveInBatch };
+async function getOrganizationFeatureByKeyAndOrganizationId({ featureKey, organizationId }) {
+  const organizationFeature = await knex
+    .select('organization-features.*', 'features.key')
+    .from('organization-features')
+    .join('features', 'features.id', 'organization-features.featureId')
+    .where({ organizationId })
+    .where({ key: featureKey })
+    .first();
+
+  return new OrganizationFeatureItem(organizationFeature);
+}
+
+export { findAllOrganizationFeaturesFromOrganizationId, getOrganizationFeatureByKeyAndOrganizationId, saveInBatch };
