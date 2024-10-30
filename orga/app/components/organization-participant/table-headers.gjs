@@ -100,6 +100,12 @@ export default class TableHeaders extends Component {
           </div>
         </Header>
       {{/unless}}
+
+      {{#if @hasActionColumn}}
+        <Header @size="small" class="table__column--last-col">
+          {{t "common.actions.global"}}
+        </Header>
+      {{/if}}
     </tr>
   </template>
 }

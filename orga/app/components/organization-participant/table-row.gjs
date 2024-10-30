@@ -5,8 +5,11 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import dayjs from 'dayjs';
 import { t } from 'ember-intl';
+import { gt } from 'ember-truth-helpers';
 
 import CertificabilityCell from '../certificability/cell';
+import DropdownIconTrigger from '../dropdown/icon-trigger';
+import DropdownItem from '../dropdown/item';
 import LastParticipationDateTooltip from '../ui/last-participation-date-tooltip';
 
 export default class TableRow extends Component {
@@ -111,6 +114,23 @@ export default class TableRow extends Component {
           />
         </td>
       {{/unless}}
+
+      {{#if (gt @actionsForParticipant.length 0)}}
+        <DropdownIconTrigger
+          @icon="moreVert"
+          @dropdownButtonClass="organization-participant-list-page__dropdown-button"
+          @dropdownContentClass="organization-participant-list-page__dropdown-content"
+          @ariaLabel={{t "pages.sup-organization-participants.actions.show-actions"}}
+        >
+          <:default as |closeMenu|>
+            {{#each @actionsForParticipant as |actionForPartipant|}}
+              <DropdownItem @onClick={{actionForPartipant.onClick}} @closeMenu={{closeMenu}}>
+                {{actionForPartipant.label}}
+              </DropdownItem>
+            {{/each}}
+          </:default>
+        </DropdownIconTrigger>
+      {{/if}}
     </tr>
   </template>
 }

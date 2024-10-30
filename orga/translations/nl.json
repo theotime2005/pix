@@ -1150,6 +1150,9 @@
       },
       "page-title": "Deelnemers",
       "table": {
+        "description": "Tabel met deelnemers gesorteerd op naam.",
+        "empty": "Geen deelnemers",
+        "row-title": "Deelnemer",
         "column": {
           "checkbox": "Selecteren/Deselecteren {firstname} {lastname}",
           "first-name": "Voornaam",
@@ -1175,6 +1178,10 @@
             "ariaLabelSortUp": "De tabel is gesorteerd op oplopend aantal deelnames. Klik om aflopend te sorteren.",
             "label": "Aantal deelnames"
           }
+        },
+        "actions": {
+          "enable-oralization": "Activate oralization",
+          "disable-oralization": "Deactivate oralization"
         },
         "row-value": {
           "oralization": {
