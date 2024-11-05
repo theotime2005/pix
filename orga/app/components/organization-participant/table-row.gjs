@@ -6,7 +6,7 @@ import Component from '@glimmer/component';
 import dayjs from 'dayjs';
 import { t } from 'ember-intl';
 import { gt } from 'ember-truth-helpers';
-
+//TODO C'est ici le dernier com
 import CertificabilityCell from '../certificability/cell';
 import DropdownIconTrigger from '../dropdown/icon-trigger';
 import DropdownItem from '../dropdown/item';
