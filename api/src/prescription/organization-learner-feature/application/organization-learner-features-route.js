@@ -65,10 +65,10 @@ const register = async function (server) {
         },
         handler: organizationLearnerFeaturesController.unlink,
         notes: [
-          '- **Cette route est restreinte aux utilisateurs authentifiés**\n' +
-            "- L'utisateur doit être au moins membre de l'organisation'",
+          "Permet de supprimer une 'feature' à un prescrit dans une organisation." +
+            "L'utilisateur doit être au moins membre de l'organisation.",
         ],
-        tags: ['api', 'organization'],
+        tags: ['api', 'organization', 'organization-learner-feature'],
       },
     },
   ]);
