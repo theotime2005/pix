@@ -116,20 +116,22 @@ export default class TableRow extends Component {
       {{/unless}}
 
       {{#if (gt @actionsForParticipant.length 0)}}
-        <DropdownIconTrigger
-          @icon="moreVert"
-          @dropdownButtonClass="organization-participant-list-page__dropdown-button"
-          @dropdownContentClass="organization-participant-list-page__dropdown-content"
-          @ariaLabel={{t "pages.sup-organization-participants.actions.show-actions"}}
-        >
-          <:default as |closeMenu|>
-            {{#each @actionsForParticipant as |actionForPartipant|}}
-              <DropdownItem @onClick={{actionForPartipant.onClick}} @closeMenu={{closeMenu}}>
-                {{actionForPartipant.label}}
-              </DropdownItem>
-            {{/each}}
-          </:default>
-        </DropdownIconTrigger>
+        <td class="table__column--last-col">
+          <DropdownIconTrigger
+            @icon="moreVert"
+            @dropdownButtonClass="organization-participant-list-page__dropdown-button"
+            @dropdownContentClass="organization-participant-list-page__dropdown-content"
+            @ariaLabel={{t "pages.sup-organization-participants.actions.show-actions"}}
+          >
+            <:default as |closeMenu|>
+              {{#each @actionsForParticipant as |actionForPartipant|}}
+                <DropdownItem @onClick={{actionForPartipant.onClick}} @closeMenu={{closeMenu}}>
+                  {{actionForPartipant.label}}
+                </DropdownItem>
+              {{/each}}
+            </:default>
+          </DropdownIconTrigger>
+        </td>
       {{/if}}
     </tr>
   </template>
