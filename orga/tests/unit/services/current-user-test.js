@@ -338,24 +338,6 @@ module('Unit | Service | current-user', function (hooks) {
       });
     });
 
-    module('#canAccessParticipantsPage', function () {
-      test('should return false if user has mission feature activated', function (assert) {
-        currentUserService.prescriber = {
-          missionsManagement: true,
-        };
-
-        assert.false(currentUserService.canAccessParticipantsPage);
-      });
-
-      test('should return true if user does not have missions feature activated', function (assert) {
-        currentUserService.prescriber = {
-          missionsManagement: false,
-        };
-
-        assert.true(currentUserService.canAccessParticipantsPage);
-      });
-    });
-
     module('#canAccessImportPage', function (hooks) {
       hooks.beforeEach(function () {
         currentUserService.prescriber = { hasOrganizationLearnerImport: false };

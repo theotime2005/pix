@@ -31,14 +31,12 @@
         {{t "navigation.main.missions"}}
       </LinkTo>
     {{/if}}
-    {{#if this.shouldDisplayParticipantsEntry}}
-      <LinkTo @route={{this.organizationLearnersList.route}} class="sidebar-nav__item">
-        <span class="sidebar-nav__item-icon">
-          <PixIcon @name="infoUser" role="none" />
-        </span>
-        {{t this.organizationLearnersList.label}}
-      </LinkTo>
-    {{/if}}
+    <LinkTo @route={{this.organizationLearnersList.route}} class="sidebar-nav__item">
+      <span class="sidebar-nav__item-icon">
+        <PixIcon @name="infoUser" role="none" />
+      </span>
+      {{t this.organizationLearnersList.label}}
+    </LinkTo>
     <LinkTo @route="authenticated.team" class="sidebar-nav__item">
       <span class="sidebar-nav__item-icon">
         <PixIcon @name="users" role="none" />
