@@ -1,18 +1,17 @@
 import PixButton from '@1024pix/pix-ui/components/pix-button';
-import { action } from '@ember/object';
-import { service } from '@ember/service';
+import {action} from '@ember/object';
+import {service} from '@ember/service';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { t } from 'ember-intl';
+import {tracked} from '@glimmer/tracking';
+import {t} from 'ember-intl';
+import PixIcon from '@1024pix/pix-ui/components/pix-icon';
 
 export default class OralizationButton extends Component {
   @tracked isSpeaking = false;
   @service intl;
 
   get oralizationIconName() {
-    const iconName = this.isSpeaking ? 'oralization-stop' : 'oralization-start';
-
-    return `/images/icons/${iconName}.svg`;
+    return this.isSpeaking ? 'stopCircle' : 'hearing';
   }
 
   get oralizationButtonLabel() {
@@ -71,7 +70,7 @@ export default class OralizationButton extends Component {
         @variant="tertiary"
         @triggerAction={{this.readText}}
       >
-        <img alt="" src={{this.oralizationIconName}} />
+      <PixIcon @name={{this.oralizationIconName}} @plainIcon={{this.isSpeaking}}/>
       </PixButton>
       {{this.oralizationButtonLabel}}
     </div>
