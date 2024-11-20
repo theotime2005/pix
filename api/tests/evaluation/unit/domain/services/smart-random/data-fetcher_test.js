@@ -80,7 +80,7 @@ describe('Unit | Domain | services | smart-random | dataFetcher', function () {
 
   describe('#fetchForCompetenceEvaluations', function () {
     let answerRepository;
-    let challengeRepository;
+    let lightChallengeRepository;
     let knowledgeElementRepository;
     let skillRepository;
     let improvementService;
@@ -95,7 +95,7 @@ describe('Unit | Domain | services | smart-random | dataFetcher', function () {
       answerRepository = {
         findByAssessment: sinon.stub(),
       };
-      challengeRepository = {
+      lightChallengeRepository = {
         findValidatedByCompetenceId: sinon.stub(),
       };
       knowledgeElementRepository = {
@@ -117,7 +117,7 @@ describe('Unit | Domain | services | smart-random | dataFetcher', function () {
 
       answerRepository.findByAssessment.withArgs(assessment.id).resolves([answer]);
       skillRepository.findActiveByCompetenceId.withArgs(assessment.competenceId).resolves(skills);
-      challengeRepository.findValidatedByCompetenceId.withArgs(assessment.competenceId).resolves(challenges);
+      lightChallengeRepository.findValidatedByCompetenceId.withArgs(assessment.competenceId).resolves(challenges);
       knowledgeElementRepository.findUniqByUserId.withArgs({ userId: assessment.userId }).resolves(knowledgeElements);
       improvementService.filterKnowledgeElementsIfImproving
         .withArgs({ knowledgeElements, assessment, isRetrying: false })
@@ -127,7 +127,7 @@ describe('Unit | Domain | services | smart-random | dataFetcher', function () {
       data = await dataFetcher.fetchForCompetenceEvaluations({
         assessment,
         answerRepository,
-        challengeRepository,
+        lightChallengeRepository,
         knowledgeElementRepository,
         skillRepository,
         improvementService,

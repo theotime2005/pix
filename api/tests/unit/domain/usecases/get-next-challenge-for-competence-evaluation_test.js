@@ -13,7 +13,7 @@ describe('Unit | Domain | Use Cases | get-next-challenge-for-competence-evaluat
       targetSkills,
       locale,
       answerRepository,
-      challengeRepository,
+      lightChallengeRepository,
       skillRepository,
       knowledgeElementRepository,
       pickChallengeService,
@@ -36,7 +36,7 @@ describe('Unit | Domain | Use Cases | get-next-challenge-for-competence-evaluat
       locale = 'fr';
 
       answerRepository = { findByAssessment: sinon.stub().resolves([lastAnswer]) };
-      challengeRepository = { findValidatedByCompetenceId: sinon.stub().resolves(challenges) };
+      lightChallengeRepository = { findValidatedByCompetenceId: sinon.stub().resolves(challenges) };
       skillRepository = { findActiveByCompetenceId: sinon.stub().resolves(targetSkills) };
       pickChallengeService = { pickChallenge: sinon.stub().resolves(challengeUrl22) };
 
@@ -77,7 +77,7 @@ describe('Unit | Domain | Use Cases | get-next-challenge-for-competence-evaluat
           assessment,
           userId: userId + 1,
           answerRepository,
-          challengeRepository,
+          lightChallengeRepository,
           knowledgeElementRepository,
           skillRepository,
           pickChallengeService,
@@ -97,7 +97,7 @@ describe('Unit | Domain | Use Cases | get-next-challenge-for-competence-evaluat
           assessment,
           userId,
           answerRepository,
-          challengeRepository,
+          lightChallengeRepository,
           knowledgeElementRepository,
           skillRepository,
           pickChallengeService,
@@ -115,7 +115,10 @@ describe('Unit | Domain | Use Cases | get-next-challenge-for-competence-evaluat
       });
 
       it('should have fetched the challenges', function () {
-        expect(challengeRepository.findValidatedByCompetenceId).to.have.been.calledWithExactly(competenceId, locale);
+        expect(lightChallengeRepository.findValidatedByCompetenceId).to.have.been.calledWithExactly(
+          competenceId,
+          locale,
+        );
       });
 
       it('should have fetched the next challenge with only most recent knowledge elements', function () {

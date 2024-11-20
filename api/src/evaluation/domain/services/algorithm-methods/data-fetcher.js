@@ -56,7 +56,7 @@ async function _fetchSkillsAndChallenges({ campaignSkills, challengeRepository, 
 async function fetchForCompetenceEvaluations({
   assessment,
   answerRepository,
-  challengeRepository,
+  lightChallengeRepository,
   knowledgeElementRepository,
   skillRepository,
   improvementService,
@@ -65,7 +65,7 @@ async function fetchForCompetenceEvaluations({
   const [allAnswers, targetSkills, challenges, knowledgeElements] = await Promise.all([
     answerRepository.findByAssessment(assessment.id),
     skillRepository.findActiveByCompetenceId(assessment.competenceId),
-    challengeRepository.findValidatedByCompetenceId(assessment.competenceId, locale),
+    lightChallengeRepository.findValidatedByCompetenceId(assessment.competenceId, locale),
     _fetchKnowledgeElements({ assessment, knowledgeElementRepository, improvementService }),
   ]);
 
