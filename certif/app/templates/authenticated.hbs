@@ -1,3 +1,5 @@
+<Layout::Banners />
+
 <div class="app">
   <Layout::Sidebar
     @rootUrl={{this.rootUrl}}
@@ -5,15 +7,11 @@
     @documentationLink={{this.documentationLink}}
   />
 
-  <div class="app__main-content main-content">
-
-    <Layout::Topbar />
-
+  <main class="app__main-content main-content">
     <div class="page">
       {{outlet}}
     </div>
 
     <Layout::Footer />
-  </div>
-
+  </main>
 </div>

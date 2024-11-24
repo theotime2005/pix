@@ -1,12 +1,12 @@
 import { clickByName, render } from '@1024pix/ember-testing-library';
 import Service from '@ember/service';
-import Topbar from 'pix-certif/components/layout/topbar';
+import Banners from 'pix-certif/components/layout/banners';
 import { module, test } from 'qunit';
 import sinon from 'sinon';
 
 import setupRenderingIntlTest from '../../../helpers/setup-intl-rendering';
 
-module('Integration | Component | Layout | Topbar', function (hooks) {
+module('Integration | Component | Layout | Banners', function (hooks) {
   setupRenderingIntlTest(hooks);
 
   let session;
@@ -44,7 +44,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
         session.data.localeNotSupportedBannerClosed = false;
 
         // when
-        const screen = await render(<template><Topbar /></template>);
+        const screen = await render(<template><Banners /></template>);
 
         // then
         assert.dom(screen.queryByRole('alert')).doesNotExist();
@@ -62,7 +62,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
           session.data.localeNotSupportedBannerClosed = false;
 
           // when
-          const screen = await render(<template><Topbar /></template>);
+          const screen = await render(<template><Banners /></template>);
 
           // then
           assert
@@ -78,7 +78,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
           test('closes the language availability banner', async function (assert) {
             // given
             session.data.localeNotSupportedBannerClosed = false;
-            const screen = await render(<template><Topbar /></template>);
+            const screen = await render(<template><Banners /></template>);
 
             // when
             await clickByName('Fermer');
@@ -95,7 +95,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
           session.data.localeNotSupportedBannerClosed = true;
 
           // when
-          const screen = await render(<template><Topbar /></template>);
+          const screen = await render(<template><Banners /></template>);
 
           // then
           assert.dom(screen.queryByRole('alert')).doesNotExist();
@@ -104,14 +104,14 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
     });
   });
 
-  module('Display information banner', function () {
+  module('Display SCO information banner', function () {
     test('should NOT display banner when certif center is not SCO IsManagingStudents', async function (assert) {
       //given
       const serviceRouter = this.owner.lookup('service:router');
       sinon.stub(serviceRouter, 'currentRouteName').value('authenticated.sessions.not-finalize');
 
       // when
-      const screen = await render(<template><Topbar /></template>);
+      const screen = await render(<template><Banners /></template>);
 
       // then
       assert.dom(screen.queryByRole('alert')).doesNotExist();
@@ -144,7 +144,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
       this.owner.register('service:current-user', CurrentUserStub);
 
       // when
-      const screen = await render(<template><Topbar /></template>);
+      const screen = await render(<template><Banners /></template>);
 
       // then
       assert.dom(screen.queryByRole('alert')).doesNotExist();
@@ -177,7 +177,7 @@ module('Integration | Component | Layout | Topbar', function (hooks) {
       this.owner.register('service:current-user', CurrentUserStub);
 
       // when
-      const screen = await render(<template><Topbar /></template>);
+      const screen = await render(<template><Banners /></template>);
 
       // then
       assert.dom(screen.queryByRole('alert')).exists();

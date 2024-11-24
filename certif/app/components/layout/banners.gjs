@@ -5,17 +5,15 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { t } from 'ember-intl';
 
-import UserLoggedMenu from '../user-logged-menu';
-
 const ACTION_URL_FOR_INFORMATION_BANNER = 'https://cloud.pix.fr/s/GqwW6dFDDrHezfS';
 
-export default class Topbar extends Component {
+export default class Banners extends Component {
   @tracked isBannerVisible = true;
   @service session;
   @service router;
   @service currentUser;
 
-  get showInformationBanner() {
+  get shouldDisplaySCOInformationBanner() {
     const isOnFinalizationPage = this.router.currentRouteName === 'authenticated.sessions.finalize';
 
     return (
@@ -38,18 +36,8 @@ export default class Topbar extends Component {
     this.session.updateDataAttribute('localeNotSupportedBannerClosed', true);
   }
 
-  @action
-  async changeCurrentCertificationCenterAccess(certificationCenterAccess) {
-    this.currentUser.updateCurrentCertificationCenter(certificationCenterAccess.id);
-    this.router.replaceWith('authenticated');
-  }
-
   <template>
-    <div class='main-content__topbar'>
-      <UserLoggedMenu @onCertificationCenterAccessChanged={{this.changeCurrentCertificationCenterAccess}} />
-    </div>
-
-    {{#if this.showInformationBanner}}
+    {{#if this.shouldDisplaySCOInformationBanner}}
       <PixBanner
         @actionLabel={{t 'pages.sco.banner.url-label'}}
         @actionUrl={{ACTION_URL_FOR_INFORMATION_BANNER}}
