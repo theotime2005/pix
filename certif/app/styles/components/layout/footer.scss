@@ -4,8 +4,7 @@
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
-  margin: 0 35px;
-  border-top: 1px solid var(--pix-neutral-20);
+  margin: 0 var(--pix-spacing-1x);
 
   @include device-is('desktop') {
     flex-direction: row;

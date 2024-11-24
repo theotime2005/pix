@@ -1,17 +1,13 @@
 <Layout::Banners />
 
-<div class="app">
-  <Layout::Sidebar
-    @rootUrl={{this.rootUrl}}
-    @showLinkToSessions={{this.showLinkToSessions}}
-    @documentationLink={{this.documentationLink}}
-  />
+<PixAppLayout @variant="certif">
+  <Layout::Sidebar />
 
-  <main class="app__main-content main-content">
-    <div class="page">
+  <div class="authenticated">
+    <main>
       {{outlet}}
-    </div>
+    </main>
 
     <Layout::Footer />
-  </main>
-</div>
+  </div>
+</PixAppLayout>

@@ -1,4 +1,9 @@
-import PixIcon from '@1024pix/pix-ui/components/pix-icon';
+import PixButtonLink from '@1024pix/pix-ui/components/pix-button-link';
+import PixNavigation from '@1024pix/pix-ui/components/pix-navigation';
+import PixNavigationButton from '@1024pix/pix-ui/components/pix-navigation-button';
+import PixNavigationSeparator from '@1024pix/pix-ui/components/pix-navigation-separator';
+import PixStructureSwitcher from '@1024pix/pix-ui/components/pix-structure-switcher';
+import { action } from '@ember/object';
 import { LinkTo } from '@ember/routing';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -9,6 +14,7 @@ const LINK_OTHER = 'http://cloud.pix.fr/s/fLSG4mYCcX7GDRF';
 
 export default class Sidebar extends Component {
   @service currentUser;
+  @service router;
 
   get documentationLink() {
     if (this.currentUser.currentAllowedCertificationCenterAccess.isScoManagingStudents) {
@@ -21,56 +27,111 @@ export default class Sidebar extends Component {
     return !this.currentUser.currentAllowedCertificationCenterAccess.isAccessRestricted;
   }
 
-  <template>
-    <aside class='app__sidebar sidebar'>
-      <header class='sidebar__logo'>
-        <LinkTo @route='authenticated'>
-          <img class='sidebar__logo-image' src='{{this.rootUrl}}/pix-certif-logo.svg' alt={{t 'common.home-page'}} />
-        </LinkTo>
-      </header>
+  get userFullName() {
+    const certificationPointOfContact = this.currentUser.certificationPointOfContact;
+    return `${certificationPointOfContact.firstName} ${certificationPointOfContact.lastName}`;
+  }
 
-      <nav class='sidebar-menu'>
+  get currentAllowedCertificationCenterAccess() {
+    return this.currentUser.currentAllowedCertificationCenterAccess;
+  }
+
+  get certificationCenterNameAndExternalId() {
+    if (this.currentAllowedCertificationCenterAccess.externalId) {
+      return `${this.currentAllowedCertificationCenterAccess.name} (${this.currentAllowedCertificationCenterAccess.externalId})`;
+    }
+    return this.currentCertificationCenterName;
+  }
+
+  get currentCertificationCenterName() {
+    return this.currentAllowedCertificationCenterAccess.name;
+  }
+
+  get eligibleCertificationCenterAccesses() {
+    const allowedCertificationCenterAccesses =
+      this.currentUser.certificationPointOfContact.allowedCertificationCenterAccesses;
+
+    if (!allowedCertificationCenterAccesses) {
+      return [];
+    }
+    const sortedCenters = allowedCertificationCenterAccesses
+      .filter((allowedCertificationCenterAccess) => {
+        return allowedCertificationCenterAccess.id !== this.currentUser.currentAllowedCertificationCenterAccess.id;
+      })
+      .sortBy('name');
+
+    return sortedCenters.map(({ name, externalId, id }) => ({ label: externalId ? `${name} (${externalId})` : name, value: id }));
+  }
+
+  @action
+  async changeCurrentCertificationCenterAccess(options) {
+    this.currentUser.updateCurrentCertificationCenter(options.value);
+    this.router.replaceWith('authenticated');
+  }
+
+  <template>
+    <PixNavigation @navigationAriaLabel={{t 'navigation.sidebar.extra-information'}} @menuLabel="Menu">
+      <:brand>
+        <LinkTo @route='authenticated'>
+          <img src='/certif.svg' alt={{t 'common.home-page'}} />
+        </LinkTo>
+      </:brand>
+      <:navElements>
         <ul>
           {{#if this.showLinkToSessions}}
             <li>
-              <LinkTo
+              <PixNavigationButton
                 @route='authenticated.sessions'
-                class='sidebar-menu__item'
-                type='button'
-                aria-label={{t 'navigation.main.sessions-label'}}
+                @icon='session'
+                aria-label={{t 'navigation.sidebar.sessions.extra-information'}}
               >
-                <PixIcon @name='session' @plainIcon={{true}} class='sidebar-menu__item-icon' @ariaHidden={{true}} />
-                {{t 'navigation.main.sessions'}}
-              </LinkTo>
+                {{t 'navigation.sidebar.sessions.label'}}
+              </PixNavigationButton>
             </li>
             <li>
-              <LinkTo
-                @route='login-session-supervisor'
-                class='sidebar-menu__item'
-                type='button'
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                <PixIcon @name='eye' @plainIcon={{true}} class='sidebar-menu__item-icon' @ariaHidden={{true}} />
-                {{t 'navigation.main.supervisor'}}
-              </LinkTo>
+              <PixNavigationButton @route='login-session-supervisor' @icon='eye' target='_blank'>
+                {{t 'navigation.sidebar.supervisor'}}
+              </PixNavigationButton>
             </li>
           {{/if}}
           <li>
-            <LinkTo @route='authenticated.team' class='sidebar-menu__item' type='button'>
-              <PixIcon @name='users' @plainIcon={{true}} class='sidebar-menu__item-icon' @ariaHidden={{true}} />
-              {{t 'navigation.main.team'}}
-            </LinkTo>
+            <PixNavigationButton @route='authenticated.team' @icon='users' @plainIcon={{true}} @ariaHidden={{true}}>
+              {{t 'navigation.sidebar.team'}}
+            </PixNavigationButton>
           </li>
           <li>
-            <a class='sidebar-menu__item' href='{{this.documentationLink}}' target='_blank' rel='noopener noreferrer'>
-              <PixIcon @name='book' @plainIcon={{true}} class='sidebar-menu__item-icon' @ariaHidden={{true}} />
-              {{t 'navigation.main.documentation'}}
-            </a>
+            <PixNavigationButton
+              href={{this.documentationLink}}
+              @icon='book'
+              @title='Documentation'
+              @target='_blank'
+              @newWindowLabel={{t 'navigation.external-link-title'}}
+            >
+              {{t 'navigation.sidebar.documentation'}}
+            </PixNavigationButton>
           </li>
         </ul>
-      </nav>
+      </:navElements>
+      <:footer>
 
-    </aside>
+        <PixNavigationSeparator />
+
+        <span class='sidebar-footer__full-name'>{{this.userFullName}}</span>
+        <span class='sidebar-footer__certification-center'>{{this.certificationCenterNameAndExternalId}}</span>
+
+        {{#if this.eligibleCertificationCenterAccesses}}
+          <PixStructureSwitcher
+            @label={{t 'navigation.sidebar.change-center.label'}}
+            @structures={{this.eligibleCertificationCenterAccesses}}
+            @value={{this.currentCertificationCenterName}}
+            @onChange={{this.changeCurrentCertificationCenterAccess}}
+          />
+        {{/if}}
+
+        <PixButtonLink @route='logout' @variant='tertiary'>
+          {{t 'navigation.sidebar.log-out'}}
+        </PixButtonLink>
+      </:footer>
+    </PixNavigation>
   </template>
 }

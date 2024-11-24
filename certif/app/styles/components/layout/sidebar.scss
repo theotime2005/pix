@@ -1,0 +1,19 @@
+.sidebar {
+  width: 300px;
+}
+
+.sidebar-footer {
+
+  &__full-name,
+  &__certification-center {
+    @extend %pix-body-s;
+  }
+
+  &__full-name {
+    font-weight: 500;
+  }
+
+  &__certification-center {
+    max-width: 200px;
+  }
+}

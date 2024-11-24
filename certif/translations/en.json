@@ -206,10 +206,17 @@
       "current-year": "© {currentYear} Pix",
       "legal-notice": "Legal notice"
     },
-    "main": {
+    "sidebar": {
+      "change-center": {
+        "label": "Change center"
+      },
       "documentation": "Documentation",
-      "sessions": "Sessions",
-      "sessions-label": "Certification sessions",
+      "extra-information": "Navigation principale",
+      "log-out": "Log out",
+      "sessions": {
+        "extra-information": "Certification sessions",
+        "label": "Sessions"
+      },
       "supervisor": "Invigilator’s Portal",
       "team": "Team"
     }

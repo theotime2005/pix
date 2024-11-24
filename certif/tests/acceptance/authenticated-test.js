@@ -146,7 +146,7 @@ module('Acceptance | authenticated', function (hooks) {
   });
 
   module('When user changes current certification center', function () {
-    test('should display the new current certification center in the logged menu', async function (assert) {
+    test('should display the new current certification center in the sidebar list', async function (assert) {
       // given
       const currentAllowedCertificationCenterAccess = server.create('allowed-certification-center-access', {
         name: 'Bibiche',
@@ -169,13 +169,10 @@ module('Acceptance | authenticated', function (hooks) {
 
       // when
       const screen = await visit('/');
-      await click(screen.getByRole('button', { name: 'Buffy Summers Bibiche (ABC123) Ouvrir le menu utilisateur' }));
-      await click(screen.getByRole('button', { name: 'Poupoune (DEF456)' }));
+      await click(screen.getByRole('button', { name: 'Changer de centre' }));
 
       // then
-      assert
-        .dom(screen.getByRole('button', { name: 'Buffy Summers Poupoune (DEF456) Ouvrir le menu utilisateur' }))
-        .exists();
+      assert.dom(screen.getByRole('button', { name: 'Buffy Summers Poupoune (DEF456)' })).exists();
     });
 
     test('updates current role in certification center', async function (assert) {
@@ -213,7 +210,7 @@ module('Acceptance | authenticated', function (hooks) {
 
       // when
       const screen = await visit('/');
-      await click(screen.getByRole('button', { name: 'Buffy Summers Bibiche (ABC123) Ouvrir le menu utilisateur' }));
+      await click(screen.getByRole('button', { name: 'Changer de centre' }));
       await click(screen.getByRole('button', { name: 'Poupoune (DEF456)' }));
 
       // then

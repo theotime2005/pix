@@ -45,10 +45,10 @@ module('Integration | Component | Layout | Sidebar', function (hooks) {
       const screen = await render(<template><Sidebar /></template>);
 
       // then
-      assert.dom(screen.queryByLabelText(t('navigation.main.sessions-label'))).exists();
+      assert.dom(screen.getByRole('link', { name: t('navigation.sidebar.sessions.extra-information') })).exists();
     });
 
-    module('when certif center is blocked', function () {
+    module('when certification center is blocked', function () {
       test('should not display the sessions link', async function (assert) {
         // given
         const store = this.owner.lookup('service:store');
@@ -76,49 +76,57 @@ module('Integration | Component | Layout | Sidebar', function (hooks) {
         const screen = await render(<template><Sidebar /></template>);
 
         // then
-        assert.dom(screen.queryByLabelText(t('navigation.main.sessions-label'))).doesNotExist();
+        assert
+          .dom(screen.queryByRole('link', { name: t('navigation.sidebar.sessions.extra-information') }))
+          .doesNotExist();
       });
     });
   });
 
   module('Documentation link', function () {
-    test('should return the dedicated link for non SCO isManagingStudents certification center', async function (assert) {
-      // given / when
-      const screen = await render(<template><Sidebar /></template>);
+    module('when certification center is SCO isManagingStudents', function () {
+      test('should return the dedicated link', async function (assert) {
+        // given
+        const store = this.owner.lookup('service:store');
+        const currentAllowedCertificationCenterAccess = store.createRecord('allowed-certification-center-access', {
+          id: '555',
+          name: 'AllowedCenter',
+          type: 'SCO',
+          isRelatedToManagingStudentsOrganization: true,
+        });
+        certificationPointOfContact = {
+          firstName: 'Alain',
+          lastName: 'Térieur',
+        };
 
-      // then
-      assert
-        .dom(screen.getByRole('link', { name: t('navigation.main.documentation') }))
-        .hasAttribute('href', LINK_OTHER);
+        class CurrentUserStub extends Service {
+          currentAllowedCertificationCenterAccess = currentAllowedCertificationCenterAccess;
+          certificationPointOfContact = certificationPointOfContact;
+          updateCurrentCertificationCenter = sinon.stub();
+        }
+
+        this.owner.register('service:current-user', CurrentUserStub);
+
+        // when
+        const screen = await render(<template><Sidebar /></template>);
+
+        // then
+        assert
+          .dom(screen.getByRole('link', { name: t('navigation.sidebar.documentation') }))
+          .hasAttribute('href', LINK_SCO);
+      });
     });
 
-    test('should return the dedicated link for SCO isManagingStudents certification center', async function (assert) {
-      // given
-      const store = this.owner.lookup('service:store');
-      const currentAllowedCertificationCenterAccess = store.createRecord('allowed-certification-center-access', {
-        id: '555',
-        name: 'AllowedCenter',
-        type: 'SCO',
-        isRelatedToManagingStudentsOrganization: true,
+    module('when certification center is not SCO isManagingStudents', function () {
+      test('should return the dedicated link', async function (assert) {
+        // given / when
+        const screen = await render(<template><Sidebar /></template>);
+
+        // then
+        assert
+          .dom(screen.getByRole('link', { name: t('navigation.sidebar.documentation') }))
+          .hasAttribute('href', LINK_OTHER);
       });
-      certificationPointOfContact = {
-        firstName: 'Alain',
-        lastName: 'Térieur',
-      };
-
-      class CurrentUserStub extends Service {
-        currentAllowedCertificationCenterAccess = currentAllowedCertificationCenterAccess;
-        certificationPointOfContact = certificationPointOfContact;
-        updateCurrentCertificationCenter = sinon.stub();
-      }
-
-      this.owner.register('service:current-user', CurrentUserStub);
-
-      // when
-      const screen = await render(<template><Sidebar /></template>);
-
-      // then
-      assert.dom(screen.getByRole('link', { name: t('navigation.main.documentation') })).hasAttribute('href', LINK_SCO);
     });
   });
 });
