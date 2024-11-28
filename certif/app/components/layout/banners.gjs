@@ -1,4 +1,4 @@
-import PixBanner from '@1024pix/pix-ui/components/pix-banner';
+import PixBannerAlert from '@1024pix/pix-ui/components/pix-banner-alert';
 import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -38,23 +38,23 @@ export default class Banners extends Component {
 
   <template>
     {{#if this.shouldDisplaySCOInformationBanner}}
-      <PixBanner
+      <PixBannerAlert
         @actionLabel={{t 'pages.sco.banner.url-label'}}
         @actionUrl={{ACTION_URL_FOR_INFORMATION_BANNER}}
         @canCloseBanner='true'
       >
         {{t 'pages.sco.banner.information'}}
-      </PixBanner>
+      </PixBannerAlert>
     {{/if}}
 
     {{#if this.shouldDisplayLocaleNotSupportedBanner}}
-      <PixBanner
+      <PixBannerAlert
         @type='information'
         @canCloseBanner='true'
         @onCloseBannerTriggerAction={{this.closeLocaleNotSupportedBanner}}
       >
         {{t 'banners.language-availability.message'}}
-      </PixBanner>
+      </PixBannerAlert>
     {{/if}}
   </template>
 }

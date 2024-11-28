@@ -55,13 +55,13 @@
       </div>
 
       {{#if this.showCategoryMissingError}}
-        <PixMessage @type="error">{{t
+        <PixNotificationAlert @type="error">{{t
             "pages.session-finalization.add-issue-modal.actions.select-category"
-          }}</PixMessage>
+          }}</PixNotificationAlert>
       {{/if}}
 
       {{#if this.showIssueReportSubmitError}}
-        <PixMessage @type="error">{{t "pages.session-finalization.add-issue-modal.errors.add-reporting"}}</PixMessage>
+        <PixNotificationAlert @type="error">{{t "pages.session-finalization.add-issue-modal.errors.add-reporting"}}</PixNotificationAlert>
       {{/if}}
     </form>
   </:content>

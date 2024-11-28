@@ -16,9 +16,9 @@
       <li>{{t "pages.sessions.import.step-one.instructions.edition.replace" htmlSafe=true}}</li>
       <li>{{t "pages.sessions.import.step-one.instructions.edition.subscription" htmlSafe=true}}</li>
     </ul>
-    <PixMessage @type="warning" @withIcon={{true}}>
+    <PixNotificationAlert @type="warning" @withIcon={{true}}>
       {{t "pages.sessions.import.step-one.instructions.edition.warning"}}
-    </PixMessage>
+    </PixNotificationAlert>
   </div>
   <div class="import-download-block">
     <PixIcon @name="download" @ariaHidden={{true}} class="import-download-block__icon" />
@@ -51,7 +51,7 @@
   />
 
   {{#if @importErrorMessage}}
-    <PixMessage @type="error" @withIcon={{true}}>{{@importErrorMessage}}</PixMessage>
+    <PixNotificationAlert @type="error" @withIcon={{true}}>{{@importErrorMessage}}</PixNotificationAlert>
   {{/if}}
 
   <ul class="import-page__section--link-buttons">

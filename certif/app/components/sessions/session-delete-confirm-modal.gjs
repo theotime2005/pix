@@ -1,5 +1,5 @@
 import PixButton from '@1024pix/pix-ui/components/pix-button';
-import PixMessage from '@1024pix/pix-ui/components/pix-message';
+import PixNotificationAlert from '@1024pix/pix-ui/components/pix-notification-alert';
 import PixModal from '@1024pix/pix-ui/components/pix-modal';
 import { t } from 'ember-intl';
 import { gt } from 'ember-truth-helpers';
@@ -24,9 +24,9 @@ import { gt } from 'ember-truth-helpers';
             htmlSafe=true
           }}</p>
       {{/if}}
-      <PixMessage @type='warning' @withIcon={{true}}>
+      <PixNotificationAlert @type='warning' @withIcon={{true}}>
         {{t 'pages.sessions.list.delete-modal.warning'}}
-      </PixMessage>
+      </PixNotificationAlert>
     </:content>
     <:footer>
       <PixButton

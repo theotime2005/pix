@@ -46,9 +46,9 @@
     </div>
 
     {{#if this.showDeletionError}}
-      <PixMessage @type="error">{{t
+      <PixNotificationAlert @type="error">{{t
           "pages.session-finalization.issue-reports-modal.errors.delete-reporting"
-        }}</PixMessage>
+        }}</PixNotificationAlert>
     {{/if}}
   </:content>
 </PixModal>

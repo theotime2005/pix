@@ -31,9 +31,9 @@
   </PixInputPassword>
 
   {{#if this.isErrorMessagePresent}}
-    <PixMessage @type="error">
+    <PixNotificationAlert @type="error">
       {{this.errorMessage}}
-    </PixMessage>
+    </PixNotificationAlert>
   {{/if}}
 
   <PixButton @type="submit" @isLoading={{this.isLoading}}>

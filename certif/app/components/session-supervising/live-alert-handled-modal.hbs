@@ -6,13 +6,13 @@
 >
   <:content>
     <p>
-      <PixMessage @type="success" class="live-alert-handled-modal__success-banner" @withIcon={{true}}>
+      <PixNotificationAlert @type="success" class="live-alert-handled-modal__success-banner" @withIcon={{true}}>
         {{#if @isLiveAlertValidated}}
           {{t "pages.session-supervising.candidate-in-list.handle-live-alert-modal.handled.validated-banner"}}
         {{else}}
           {{t "pages.session-supervising.candidate-in-list.handle-live-alert-modal.handled.rejected-banner"}}
         {{/if}}
-      </PixMessage>
+      </PixNotificationAlert>
     </p>
 
     <div class="app-modal-body__warning live-alert-handled-modal__description">

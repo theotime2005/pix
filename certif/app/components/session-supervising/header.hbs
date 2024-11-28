@@ -56,7 +56,7 @@
   </dl>
 
   {{#if this.isPixCompanionExtensionEnabled}}
-    <PixMessage @type="info" @withIcon={{true}}>
+    <PixNotificationAlert @type="info" @withIcon={{true}}>
       {{t "pages.session-supervising.header.companion.message"}}
       <a
         href={{this.pixCompanionDocumentationUrl}}
@@ -67,7 +67,7 @@
         {{t "pages.session-supervising.header.companion.link"}}
         <PixIcon @name="openNew" @title={{t "navigation.external-link-title"}} />
       </a>
-    </PixMessage>
+    </PixNotificationAlert>
   {{/if}}
 
   <SessionSupervising::ConfirmationModal

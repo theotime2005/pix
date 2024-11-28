@@ -54,13 +54,7 @@ export default class Sidebar extends Component {
     if (!allowedCertificationCenterAccesses) {
       return [];
     }
-    const sortedCenters = allowedCertificationCenterAccesses
-      .filter((allowedCertificationCenterAccess) => {
-        return allowedCertificationCenterAccess.id !== this.currentUser.currentAllowedCertificationCenterAccess.id;
-      })
-      .sortBy('name');
-
-    return sortedCenters.map(({ name, externalId, id }) => ({ label: externalId ? `${name} (${externalId})` : name, value: id }));
+    return allowedCertificationCenterAccesses.sortBy('name').map(({ name, externalId, id }) => ({ label: externalId ? `${name} (${externalId})` : name, value: id }));
   }
 
   @action
@@ -114,16 +108,16 @@ export default class Sidebar extends Component {
       </:navElements>
       <:footer>
 
-        <PixNavigationSeparator />
-
         <span class='sidebar-footer__full-name'>{{this.userFullName}}</span>
         <span class='sidebar-footer__certification-center'>{{this.certificationCenterNameAndExternalId}}</span>
+
+        <PixNavigationSeparator />
 
         {{#if this.eligibleCertificationCenterAccesses}}
           <PixStructureSwitcher
             @label={{t 'navigation.sidebar.change-center.label'}}
             @structures={{this.eligibleCertificationCenterAccesses}}
-            @value={{this.currentCertificationCenterName}}
+            @value={{this.currentUser.currentAllowedCertificationCenterAccess.id}}
             @onChange={{this.changeCurrentCertificationCenterAccess}}
           />
         {{/if}}

@@ -45,13 +45,13 @@
       {{/if}}
 
       {{#if this.shouldDisplayNonEligibilityWarning}}
-        <PixMessage
+        <PixNotificationAlert
           @type="warning"
           @withIcon={{true}}
           class="session-supervising-candidate-in-list-details__eligibility"
         >
           {{t "pages.session-supervising.candidate-in-list.complementary-certification-non-eligibility-warning"}}
-        </PixMessage>
+        </PixNotificationAlert>
       {{/if}}
       {{#if @candidate.hasStarted}}
         <p class="session-supervising-candidate-in-list-details-time">

@@ -10,13 +10,13 @@
   </PixReturnTo>
 
   <h1 class="page-title">{{t "pages.sco.enrol-candidates-in-session.title"}}</h1>
-  <PixMessage @type="info" @withIcon={{true}} class="add-student__info-message">
+  <PixNotificationAlert @type="info" @withIcon={{true}} class="add-student__info-message">
     {{t "pages.sco.enrol-candidates-in-session.information" htmlSafe=true}}
     <a href={{this.supportUrl}} target="_blank" rel="noopener noreferrer">
       {{t "pages.sco.enrol-candidates-in-session.link-label"}}
       <span class="screen-reader-only">{{t "navigation.external-link-title"}}</span>
     </a>
-  </PixMessage>
+  </PixNotificationAlert>
 
   <AddStudentList
     @studentList={{@model.students}}

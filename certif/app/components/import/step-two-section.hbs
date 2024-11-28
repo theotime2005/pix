@@ -53,12 +53,12 @@
             <ul class="collapsible-header__list">
               {{#each this.translatedBlockingErrorReport as |report|}}
                 <li>
-                  <PixMessage @type="error">
+                  <PixNotificationAlert @type="error">
                     {{t "pages.sessions.import.step-two.blocking-errors.line"}}
                     {{report.line}}
                     :
                     {{report.message}}
-                  </PixMessage>
+                  </PixNotificationAlert>
                 </li>
               {{/each}}
             </ul>
@@ -94,12 +94,12 @@
             <ul class="collapsible-header__list">
               {{#each this.translatedNonBlockingErrorReport as |report|}}
                 <li>
-                  <PixMessage @type="warning">
+                  <PixNotificationAlert @type="warning">
                     {{t "pages.sessions.import.step-two.non-blocking-errors.line"}}
                     {{report.line}}
                     :
                     {{report.message}}
-                  </PixMessage>
+                  </PixNotificationAlert>
                 </li>
               {{/each}}
             </ul>
@@ -139,7 +139,7 @@
     />
 
     {{#if @importErrorMessage}}
-      <PixMessage @type="error" @withIcon={{true}}>{{@importErrorMessage}}</PixMessage>
+      <PixNotificationAlert @type="error" @withIcon={{true}}>{{@importErrorMessage}}</PixNotificationAlert>
     {{/if}}
 
     <div>

@@ -2,7 +2,7 @@ import PixButton from '@1024pix/pix-ui/components/pix-button';
 import PixIcon from '@1024pix/pix-ui/components/pix-icon';
 import PixInput from '@1024pix/pix-ui/components/pix-input';
 import PixLabel from '@1024pix/pix-ui/components/pix-label';
-import PixMessage from '@1024pix/pix-ui/components/pix-message';
+import PixNotificationAlert from '@1024pix/pix-ui/components/pix-notification-alert';
 import PixModal from '@1024pix/pix-ui/components/pix-modal';
 import PixRadioButton from '@1024pix/pix-ui/components/pix-radio-button';
 import PixSelect from '@1024pix/pix-ui/components/pix-select';
@@ -437,9 +437,9 @@ export default class CandidateCreationModal extends Component {
             </PixInput>
           </div>
 
-          <PixMessage class='new-candidate-modal-form__info-panel' @withIcon={{true}}>
+          <PixNotificationAlert class='new-candidate-modal-form__info-panel' @withIcon={{true}}>
             {{t 'pages.sessions.detail.candidates.add-modal.info-panel' htmlSafe=true}}
-          </PixMessage>
+          </PixNotificationAlert>
 
           <div class='new-candidate-modal-form__field'>
             <PixInput

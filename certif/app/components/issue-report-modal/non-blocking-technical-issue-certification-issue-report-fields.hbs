@@ -27,9 +27,9 @@
     </PixTooltip>
   </div>
   {{#if @nonBlockingTechnicalIssueCategory.isChecked}}
-    <PixMessage @type="info" @withIcon={{true}}>
+    <PixNotificationAlert @type="info" @withIcon={{true}}>
       {{t "pages.session-finalization.add-issue-modal.non-blocking-issues.technical-information"}}
-    </PixMessage>
+    </PixNotificationAlert>
     <div class="non-blocking-technical-issue-certification-issue-report-fields__details">
       <PixTextarea
         id="text-area-for-category-technical-issue"
