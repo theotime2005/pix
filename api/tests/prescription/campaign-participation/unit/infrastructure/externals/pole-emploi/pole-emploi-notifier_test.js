@@ -2,12 +2,12 @@ import querystring from 'node:querystring';
 
 import dayjs from 'dayjs';
 
-import { notify } from '../../../../../lib/infrastructure/externals/pole-emploi/pole-emploi-notifier.js';
-import * as OidcIdentityProviders from '../../../../../src/identity-access-management/domain/constants/oidc-identity-providers.js';
-import { AuthenticationMethod } from '../../../../../src/identity-access-management/domain/models/AuthenticationMethod.js';
-import { config as settings } from '../../../../../src/shared/config.js';
-import { UnexpectedUserAccountError } from '../../../../../src/shared/domain/errors.js';
-import { catchErr, expect, sinon } from '../../../../test-helper.js';
+import * as OidcIdentityProviders from '../../../../../../../src/identity-access-management/domain/constants/oidc-identity-providers.js';
+import { AuthenticationMethod } from '../../../../../../../src/identity-access-management/domain/models/AuthenticationMethod.js';
+import { notify } from '../../../../../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/pole-emploi-notifier.js';
+import { config as settings } from '../../../../../../../src/shared/config.js';
+import { UnexpectedUserAccountError } from '../../../../../../../src/shared/domain/errors.js';
+import { catchErr, expect, sinon } from '../../../../../../test-helper.js';
 
 describe('Unit | Infrastructure | Externals/Pole-Emploi | pole-emploi-notifier', function () {
   describe('#notify', function () {

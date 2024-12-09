@@ -1,8 +1,8 @@
-import { PoleEmploiSending } from '../../../src/shared/domain/models/PoleEmploiSending.js';
-import { logger } from '../../../src/shared/infrastructure/utils/logger.js';
+import * as httpErrorsHelper from '../../../../../lib/infrastructure/http/errors-helper.js';
+import { httpAgent } from '../../../../../lib/infrastructure/http/http-agent.js';
+import { logger } from '../../../../shared/infrastructure/utils/logger.js';
 import { PoleEmploiPayload } from '../../infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
-import * as httpErrorsHelper from '../../infrastructure/http/errors-helper.js';
-import { httpAgent } from '../../infrastructure/http/http-agent.js';
+import { PoleEmploiSending } from '../models/PoleEmploiSending.js';
 
 const sendStartedParticipationResultsToPoleEmploi = async ({
   campaignParticipationId,
@@ -26,7 +26,7 @@ const sendStartedParticipationResultsToPoleEmploi = async ({
 
   if (campaign.isAssessment() && organization.isPoleEmploi) {
     const user = await userRepository.get(participation.userId);
-    const targetProfile = await targetProfileRepository.get(campaign.targetProfileId);
+    const targetProfile = await targetProfileRepository.getByCampaignId(campaign.targetProfileId);
 
     const payload = PoleEmploiPayload.buildForParticipationStarted({
       user,

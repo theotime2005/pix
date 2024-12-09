@@ -1,4 +1,4 @@
-import { PoleEmploiSending } from '../../../src/shared/domain/models/PoleEmploiSending.js';
+import { PoleEmploiSending } from '../../../src/prescription/campaign-participation/domain/models/PoleEmploiSending.js';
 import { databaseBuffer } from '../database-buffer.js';
 
 const buildPoleEmploiSending = ({

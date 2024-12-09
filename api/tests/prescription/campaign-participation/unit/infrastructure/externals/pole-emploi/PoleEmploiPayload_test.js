@@ -1,6 +1,6 @@
-import { PoleEmploiPayload } from '../../../../../lib/infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
-import { config } from '../../../../../src/shared/config.js';
-import { domainBuilder, expect } from '../../../../test-helper.js';
+import { PoleEmploiPayload } from '../../../../../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
+import { config } from '../../../../../../../src/shared/config.js';
+import { domainBuilder, expect } from '../../../../../../test-helper.js';
 
 describe('Unit | Infrastructure | Externals | Pole-Emploi | PoleEmploiPayload', function () {
   let user;

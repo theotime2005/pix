@@ -70,6 +70,8 @@ import { organizationForAdminRepository } from '../../../src/organizational-enti
 import { tagRepository } from '../../../src/organizational-entities/infrastructure/repositories/tag.repository.js';
 import * as campaignManagementRepository from '../../../src/prescription/campaign/infrastructure/repositories/campaign-management-repository.js';
 import * as divisionRepository from '../../../src/prescription/campaign/infrastructure/repositories/division-repository.js';
+import * as disabledPoleEmploiNotifier from '../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/disabled-pole-emploi-notifier.js';
+import * as poleEmploiNotifier from '../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/pole-emploi-notifier.js';
 import * as campaignAssessmentParticipationRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-assessment-participation-repository.js';
 import * as campaignAssessmentParticipationResultRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-assessment-participation-result-repository.js';
 import * as campaignParticipationRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-participation-repository.js';
@@ -124,8 +126,6 @@ import * as mailService from '../../domain/services/mail-service.js';
 import * as obfuscationService from '../../domain/services/obfuscation-service.js';
 import * as passwordGenerator from '../../domain/services/password-generator.js';
 import * as verifyCertificateCodeService from '../../domain/services/verify-certificate-code-service.js';
-import * as disabledPoleEmploiNotifier from '../../infrastructure/externals/pole-emploi/disabled-pole-emploi-notifier.js';
-import * as poleEmploiNotifier from '../../infrastructure/externals/pole-emploi/pole-emploi-notifier.js';
 import * as badgeAcquisitionRepository from '../../infrastructure/repositories/badge-acquisition-repository.js';
 import * as badgeForCalculationRepository from '../../infrastructure/repositories/badge-for-calculation-repository.js';
 import { campaignParticipationResultRepository } from '../../infrastructure/repositories/campaign-participation-result-repository.js';
@@ -156,14 +156,6 @@ import * as organizationValidator from '../validators/organization-with-tags-and
 
 const oidcAuthenticationServiceRegistry = new OidcAuthenticationServiceRegistry({ oidcProviderRepository });
 
-function requirePoleEmploiNotifier() {
-  if (config.poleEmploi.pushEnabled) {
-    return poleEmploiNotifier;
-  } else {
-    return disabledPoleEmploiNotifier;
-  }
-}
-
 /**
  * Using {@link https://jsdoc.app/tags-type "Closure Compiler's syntax"} to document injected dependencies
  *
@@ -192,6 +184,15 @@ function requirePoleEmploiNotifier() {
  * @typedef {assessmentRepository} AssessmentRepository
  * @typedef {sessionManagementCertificationRepository} SessionManagementCertificationRepository
  */
+
+function requirePoleEmploiNotifier() {
+  if (config.poleEmploi.pushEnabled) {
+    return poleEmploiNotifier;
+  } else {
+    return disabledPoleEmploiNotifier;
+  }
+}
+
 const dependencies = {
   accountRecoveryDemandRepository,
   certificationCompletedJobRepository,

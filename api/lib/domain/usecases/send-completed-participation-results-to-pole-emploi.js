@@ -1,6 +1,6 @@
-import { PoleEmploiSending } from '../../../src/shared/domain/models/PoleEmploiSending.js';
+import { PoleEmploiSending } from '../../../src/prescription/campaign-participation/domain/models/PoleEmploiSending.js';
+import { PoleEmploiPayload } from '../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
 import { logger } from '../../../src/shared/infrastructure/utils/logger.js';
-import { PoleEmploiPayload } from '../../infrastructure/externals/pole-emploi/PoleEmploiPayload.js';
 import * as httpErrorsHelper from '../../infrastructure/http/errors-helper.js';
 import { httpAgent } from '../../infrastructure/http/http-agent.js';
 

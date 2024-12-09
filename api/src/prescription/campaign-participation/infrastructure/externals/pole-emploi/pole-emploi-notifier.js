@@ -6,10 +6,10 @@ import querystring from 'node:querystring';
 
 import dayjs from 'dayjs';
 
-import * as OidcIdentityProviders from '../../../../src/identity-access-management/domain/constants/oidc-identity-providers.js';
-import { AuthenticationMethod } from '../../../../src/identity-access-management/domain/models/AuthenticationMethod.js';
-import { config } from '../../../../src/shared/config.js';
-import { UnexpectedUserAccountError } from '../../../../src/shared/domain/errors.js';
+import * as OidcIdentityProviders from '../../../../../identity-access-management/domain/constants/oidc-identity-providers.js';
+import { AuthenticationMethod } from '../../../../../identity-access-management/domain/models/AuthenticationMethod.js';
+import { config } from '../../../../../shared/config.js';
+import { UnexpectedUserAccountError } from '../../../../../shared/domain/errors.js';
 
 const notify = async (userId, payload, dependencies) => {
   const { authenticationMethodRepository, httpAgent, httpErrorsHelper, logger } = dependencies;

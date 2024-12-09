@@ -92,7 +92,6 @@ import { OrganizationMemberIdentity } from './OrganizationMemberIdentity.js';
 import { OrganizationTag } from './OrganizationTag.js';
 import { PartnerCertificationScoring } from './PartnerCertificationScoring.js';
 import { PlacementProfile } from './PlacementProfile.js';
-import { PoleEmploiSending } from './PoleEmploiSending.js';
 import { ReproducibilityRate } from './ReproducibilityRate.js';
 import { ScoringSimulation } from './ScoringSimulation.js';
 import { ScoringSimulationContext } from './ScoringSimulationContext.js';
@@ -192,7 +191,6 @@ export {
   OrganizationTag,
   PartnerCertificationScoring,
   PlacementProfile,
-  PoleEmploiSending,
   PrivateCertificate,
   Progression,
   ReproducibilityRate,
