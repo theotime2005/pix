@@ -70,14 +70,11 @@ import { organizationForAdminRepository } from '../../../src/organizational-enti
 import { tagRepository } from '../../../src/organizational-entities/infrastructure/repositories/tag.repository.js';
 import * as campaignManagementRepository from '../../../src/prescription/campaign/infrastructure/repositories/campaign-management-repository.js';
 import * as divisionRepository from '../../../src/prescription/campaign/infrastructure/repositories/division-repository.js';
-import * as disabledPoleEmploiNotifier from '../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/disabled-pole-emploi-notifier.js';
-import * as poleEmploiNotifier from '../../../src/prescription/campaign-participation/infrastructure/externals/pole-emploi/pole-emploi-notifier.js';
 import * as campaignAssessmentParticipationRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-assessment-participation-repository.js';
 import * as campaignAssessmentParticipationResultRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-assessment-participation-result-repository.js';
 import * as campaignParticipationRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-participation-repository.js';
 import * as campaignProfileRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-profile-repository.js';
 import { participationCompletedJobRepository } from '../../../src/prescription/campaign-participation/infrastructure/repositories/jobs/participation-completed-job-repository.js';
-import * as poleEmploiSendingRepository from '../../../src/prescription/campaign-participation/infrastructure/repositories/pole-emploi-sending-repository.js';
 import * as prescriptionOrganizationLearnerRepository from '../../../src/prescription/learner-management/infrastructure/repositories/organization-learner-repository.js';
 import * as studentRepository from '../../../src/prescription/learner-management/infrastructure/repositories/student-repository.js';
 import * as organizationLearnerActivityRepository from '../../../src/prescription/organization-learner/infrastructure/repositories/organization-learner-activity-repository.js';
@@ -185,14 +182,6 @@ const oidcAuthenticationServiceRegistry = new OidcAuthenticationServiceRegistry(
  * @typedef {sessionManagementCertificationRepository} SessionManagementCertificationRepository
  */
 
-function requirePoleEmploiNotifier() {
-  if (config.poleEmploi.pushEnabled) {
-    return poleEmploiNotifier;
-  } else {
-    return disabledPoleEmploiNotifier;
-  }
-}
-
 const dependencies = {
   accountRecoveryDemandRepository,
   certificationCompletedJobRepository,
@@ -290,8 +279,6 @@ const dependencies = {
   pickChallengeService,
   pixAuthenticationService,
   placementProfileService,
-  poleEmploiNotifier: requirePoleEmploiNotifier(),
-  poleEmploiSendingRepository,
   prescriptionOrganizationLearnerRepository,
   refreshTokenRepository,
   registrationOrganizationLearnerRepository,
