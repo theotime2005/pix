@@ -15,10 +15,13 @@ import * as compareStagesAndAcquiredStages from '../../../../evaluation/domain/s
 import * as competenceEvaluationRepository from '../../../../evaluation/infrastructure/repositories/competence-evaluation-repository.js';
 import * as stageAcquisitionRepository from '../../../../evaluation/infrastructure/repositories/stage-acquisition-repository.js';
 import * as stageRepository from '../../../../evaluation/infrastructure/repositories/stage-repository.js';
+import * as authenticationMethodRepository from '../../../../identity-access-management/infrastructure/repositories/authentication-method.repository.js';
+import * as userRepository from '../../../../identity-access-management/infrastructure/repositories/user.repository.js';
 import { config } from '../../../../shared/config.js';
 import * as areaRepository from '../../../../shared/infrastructure/repositories/area-repository.js';
 import * as assessmentRepository from '../../../../shared/infrastructure/repositories/assessment-repository.js';
 import * as competenceRepository from '../../../../shared/infrastructure/repositories/competence-repository.js';
+import * as organizationRepository from '../../../../shared/infrastructure/repositories/organization-repository.js';
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
 import * as disabledPoleEmploiNotifier from '../../infrastructure/externals/pole-emploi/disabled-pole-emploi-notifier.js';
@@ -38,7 +41,6 @@ import { participantResultsSharedRepository } from '../../infrastructure/reposit
 import * as participationsForCampaignManagementRepository from '../../infrastructure/repositories/participations-for-campaign-management-repository.js';
 import * as participationsForUserManagementRepository from '../../infrastructure/repositories/participations-for-user-management-repository.js';
 import * as poleEmploiSendingRepository from '../../infrastructure/repositories/pole-emploi-sending-repository.js';
-import * as authenticationMethodRepository from '../../infrastructure/repositories/pole-emploi-sending-repository.js';
 /**
  * @typedef { import ('../../../../shared/infrastructure/repositories/area-repository.js')} AreaRepository
  * @typedef { import ('../../../../shared/infrastructure/repositories/assessment-repository.js')} AssessmentRepository
@@ -103,6 +105,7 @@ const dependencies = {
   knowledgeElementRepository,
   learningContentRepository,
   organizationLearnerRepository,
+  organizationRepository,
   participantResultRepository,
   participationResultCalculationJobRepository,
   participationsForCampaignManagementRepository,
@@ -116,6 +119,7 @@ const dependencies = {
   stageCollectionRepository,
   stageRepository,
   tutorialRepository,
+  userRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));
