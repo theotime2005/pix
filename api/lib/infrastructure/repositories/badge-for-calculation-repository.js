@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
+import * as campaignRepository from '../../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import { SCOPES } from '../../../src/shared/domain/models/BadgeDetails.js';
 import { BadgeCriterionForCalculation, BadgeForCalculation } from '../../../src/shared/domain/models/index.js';
 import { DomainTransaction } from '../DomainTransaction.js';
-import * as campaignRepository from './campaign-repository.js';
 
 export { findByCampaignId, findByCampaignParticipationId, getByCertifiableBadgeAcquisition };
 

@@ -9,8 +9,8 @@ import dayjs from 'dayjs';
 import _ from 'lodash';
 
 import { disconnect, knex } from '../../db/knex-database-connection.js';
-import * as campaignRepository from '../../lib/infrastructure/repositories/campaign-repository.js';
 import * as campaignAdministrationRepository from '../../src/prescription/campaign/infrastructure/repositories/campaign-administration-repository.js';
+import * as campaignRepository from '../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import { CampaignParticipationStatuses } from '../../src/prescription/shared/domain/constants.js';
 import { generate } from '../../src/shared/domain/services/code-generator.js';
 import { learningContentCache as cache } from '../../src/shared/infrastructure/caches/learning-content-cache.js';

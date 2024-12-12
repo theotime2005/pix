@@ -6,11 +6,11 @@ import * as obfuscationService from '../../../../lib/domain/services/obfuscation
 import * as userReconciliationService from '../../../../lib/domain/services/user-reconciliation-service.js';
 import { createAndReconcileUserToOrganizationLearner } from '../../../../lib/domain/usecases/create-and-reconcile-user-to-organization-learner.js';
 import { usecases } from '../../../../lib/domain/usecases/index.js';
-import * as campaignRepository from '../../../../lib/infrastructure/repositories/campaign-repository.js';
 import * as organizationLearnerRepository from '../../../../lib/infrastructure/repositories/organization-learner-repository.js';
 import * as authenticationMethodRepository from '../../../../src/identity-access-management/infrastructure/repositories/authentication-method.repository.js';
 import * as userRepository from '../../../../src/identity-access-management/infrastructure/repositories/user.repository.js';
 import { userToCreateRepository } from '../../../../src/identity-access-management/infrastructure/repositories/user-to-create.repository.js';
+import * as campaignRepository from '../../../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import {
   CampaignCodeError,
   NotFoundError,

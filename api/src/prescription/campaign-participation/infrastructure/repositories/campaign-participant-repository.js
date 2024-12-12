@@ -1,7 +1,6 @@
 import pick from 'lodash/pick.js';
 
 import { knex } from '../../../../../db/knex-database-connection.js';
-import * as campaignRepository from '../../../../../lib/infrastructure/repositories/campaign-repository.js';
 import { CAMPAIGN_FEATURES } from '../../../../shared/domain/constants.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import {
@@ -12,6 +11,7 @@ import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { OrganizationLearnerForStartingParticipation } from '../../../../shared/domain/read-models/OrganizationLearnerForStartingParticipation.js';
 import { UserIdentity } from '../../../../shared/domain/read-models/UserIdentity.js';
 import * as knexUtils from '../../../../shared/infrastructure/utils/knex-utils.js';
+import * as campaignRepository from '../../../campaign/infrastructure/repositories/campaign-repository.js';
 import { CampaignParticipant } from '../../domain/models/CampaignParticipant.js';
 import { CampaignToStartParticipation } from '../../domain/models/CampaignToStartParticipation.js';
 import { PreviousCampaignParticipation } from '../../domain/models/PreviousCampaignParticipation.js';

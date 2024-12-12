@@ -5,8 +5,8 @@ const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: `${__dirname}/../../.env` });
-import * as campaignRepository from '../../lib/infrastructure/repositories/campaign-repository.js';
 import * as knowlegeElementSnapshotRepository from '../../lib/infrastructure/repositories/knowledge-element-snapshot-repository.js';
+import * as campaignRepository from '../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import { ParticipantResultsShared } from '../../src/prescription/campaign-participation/domain/models/ParticipantResultsShared.js';
 import { CampaignParticipationStatuses } from '../../src/prescription/shared/domain/constants.js';
 

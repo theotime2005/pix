@@ -1,11 +1,10 @@
 import stream from 'node:stream';
 
 const { PassThrough } = stream;
-
-import * as campaignRepository from '../../../../../../lib/infrastructure/repositories/campaign-repository.js';
 import * as userRepository from '../../../../../../src/identity-access-management/infrastructure/repositories/user.repository.js';
 import * as organizationFeatureApi from '../../../../../../src/organizational-entities/application/api/organization-features-api.js';
 import { startWritingCampaignProfilesCollectionResultsToStream } from '../../../../../../src/prescription/campaign/domain/usecases/start-writing-campaign-profiles-collection-results-to-stream.js';
+import * as campaignRepository from '../../../../../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import * as campaignParticipationRepository from '../../../../../../src/prescription/campaign-participation/infrastructure/repositories/campaign-participation-repository.js';
 import * as organizationLearnerImportFormatRepository from '../../../../../../src/prescription/learner-management/infrastructure/repositories/organization-learner-import-format-repository.js';
 import {

@@ -19,6 +19,7 @@ import * as complementaryCertificationBadgesRepository from '../../../src/certif
 import * as flashAlgorithmConfigurationRepository from '../../../src/certification/shared/infrastructure/repositories/flash-algorithm-configuration-repository.js';
 import * as authenticationMethodRepository from '../../../src/identity-access-management/infrastructure/repositories/authentication-method.repository.js';
 import * as userRepository from '../../../src/identity-access-management/infrastructure/repositories/user.repository.js';
+import * as campaignRepository from '../../../src/prescription/campaign/infrastructure/repositories/campaign-repository.js';
 import { config } from '../../../src/shared/config.js';
 import { monitoringTools as MonitoringTools } from '../../../src/shared/infrastructure/monitoring-tools.js';
 import * as answerRepository from '../../../src/shared/infrastructure/repositories/answer-repository.js';
@@ -35,7 +36,6 @@ import { EventDispatcher } from '../../infrastructure/events/EventDispatcher.js'
 import { EventDispatcherLogger } from '../../infrastructure/events/EventDispatcherLogger.js';
 import * as badgeAcquisitionRepository from '../../infrastructure/repositories/badge-acquisition-repository.js';
 import * as campaignParticipationResultRepository from '../../infrastructure/repositories/campaign-participation-result-repository.js';
-import * as campaignRepository from '../../infrastructure/repositories/campaign-repository.js';
 import * as complementaryCertificationCourseResultRepository from '../../infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as complementaryCertificationScoringCriteriaRepository from '../../infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as knowledgeElementRepository from '../../infrastructure/repositories/knowledge-element-repository.js';

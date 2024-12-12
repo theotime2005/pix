@@ -1,18 +1,18 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-/** TODO
- * Internal API Needed For
- * campaignRepository.getByCode
- * groupRepository.findByOrganizationId
- */
-import * as campaignRepository from '../../../../../lib/infrastructure/repositories/campaign-repository.js';
 import * as libOrganizationLearnerRepository from '../../../../../lib/infrastructure/repositories/organization-learner-repository.js';
 import * as organizationFeaturesAPI from '../../../../organizational-entities/application/api/organization-features-api.js';
 import { tagRepository } from '../../../../organizational-entities/infrastructure/repositories/tag.repository.js';
 import * as organizationRepository from '../../../../shared/infrastructure/repositories/organization-repository.js';
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
+/** TODO
+ * Internal API Needed For
+ * campaignRepository.getByCode
+ * groupRepository.findByOrganizationId
+ */
+import * as campaignRepository from '../../../campaign/infrastructure/repositories/campaign-repository.js';
 import * as divisionRepository from '../../../campaign/infrastructure/repositories/division-repository.js';
 import * as groupRepository from '../../../campaign/infrastructure/repositories/group-repository.js';
 import * as campaignParticipationOverviewRepository from '../../../campaign-participation/infrastructure/repositories/campaign-participation-overview-repository.js';
