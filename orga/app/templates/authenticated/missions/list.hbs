@@ -1,6 +1,6 @@
 {{page-title (t "pages.missions.title")}}
 
-<PixBannerAlert class="mission-list-banner">
+<PixNotificationAlert class="mission-list-banner" @type="communication-orga" @withIcon={{true}}>
   {{t "pages.missions.list.banner.welcome"}}
   <br />
   <ul>
@@ -58,7 +58,7 @@
       <span>{{html-unsafe (t "pages.missions.list.banner.step3")}}</span>
     </li>
   </ul>
-</PixBannerAlert>
+</PixNotificationAlert>
 
 <h1 class="mission-list__title page-title">{{t "pages.missions.title"}}</h1>
 {{#if @model.missions}}

@@ -1,11 +1,11 @@
-import PixBannerAlert from '@1024pix/pix-ui/components/pix-banner-alert';
+import PixNotificationAlert from '@1024pix/pix-ui/components/pix-notification-alert';
 import { t } from 'ember-intl';
 import { gt } from 'ember-truth-helpers';
 
 <template>
   {{#if (gt @occupied @total)}}
-    <PixBannerAlert class="capacity-alert" @type="error" @withIcon="true">
+    <PixNotificationAlert class="capacity-alert" @type="error" @withIcon={{true}}>
       {{t "banners.over-capacity.message"}}
-    </PixBannerAlert>
+    </PixNotificationAlert>
   {{/if}}
 </template>

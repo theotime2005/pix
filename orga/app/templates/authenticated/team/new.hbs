@@ -5,7 +5,7 @@
   <h1 class="page__title page-title">
     {{t "pages.team-new.title"}}
   </h1>
-  <PixBannerAlert @type="warning" class="new-team-page__warning-banner">{{t "pages.team-new.warning"}}</PixBannerAlert>
+  <PixNotificationAlert @type="warning" class="new-team-page__warning-banner" @withIcon={{true}}>{{t "pages.team-new.warning"}}</PixNotificationAlert>
 
   <p class="paragraph">
     {{t "pages.team-new.email-requirement"}}<br />

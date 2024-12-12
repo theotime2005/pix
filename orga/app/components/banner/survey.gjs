@@ -1,4 +1,4 @@
-import PixBannerAlert from '@1024pix/pix-ui/components/pix-banner-alert';
+import PixNotificationAlert from '@1024pix/pix-ui/components/pix-notification-alert';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { t } from 'ember-intl';
@@ -35,14 +35,14 @@ export default class SurveyBanner extends Component {
 
   <template>
     {{#if this.shouldDisplayBanner}}
-      <PixBannerAlert @type="information">
+      <PixNotificationAlert @type="information" @withIcon={{true}}>
         {{t
           "banners.survey.message"
           documentationLink=ENV.APP.SURVEY_LINK
           linkClasses="link link--banner link--bold link--underlined"
           htmlSafe=true
         }}
-      </PixBannerAlert>
+      </PixNotificationAlert>
     {{/if}}
   </template>
 }

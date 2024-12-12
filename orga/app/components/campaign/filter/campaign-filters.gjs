@@ -54,8 +54,8 @@ export default class CampaignFilters extends Component {
 
       <PixToggleButton @toggled={{this.isToggleSwitched}} @onChange={{this.onToggle}} @screenReaderOnly={{true}}>
         <:label>{{t "pages.campaigns-list.action.campaign.label"}}</:label>
-        <:on>{{t "pages.campaigns-list.action.campaign.ongoing"}}</:on>
-        <:off>{{t "pages.campaigns-list.action.campaign.archived"}}</:off>
+        <:viewA>{{t "pages.campaigns-list.action.campaign.ongoing"}}</:viewA>
+        <:viewB>{{t "pages.campaigns-list.action.campaign.archived"}}</:viewB>
       </PixToggleButton>
     </PixFilterBanner>
   </template>

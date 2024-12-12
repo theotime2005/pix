@@ -1,4 +1,4 @@
-import PixBannerAlert from '@1024pix/pix-ui/components/pix-banner-alert';
+import PixNotificationAlert from "@1024pix/pix-ui/components/pix-notification-alert";
 import { LinkTo } from '@ember/routing';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -24,7 +24,7 @@ export default class ScommunicationBanner extends Component {
 
   <template>
     {{#if this.shouldDisplayBanner}}
-      <PixBannerAlert @type="communication-orga">
+      <PixNotificationAlert @type="communication-orga" @withIcon={{true}}>
         {{t "banners.import.message"}}
         <ol class="banner-list">
           <li>
@@ -40,7 +40,7 @@ export default class ScommunicationBanner extends Component {
           <li>{{t "banners.import.step2" htmlSafe=true}}</li>
           <li>{{t "banners.import.step3" htmlSafe=true}}</li>
         </ol>
-      </PixBannerAlert>
+      </PixNotificationAlert>
     {{/if}}
   </template>
 }
