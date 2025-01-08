@@ -59,6 +59,32 @@ export default class LoginOrRegisterOidcComponent extends Component {
   }
 
   @action
+  async login(event) {
+    event.preventDefault();
+
+    this.loginErrorMessage = null;
+
+    if (!this.isFormValid) return;
+
+    this.isLoginLoading = true;
+
+    try {
+      await this.args.onLogin({ enteredEmail: this.email, enteredPassword: this.password });
+    } catch (error) {
+      const status = get(error, 'errors[0].status');
+
+      const errorsMapping = {
+        401: this.intl.t(ERROR_INPUT_MESSAGE_MAP['expiredAuthenticationKey']),
+        404: this.intl.t(ERROR_INPUT_MESSAGE_MAP['loginUnauthorizedError']),
+        409: this.intl.t(ERROR_INPUT_MESSAGE_MAP['accountConflict']),
+      };
+      this.loginErrorMessage = errorsMapping[status] || this.intl.t(ERROR_INPUT_MESSAGE_MAP['unknownError']);
+    } finally {
+      this.isLoginLoading = false;
+    }
+  }
+
+  @action
   async register() {
     if (!this.isTermsOfServiceValidated) {
       this.registerErrorMessage = this.intl.t(ERROR_INPUT_MESSAGE_MAP['termsOfServiceNotSelected']);
@@ -121,32 +147,6 @@ export default class LoginOrRegisterOidcComponent extends Component {
 
   get isFormValid() {
     return isEmailValid(this.email) && !isEmpty(this.password);
-  }
-
-  @action
-  async login(event) {
-    event.preventDefault();
-
-    this.loginErrorMessage = null;
-
-    if (!this.isFormValid) return;
-
-    this.isLoginLoading = true;
-
-    try {
-      await this.args.onLogin({ enteredEmail: this.email, enteredPassword: this.password });
-    } catch (error) {
-      const status = get(error, 'errors[0].status');
-
-      const errorsMapping = {
-        401: this.intl.t(ERROR_INPUT_MESSAGE_MAP['expiredAuthenticationKey']),
-        404: this.intl.t(ERROR_INPUT_MESSAGE_MAP['loginUnauthorizedError']),
-        409: this.intl.t(ERROR_INPUT_MESSAGE_MAP['accountConflict']),
-      };
-      this.loginErrorMessage = errorsMapping[status] || this.intl.t(ERROR_INPUT_MESSAGE_MAP['unknownError']);
-    } finally {
-      this.isLoginLoading = false;
-    }
   }
 
   @action
