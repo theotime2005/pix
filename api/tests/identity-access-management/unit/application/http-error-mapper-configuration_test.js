@@ -25,16 +25,17 @@ describe('Unit | Identity Access Management | Application | HttpErrorMapperConfi
 
   context('when mapping "AuthenticationKeyExpired"', function () {
     it('returns an UnauthorizedError Http Error', function () {
-      //given
+      // given
       const httpErrorMapper = authenticationDomainErrorMappingConfiguration.find(
         (httpErrorMapper) => httpErrorMapper.name === AuthenticationKeyExpired.name,
       );
 
-      //when
+      // when
       const error = httpErrorMapper.httpErrorFn(new AuthenticationKeyExpired());
 
-      //then
+      // then
       expect(error).to.be.instanceOf(HttpErrors.UnauthorizedError);
+      expect(error.code).to.equal('EXPIRED_AUTHENTICATION_KEY');
     });
   });
 

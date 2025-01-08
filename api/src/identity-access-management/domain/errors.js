@@ -1,8 +1,8 @@
 import { DomainError } from '../../shared/domain/errors.js';
 
 class AuthenticationKeyExpired extends DomainError {
-  constructor(message = 'This authentication key has expired.') {
-    super(message);
+  constructor() {
+    super('This authentication key has expired.', 'EXPIRED_AUTHENTICATION_KEY');
   }
 }
 
