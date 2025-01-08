@@ -1,4 +1,10 @@
-import { AuthenticationKeyExpired, DifferentExternalIdentifierError } from '../errors.js';
+import { UserNotFoundError } from '../../../shared/domain/errors.js';
+import {
+  AuthenticationKeyExpired,
+  DifferentExternalIdentifierError,
+  MissingOrInvalidCredentialsError,
+  PasswordNotMatching,
+} from '../errors.js';
 
 /**
  * @typedef {function} findUserForOidcReconciliation
@@ -23,41 +29,49 @@ const findUserForOidcReconciliation = async function ({
   authenticationMethodRepository,
   userRepository,
 }) {
-  const sessionContentAndUserInfo = await authenticationSessionService.getByKey(authenticationKey);
-  if (!sessionContentAndUserInfo) {
-    throw new AuthenticationKeyExpired();
+  try {
+    const sessionContentAndUserInfo = await authenticationSessionService.getByKey(authenticationKey);
+    if (!sessionContentAndUserInfo) {
+      throw new AuthenticationKeyExpired();
+    }
+
+    const foundUser = await pixAuthenticationService.getUserByUsernameAndPassword({
+      username: email,
+      password,
+      userRepository,
+    });
+
+    const authenticationMethods = await authenticationMethodRepository.findByUserId({ userId: foundUser.id });
+    const oidcAuthenticationMethod = authenticationMethods.find(
+      (authenticationMethod) => authenticationMethod.identityProvider === identityProvider,
+    );
+
+    const isSameExternalIdentifier =
+      oidcAuthenticationMethod?.externalIdentifier === sessionContentAndUserInfo.userInfo.externalIdentityId;
+    if (oidcAuthenticationMethod && !isSameExternalIdentifier) {
+      throw new DifferentExternalIdentifierError();
+    }
+
+    sessionContentAndUserInfo.userInfo.userId = foundUser.id;
+    await authenticationSessionService.update(authenticationKey, sessionContentAndUserInfo);
+
+    const fullNameFromPix = `${foundUser.firstName} ${foundUser.lastName}`;
+    const fullNameFromExternalIdentityProvider = `${sessionContentAndUserInfo.userInfo.firstName} ${sessionContentAndUserInfo.userInfo.lastName}`;
+
+    return {
+      fullNameFromPix,
+      fullNameFromExternalIdentityProvider,
+      email: foundUser.email,
+      username: foundUser.username,
+      authenticationMethods,
+    };
+  } catch (error) {
+    if (error instanceof UserNotFoundError || error instanceof PasswordNotMatching) {
+      throw new MissingOrInvalidCredentialsError();
+    } else {
+      throw error;
+    }
   }
-
-  const foundUser = await pixAuthenticationService.getUserByUsernameAndPassword({
-    username: email,
-    password,
-    userRepository,
-  });
-
-  const authenticationMethods = await authenticationMethodRepository.findByUserId({ userId: foundUser.id });
-  const oidcAuthenticationMethod = authenticationMethods.find(
-    (authenticationMethod) => authenticationMethod.identityProvider === identityProvider,
-  );
-
-  const isSameExternalIdentifier =
-    oidcAuthenticationMethod?.externalIdentifier === sessionContentAndUserInfo.userInfo.externalIdentityId;
-  if (oidcAuthenticationMethod && !isSameExternalIdentifier) {
-    throw new DifferentExternalIdentifierError();
-  }
-
-  sessionContentAndUserInfo.userInfo.userId = foundUser.id;
-  await authenticationSessionService.update(authenticationKey, sessionContentAndUserInfo);
-
-  const fullNameFromPix = `${foundUser.firstName} ${foundUser.lastName}`;
-  const fullNameFromExternalIdentityProvider = `${sessionContentAndUserInfo.userInfo.firstName} ${sessionContentAndUserInfo.userInfo.lastName}`;
-
-  return {
-    fullNameFromPix,
-    fullNameFromExternalIdentityProvider,
-    email: foundUser.email,
-    username: foundUser.username,
-    authenticationMethods,
-  };
 };
 
 export { findUserForOidcReconciliation };
