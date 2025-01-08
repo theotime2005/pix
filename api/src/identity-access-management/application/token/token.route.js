@@ -37,7 +37,7 @@ export const tokenRoutes = [
       handler: (request, h) => tokenController.createToken(request, h),
       tags: ['identity-access-management', 'api', 'token'],
       notes: [
-        "Cette route permet d'obtenir un refresh token et access token à partir d'un couple identifiant / mot de passe" +
+        "Cette route permet d'obtenir un access token et un refresh token à partir d'un couple identifiant / mot de passe" +
           " ou un access token à partir d'un refresh token valide.",
       ],
     },
