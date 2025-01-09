@@ -163,7 +163,7 @@ module('Unit | Component | authentication | oidc-reconciliation', function (hook
         assert.false(component.isLoading);
       });
     });
-    module('completes with error', function () {
+    module('when there are errors', function () {
       module('when authentication key has expired', function () {
         test('should display error', async function (assert) {
           // given
@@ -187,8 +187,8 @@ module('Unit | Component | authentication | oidc-reconciliation', function (hook
         });
       });
 
-      module('when an error happens', function () {
-        test('should display generic error message', async function (assert) {
+      module('when the error has no specific handling', function () {
+        test('displays a default error message', async function (assert) {
           // given
           const component = createGlimmerComponent('authentication/oidc-reconciliation');
           const sessionService = stubSessionService(this.owner, { isAuthenticated: false });

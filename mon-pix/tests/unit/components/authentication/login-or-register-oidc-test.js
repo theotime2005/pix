@@ -36,7 +36,7 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
       });
     });
 
-    module('completes with error', function () {
+    module('when there are errors', function () {
       module('when authentication key has expired', function () {
         test('displays error', async function (assert) {
           // given
@@ -126,7 +126,7 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
         });
       });
 
-      test('displays error message with details', async function (assert) {
+      test('displays an error message with details', async function (assert) {
         // given
         const component = createGlimmerComponent('authentication/login-or-register-oidc');
         const sessionService = stubSessionService(this.owner, { isAuthenticated: false });
@@ -143,7 +143,7 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
         assert.strictEqual(component.registerErrorMessage, `${t('common.error')} (some detail)`);
       });
 
-      test('displays default error message', async function (assert) {
+      test('displays a default error message', async function (assert) {
         // given
         const component = createGlimmerComponent('authentication/login-or-register-oidc');
         const sessionService = stubSessionService(this.owner, { isAuthenticated: false });
@@ -255,7 +255,7 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
       });
     });
 
-    module('completes with error', function () {
+    module('when there are errors', function () {
       module('when form is invalid', function () {
         test('does not request api for reconciliation', async function (assert) {
           // given
