@@ -312,6 +312,58 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
         });
       });
 
+      module('when user account is temporarily blocked', function () {
+        test('displays error', async function (assert) {
+          // given
+          const component = createGlimmerComponent('authentication/login-or-register-oidc');
+
+          const sessionService = stubSessionService(this.owner, { isAuthenticated: false });
+          sessionService.authenticate.rejects({ errors: [{ status: '403', code: 'USER_IS_TEMPORARY_BLOCKED' }] });
+
+          component.args.identityProviderSlug = 'super-idp';
+          component.args.authenticationKey = 'super-key';
+          component.isTermsOfServiceValidated = true;
+
+          // when
+          await component.register();
+
+          // then
+          assert.deepEqual(
+            component.registerErrorMessage,
+            t('common.api-error-messages.login-user-temporary-blocked-error', {
+              url: '/mot-de-passe-oublie',
+              htmlSafe: true,
+            }),
+          );
+        });
+      });
+
+      module('when user account is blocked', function () {
+        test('displays error', async function (assert) {
+          // given
+          const component = createGlimmerComponent('authentication/login-or-register-oidc');
+
+          const sessionService = stubSessionService(this.owner, { isAuthenticated: false });
+          sessionService.authenticate.rejects({ errors: [{ status: '403', code: 'USER_IS_BLOCKED' }] });
+
+          component.args.identityProviderSlug = 'super-idp';
+          component.args.authenticationKey = 'super-key';
+          component.isTermsOfServiceValidated = true;
+
+          // when
+          await component.register();
+
+          // then
+          assert.deepEqual(
+            component.registerErrorMessage,
+            t('common.api-error-messages.login-user-blocked-error', {
+              url: 'https://support.pix.org/support/tickets/new',
+              htmlSafe: true,
+            }),
+          );
+        });
+      });
+
       test('displays default error message', async function (assert) {
         // given
         const component = createGlimmerComponent('authentication/login-or-register-oidc');

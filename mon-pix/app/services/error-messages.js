@@ -5,6 +5,24 @@ const ERROR_CODE_MAPPING = {
   EXPIRED_AUTHENTICATION_KEY: {
     i18nKey: 'pages.login-or-register-oidc.error.expired-authentication-key',
   },
+  USER_IS_TEMPORARY_BLOCKED: {
+    i18nKey: 'common.api-error-messages.login-user-temporary-blocked-error',
+    formatOptionsFn: () => {
+      return {
+        url: '/mot-de-passe-oublie',
+        htmlSafe: true,
+      };
+    },
+  },
+  USER_IS_BLOCKED: {
+    i18nKey: 'common.api-error-messages.login-user-blocked-error',
+    formatOptionsFn: () => {
+      return {
+        url: 'https://support.pix.org/support/tickets/new',
+        htmlSafe: true,
+      };
+    },
+  },
   INVALID_LOCALE_FORMAT: {
     i18nKey: 'pages.sign-up.errors.invalid-locale-format',
     formatOptionsFn: (error) => {
