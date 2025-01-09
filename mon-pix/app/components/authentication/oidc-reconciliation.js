@@ -2,12 +2,12 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import get from 'lodash/get';
 
 export default class OidcReconciliationComponent extends Component {
   @service intl;
   @service oidcIdentityProviders;
   @service session;
+  @service errorMessages;
 
   @tracked reconcileErrorMessage = null;
   @tracked isLoading = false;
@@ -49,12 +49,8 @@ export default class OidcReconciliationComponent extends Component {
         identityProviderSlug: this.args.identityProviderSlug,
         hostSlug: 'user/reconcile',
       });
-    } catch (error) {
-      const status = get(error, 'errors[0].status');
-      const errorsMapping = {
-        401: this.intl.t('pages.login-or-register-oidc.error.expired-authentication-key'),
-      };
-      this.reconcileErrorMessage = errorsMapping[status] || this.intl.t('common.error');
+    } catch (responseError) {
+      this.reconcileErrorMessage = this.errorMessages.getErrorMessage(responseError);
     } finally {
       this.isLoading = false;
     }

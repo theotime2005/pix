@@ -43,7 +43,7 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
           const component = createGlimmerComponent('authentication/login-or-register-oidc');
 
           const sessionService = stubSessionService(this.owner, { isAuthenticated: false });
-          sessionService.authenticate.rejects({ errors: [{ status: '401' }] });
+          sessionService.authenticate.rejects({ errors: [{ status: '401', code: 'EXPIRED_AUTHENTICATION_KEY' }] });
 
           component.args.identityProviderSlug = 'super-idp';
           component.args.authenticationKey = 'super-key';
@@ -277,7 +277,9 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
         test('should display error', async function (assert) {
           // given
           const component = createGlimmerComponent('authentication/login-or-register-oidc');
-          component.args.onLogin = sinon.stub().rejects({ errors: [{ status: '401' }] });
+          component.args.onLogin = sinon
+            .stub()
+            .rejects({ errors: [{ status: '401', code: 'EXPIRED_AUTHENTICATION_KEY' }] });
           component.email = 'glace.alo@example.net';
           component.password = 'pix123';
           const eventStub = { preventDefault: sinon.stub() };

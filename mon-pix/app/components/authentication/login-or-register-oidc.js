@@ -9,11 +9,7 @@ import isEmailValid from '../../utils/email-validator';
 
 const ERROR_INPUT_MESSAGE_MAP = {
   termsOfServiceNotSelected: 'pages.login-or-register-oidc.error.error-message',
-  unknownError: 'common.error',
-  expiredAuthenticationKey: 'pages.login-or-register-oidc.error.expired-authentication-key',
   invalidEmail: 'pages.login-or-register-oidc.error.invalid-email',
-  accountConflict: 'pages.login-or-register-oidc.error.account-conflict',
-  loginUnauthorizedError: 'pages.login-or-register-oidc.error.login-unauthorized-error',
 };
 
 export default class LoginOrRegisterOidcComponent extends Component {
@@ -23,6 +19,7 @@ export default class LoginOrRegisterOidcComponent extends Component {
   @service oidcIdentityProviders;
   @service store;
   @service url;
+  @service errorMessages;
 
   @tracked isTermsOfServiceValidated = false;
   @tracked loginErrorMessage = null;
@@ -70,15 +67,8 @@ export default class LoginOrRegisterOidcComponent extends Component {
 
     try {
       await this.args.onLogin({ enteredEmail: this.email, enteredPassword: this.password });
-    } catch (error) {
-      const status = get(error, 'errors[0].status');
-
-      const errorsMapping = {
-        401: this.intl.t(ERROR_INPUT_MESSAGE_MAP['expiredAuthenticationKey']),
-        404: this.intl.t(ERROR_INPUT_MESSAGE_MAP['loginUnauthorizedError']),
-        409: this.intl.t(ERROR_INPUT_MESSAGE_MAP['accountConflict']),
-      };
-      this.loginErrorMessage = errorsMapping[status] || this.intl.t(ERROR_INPUT_MESSAGE_MAP['unknownError']);
+    } catch (responseError) {
+      this.loginErrorMessage = this.errorMessages.getErrorMessage(responseError);
     } finally {
       this.isLoginLoading = false;
     }
@@ -102,24 +92,7 @@ export default class LoginOrRegisterOidcComponent extends Component {
       });
     } catch (responseError) {
       const error = get(responseError, 'errors[0]');
-      switch (error?.code) {
-        case 'INVALID_LOCALE_FORMAT':
-          this.registerErrorMessage = this.intl.t('pages.sign-up.errors.invalid-locale-format', {
-            invalidLocale: error.meta.locale,
-          });
-          return;
-        case 'LOCALE_NOT_SUPPORTED':
-          this.registerErrorMessage = this.intl.t('pages.sign-up.errors.locale-not-supported', {
-            localeNotSupported: error.meta.locale,
-          });
-          return;
-      }
-      if (error.status === '401') {
-        this.registerErrorMessage = this.intl.t(ERROR_INPUT_MESSAGE_MAP['expiredAuthenticationKey']);
-      } else {
-        this.registerErrorMessage =
-          this.intl.t(ERROR_INPUT_MESSAGE_MAP['unknownError']) + (error.detail ? ` (${error.detail})` : '');
-      }
+      this.registerErrorMessage = this.errorMessages.getErrorMessage(error);
     } finally {
       this.isRegisterLoading = false;
     }
