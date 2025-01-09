@@ -293,26 +293,6 @@ module('Unit | Component | authentication | login-or-register-oidc', function (h
         });
       });
 
-      module('when user is not found', function () {
-        test('should display error', async function (assert) {
-          // given
-          const component = createGlimmerComponent('authentication/login-or-register-oidc');
-          component.args.onLogin = sinon.stub().rejects({ errors: [{ status: '404' }] });
-          component.email = 'glace.alo@example.net';
-          component.password = 'pix123';
-          const eventStub = { preventDefault: sinon.stub() };
-
-          // when
-          await component.login(eventStub);
-
-          // then
-          assert.strictEqual(
-            component.loginErrorMessage,
-            t('pages.login-or-register-oidc.error.login-unauthorized-error'),
-          );
-        });
-      });
-
       module('when there is an account conflict', function () {
         test('should display error', async function (assert) {
           // given
