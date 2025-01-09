@@ -1,6 +1,7 @@
+import { config } from '../../../../src/shared/config.js';
 import { DEFAULT_PASSWORD } from '../../../constants.js';
 
-function _buildUserBeforeBeingTemporarilyBlocked(databaseBuilder) {
+function _buildAlmostTemporarilyBlockedUser(databaseBuilder) {
   const temporaryBlockedUser = databaseBuilder.factory.buildUser.withRawPassword({
     firstName: 'Little',
     lastName: 'Bear',
@@ -12,10 +13,10 @@ function _buildUserBeforeBeingTemporarilyBlocked(databaseBuilder) {
 
   databaseBuilder.factory.buildUserLogin({
     userId: temporaryBlockedUser.id,
-    failureCount: 9,
+    failureCount: config.login.temporaryBlockingThresholdFailureCount - 1,
   });
 }
 
 export function buildTemporaryBlockedUsers(databaseBuilder) {
-  _buildUserBeforeBeingTemporarilyBlocked(databaseBuilder);
+  _buildAlmostTemporarilyBlockedUser(databaseBuilder);
 }
