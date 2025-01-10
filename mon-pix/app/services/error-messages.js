@@ -38,12 +38,11 @@ const ERROR_CODE_MAPPING = {
 };
 
 const HTTP_STATUS_MAPPING = {
-  401: {
-    i18nKey: 'pages.login-or-register-oidc.error.login-unauthorized-error',
-  },
-  409: {
-    i18nKey: 'pages.login-or-register-oidc.error.account-conflict',
-  },
+  400: { i18nKey: 'common.api-error-messages.bad-request-error' },
+  401: { i18nKey: 'pages.login-or-register-oidc.error.login-unauthorized-error' },
+  409: { i18nKey: 'pages.login-or-register-oidc.error.account-conflict' },
+  422: { i18nKey: 'common.api-error-messages.bad-request-error' },
+  504: { i18nKey: 'common.api-error-messages.gateway-timeout-error' },
 };
 
 export default class ErrorMessagesService extends Service {
