@@ -7,7 +7,6 @@ import { buildPixAdminRoles } from './build-pix-admin-roles.js';
 import { buildResetPasswordUsers } from './build-reset-password-users.js';
 import { buildScoOrganizationLearners } from './build-sco-organization-learners.js';
 import { buildScoOrganizations } from './build-sco-organizations.js';
-import { buildTemporaryBlockedUsers } from './build-temporary-blocked-user.js';
 import { buildUsers } from './build-users.js';
 
 async function teamAccesDataBuilder(databaseBuilder) {
@@ -15,7 +14,6 @@ async function teamAccesDataBuilder(databaseBuilder) {
   buildUsers(databaseBuilder);
   buildBlockedUsers(databaseBuilder);
   buildResetPasswordUsers(databaseBuilder);
-  buildTemporaryBlockedUsers(databaseBuilder);
   buildOrganizationUsers(databaseBuilder);
   buildScoOrganizations(databaseBuilder);
   buildArchivedOrganizations(databaseBuilder);

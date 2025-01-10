@@ -34,7 +34,24 @@ function _buildAlmostBlockedUser(databaseBuilder) {
   });
 }
 
+function _buildAlmostTemporarilyBlockedUser(databaseBuilder) {
+  const temporaryBlockedUser = databaseBuilder.factory.buildUser.withRawPassword({
+    firstName: 'Little',
+    lastName: 'Bear',
+    email: 'temporarily-blocked@example.net',
+    username: 'little.bear0101',
+    rawPassword: DEFAULT_PASSWORD,
+    cgu: false,
+  });
+
+  databaseBuilder.factory.buildUserLogin({
+    userId: temporaryBlockedUser.id,
+    failureCount: config.login.temporaryBlockingThresholdFailureCount - 1,
+  });
+}
+
 export function buildBlockedUsers(databaseBuilder) {
   _buildBlockedUser(databaseBuilder);
   _buildAlmostBlockedUser(databaseBuilder);
+  _buildAlmostTemporarilyBlockedUser(databaseBuilder);
 }
