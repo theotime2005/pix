@@ -11,20 +11,43 @@ export const types = {
   TABLET: 'tablet',
 };
 
+const PORTRAIT = 'portrait';
+const LANDSCAPE = 'landscape';
+
+export class Orientation {
+  constructor(type) {
+    this.type = type;
+  }
+
+  isPortrait() {
+    return this.type.startsWith(PORTRAIT);
+  }
+
+  isLandscape() {
+    return this.type.startsWith(LANDSCAPE);
+  }
+}
+
 export default class DeviceService extends Service {
   get info() {
-    let orientation = screen.orientation?.type;
-    if (!orientation) {
-      orientation = screen.width > screen.height ? 'landscape' : 'portrait';
+    let orientationType = screen.orientation?.type;
+    if (!orientationType) {
+      orientationType = screen.width > screen.height ? LANDSCAPE : PORTRAIT;
     }
+    const orientation = new Orientation(orientationType);
+
     return {
-      orientation: orientation,
-      type: this.getType(orientation),
+      orientation,
+      type: this.#getType(orientation),
     };
   }
 
-  getType(orientation) {
-    if (orientation.startsWith('landscape')) {
+  addOrientationChangeListener(handler) {
+    screen.orientation?.addEventListener('change', handler);
+  }
+
+  #getType(orientation) {
+    if (orientation.isLandscape()) {
       if (screen.width >= TABLET_MAX_HEIGHT) {
         return types.DESKTOP;
       }

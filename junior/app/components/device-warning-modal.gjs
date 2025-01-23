@@ -1,13 +1,13 @@
 import trapFocus from '@1024pix/pix-ui/app/modifiers/trap-focus';
 import PixButton from '@1024pix/pix-ui/components/pix-button';
 import PixButtonLink from '@1024pix/pix-ui/components/pix-button-link';
-import { action } from '@ember/object';
-import { service } from '@ember/service';
+import {action} from '@ember/object';
+import {service} from '@ember/service';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
-import { t } from 'ember-intl';
+import {tracked} from '@glimmer/tracking';
+import {t} from 'ember-intl';
 
-import { types } from '../services/device';
+import {types} from '../services/device';
 const { MOBILE, TABLET } = types;
 
 export default class DeviceWarningModal extends Component {
@@ -27,7 +27,7 @@ export default class DeviceWarningModal extends Component {
       return true;
     }
 
-    const shouldDisplay = type === TABLET && orientation.startsWith('portrait');
+    const shouldDisplay = type === TABLET && orientation.isPortrait();
 
     if (!shouldDisplay && this.showModal) {
       this.currentLearner.setHasSeenWarningModal();
@@ -44,7 +44,7 @@ export default class DeviceWarningModal extends Component {
       this.showModal = true;
     }
 
-    screen.orientation?.addEventListener('change', () => {
+    this.device.addOrientationChangeListener(() => {
       this.showModal = this.shouldDisplayModal();
     });
   }
@@ -76,7 +76,7 @@ export default class DeviceWarningModal extends Component {
       return 'device-warning-modal is-tablet';
     }
 
-    if (this.deviceType === MOBILE && this.orientation.startsWith('landscape')) {
+    if (this.deviceType === MOBILE && this.orientation.isLandscape()) {
       return 'device-warning-modal is-landscape';
     }
 
