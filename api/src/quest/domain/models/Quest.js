@@ -1,4 +1,5 @@
 import { KnowledgeElement } from '../../../shared/domain/models/index.js';
+import { TYPES as ELIGIBILITY_TYPES } from './Eligibility.js';
 
 export const COMPARISON = {
   ALL: 'all',
@@ -14,6 +15,41 @@ class Quest {
     this.rewardId = rewardId;
     this.eligibilityRequirements = eligibilityRequirements;
     this.successRequirements = successRequirements;
+  }
+
+  /**
+   * @param {Eligibility} eligibility
+   * @param {number} campaignParticipationId
+   *
+   * @returns {estConcernee: boolean, aContribuéPositivement: boolean}
+   */
+  estCeQueLaParticipationEstConcernée({ eligibility, campaignParticipationId }) {
+    const eligibilityScopee = eligibility.scoperALaParticipationUniquement({ campaignParticipationId });
+    const estDeTypeCampaignParticipations = (requirement) =>
+      requirement.type === ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
+    const n_estPasDeTypeCampaignParticipations = (requirement) =>
+      requirement.type !== ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
+    const isolerLesRequirementsDeTypeCampaignParticipations = (requirements) => {
+      return [
+        requirements.filter(estDeTypeCampaignParticipations),
+        requirements.filter(n_estPasDeTypeCampaignParticipations),
+      ];
+    };
+    const [requirementsDeTypeCampaignParticipations, lesAutresRequirements] =
+      isolerLesRequirementsDeTypeCampaignParticipations(this.eligibilityRequirements);
+    let requirementSpecifiqueALaParticipationEstOk = true;
+    if (requirementsDeTypeCampaignParticipations.length > 0) {
+      requirementSpecifiqueALaParticipationEstOk = requirementsDeTypeCampaignParticipations.some(
+        (eligibilityRequirement) => this.#checkRequirement(eligibilityRequirement, eligibilityScopee),
+      );
+    }
+
+    return (
+      requirementSpecifiqueALaParticipationEstOk &&
+      lesAutresRequirements.every((eligibilityRequirement) =>
+        this.#checkRequirement(eligibilityRequirement, eligibilityScopee),
+      )
+    );
   }
 
   /**
