@@ -22,7 +22,7 @@ class Quest {
    * @param {number} campaignParticipationId
    */
   isCampaignParticipationContributingToQuest({ eligibility, campaignParticipationId }) {
-    const scopedEligibility = eligibility.scoperALaParticipationUniquement({ campaignParticipationId });
+    const scopedEligibility = eligibility.buildEligibilityScopedByCampaignParticipationId({ campaignParticipationId });
     const isCampaignParticipationType = (requirement) => requirement.type === ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
     const isNotCampaignParticipationType = (requirement) =>
       requirement.type !== ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;

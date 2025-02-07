@@ -28,8 +28,8 @@ describe('Quest | Unit | Domain | Models | Eligibility ', function () {
     });
   });
 
-  describe('#scoperALaParticipationUniquement', function () {
-    it('doit retourner une nouvelle instance Eligibility scopée uniquement sur la participation passée en paramètre', function () {
+  describe('#buildEligibilityScopedByCampaignParticipationId', function () {
+    it('return new instance of Eligibility scoped on given CampaignParticipation', function () {
       // given
       const organization = Symbol('orga');
       const organizationLearner = Symbol('orgaLearner');
@@ -41,10 +41,12 @@ describe('Quest | Unit | Domain | Models | Eligibility ', function () {
       });
 
       // when
-      const eligibilityScopee = eligibility.scoperALaParticipationUniquement({ campaignParticipationId: 2 });
+      const scopedEligibility = eligibility.buildEligibilityScopedByCampaignParticipationId({
+        campaignParticipationId: 2,
+      });
 
       // then
-      expect(eligibilityScopee).to.deepEqualInstance(
+      expect(scopedEligibility).to.deepEqualInstance(
         new Eligibility({
           organization,
           organizationLearner,

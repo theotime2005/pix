@@ -18,15 +18,15 @@ export class Eligibility {
    * @param {number} campaignParticipationId
    */
   hasCampaignParticipation(campaignParticipationId) {
-    return Boolean(
-      this.campaignParticipations.find((campaignParticipation) => campaignParticipation.id === campaignParticipationId),
+    return this.campaignParticipations.some(
+      (campaignParticipation) => campaignParticipation.id === campaignParticipationId,
     );
   }
 
   /**
    * @param {number} campaignParticipationId
    */
-  scoperALaParticipationUniquement({ campaignParticipationId }) {
+  buildEligibilityScopedByCampaignParticipationId({ campaignParticipationId }) {
     return new Eligibility({
       organizationLearner: this.organizationLearner,
       organization: this.organization,
