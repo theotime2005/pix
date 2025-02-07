@@ -20,34 +20,29 @@ class Quest {
   /**
    * @param {Eligibility} eligibility
    * @param {number} campaignParticipationId
-   *
-   * @returns {estConcernee: boolean, aContribuéPositivement: boolean}
    */
-  estCeQueLaParticipationEstConcernée({ eligibility, campaignParticipationId }) {
-    const eligibilityScopee = eligibility.scoperALaParticipationUniquement({ campaignParticipationId });
-    const estDeTypeCampaignParticipations = (requirement) =>
-      requirement.type === ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
-    const n_estPasDeTypeCampaignParticipations = (requirement) =>
+  isCampaignParticipationContributingToQuest({ eligibility, campaignParticipationId }) {
+    const scopedEligibility = eligibility.scoperALaParticipationUniquement({ campaignParticipationId });
+    const isCampaignParticipationType = (requirement) => requirement.type === ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
+    const isNotCampaignParticipationType = (requirement) =>
       requirement.type !== ELIGIBILITY_TYPES.CAMPAIGN_PARTICIPATIONS;
-    const isolerLesRequirementsDeTypeCampaignParticipations = (requirements) => {
-      return [
-        requirements.filter(estDeTypeCampaignParticipations),
-        requirements.filter(n_estPasDeTypeCampaignParticipations),
-      ];
+    const partitionRequirements = (requirements) => {
+      return [requirements.filter(isCampaignParticipationType), requirements.filter(isNotCampaignParticipationType)];
     };
-    const [requirementsDeTypeCampaignParticipations, lesAutresRequirements] =
-      isolerLesRequirementsDeTypeCampaignParticipations(this.eligibilityRequirements);
+    const [requirementsDeTypeCampaignParticipations, lesAutresRequirements] = partitionRequirements(
+      this.eligibilityRequirements,
+    );
     let requirementSpecifiqueALaParticipationEstOk = true;
     if (requirementsDeTypeCampaignParticipations.length > 0) {
       requirementSpecifiqueALaParticipationEstOk = requirementsDeTypeCampaignParticipations.some(
-        (eligibilityRequirement) => this.#checkRequirement(eligibilityRequirement, eligibilityScopee),
+        (eligibilityRequirement) => this.#checkRequirement(eligibilityRequirement, scopedEligibility),
       );
     }
 
     return (
       requirementSpecifiqueALaParticipationEstOk &&
       lesAutresRequirements.every((eligibilityRequirement) =>
-        this.#checkRequirement(eligibilityRequirement, eligibilityScopee),
+        this.#checkRequirement(eligibilityRequirement, scopedEligibility),
       )
     );
   }

@@ -20,7 +20,7 @@ export const getQuestResultsForCampaignParticipation = async ({
   }
 
   const questsRelatedToCampaignParticipation = quests.filter((q) =>
-    q.estCeQueLaParticipationEstConcernée({ eligibility, campaignParticipationId }),
+    q.isCampaignParticipationContributingToQuest({ eligibility, campaignParticipationId }),
   );
 
   const questResults = [];

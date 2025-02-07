@@ -284,12 +284,12 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
     });
   });
 
-  describe('#estCeQueLaParticipationEstConcernée', function () {
+  describe('#isCampaignParticipationContributingToQuest', function () {
     const organization = { type: 'SCO' };
     const organizationLearner = { id: 123 };
 
-    context('au moins un des eligibilityRequirement est de type "campaignParticipations"', function () {
-      it('doit retourner faux si aucun des eligibilityRequirements de type "campaignParticipations" n\'est valide pour la participation passée en paramètre', function () {
+    context('at least one eligibilityRequirements is type of "campaignParticipations"', function () {
+      it('return false if none of campaignParticipation eligibilityRequirement is valid given campaignParticipationId', function () {
         // given
         const eligibilityRequirements = [
           {
@@ -323,16 +323,16 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
         const campaignParticipationIdToCheck = 11;
 
         // when
-        const estConcernee = quest.estCeQueLaParticipationEstConcernée({
+        const isContributing = quest.isCampaignParticipationContributingToQuest({
           eligibility: eligibilityData,
           campaignParticipationId: campaignParticipationIdToCheck,
         });
 
         // then
-        expect(estConcernee).to.be.false;
+        expect(isContributing).to.be.false;
       });
 
-      it('doit retourner vrai si au moins un des eligibilityRequirements de type "campaignParticipations" est valide la participation passée en paramètre', function () {
+      it('return true if one of campaignParticipation eligibilityRequirement is valid given campaignParticipationId', function () {
         // given
         const eligibilityRequirements = [
           {
@@ -366,18 +366,18 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
         const campaignParticipationIdToCheck = 10;
 
         // when
-        const estConcernee = quest.estCeQueLaParticipationEstConcernée({
+        const isContributing = quest.isCampaignParticipationContributingToQuest({
           eligibility: eligibilityData,
           campaignParticipationId: campaignParticipationIdToCheck,
         });
 
         // then
-        expect(estConcernee).to.be.true;
+        expect(isContributing).to.be.true;
       });
     });
 
-    context('aucun des eligibilityRequirement n\'est de type "campaignParticipations', function () {
-      it("doit retourner faux si aucun des eligibilityRequirements n'est compatible avec le reste des datas d'éligibilité (aka se comporter comme isEligible)", function () {
+    context('eligibilityRequirement without campaignParticipation type', function () {
+      it('return false when none of eligiblityRequirement is eligible', function () {
         // given
         const eligibilityRequirements = [
           {
@@ -394,15 +394,15 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
         const campaignParticipationIdToCheck = 11;
 
         // when
-        const estConcernee = quest.estCeQueLaParticipationEstConcernée({
+        const isContributing = quest.isCampaignParticipationContributingToQuest({
           eligibility: eligibilityData,
           campaignParticipationId: campaignParticipationIdToCheck,
         });
 
         // then
-        expect(estConcernee).to.be.false;
+        expect(isContributing).to.be.false;
       });
-      it("doit retourner faux si seule une partie des eligibilityRequirements n'est compatible avec le reste des datas d'éligibilité (aka se comporter comme isEligible)", function () {
+      it('return false when eligibilityRequirement is partially eligible', function () {
         // given
         const eligibilityRequirements = [
           {
@@ -426,15 +426,16 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
         const campaignParticipationIdToCheck = 11;
 
         // when
-        const estConcernee = quest.estCeQueLaParticipationEstConcernée({
+        const isContributing = quest.isCampaignParticipationContributingToQuest({
           eligibility: eligibilityData,
           campaignParticipationId: campaignParticipationIdToCheck,
         });
 
         // then
-        expect(estConcernee).to.be.false;
+        expect(isContributing).to.be.false;
       });
-      it("doit retourner vrai si tous les eligibilityRequirements sont compatibles avec le reste des datas d'éligibilité (aka se comporter comme isEligible)", function () {
+
+      it('return true if all eligibilityRequirement is valid', function () {
         // given
         const eligibilityRequirements = [
           {
@@ -458,13 +459,13 @@ describe('Quest | Unit | Domain | Models | Quest ', function () {
         const campaignParticipationIdToCheck = 10;
 
         // when
-        const estConcernee = quest.estCeQueLaParticipationEstConcernée({
+        const isContributing = quest.isCampaignParticipationContributingToQuest({
           eligibility: eligibilityData,
           campaignParticipationId: campaignParticipationIdToCheck,
         });
 
         // then
-        expect(estConcernee).to.be.true;
+        expect(isContributing).to.be.true;
       });
     });
   });
