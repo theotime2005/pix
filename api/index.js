@@ -5,6 +5,7 @@ import { createServer } from './server.js';
 import { config, schema as configSchema } from './src/shared/config.js';
 import { learningContentCache } from './src/shared/infrastructure/caches/learning-content-cache.js';
 import { quitAllStorages } from './src/shared/infrastructure/key-value-storages/index.js';
+import { pgBoss } from './src/shared/infrastructure/repositories/jobs/pg-boss.js';
 import { logger } from './src/shared/infrastructure/utils/logger.js';
 import { redisMonitor } from './src/shared/infrastructure/utils/redis-monitor.js';
 import { validateEnvironmentVariables } from './src/shared/infrastructure/validate-environment-variables.js';
@@ -62,6 +63,9 @@ process.on('SIGINT', () => {
     await start();
     if (config.infra.startJobInWebProcess) {
       import('./worker.js');
+    } else {
+      // when worker is in its own process we need to start pgBoss in server container too
+      await pgBoss.start();
     }
   } catch (error) {
     logger.error(error);
