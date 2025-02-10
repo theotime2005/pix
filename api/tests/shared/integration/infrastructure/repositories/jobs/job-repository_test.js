@@ -23,7 +23,7 @@ describe('Integration | Infrastructure | Repositories | Jobs | job-repository', 
     await expect(name).to.have.been.performed.withJob({
       name,
       data: expectedParams,
-      expireIn: 900,
+      expireIn: '00:15:00',
       priority,
       retryDelay: 30,
       retryLimit: 10,

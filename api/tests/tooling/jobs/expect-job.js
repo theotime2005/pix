@@ -1,6 +1,9 @@
 import { assert, Assertion } from 'chai';
+import _ from 'lodash';
 
-export const jobChai = (pgBoss) => (_chai, utils) => {
+import { JobRepository } from '../../../src/shared/infrastructure/repositories/jobs/job-repository.js';
+
+export const jobChai = (knex) => (_chai, utils) => {
   utils.addProperty(Assertion.prototype, 'performed', function () {
     return this;
   });
@@ -11,7 +14,7 @@ export const jobChai = (pgBoss) => (_chai, utils) => {
 
   Assertion.addMethod('withJobsCount', async function (expectedCount) {
     const jobName = this._obj;
-    const jobs = await pgBoss.fetch(jobName, expectedCount + 1, { includeMetadata: true });
+    const jobs = await JobRepository.pgBoss.fetch(jobName, expectedCount + 1, { includeMetadata: true });
     const actualCount = jobs?.length ?? 0;
 
     assert.strictEqual(
@@ -19,7 +22,7 @@ export const jobChai = (pgBoss) => (_chai, utils) => {
       expectedCount,
       `expected ${jobName} to have been performed ${expectedCount} times, but it was performed ${actualCount} times`,
     );
-    return (jobs ?? []).map(
+    const unorderedJobs = jobs?.map(
       ({ id, name, data, retrylimit, retrydelay, retrybackoff, expire_in_seconds, priority }) => ({
         id,
         name,
@@ -31,13 +34,14 @@ export const jobChai = (pgBoss) => (_chai, utils) => {
         priority,
       }),
     );
+    return _.orderBy(unorderedJobs, 'id');
   });
 
   Assertion.addMethod('withJob', async function (jobData) {
     const jobs = await this.withJobsCount(1);
 
     const jobName = this._obj;
-    assert.deepOwnInclude(
+    assert.deepInclude(
       jobs[0],
       jobData,
       `Job '${jobName}' was performed with a different payload (${JSON.stringify(jobData)} was expected but performed with ${JSON.stringify(jobs[0])})`,
@@ -46,7 +50,7 @@ export const jobChai = (pgBoss) => (_chai, utils) => {
 
   Assertion.addMethod('withCronJobsCount', async function (expectedCount) {
     const jobName = this._obj;
-    const allJobs = (await pgBoss.getSchedules()) ?? [];
+    const allJobs = (await JobRepository.pgBoss.getSchedules()) ?? [];
     const jobs = allJobs.filter(({ name }) => name === jobName);
     assert.strictEqual(
       jobs.length,
@@ -60,7 +64,7 @@ export const jobChai = (pgBoss) => (_chai, utils) => {
     const jobs = await this.withCronJobsCount(1);
 
     const jobName = this._obj;
-    assert.deepOwnInclude(
+    assert.deepInclude(
       jobs[0],
       jobData,
       `Job '${jobName}' was schedule with a different payload (${JSON.stringify(jobData)} was expected but performed with ${JSON.stringify(jobs[0])})`,

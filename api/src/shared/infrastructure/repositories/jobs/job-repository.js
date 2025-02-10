@@ -1,7 +1,17 @@
 import Joi from 'joi';
+import PgBoss from 'pg-boss';
 
+import { config } from '../../../config.js';
 import { EntityValidationError } from '../../../domain/errors.js';
-import { pgBoss } from './pg-boss.js';
+
+const monitorStateIntervalSeconds = config.pgBoss.monitorStateIntervalSeconds;
+const pgBoss = new PgBoss({
+  connectionString: config.pgBoss.databaseUrl,
+  max: config.pgBoss.connexionPoolMaxSize,
+  ...(monitorStateIntervalSeconds ? { monitorStateIntervalSeconds } : {}),
+  archiveFailedAfterSeconds: config.pgBoss.archiveFailedAfterSeconds,
+});
+await pgBoss.start();
 
 export class JobRepository {
   #schema = Joi.object({
@@ -43,6 +53,10 @@ export class JobRepository {
     this.#validate();
   }
 
+  static get pgBoss() {
+    return pgBoss;
+  }
+
   #buildPayload(data) {
     return {
       name: this.name,
@@ -57,7 +71,7 @@ export class JobRepository {
   }
 
   async #send(jobs) {
-    await pgBoss.insert(jobs);
+    await JobRepository.pgBoss.insert(jobs);
     return { rowCount: jobs.length };
   }
 

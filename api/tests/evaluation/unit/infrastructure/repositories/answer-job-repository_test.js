@@ -1,6 +1,6 @@
 import { AnswerJobRepository } from '../../../../../src/evaluation/infrastructure/repositories/answer-job-repository.js';
 import { config } from '../../../../../src/shared/config.js';
-import { pgBoss } from '../../../../../src/shared/infrastructure/repositories/jobs/pg-boss.js';
+import { DomainTransaction } from '../../../../../src/shared/domain/DomainTransaction.js';
 import { expect, sinon } from '../../../../test-helper.js';
 
 describe('Evaluation | Unit | Infrastructure | Repositories | AnswerJobRepository', function () {
@@ -14,7 +14,11 @@ describe('Evaluation | Unit | Infrastructure | Repositories | AnswerJobRepositor
     it('should do nothing if quests are disabled', async function () {
       // given
       const profileRewardTemporaryStorageStub = { increment: sinon.stub() };
-      sinon.stub(pgBoss, 'insert').resolves([]);
+      const knexStub = { batchInsert: sinon.stub().resolves([]) };
+      sinon.stub(DomainTransaction, 'getConnection').returns(knexStub);
+      sinon.stub(DomainTransaction, 'execute').callsFake((callback) => {
+        return callback();
+      });
       config.featureToggles.isQuestEnabled = false;
       const userId = Symbol('userId');
       const answerJobRepository = new AnswerJobRepository({
@@ -31,6 +35,11 @@ describe('Evaluation | Unit | Infrastructure | Repositories | AnswerJobRepositor
     it('should do nothing if quests are in sync mode', async function () {
       // given
       const profileRewardTemporaryStorageStub = { increment: sinon.stub() };
+      const knexStub = { batchInsert: sinon.stub().resolves([]) };
+      sinon.stub(DomainTransaction, 'getConnection').returns(knexStub);
+      sinon.stub(DomainTransaction, 'execute').callsFake((callback) => {
+        return callback();
+      });
       config.featureToggles.isAsyncQuestRewardingCalculationEnabled = false;
       const userId = Symbol('userId');
       const answerJobRepository = new AnswerJobRepository({
@@ -47,6 +56,11 @@ describe('Evaluation | Unit | Infrastructure | Repositories | AnswerJobRepositor
     it("should increment user's jobs count in temporary storage", async function () {
       // given
       const profileRewardTemporaryStorageStub = { increment: sinon.stub() };
+      const knexStub = { batchInsert: sinon.stub().resolves([]) };
+      sinon.stub(DomainTransaction, 'getConnection').returns(knexStub);
+      sinon.stub(DomainTransaction, 'execute').callsFake((callback) => {
+        return callback();
+      });
       const userId = Symbol('userId');
       const answerJobRepository = new AnswerJobRepository({
         dependencies: { profileRewardTemporaryStorage: profileRewardTemporaryStorageStub },

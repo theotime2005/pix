@@ -5,13 +5,13 @@ import { fileURLToPath } from 'node:url';
 
 import { glob } from 'glob';
 import _ from 'lodash';
+import PgBoss from 'pg-boss';
 
 import { Metrics } from './src/monitoring/infrastructure/metrics.js';
 import { JobGroup } from './src/shared/application/jobs/job-controller.js';
 import { config } from './src/shared/config.js';
 import { JobQueue } from './src/shared/infrastructure/jobs/JobQueue.js';
 import { quitAllStorages } from './src/shared/infrastructure/key-value-storages/index.js';
-import { pgBoss } from './src/shared/infrastructure/repositories/jobs/pg-boss.js';
 import { importNamedExportFromFile } from './src/shared/infrastructure/utils/import-named-exports-from-directory.js';
 import { logger } from './src/shared/infrastructure/utils/logger.js';
 
@@ -23,7 +23,13 @@ const metrics = new Metrics({ config });
 
 async function startPgBoss() {
   logger.info('Starting pg-boss');
-
+  const monitorStateIntervalSeconds = config.pgBoss.monitorStateIntervalSeconds;
+  const pgBoss = new PgBoss({
+    connectionString: process.env.DATABASE_URL,
+    max: config.pgBoss.connexionPoolMaxSize,
+    ...(monitorStateIntervalSeconds ? { monitorStateIntervalSeconds } : {}),
+    archiveFailedAfterSeconds: config.pgBoss.archiveFailedAfterSeconds,
+  });
   pgBoss.on('monitor-states', (state) => {
     logger.info({ event: 'pg-boss-state', name: 'global' }, { ...state, queues: undefined });
     _.each(state.queues, (queueState, queueName) => {
