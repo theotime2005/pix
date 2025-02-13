@@ -591,6 +591,11 @@ const configuration = (function () {
     config.jwtConfig.pixData.secret = 'test-secretPixData';
     config.jwtConfig.parcoursup.secret = 'test-secretPixParcoursup';
 
+    config.jwtConfig.clients = {
+      secret: 'test-client-jwt-auth-secret',
+      tokenLifespan: '4h',
+    };
+
     config.logging.enabled = toBoolean(process.env.TEST_LOG_ENABLED);
     config.logging.enableLogKnexQueries = false;
     config.logging.enableLogStartingEventDispatch = false;

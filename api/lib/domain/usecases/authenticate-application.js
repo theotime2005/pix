@@ -1,46 +1,50 @@
-import lodash from 'lodash';
-
 import { config } from '../../../src/shared/config.js';
 import {
   ApplicationScopeNotAllowedError,
   ApplicationWithInvalidClientIdError,
   ApplicationWithInvalidClientSecretError,
 } from '../../../src/shared/domain/errors.js';
-const { apimRegisterApplicationsCredentials, jwtConfig } = config;
 
-const { find } = lodash;
+const { authentication } = config;
 
-const authenticateApplication = async function ({ clientId, clientSecret, scope, tokenService }) {
-  const application = find(apimRegisterApplicationsCredentials, { clientId });
-  _checkClientId(application, clientId);
-  _checkClientSecret(application, clientSecret);
+export async function authenticateApplication({
+  clientId,
+  clientSecret,
+  scope,
+  tokenService,
+  clientApplicationRepository,
+  cryptoService,
+}) {
+  const application = await clientApplicationRepository.findByClientId(clientId);
+  _checkApplication(application, clientId);
+  await _checkClientSecret(application, clientSecret, cryptoService);
   _checkAppScope(application, scope);
 
   return tokenService.createAccessTokenFromApplication(
     clientId,
-    application.source,
+    application.name,
     scope,
-    jwtConfig[application.source].secret,
-    jwtConfig[application.source].tokenLifespan,
+    authentication.secret,
+    authentication.accessTokenLifespanMs,
   );
-};
+}
 
-function _checkClientId(application, clientId) {
-  if (!application || application.clientId !== clientId) {
+function _checkApplication(application) {
+  if (!application) {
     throw new ApplicationWithInvalidClientIdError('The client ID is invalid.');
   }
 }
 
-function _checkClientSecret(application, clientSecret) {
-  if (application.clientSecret !== clientSecret) {
+async function _checkClientSecret(application, clientSecret, cryptoService) {
+  try {
+    await cryptoService.checkPassword({ password: clientSecret, passwordHash: application.clientSecret });
+  } catch {
     throw new ApplicationWithInvalidClientSecretError('The client secret is invalid.');
   }
 }
 
 function _checkAppScope(application, scope) {
-  if (application.scope !== scope) {
+  if (!application.scopes.includes(scope)) {
     throw new ApplicationScopeNotAllowedError('The scope is invalid.');
   }
 }
-
-export { authenticateApplication };
