@@ -65,6 +65,7 @@ import { buildCertifiedTube } from './build-certified-tube.js';
 import { buildChallenge, buildChallengeWithWebComponent } from './build-challenge.js';
 import { buildChallengeLearningContentDataObject } from './build-challenge-learning-content-data-object.js';
 import { buildCleaCertifiedCandidate } from './build-clea-certified-candidate.js';
+import { buildClientApplication } from './build-client-application.js';
 import { buildCompetence } from './build-competence.js';
 import { buildCompetenceEvaluation } from './build-competence-evaluation.js';
 import { buildCompetenceMark } from './build-competence-mark.js';
@@ -350,6 +351,7 @@ export {
   buildChallengeLearningContentDataObject,
   buildChallengeWithWebComponent,
   buildCleaCertifiedCandidate,
+  buildClientApplication,
   buildCompetence,
   buildCompetenceEvaluation,
   buildCompetenceForScoring,

@@ -10,7 +10,7 @@ const deepEqualInstance = function () {
 };
 
 function _assertAreSameType(value1, value2) {
-  const instanceClassName1 = value1.constructor.name;
+  const instanceClassName1 = value1?.constructor.name;
   const instanceClassName2 = value2.constructor.name;
   new Assertion(instanceClassName1).to.equal(instanceClassName2);
 }
