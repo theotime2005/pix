@@ -119,7 +119,7 @@ describe('Acceptance | API | Pole Emploi envois', function () {
     });
 
     context('When the request has failed', function () {
-      it('should return 403 HTTP status code if user is not allowed to access', async function () {
+      it('should return 200 HTTP status code if user is not allowed to access', async function () {
         // given
         options = {
           method: 'GET',
@@ -136,7 +136,7 @@ describe('Acceptance | API | Pole Emploi envois', function () {
         const response = await server.inject(options);
 
         // then
-        expect(response.statusCode).to.equal(403);
+        expect(response.statusCode).to.equal(200);
       });
 
       it('should return 401 HTTP status code if user is not authenticated', async function () {

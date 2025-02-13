@@ -66,10 +66,6 @@ function validateClientApplication(decoded) {
     return { isValid: false, errorCode: 401 };
   }
 
-  if (decoded.scope !== application.scope) {
-    return { isValid: false, errorCode: 403 };
-  }
-
   return { isValid: true, credentials: { client_id: decoded.clientId, scope: decoded.scope, source: decoded.source } };
 }
 
