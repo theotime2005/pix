@@ -586,6 +586,7 @@ const configuration = (function () {
     };
 
     config.jwtConfig.livretScolaire.secret = 'test-secretOsmose';
+    config.jwtConfig.livretScolaire.tokenLifespan = '4h';
     config.jwtConfig.poleEmploi.secret = 'test-secretPoleEmploi';
     config.jwtConfig.pixData.secret = 'test-secretPixData';
     config.jwtConfig.parcoursup.secret = 'test-secretPixParcoursup';
