@@ -119,7 +119,28 @@ describe('Acceptance | API | Pole Emploi envois', function () {
     });
 
     context('When the request has failed', function () {
-      it('should return 200 HTTP status code if user is not allowed to access', async function () {
+      it('should return 403 HTTP status code if token scope is not allowed to access', async function () {
+        // given
+        options = {
+          method: 'GET',
+          url: '/api/pole-emploi/envois',
+          headers: {
+            authorization: generateValidRequestAuthorizationHeaderForApplication(
+              POLE_EMPLOI_CLIENT_ID,
+              POLE_EMPLOI_SOURCE,
+              'another-scope',
+            ),
+          },
+        };
+
+        // when
+        const response = await server.inject(options);
+
+        // then
+        expect(response.statusCode).to.equal(403);
+      });
+
+      it('should return 403 HTTP status code if user is not allowed to access', async function () {
         // given
         options = {
           method: 'GET',
@@ -136,7 +157,7 @@ describe('Acceptance | API | Pole Emploi envois', function () {
         const response = await server.inject(options);
 
         // then
-        expect(response.statusCode).to.equal(200);
+        expect(response.statusCode).to.equal(403);
       });
 
       it('should return 401 HTTP status code if user is not authenticated', async function () {

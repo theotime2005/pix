@@ -10,7 +10,7 @@ const register = async function (server) {
       method: 'GET',
       path: '/api/pole-emploi/envois',
       config: {
-        auth: 'jwt-pole-emploi',
+        auth: { strategy: 'jwt-pole-emploi', access: { scope: ['pole-emploi-participants-result'] } },
         handler: poleEmploiController.getSendings,
         notes: [
           '- **API Pôle emploi qui nécessite une authentification de type client credential grant**\n' +
