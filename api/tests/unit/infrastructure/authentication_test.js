@@ -1,4 +1,4 @@
-import { authentication } from '../../../lib/infrastructure/authentication.js';
+import { authentication, validateUser } from '../../../lib/infrastructure/authentication.js';
 import { RevokedUserAccess } from '../../../src/identity-access-management/domain/models/RevokedUserAccess.js';
 import { revokedUserAccessRepository } from '../../../src/identity-access-management/infrastructure/repositories/revoked-user-access.repository.js';
 import { tokenService } from '../../../src/shared/domain/services/token-service.js';
@@ -17,7 +17,7 @@ describe('Unit | Infrastructure | Authentication', function () {
       const h = { authenticated: sinon.stub() };
 
       // when
-      const { authenticate } = authentication.scheme(undefined, {
+      const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
         key: 'dummy-secret',
         validate: sinon.stub(),
       });
@@ -41,7 +41,7 @@ describe('Unit | Infrastructure | Authentication', function () {
         tokenService.extractTokenFromAuthChain.withArgs('Bearer').returns(null);
 
         // when
-        const { authenticate } = authentication.scheme(undefined, {
+        const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
           key: 'dummy-secret',
           validate: sinon.stub(),
         });
@@ -67,7 +67,7 @@ describe('Unit | Infrastructure | Authentication', function () {
         tokenService.getDecodedToken.withArgs('token', 'dummy-secret').returns(false);
 
         // when
-        const { authenticate } = authentication.scheme(undefined, {
+        const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
           key: 'dummy-secret',
           validate: sinon.stub(),
         });
@@ -81,7 +81,9 @@ describe('Unit | Infrastructure | Authentication', function () {
         });
       });
     });
+  });
 
+  describe('#validateUser', function () {
     describe('when isUserTokenAudConfinementEnabled is enabled', function () {
       describe('when there is a user Id', function () {
         describe('when the audience is different from the forwarded origin', function () {
@@ -102,9 +104,9 @@ describe('Unit | Infrastructure | Authentication', function () {
             });
 
             // when
-            const { authenticate } = authentication.scheme(undefined, {
+            const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
               key: 'dummy-secret',
-              validate: sinon.stub(),
+              validate: (request, h, options) => validateUser(request, h, { ...options, revokedUserAccessRepository }),
             });
             const response = await authenticate(request, h);
 
@@ -140,9 +142,9 @@ describe('Unit | Infrastructure | Authentication', function () {
             });
 
             // when
-            const { authenticate } = authentication.scheme(undefined, {
+            const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
               key: 'dummy-secret',
-              validate: sinon.stub().returns({ isValid: true, credentials: {}, errorCode: null }),
+              validate: (request, h, options) => validateUser(request, h, { ...options, revokedUserAccessRepository }),
             });
             const response = await authenticate(request, h);
 
@@ -173,9 +175,9 @@ describe('Unit | Infrastructure | Authentication', function () {
             });
 
             // when
-            const { authenticate } = authentication.scheme(undefined, {
+            const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
               key: 'dummy-secret',
-              validate: sinon.stub(),
+              validate: (request, h, options) => validateUser(request, h, { ...options, revokedUserAccessRepository }),
             });
             const response = await authenticate(request, h);
 
@@ -206,14 +208,14 @@ describe('Unit | Infrastructure | Authentication', function () {
             });
 
             // when
-            const { authenticate } = authentication.scheme(undefined, {
+            const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
               key: 'dummy-secret',
-              validate: sinon.stub().returns({ isValid: true, credentials: {}, errorCode: null }),
+              validate: (request, h, options) => validateUser(request, h, { ...options, revokedUserAccessRepository }),
             });
             await authenticate(request, h);
 
             // then
-            expect(h.authenticated).to.have.been.calledWithExactly({ credentials: {} });
+            expect(h.authenticated).to.have.been.calledWithExactly({ credentials: { userId: 'user_id' } });
           });
         });
       });
@@ -235,14 +237,14 @@ describe('Unit | Infrastructure | Authentication', function () {
           });
 
           // when
-          const { authenticate } = authentication.scheme(undefined, {
+          const { authenticate } = authentication.schemes.jwt.scheme(undefined, {
             key: 'dummy-secret',
-            validate: sinon.stub().returns({ isValid: true, credentials: {}, errorCode: null }),
+            validate: (request, h, options) => validateUser(request, h, { ...options, revokedUserAccessRepository }),
           });
           await authenticate(request, h);
 
           // then
-          expect(h.authenticated).to.have.been.calledWithExactly({ credentials: {} });
+          expect(h.authenticated).to.have.been.calledWithExactly({ credentials: { userId: undefined } });
         });
       });
     });
