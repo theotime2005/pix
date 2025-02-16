@@ -449,6 +449,7 @@ const configuration = (function () {
       exportSenderJobEnabled: process.env.PGBOSS_EXPORT_SENDER_JOB_ENABLED
         ? toBoolean(process.env.PGBOSS_EXPORT_SENDER_JOB_ENABLED)
         : true,
+      databaseUrl: process.env.DATABASE_URL,
     },
     poleEmploi: {
       clientId: process.env.POLE_EMPLOI_CLIENT_ID,
@@ -697,6 +698,8 @@ const configuration = (function () {
     config.apiManager.url = 'http://external-partners-access/';
 
     config.infra.engineeringUserId = 800;
+
+    config.pgBoss.databaseUrl = process.env.TEST_DATABASE_URL;
   }
 
   return config;

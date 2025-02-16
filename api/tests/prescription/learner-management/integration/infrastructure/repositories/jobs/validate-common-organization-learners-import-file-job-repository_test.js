@@ -16,10 +16,10 @@ describe('Integration | Prescription | Infrastructure | Repository | Jobs | vali
 
       // then
       await expect(ValidateCommonOrganizationImportFileJob.name).to.have.been.performed.withJob({
-        expirein: JobExpireIn.HIGH,
-        retrylimit: JobRetry.FEW_RETRY.retryLimit,
-        retrydelay: JobRetry.FEW_RETRY.retryDelay,
-        retrybackoff: JobRetry.FEW_RETRY.retryBackoff,
+        expireIn: JobExpireIn.HIGH,
+        retryLimit: JobRetry.FEW_RETRY.retryLimit,
+        retryDelay: JobRetry.FEW_RETRY.retryDelay,
+        retryBackoff: JobRetry.FEW_RETRY.retryBackoff,
         data: { organizationImportId: 4123132 },
       });
     });

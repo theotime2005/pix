@@ -24,11 +24,11 @@ describe('Integration | Infrastructure | Repositories | Jobs | job-repository', 
     await expect(name).to.have.been.performed.withJob({
       name,
       data: expectedParams,
-      expirein: '00:15:00',
+      expireIn: 900,
       priority,
-      retrydelay: 30,
-      retrylimit: 10,
-      retrybackoff: true,
+      retryDelay: 30,
+      retryLimit: 10,
+      retryBackoff: true,
     });
   });
 

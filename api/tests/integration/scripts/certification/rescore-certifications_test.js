@@ -1,5 +1,5 @@
 import { RescoreCertificationScript } from '../../../../scripts/certification/rescore-certifications.js';
-import { createTempFile, expect, knex, sinon } from '../../../test-helper.js';
+import { createTempFile, expect, sinon } from '../../../test-helper.js';
 
 describe('Integration | Scripts | Certification | rescore-certfication', function () {
   it('should parse input file', async function () {
@@ -28,17 +28,9 @@ describe('Integration | Scripts | Certification | rescore-certfication', functio
     await script.handle({ logger, options: { file } });
 
     // then
-    const [job1, job2] = await knex('pgboss.job')
-      .where({ name: 'CertificationRescoringByScriptJob' })
-      .orderBy('createdon', 'asc');
-
-    expect([job1.data, job2.data]).to.have.deep.members([
-      {
-        certificationCourseId: 1,
-      },
-      {
-        certificationCourseId: 2,
-      },
+    await expect('CertificationRescoringByScriptJob').to.have.been.performed.withJobPayloads([
+      { certificationCourseId: 1 },
+      { certificationCourseId: 2 },
     ]);
   });
 });
