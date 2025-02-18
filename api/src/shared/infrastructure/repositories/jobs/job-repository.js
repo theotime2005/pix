@@ -1,10 +1,6 @@
 import Joi from 'joi';
 
-<<<<<<< HEAD
-import { knex } from '../../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../domain/DomainTransaction.js';
-=======
->>>>>>> ab1b4f8fbd (Revert "[TECH] Revert de la PR-11308 sur l'amélioration de PGBoss")
 import { EntityValidationError } from '../../../domain/errors.js';
 import { pgBoss } from './pg-boss.js';
 
@@ -62,7 +58,10 @@ export class JobRepository {
   }
 
   async #send(jobs) {
-    await pgBoss.insert(jobs);
+    const knexConn = DomainTransaction.getConnection();
+    await knexConn.transaction(async () => {
+      await pgBoss.insert(jobs);
+    });
     return { rowCount: jobs.length };
   }
 
