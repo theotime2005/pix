@@ -43,25 +43,18 @@ export default class MembersTable extends Component {
   };
 
   get isMultipleAdminsAvailable() {
-    const adminMembers = this.args.members?.filter((member) => member.isAdmin);
+    const adminMembers = this.args.members.filter((member) => member.isAdmin);
     return adminMembers.length > 1;
   }
 
-  get members() {
-    const tutu =  this.args.members.map((member) => {return {firstName: member.firstName, lastName: member.lastName, isDisplayToggled: false}});
-    console.log(tutu)
-    return tutu;
+  @action
+  toggleMenu(index) {
+    this.args.members[index].isToggleEnabled = true;
   }
 
   @action
-  toggleMenu(member) {
-    member.isDisplayToggled = !member.isDisplayToggled;
-    console.log(member);
-  }
-
-  @action
-  closeMenu() {
-    this.isMenuOpen = false;
+  closeMenu(index) {
+    this.args.members[index].isToggleEnabled = false;
   }
 
   get shouldDisplayManagingColumn() {
@@ -69,18 +62,18 @@ export default class MembersTable extends Component {
   }
 
   @action
-  setRoleSelection(value) {
-    this.args.member.role = value;
+  setRoleSelection(index, value) {
+    this.args.members[index].role = value;
   }
 
   @action
-  toggleEditionMode() {
-    this.isEditionMode = true;
+  toggleEditionMode(index) {
+    this.args.members[index].isEditMode = true;
   }
 
   @action
-  async updateMember(member) {
-    this.isEditionMode = false;
+  async updateMember(member, index) {
+    this.args.members[index].isEditMode = false;
     try {
       await member.save();
       this.pixToast.sendSuccessNotification({
@@ -95,16 +88,12 @@ export default class MembersTable extends Component {
   }
 
   @action
-  cancelUpdateRoleOfMember() {
-    this.isEditionMode = false;
-    this.closeMenu();
-    this.args.member.rollbackAttributes();
+  cancelUpdateRoleOfMember(member) {
+    member.rollbackAttributes();
   }
 
-
-
   <template>
-    <PixTable @data={{this.members}} @variant="certif">
+    <PixTable @data={{@members}} @variant="certif">
       <:columns as |member context index|>
         <PixTableColumn @context={{context}}>
           <:header>
@@ -129,12 +118,12 @@ export default class MembersTable extends Component {
           </:header>
           <:cell>
             {{index}}
-            {{#if this.isEditionMode}}
+            {{#if member.isEditMode}}
               <PixSelect
                 @screenReaderOnly={{true}}
                 @hideDefaultOption={{true}}
                 @placeholder="{{t 'pages.team.members.actions.select-role.label'}}"
-                @onChange={{this.setRoleSelection}}
+                @onChange={{fn this.setRoleSelection index}}
                 @options={{this.roleOptions}}
                 @value={{member.role}}
               >
@@ -151,11 +140,11 @@ export default class MembersTable extends Component {
               {{t "pages.team.table-headers.actions"}}
             </:header>
             <:cell>
-              {{#if this.isEditionMode}}
+              {{#if member.isEditMode}}
                 <div class="members-list-item__managing-role">
                   <PixButton
                     id="save-certification-center-role"
-                    @triggerAction={{fn this.updateMember member}}
+                    @triggerAction={{fn this.updateMember member index}}
                     @size="small"
                     aria-label={{t "pages.team.members.actions.save"}}
                   >
@@ -165,7 +154,7 @@ export default class MembersTable extends Component {
                     @iconName="close"
                     id="cancel-update-certification-center-role"
                     @ariaLabel="{{t 'common.actions.cancel'}}"
-                    @triggerAction={{this.cancelUpdateRoleOfMember}}
+                    @triggerAction={{fn this.cancelUpdateRoleOfMember member}}
                     @withBackground={{false}}
                   />
                 </div>
@@ -175,14 +164,14 @@ export default class MembersTable extends Component {
                     @size="small"
                     @iconName="moreVert"
                     @ariaLabel={{t "pages.team.members.actions.manage"}}
-                    @triggerAction={{this.toggleMenu member}}
+                    @triggerAction={{this.toggleMenu index}}
                   />
                 <Content
-                  @display={{member.isDisplayToggled}}
-                  @close={{this.closeMenu}}
+                  @display={{member.isToggleEnabled}}
+                  @close={{fn this.closeMenu index}}
                   aria-label={{t "pages.session-supervising.candidate-in-list.candidate-options"}}
                 >
-                    <Item @onClick={{this.toggleEditionMode}}>
+                    <Item @onClick={{fn this.toggleEditionMode index}}>
                       {{t "pages.team.members.actions.edit-role"}}
                     </Item>
                     <Item @onClick={{fn @onRemoveMemberButtonClicked member}}>

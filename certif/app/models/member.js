@@ -10,6 +10,8 @@ export default class Member extends Model {
   @attr('boolean') isReferer;
   @attr('string') role;
   @attr('number') certificationCenterMembershipId;
+  @attr('boolean', { defaultValue: false }) isEditMode;
+  @attr('boolean', { defaultValue: false }) isToggleEnabled;
 
   certificationCenterMembersRole = {
     ADMIN: this.intl.t('pages.team.members.role.admin'),
