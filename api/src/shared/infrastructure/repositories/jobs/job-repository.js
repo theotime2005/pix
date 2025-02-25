@@ -2,6 +2,7 @@ import Joi from 'joi';
 import PgBoss from 'pg-boss';
 
 import { config } from '../../../config.js';
+import { DomainTransaction } from '../../../domain/DomainTransaction.js';
 import { EntityValidationError } from '../../../domain/errors.js';
 
 const monitorStateIntervalSeconds = config.pgBoss.monitorStateIntervalSeconds;
@@ -71,7 +72,17 @@ export class JobRepository {
   }
 
   async #send(jobs) {
-    await JobRepository.pgBoss.insert(jobs);
+    await JobRepository.pgBoss.insert(jobs, {
+      db: {
+        executeSql: async (query, params) => {
+          // Change $1, $2... into ?, ?...
+          const knexStyleQuery = query.replace(/\$(\d+)\b/g, '?');
+          const connection = DomainTransaction.getConnection();
+          // eslint-disable-next-line knex/avoid-injections
+          return connection.raw(knexStyleQuery, params);
+        },
+      },
+    });
     return { rowCount: jobs.length };
   }
 
