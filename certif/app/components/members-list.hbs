@@ -1,33 +1,11 @@
 <div role="tabpanel">
   <div class="panel">
-    <div class="table content-text--small">
-      <table>
-        <thead>
-          <tr>
-            <Table::Header>{{t "common.labels.candidate.lastname"}}</Table::Header>
-            <Table::Header>{{t "common.labels.candidate.firstname"}}</Table::Header>
-            <Table::Header>{{t "common.labels.candidate.role"}}</Table::Header>
-            {{#if this.shouldDisplayManagingColumn}}
-              <Table::Header>{{t "pages.team.table-headers.actions"}}</Table::Header>
-            {{/if}}
-            {{#if this.shouldDisplayRefererColumn}}
-              <Table::Header>{{t "pages.team.referer"}}</Table::Header>
-            {{/if}}
-          </tr>
-        </thead>
-        <tbody>
-          {{#each @members as |member|}}
-            <MembersListItem
-              @member={{member}}
-              @shouldDisplayRefererColumn={{this.shouldDisplayRefererColumn}}
-              @isMultipleAdminsAvailable={{this.isMultipleAdminsAvailable}}
-              @onLeaveCertificationCenterButtonClicked={{this.openLeaveCertificationCenterModal}}
-              @onRemoveMemberButtonClicked={{this.openRemoveMemberModal}}
-            />
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
+    <MembersTable
+      @members={{@members}}
+      @shouldDisplayRefererColumn={{this.shouldDisplayRefererColumn}}
+      @onLeaveCertificationCenterButtonClicked={{this.openLeaveCertificationCenterModal}}
+      @onRemoveMemberButtonClicked={{this.openRemoveMemberModal}}
+    />
   </div>
 </div>
 

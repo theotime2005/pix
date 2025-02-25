@@ -21,11 +21,6 @@ export default class MembersList extends Component {
     return this.currentUser.isAdminOfCurrentCertificationCenter;
   }
 
-  get isMultipleAdminsAvailable() {
-    const adminMembers = this.args.members?.filter((member) => member.isAdmin);
-    return adminMembers.length > 1;
-  }
-
   @action
   openLeaveCertificationCenterModal() {
     this.isLeaveCertificationCenterModalOpen = true;
