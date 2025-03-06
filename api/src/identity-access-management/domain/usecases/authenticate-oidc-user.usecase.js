@@ -27,7 +27,6 @@ async function authenticateOidcUser({
   identityProviderCode,
   nonce,
   sessionState,
-  audience,
   requestedApplication,
   authenticationSessionService,
   oidcAuthenticationServiceRegistry,
@@ -86,7 +85,10 @@ async function authenticateOidcUser({
     userLoginRepository,
   });
 
-  const pixAccessToken = oidcAuthenticationService.createAccessToken({ userId: user.id, audience });
+  const pixAccessToken = oidcAuthenticationService.createAccessToken({
+    userId: user.id,
+    audience: requestedApplication.origin,
+  });
 
   let logoutUrlUUID;
   if (oidcAuthenticationService.shouldCloseSession) {

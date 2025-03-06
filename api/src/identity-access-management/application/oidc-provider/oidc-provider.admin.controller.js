@@ -2,7 +2,7 @@ import { oidcAuthenticationServiceRegistry } from '../../../../lib/domain/usecas
 import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { usecases } from '../../domain/usecases/index.js';
 import * as oidcProviderSerializer from '../../infrastructure/serializers/jsonapi/oidc-identity-providers.serializer.js';
-import { getForwardedOrigin, RequestedApplication } from '../../infrastructure/utils/network.js';
+import { RequestedApplication } from '../../infrastructure/utils/network.js';
 
 /**
  * @param request
@@ -43,8 +43,8 @@ async function reconcileUserForAdmin(
   },
 ) {
   const { email, identityProvider, authenticationKey } = request.deserializedPayload;
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   await dependencies.oidcAuthenticationServiceRegistry.loadOidcProviderServices();
   await dependencies.oidcAuthenticationServiceRegistry.configureReadyOidcProviderServiceByCode(identityProvider);
@@ -59,7 +59,6 @@ async function reconcileUserForAdmin(
     identityProvider,
     authenticationKey,
     oidcAuthenticationService,
-    audience: origin,
     requestedApplication,
   });
 

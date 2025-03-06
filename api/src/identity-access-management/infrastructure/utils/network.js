@@ -14,27 +14,12 @@ const localhostApplicationPortMapping = {
   4205: PIX_JUNIOR_APPLICATION_NAME,
 };
 
-/**
- * Returns the HTTP origin of the given HTTP request headers, based on the x-forwarded-proto and x-forwarded-host headers
- *
- * @param {Object} headers
- * @returns {string} an URL as a string
- */
-function getForwardedOrigin(headers) {
-  const protoHeader = headers['x-forwarded-proto'];
-  const hostHeader = headers['x-forwarded-host'];
-  if (!protoHeader || !hostHeader) {
-    throw new ForwardedOriginError('Missing forwarded header(s)');
-  }
-
-  return `${_getHeaderFirstValue(protoHeader)}://${_getHeaderFirstValue(hostHeader)}`;
-}
-
 class RequestedApplication {
   /**
    * @param {string} applicationName
    */
-  constructor(applicationName) {
+  constructor({ origin, applicationName }) {
+    this.origin = origin;
     this.applicationName = applicationName;
   }
 
@@ -59,10 +44,19 @@ class RequestedApplication {
   }
 
   /**
-   * @param {string} origin an URL like https://app.pix.fr, https://orga.pix.fr, https://app-pr10823.review.pix.fr, http://localhost:4200, etc.
+   * Returns a RequestedApplication from the HTTP request headers, based on the x-forwarded-proto and x-forwarded-host headers.
+   *
+   * @param {Object} headers
    * @returns {RequestedApplication}
    */
-  static fromOrigin(origin) {
+  static fromHeaders(headers) {
+    const protoHeader = headers['x-forwarded-proto'];
+    const hostHeader = headers['x-forwarded-host'];
+    if (!protoHeader || !hostHeader) {
+      throw new ForwardedOriginError('Missing forwarded header(s)');
+    }
+
+    const origin = `${_getHeaderFirstValue(protoHeader)}://${_getHeaderFirstValue(hostHeader)}`;
     let url;
     try {
       url = new URL(origin);
@@ -74,12 +68,12 @@ class RequestedApplication {
 
     if (url.hostname == 'localhost') {
       applicationName = localhostApplicationPortMapping[url.port];
-      return new RequestedApplication(applicationName);
+      return new RequestedApplication({ origin, applicationName });
     }
 
     const hostnameParts = url.hostname.split('.');
     if (hostnameParts.length < 2) {
-      throw new ForwardedOriginError(`Unsupported hostname: "${url.hostname}"`);
+      throw new ForwardedOriginError(`Unsupported hostname format: "${url.hostname}"`);
     }
 
     const urlFirstLabel = hostnameParts[0];
@@ -92,7 +86,7 @@ class RequestedApplication {
       applicationName = urlFirstLabel;
     }
 
-    return new RequestedApplication(applicationName);
+    return new RequestedApplication({ origin, applicationName });
   }
 }
 
@@ -106,4 +100,4 @@ function _getHeaderFirstValue(headerValue) {
   return headerValue.split(',')[0];
 }
 
-export { ForwardedOriginError, getForwardedOrigin, RequestedApplication };
+export { ForwardedOriginError, RequestedApplication };

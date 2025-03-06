@@ -1,9 +1,6 @@
 import { randomUUID } from 'node:crypto';
 
-import {
-  getForwardedOrigin,
-  RequestedApplication,
-} from '../../../src/identity-access-management/infrastructure/utils/network.js';
+import { RequestedApplication } from '../../../src/identity-access-management/infrastructure/utils/network.js';
 import { usecases } from '../../domain/usecases/index.js';
 
 const authenticateExternalUser = async function (request, h) {
@@ -14,15 +11,13 @@ const authenticateExternalUser = async function (request, h) {
     'expected-user-id': expectedUserId,
   } = request.payload.data.attributes;
 
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const accessToken = await usecases.authenticateExternalUser({
     username,
     password,
     externalUserToken,
     expectedUserId,
-    audience: origin,
     requestedApplication,
   });
 

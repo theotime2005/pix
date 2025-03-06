@@ -14,10 +14,9 @@ const createUserAndReconcileToOrganizationLearnerFromExternalUser = async functi
   birthdate,
   campaignCode,
   token,
+  requestedApplication,
   obfuscationService,
   tokenService,
-  audience,
-  requestedApplication,
   userReconciliationService,
   userService,
   authenticationMethodRepository,
@@ -126,7 +125,10 @@ const createUserAndReconcileToOrganizationLearnerFromExternalUser = async functi
     userLoginRepository,
   });
 
-  const accessToken = tokenService.createAccessTokenForSaml({ userId: tokenUserId, audience });
+  const accessToken = tokenService.createAccessTokenForSaml({
+    userId: tokenUserId,
+    audience: requestedApplication.origin,
+  });
 
   return accessToken;
 };

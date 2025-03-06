@@ -1,7 +1,7 @@
 import boom from '@hapi/boom';
 
 import { revokedUserAccessRepository } from '../../src/identity-access-management/infrastructure/repositories/revoked-user-access.repository.js';
-import { getForwardedOrigin } from '../../src/identity-access-management/infrastructure/utils/network.js';
+import { RequestedApplication } from '../../src/identity-access-management/infrastructure/utils/network.js';
 import { config } from '../../src/shared/config.js';
 import { tokenService } from '../../src/shared/domain/services/token-service.js';
 import { monitoringTools } from '../../src/shared/infrastructure/monitoring-tools.js';
@@ -59,13 +59,13 @@ async function validateUser(decodedAccessToken, { request, revokedUserAccessRepo
     return { isValid: false };
   }
 
-  const audience = getForwardedOrigin(request.headers);
-  if (decodedAccessToken.aud !== audience) {
-    monitoringTools.logWarnWithCorrelationIds({
-      message: 'User AccessToken audience mismatch',
-      audience,
-      decodedAccessToken,
-    });
+    const audience = RequestedApplication.fromHeaders(request.headers).origin;
+    if (decodedAccessToken.aud !== audience) {
+      monitoringTools.logWarnWithCorrelationIds({
+        message: 'User AccessToken audience mismatch',
+        audience,
+        decodedAccessToken,
+      });
 
     return { isValid: false };
   }

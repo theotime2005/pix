@@ -2,7 +2,7 @@ import { stdSerializers } from 'pino';
 
 import { monitoringTools } from '../../../../src/shared/infrastructure/monitoring-tools.js';
 import { generateHash } from '../../../identity-access-management/infrastructure/utils/crypto.js';
-import { getForwardedOrigin } from '../../../identity-access-management/infrastructure/utils/network.js';
+import { RequestedApplication } from '../../../identity-access-management/infrastructure/utils/network.js';
 import { config } from '../../config.js';
 import { logger } from '../utils/logger.js';
 
@@ -24,7 +24,7 @@ function requestSerializer(req) {
     const { username, refresh_token, grant_type } = context.request.payload || {};
     let origin;
     try {
-      origin = getForwardedOrigin(context.request.headers);
+      origin = RequestedApplication.fromHeaders(context.request.headers).origin;
     } catch {
       origin = '-';
     }

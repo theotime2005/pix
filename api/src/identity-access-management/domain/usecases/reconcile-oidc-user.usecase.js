@@ -6,14 +6,12 @@ import { AuthenticationMethod } from '../models/AuthenticationMethod.js';
  * @param {Object} params
  * @param {string} params.authenticationKey
  * @param {string} params.identityProvider
- * @param {string} params.audience
  * @param {RequestedApplication} params.requestedApplication
  * @param {AuthenticationSessionService} params.authenticationSessionService
  * @param {AuthenticationMethodRepository} params.authenticationMethodRepository
  * @param {OidcAuthenticationServiceRegistry} params.oidcAuthenticationServiceRegistry
  * @param {UserLoginRepository} params.userLoginRepository
  * @param {LastUserApplicationConnectionsRepository} params.lastUserApplicationConnectionsRepository
- * @param {RequestedApplication} params.requestedApplication
  * @return {Promise<{accessToken: string, logoutUrlUUID: string}|AuthenticationKeyExpired|MissingUserAccountError>}
  */
 export const reconcileOidcUser = async function ({
@@ -24,7 +22,6 @@ export const reconcileOidcUser = async function ({
   oidcAuthenticationServiceRegistry,
   userLoginRepository,
   lastUserApplicationConnectionsRepository,
-  audience,
   requestedApplication,
 }) {
   await oidcAuthenticationServiceRegistry.loadOidcProviderServices();
@@ -69,7 +66,10 @@ export const reconcileOidcUser = async function ({
     userLoginRepository,
   });
 
-  const accessToken = await oidcAuthenticationService.createAccessToken({ userId, audience });
+  const accessToken = await oidcAuthenticationService.createAccessToken({
+    userId,
+    audience: requestedApplication.origin,
+  });
 
   let logoutUrlUUID;
   if (oidcAuthenticationService.shouldCloseSession) {

@@ -14,9 +14,8 @@ import { AuthenticationMethod } from '../models/AuthenticationMethod.js';
  * @param {string} params.authenticationKey
  * @param {string} params.email
  * @param {string} params.identityProvider
- * @param {string} params.audience
- * @param {OidcAuthenticationService} params.oidcAuthenticationService
  * @param {RequestedApplication} params.requestedApplication
+ * @param {OidcAuthenticationService} params.oidcAuthenticationService
  * @param {lastUserApplicationConnectionsRepository} params.lastUserApplicationConnectionsRepository
  * @param {AuthenticationSessionService} params.authenticationSessionService
  * @param {AuthenticationMethodRepository} params.authenticationMethodRepository
@@ -27,14 +26,13 @@ export const reconcileOidcUserForAdmin = async function ({
   authenticationKey,
   email,
   identityProvider,
+  requestedApplication,
   oidcAuthenticationService,
   authenticationSessionService,
   authenticationMethodRepository,
   userRepository,
   userLoginRepository,
   lastUserApplicationConnectionsRepository,
-  requestedApplication,
-  audience,
 }) {
   const sessionContentAndUserInfo = await authenticationSessionService.getByKey(authenticationKey);
   if (!sessionContentAndUserInfo) {
@@ -73,7 +71,10 @@ export const reconcileOidcUserForAdmin = async function ({
     userLoginRepository,
   });
 
-  const accessToken = await oidcAuthenticationService.createAccessToken({ userId, audience });
+  const accessToken = await oidcAuthenticationService.createAccessToken({
+    userId,
+    audience: requestedApplication.origin,
+  });
 
   return accessToken;
 };

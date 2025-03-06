@@ -16,7 +16,7 @@ import { UserToCreate } from '../models/UserToCreate.js';
 export const authenticateAnonymousUser = async function ({
   campaignCode,
   lang = 'fr',
-  audience,
+  requestedApplication,
   campaignToJoinRepository,
   userToCreateRepository,
   tokenService,
@@ -29,5 +29,5 @@ export const authenticateAnonymousUser = async function ({
   const userToAdd = UserToCreate.createAnonymous({ lang });
   const newUser = await userToCreateRepository.create({ user: userToAdd });
 
-  return tokenService.createAccessTokenFromAnonymousUser({ userId: newUser.id, audience });
+  return tokenService.createAccessTokenFromAnonymousUser({ userId: newUser.id, audience: requestedApplication.origin });
 };

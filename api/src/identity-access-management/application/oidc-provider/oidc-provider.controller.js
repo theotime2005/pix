@@ -3,7 +3,7 @@ import { requestResponseUtils } from '../../../shared/infrastructure/utils/reque
 import { usecases } from '../../domain/usecases/index.js';
 import * as oidcProviderSerializer from '../../infrastructure/serializers/jsonapi/oidc-identity-providers.serializer.js';
 import * as oidcSerializer from '../../infrastructure/serializers/jsonapi/oidc-serializer.js';
-import { getForwardedOrigin, RequestedApplication } from '../../infrastructure/utils/network.js';
+import { RequestedApplication } from '../../infrastructure/utils/network.js';
 
 /**
  * @typedef {function} authenticateOidcUser
@@ -13,8 +13,8 @@ import { getForwardedOrigin, RequestedApplication } from '../../infrastructure/u
  */
 async function authenticateOidcUser(request, h) {
   const { code, state, iss, identityProvider: identityProviderCode } = request.deserializedPayload;
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const sessionState = request.yar.get('state', true);
   const nonce = request.yar.get('nonce', true);
@@ -31,7 +31,6 @@ async function authenticateOidcUser(request, h) {
     identityProviderCode,
     nonce,
     sessionState,
-    audience: origin,
     requestedApplication,
   });
 
@@ -62,15 +61,14 @@ async function createUser(request, h, dependencies = { requestResponseUtils }) {
   const { identityProvider, authenticationKey } = request.deserializedPayload;
   const localeFromCookie = request.state?.locale;
   const language = dependencies.requestResponseUtils.extractLocaleFromRequest(request);
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const { accessToken: access_token, logoutUrlUUID: logout_url_uuid } = await usecases.createOidcUser({
     authenticationKey,
     identityProvider,
     localeFromCookie,
     language,
-    audience: origin,
     requestedApplication,
   });
 
@@ -104,8 +102,8 @@ async function findUserForReconciliation(request, h, dependencies = { oidcSerial
  */
 async function getAuthorizationUrl(request, h) {
   const { identity_provider: identityProvider } = request.query;
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const { nonce, state, ...payload } = await usecases.getAuthorizationUrl({ identityProvider, requestedApplication });
 
@@ -123,8 +121,7 @@ async function getAuthorizationUrl(request, h) {
  * @return {Promise<*>}
  */
 async function getIdentityProviders(request, h) {
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const identityProviders = await usecases.getReadyIdentityProviders({ requestedApplication });
 
@@ -159,13 +156,11 @@ async function getRedirectLogoutUrl(request, h) {
 async function reconcileUser(request, h) {
   const { identityProvider, authenticationKey } = request.deserializedPayload;
 
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const result = await usecases.reconcileOidcUser({
     authenticationKey,
     identityProvider,
-    audience: origin,
     requestedApplication,
   });
 

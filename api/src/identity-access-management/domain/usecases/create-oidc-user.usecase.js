@@ -8,13 +8,13 @@ import { UserToCreate } from '../models/UserToCreate.js';
  *   authenticationKey: string,
  *   localeFromCookie: string,
  *   language: string,
+ *   requestedApplication: RequestedApplication,
  *   authenticationSessionService: AuthenticationSessionService,
  *   oidcAuthenticationServiceRegistry: OidcAuthenticationServiceRegistry,
  *   authenticationMethodRepository: AuthenticationMethodRepository,
  *   userToCreateRepository: UserToCreateRepository,
  *   userLoginRepository: UserLoginRepository,
  *   lastUserApplicationConnectionsRepository: LastUserApplicationConnectionsRepository,
- *   requestedApplication: RequestedApplication,
  * }} params
  * @return {Promise<{accessToken: string, logoutUrlUUID: string}>}
  */
@@ -23,14 +23,13 @@ async function createOidcUser({
   authenticationKey,
   localeFromCookie,
   language,
-  audience,
+  requestedApplication,
   authenticationSessionService,
   oidcAuthenticationServiceRegistry,
   authenticationMethodRepository,
   userToCreateRepository,
   userLoginRepository,
   lastUserApplicationConnectionsRepository,
-  requestedApplication,
 }) {
   const sessionContentAndUserInfo = await authenticationSessionService.getByKey(authenticationKey);
   if (!sessionContentAndUserInfo) {
@@ -82,7 +81,7 @@ async function createOidcUser({
     userLoginRepository,
   });
 
-  const accessToken = oidcAuthenticationService.createAccessToken({ userId, audience });
+  const accessToken = oidcAuthenticationService.createAccessToken({ userId, audience: requestedApplication.origin });
 
   let logoutUrlUUID;
   if (oidcAuthenticationService.shouldCloseSession) {

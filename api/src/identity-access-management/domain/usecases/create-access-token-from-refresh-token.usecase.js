@@ -2,9 +2,9 @@ import { UnauthorizedError } from '../../../shared/application/http-errors.js';
 
 const createAccessTokenFromRefreshToken = async function ({
   refreshToken,
+  requestedApplication,
   refreshTokenRepository,
   tokenService,
-  audience,
 }) {
   const foundRefreshToken = await refreshTokenRepository.findByToken({ token: refreshToken });
 
@@ -12,6 +12,7 @@ const createAccessTokenFromRefreshToken = async function ({
     throw new UnauthorizedError('Refresh token is invalid', 'INVALID_REFRESH_TOKEN');
   }
 
+  const audience = requestedApplication.origin;
   if (!foundRefreshToken.hasSameAudience(audience)) {
     throw new UnauthorizedError('Refresh token is invalid', 'INVALID_REFRESH_TOKEN');
   }

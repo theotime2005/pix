@@ -3,14 +3,13 @@ import { AuthenticationMethod } from '../models/AuthenticationMethod.js';
 
 const getSamlAuthenticationRedirectionUrl = async function ({
   userAttributes,
+  requestedApplication,
+  config,
   userRepository,
   userLoginRepository,
   authenticationMethodRepository,
   lastUserApplicationConnectionsRepository,
   tokenService,
-  config,
-  audience,
-  requestedApplication,
 }) {
   const { attributeMapping } = config.saml;
   const externalUser = {
@@ -37,7 +36,7 @@ const getSamlAuthenticationRedirectionUrl = async function ({
 
     return _getUrlWithAccessToken({
       user,
-      audience,
+      audience: requestedApplication.origin,
       externalUser,
       tokenService,
       userLoginRepository,

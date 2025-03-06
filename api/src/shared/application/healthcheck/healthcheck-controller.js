@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 
 import { databaseConnections } from '../../../../db/database-connections.js';
 import packageJSON from '../../../../package.json' with { type: 'json' };
-import * as network from '../../../identity-access-management/infrastructure/utils/network.js';
+import { RequestedApplication } from '../../../identity-access-management/infrastructure/utils/network.js';
 import { config } from '../../config.js';
 import { redisMonitor } from '../../infrastructure/utils/redis-monitor.js';
 
@@ -41,9 +41,9 @@ const checkRedisStatus = async function () {
 const checkForwardedOriginStatus = async function (request, h) {
   let forwardedOrigin;
   try {
-    // network.getForwardedOrigin throws ForwardedOriginError which maps to a HTTP status code 400,
+    // RequestedApplication.fromHeaders throws ForwardedOriginError which maps to a HTTP status code 400,
     // but for monitoring purpose we want this error to produce a 500.
-    forwardedOrigin = network.getForwardedOrigin(request.headers);
+    forwardedOrigin = RequestedApplication.fromHeaders(request.headers).origin;
   } catch {
     return h.response('Obtaining Forwarded Origin failed').code(500);
   }

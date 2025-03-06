@@ -1,10 +1,7 @@
 import dayjs from 'dayjs';
 
 import * as studentInformationForAccountRecoverySerializer from '../../../src/identity-access-management/infrastructure/serializers/jsonapi/student-information-for-account-recovery-serializer.js';
-import {
-  getForwardedOrigin,
-  RequestedApplication,
-} from '../../../src/identity-access-management/infrastructure/utils/network.js';
+import { RequestedApplication } from '../../../src/identity-access-management/infrastructure/utils/network.js';
 import * as scoOrganizationLearnerSerializer from '../../../src/prescription/learner-management/infrastructure/serializers/jsonapi/sco-organization-learner-serializer.js';
 import { DomainTransaction } from '../../../src/shared/domain/DomainTransaction.js';
 import * as requestResponseUtils from '../../../src/shared/infrastructure/utils/request-response-utils.js';
@@ -70,13 +67,12 @@ const createUserAndReconcileToOrganizationLearnerFromExternalUser = async functi
 ) {
   const { birthdate, 'campaign-code': campaignCode, 'external-user-token': token } = request.payload.data.attributes;
 
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
+
   const accessToken = await usecases.createUserAndReconcileToOrganizationLearnerFromExternalUser({
     birthdate,
     campaignCode,
     token,
-    audience: origin,
     requestedApplication,
   });
 

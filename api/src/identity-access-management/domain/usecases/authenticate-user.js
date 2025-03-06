@@ -13,6 +13,7 @@ import { RefreshToken } from '../models/RefreshToken.js';
  * @param {string} params.source
  * @param {string} params.username
  * @param {string} params.localeFromCookie
+ * @param {RequestedApplication} params.requestedApplication
  * @param {RefreshTokenRepository} params.refreshTokenRepository
  * @param {PixAuthenticationService} params.pixAuthenticationService
  * @param {TokenService} params.tokenService
@@ -22,9 +23,7 @@ import { RefreshToken } from '../models/RefreshToken.js';
  * @param {AdminMemberRepository} params.adminMemberRepository
  * @param {EmailRepository} params.emailRepository
  * @param {EmailValidationDemandRepository} params.emailValidationDemandRepository
- * @param {LastUserApplicationConnectionsRepository} params.lastUserApplicationConnectionsRepository,
- * @param {RequestedApplication} params.requestedApplication,
- * @param {string} params.audience
+ * @param {LastUserApplicationConnectionsRepository} params.lastUserApplicationConnectionsRepository
  * @returns {Promise<{expirationDelaySeconds, accessToken: (*), refreshToken}>}
  */
 const authenticateUser = async function ({
@@ -32,6 +31,7 @@ const authenticateUser = async function ({
   source,
   username,
   localeFromCookie,
+  requestedApplication,
   refreshTokenRepository,
   pixAuthenticationService,
   tokenService,
@@ -42,8 +42,6 @@ const authenticateUser = async function ({
   emailRepository,
   emailValidationDemandRepository,
   lastUserApplicationConnectionsRepository,
-  requestedApplication,
-  audience,
 }) {
   try {
     const user = await pixAuthenticationService.getUserByUsernameAndPassword({
@@ -59,6 +57,7 @@ const authenticateUser = async function ({
 
     await _assertUserHasAccessToApplication({ requestedApplication, user, adminMemberRepository });
 
+    const audience = requestedApplication.origin;
     const refreshToken = RefreshToken.generate({ userId: user.id, source, audience });
     await refreshTokenRepository.save({ refreshToken });
 

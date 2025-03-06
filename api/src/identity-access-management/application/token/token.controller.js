@@ -1,11 +1,13 @@
 import { tokenService } from '../../../shared/domain/services/token-service.js';
 import { usecases } from '../../domain/usecases/index.js';
-import { getForwardedOrigin, RequestedApplication } from '../../infrastructure/utils/network.js';
+import { RequestedApplication } from '../../infrastructure/utils/network.js';
 
 const authenticateAnonymousUser = async function (request, h) {
   const { campaign_code: campaignCode, lang } = request.payload;
-  const origin = getForwardedOrigin(request.headers);
-  const accessToken = await usecases.authenticateAnonymousUser({ campaignCode, lang, audience: origin });
+
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
+
+  const accessToken = await usecases.authenticateAnonymousUser({ campaignCode, lang, requestedApplication });
 
   const response = {
     token_type: 'bearer',
@@ -27,8 +29,7 @@ const createToken = async function (request, h, dependencies = { tokenService })
   let accessToken, refreshToken;
   let expirationDelaySeconds;
 
-  const origin = getForwardedOrigin(request.headers);
-  const requestedApplication = RequestedApplication.fromOrigin(origin);
+  const requestedApplication = RequestedApplication.fromHeaders(request.headers);
 
   const grantType = request.payload.grant_type;
 
@@ -42,7 +43,6 @@ const createToken = async function (request, h, dependencies = { tokenService })
       password,
       source,
       localeFromCookie,
-      audience: origin,
       requestedApplication,
     });
 
@@ -52,7 +52,7 @@ const createToken = async function (request, h, dependencies = { tokenService })
   } else if (grantType === 'refresh_token') {
     refreshToken = request.payload.refresh_token;
 
-    const tokensInfo = await usecases.createAccessTokenFromRefreshToken({ refreshToken, audience: origin });
+    const tokensInfo = await usecases.createAccessTokenFromRefreshToken({ refreshToken, requestedApplication });
 
     accessToken = tokensInfo.accessToken;
     expirationDelaySeconds = tokensInfo.expirationDelaySeconds;

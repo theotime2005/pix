@@ -17,8 +17,8 @@ import {
  * @param {string} params.username
  * @param {string} params.password
  * @param {string} params.externalUserToken
- * @param {string} params.audience
  * @param {number} params.expectedUserId
+ * @param {RequestedApplication} params.requestedApplication,
  * @param {TokenService} params.tokenService
  * @param {PixAuthenticationService} params.pixAuthenticationService
  * @param {ObfuscationService} params.obfuscationService
@@ -26,15 +26,14 @@ import {
  * @param {UserRepository} params.userRepository
  * @param {UserLoginRepository} params.userLoginRepository
  * @param {LastUserApplicationConnectionsRepository} params.lastUserApplicationConnectionsRepository,
- * @param {RequestedApplication} params.requestedApplication,
  * @returns {Promise<*>}
  */
 async function authenticateExternalUser({
   username,
   password,
   externalUserToken,
-  audience,
   expectedUserId,
+  requestedApplication,
   tokenService,
   pixAuthenticationService,
   obfuscationService,
@@ -42,7 +41,6 @@ async function authenticateExternalUser({
   userRepository,
   userLoginRepository,
   lastUserApplicationConnectionsRepository,
-  requestedApplication,
 }) {
   try {
     const userFromCredentials = await pixAuthenticationService.getUserByUsernameAndPassword({
@@ -74,7 +72,10 @@ async function authenticateExternalUser({
       throw new UserShouldChangePasswordError(undefined, passwordResetToken);
     }
 
-    const token = tokenService.createAccessTokenForSaml({ userId: userFromCredentials.id, audience });
+    const token = tokenService.createAccessTokenForSaml({
+      userId: userFromCredentials.id,
+      audience: requestedApplication.origin,
+    });
 
     await userLoginRepository.updateLastLoggedAt({ userId: userFromCredentials.id });
     await lastUserApplicationConnectionsRepository.upsert({
