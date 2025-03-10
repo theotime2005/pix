@@ -1,0 +1,15 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "${PIX_PROMETHEUS_PORT:-9990}:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  prometheus-pushgateway:
+    image: prom/pushgateway
+    ports:
+      - "${PIX_PROMETHEUS_PUSHGATEWAY_PORT:-9991}:9091"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "${PIX_GRAFANA_PORT:-3210}:3000"
