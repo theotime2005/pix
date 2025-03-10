@@ -386,6 +386,11 @@ const configuration = (function () {
       },
     },
     metrics: {
+      prefix: 'pix_api',
+      pushgateway: {
+        pushInterval: 15000,
+        url: 'http://localhost:9991',
+      },
       flushIntervalSeconds: _getNumber(process.env.DIRECT_METRICS_FLUSH_INTERVAL, 5),
     },
     partner: {

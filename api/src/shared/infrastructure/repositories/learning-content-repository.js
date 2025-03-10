@@ -2,9 +2,23 @@ import Dataloader from 'dataloader';
 
 import { knex } from '../../../../db/knex-database-connection.js';
 import { LearningContentCache } from '../caches/learning-content-cache.js';
+import { Counter } from '../metrics/counter.js';
 import { child, SCOPES } from '../utils/logger.js';
 
 const logger = child('learningcontent:repository', { event: SCOPES.LEARNING_CONTENT });
+
+const metrics = {
+  loadTotal: new Counter({
+    name: 'lc_load_total',
+    help: 'Total count of entities loaded from learning content',
+    labelNames: ['table'],
+  }),
+  loadCacheMiss: new Counter({
+    name: 'lc_load_cache_miss',
+    help: 'Count of cache misses when loading entities from learning content',
+    labelNames: ['table'],
+  }),
+};
 
 /**
  * @typedef {(knex: import('knex').QueryBuilder) => Promise<string[]|number[]>} QueryBuilderCallback
@@ -20,6 +34,7 @@ export class LearningContentRepository {
   #dataloader;
   #findCache;
   #findCacheMiss;
+  #metrics;
 
   /**
    * @param {{
@@ -38,6 +53,12 @@ export class LearningContentRepository {
     this.#findCache = new LearningContentCache({ name: `${tableName}:results` });
 
     this.#findCacheMiss = new Map();
+
+    const table = this.#tableName.split('.').at(-1);
+    this.#metrics = {
+      loadTotal: metrics.loadTotal.labels({ table }),
+      loadCacheMiss: metrics.loadCacheMiss.labels({ table }),
+    };
   }
 
   /**
@@ -69,6 +90,7 @@ export class LearningContentRepository {
    * @returns {Promise<object|null>}
    */
   async load(id) {
+    this.#metrics.loadTotal.inc();
     return this.#dataloader.load(id);
   }
 
@@ -104,6 +126,8 @@ export class LearningContentRepository {
    * @returns {Promise<(object|null)[]>}
    */
   async #loadMany(ids, cacheKey) {
+    this.#metrics.loadTotal.inc(ids.length);
+
     const dtos = await this.#dataloader.loadMany(ids);
 
     if (dtos[0] instanceof Error) {
@@ -140,12 +164,15 @@ export class LearningContentRepository {
    * @returns {Promise<(object|null)[]>}
    */
   async #batchLoad(ids) {
+    this.#metrics.loadCacheMiss.inc(ids.length);
+
     logger.debug({ tableName: this.#tableName, count: ids.length }, 'loading from PG');
     const dtos = await knex
       .select(`${this.#tableName}.*`)
       .from(knex.raw(`unnest(?::${this.#idType}[]) with ordinality as ids(id, idx)`, [ids])) // eslint-disable-line knex/avoid-injections
       .leftJoin(this.#tableName, `${this.#tableName}.id`, 'ids.id')
       .orderBy('ids.idx');
+
     return dtos.map((dto) => (dto.id ? dto : null));
   }
 
