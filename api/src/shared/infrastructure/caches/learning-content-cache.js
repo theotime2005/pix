@@ -1,12 +1,22 @@
 import * as learningContentPubSub from '../caches/learning-content-pubsub.js';
+import { Gauge } from '../metrics/gauge.js';
 import { child, SCOPES } from '../utils/logger.js';
 
 const logger = child('learningcontent:cache', { event: SCOPES.LEARNING_CONTENT });
+
+const metrics = {
+  cacheSize: new Gauge({
+    name: 'lc_cache_size',
+    help: 'Learning content cache size',
+    labelNames: ['table', 'cache'],
+  }),
+};
 
 export class LearningContentCache {
   #map;
   #pubSub;
   #name;
+  #metrics;
 
   /**
    * @param {{
@@ -21,6 +31,15 @@ export class LearningContentCache {
     this.#pubSub = pubSub;
     this.#map = map;
 
+    const [tableName, cache] = name.split(':');
+    const table = tableName.split('.').at(-1);
+    this.#metrics = {
+      cacheSize: metrics.cacheSize.labels({
+        table,
+        cache,
+      }),
+    };
+
     this.#subscribe();
   }
 
@@ -29,7 +48,11 @@ export class LearningContentCache {
   }
 
   set(key, value) {
-    return this.#map.set(key, value);
+    try {
+      return this.#map.set(key, value);
+    } finally {
+      this.#metrics.cacheSize.set(this.#map.size);
+    }
   }
 
   delete(key) {
@@ -46,10 +69,12 @@ export class LearningContentCache {
         if (message.type === 'clear') {
           logger.debug({ cacheName: this.#name }, 'clearing cache');
           this.#map.clear();
+          this.#metrics.cacheSize.set(0);
         }
         if (message.type === 'delete') {
           logger.debug({ cacheName: this.#name, key: message.key }, 'deleting cache key');
           this.#map.delete(message.key);
+          this.#metrics.cacheSize.set(this.#map.size);
         }
       }
     } catch (err) {
