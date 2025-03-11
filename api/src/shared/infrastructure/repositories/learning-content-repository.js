@@ -1,8 +1,10 @@
 import Dataloader from 'dataloader';
+import { exponentialBuckets } from 'prom-client';
 
 import { knex } from '../../../../db/knex-database-connection.js';
 import { LearningContentCache } from '../caches/learning-content-cache.js';
 import { Counter } from '../metrics/counter.js';
+import { Histogram } from '../metrics/histogram.js';
 import { child, SCOPES } from '../utils/logger.js';
 
 const logger = child('learningcontent:repository', { event: SCOPES.LEARNING_CONTENT });
@@ -17,6 +19,12 @@ const metrics = {
     name: 'lc_load_cache_miss',
     help: 'Count of cache misses when loading entities from learning content',
     labelNames: ['table'],
+  }),
+  findCacheMiss: new Histogram({
+    name: 'lc_find_cache_miss',
+    help: 'Histogram of cache misses when finding entities in learning content',
+    labelNames: ['table'],
+    buckets: exponentialBuckets(0.01, 2, 5),
   }),
 };
 
@@ -58,6 +66,7 @@ export class LearningContentRepository {
     this.#metrics = {
       loadTotal: metrics.loadTotal.labels({ table }),
       loadCacheMiss: metrics.loadCacheMiss.labels({ table }),
+      findCacheMiss: metrics.findCacheMiss.labels({ table }),
     };
   }
 
@@ -76,8 +85,11 @@ export class LearningContentRepository {
     dtos = this.#findCacheMiss.get(cacheKey);
     if (dtos) return dtos;
 
+    const stopFindCacheMissTimer = this.#metrics.findCacheMiss.startTimer();
+
     dtos = this.#loadDtos(callback, cacheKey).finally(() => {
       this.#findCacheMiss.delete(cacheKey);
+      stopFindCacheMissTimer();
     });
     this.#findCacheMiss.set(cacheKey, dtos);
 
