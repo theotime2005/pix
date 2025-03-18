@@ -405,6 +405,20 @@
     }
   },
   "pages": {
+    "analysis": {
+      "gauge": {
+        "campaign-label": "jouw deelnemers hebben een niveau van {meanLevel} bereikt van een maximaal haalbaar niveau van {maxLevel} voor de campagne",
+        "competence-label": "uw deelnemers bereikten een niveau van {meanLevel} van een maximaal haalbaar niveau van {maxLevel} voor de competentie.",
+        "tube-label": "uw deelnemers bereikten een niveau van {meanLevel} van een maximaal haalbaar niveau van {maxLevel} voor het onderwerp",
+        "label": "Bereikt niveau van {meanLevel} uit een maximaal bereikbaar niveau van {maxLevel}."
+      },
+      "level": {
+        "advanced": "Geavanceerd",
+        "expert": "Expert",
+        "independent": "Onafhankelijk",
+        "novice": "Beginnende"
+      }
+    },
     "assessment-individual-results": {
       "badges": "Thematische resultaten",
       "breadcrumb-current-page-label": "Deelname van {firstName} {lastName}",

@@ -12,6 +12,7 @@ import { t } from 'ember-intl';
 
 import PageTitle from '../ui/page-title';
 import CoverRateGauge from './cover-rate-gauge';
+import ResultLevelGauge from './result-level-gauge';
 import TagLevel from './tag-level';
 
 export default class Statistics extends Component {
@@ -135,7 +136,6 @@ export default class Statistics extends Component {
             "common.filters.actions.clear"
           }}</PixButton>
       </section>
-
       <PixTable
         @variant="orga"
         class="table"

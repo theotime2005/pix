@@ -1,0 +1,45 @@
+@use 'pix-design-tokens/fonts';
+
+.result-level-gauge {
+  display: block;
+  width: 100%;
+  height: 4.375rem;
+  margin-bottom: var(--pix-spacing-2x);
+
+  &__rank {
+    fill: var(--pix-neutral-900);
+    font-family: fonts.$font-roboto;
+    font-size:10px;
+    text-transform: uppercase;
+    text-anchor: middle;
+  }
+  &__mean-bar {
+    fill: var(--pix-primary-300);
+  }
+  &__max-bar{
+    fill: var(--pix-neutral-0);
+  }
+  &__background {
+    fill: var(--pix-neutral-100);
+    fill: rgba(var(--pix-neutral-900-inline), 0.10);
+  }
+  &__mean-value {
+    font-family: fonts.$font-roboto;
+    fill:  var(--pix-primary-10, #F7F5FF);
+    font-size: 18px;
+    text-anchor: end;
+    font-weight: 700;
+  }
+  &__max-value {
+    font-family: fonts.$font-roboto;
+    fill:  var(--pix-neutral-800, #F7F5FF);
+    font-size: 18px;
+    text-anchor: end;
+    font-weight: 400;
+  }
+  &__separator {
+    stroke: var(--pix-primary-100);
+  }
+}
+
+

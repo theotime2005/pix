@@ -50,6 +50,7 @@
 @use 'components/import-information-banner' as *;
 @use 'components/statistics' as *;
 @use 'components/statistics/cover-rate-gauge' as *;
+@use 'components/statistics/result-level-gauge' as *;
 
 // pages
 @use 'pages/login' as *;

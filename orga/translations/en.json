@@ -405,6 +405,20 @@
     }
   },
   "pages": {
+    "analysis": {
+      "gauge": {
+        "campaign-label": "On the campaign, your participants achieved a level of {meanLevel} out of a maximum reachable level of {maxLevel}.",
+        "competence-label": "On the competence, your participants achieved a level of {meanLevel} out of a maximum reachable level of {maxLevel}.",
+        "label": "Achieved level of {meanLevel} out of a maximum reachable level of {maxLevel}.",
+        "tube-label": "On the topic, your participants achieved a level of {meanLevel} out of a maximum reachable level of {maxLevel}."
+      },
+      "level": {
+        "advanced": "Advanced",
+        "expert": "Expert",
+        "independent": "Independent",
+        "novice": "Novice"
+      }
+    },
     "assessment-individual-results": {
       "badges": "Thematic results",
       "breadcrumb-current-page-label": "Participation of {firstName} {lastName}",
