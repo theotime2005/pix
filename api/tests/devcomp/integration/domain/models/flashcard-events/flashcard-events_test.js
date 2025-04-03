@@ -13,9 +13,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
     it('should init and keep attributes', function () {
       // given
       const id = Symbol('id');
-      const occurredAt = Symbol('date');
-      const createdAt = Symbol('date');
-      const passageId = Symbol('passage');
+      const occurredAt = new Date();
+      const createdAt = new Date();
+      const passageId = 2;
       const elementId = Symbol('elementId');
 
       // when
@@ -35,9 +35,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = now;
+        const createdAt = now;
+        const passageId = 2;
 
         // when
         const error = catchErrSync(() => new FlashcardsStartedEvent({ id, occurredAt, createdAt, passageId }))();
@@ -53,9 +53,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
     it('should init and keep attributes', function () {
       // given
       const id = Symbol('id');
-      const occurredAt = Symbol('occurredAt');
-      const createdAt = Symbol('createdAt');
-      const passageId = Symbol('passage');
+      const occurredAt = new Date();
+      const createdAt = new Date();
+      const passageId = 2;
       const elementId = Symbol('elementId');
       const cardId = Symbol('cardId');
 
@@ -83,9 +83,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = now;
+        const createdAt = now;
+        const passageId = 2;
 
         // when
         const error = catchErrSync(() => new FlashcardsVersoSeenEvent({ id, occurredAt, createdAt, passageId }))();
@@ -100,9 +100,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = new Date();
+        const createdAt = new Date();
+        const passageId = 2;
         const elementId = Symbol('elementId');
 
         // when
@@ -121,9 +121,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
     it('should init and keep attributes', function () {
       // given
       const id = Symbol('id');
-      const occurredAt = Symbol('occurredAt');
-      const createdAt = Symbol('createdAt');
-      const passageId = Symbol('passage');
+      const occurredAt = new Date();
+      const createdAt = new Date();
+      const passageId = 2;
       const elementId = Symbol('elementId');
       const cardId = Symbol('cardId');
       const autoAssessment = Symbol('yes');
@@ -153,9 +153,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = now;
+        const createdAt = now;
+        const passageId = 2;
 
         // when
         const error = catchErrSync(
@@ -172,9 +172,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = new Date();
+        const createdAt = new Date();
+        const passageId = 2;
         const elementId = Symbol('elementId');
 
         // when
@@ -193,9 +193,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
     it('should init and keep attributes', function () {
       // given
       const id = Symbol('id');
-      const occurredAt = Symbol('occurredAt');
-      const createdAt = Symbol('createdAt');
-      const passageId = Symbol('passage');
+      const occurredAt = new Date();
+      const createdAt = new Date();
+      const passageId = 2;
       const elementId = Symbol('elementId');
       const cardId = Symbol('cardId');
 
@@ -223,9 +223,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = now;
+        const createdAt = now;
+        const passageId = 2;
 
         // when
         const error = catchErrSync(() => new FlashcardsRectoReviewedEvent({ id, occurredAt, createdAt, passageId }))();
@@ -240,9 +240,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = new Date();
+        const createdAt = new Date();
+        const passageId = 2;
         const elementId = Symbol('elementId');
 
         // when
@@ -261,9 +261,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
     it('should init and keep attributes', function () {
       // given
       const id = Symbol('id');
-      const occurredAt = Symbol('occurredAt');
-      const createdAt = Symbol('createdAt');
-      const passageId = Symbol('passage');
+      const occurredAt = new Date();
+      const createdAt = new Date();
+      const passageId = 2;
       const elementId = Symbol('elementId');
 
       // when
@@ -289,9 +289,9 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       it('should throw an error', function () {
         // given
         const id = Symbol('id');
-        const occurredAt = Symbol('date');
-        const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const occurredAt = now;
+        const createdAt = now;
+        const passageId = 2;
 
         // when
         const error = catchErrSync(() => new FlashcardsRetriedEvent({ id, occurredAt, createdAt, passageId }))();

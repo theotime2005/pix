@@ -67,13 +67,53 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
       });
     });
 
+    describe('#setPassageId', function () {
+      it('should throw an error when passageId is not a number', function () {
+        // given
+        class FakeEvent extends PassageEvent {
+          constructor() {
+            super({
+              id: 1,
+              type: 'FAKE',
+              occurredAt: new Date().getTime(),
+              createdAt: Symbol('date'),
+              passageId: 'blablabla',
+            });
+          }
+        }
+
+        // when
+        const error = catchErrSync(() => new FakeEvent())();
+
+        // then
+        expect(error).to.be.instanceOf(DomainError);
+        expect(error.message).to.equal('The passageId should be a number');
+      });
+
+      it('sets passageId when it is valid', function () {
+        // given
+        const passageId = 2;
+        class FakeEvent extends PassageEvent {
+          constructor() {
+            super({ id: 1, type: 'FAKE', occurredAt: new Date(), passageId });
+          }
+        }
+
+        // when
+        const fakeEvent = new FakeEvent();
+
+        // then
+        expect(fakeEvent.passageId).to.deep.equal(passageId);
+      });
+    });
+
     describe('if a passage event has minimal required attributes', function () {
       it('should create a PassageEvent and set id attribute', function () {
         // given
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });
@@ -92,7 +132,7 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });
@@ -111,7 +151,7 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });
@@ -130,7 +170,7 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });
@@ -149,7 +189,7 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });
@@ -168,7 +208,7 @@ describe('Unit | Devcomp | Domain | Models | PassageEvent', function () {
         const id = Symbol('id');
         const occurredAt = Symbol('date');
         const createdAt = Symbol('date');
-        const passageId = Symbol('passage');
+        const passageId = 3;
         class FakeEvent extends PassageEvent {
           constructor() {
             super({ id, type: 'FAKE', occurredAt, createdAt, passageId });

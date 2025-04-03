@@ -1,3 +1,4 @@
+import { DomainError } from '../../../../shared/domain/errors.js';
 import { assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
 import { PassageEventInstantiationError } from '../../errors.js';
 
@@ -24,8 +25,16 @@ class PassageEvent {
     this.type = type;
     this.occurredAt = occurredAt;
     this.createdAt = createdAt;
-    this.passageId = passageId;
+    this.setPassageId(passageId);
     this.data = data;
+  }
+
+  setPassageId(passageId) {
+    if (isNaN(passageId)) {
+      throw new DomainError('The passageId should be a number');
+    }
+
+    this.passageId = passageId;
   }
 }
 
