@@ -25,11 +25,20 @@ const toDomain = (stageData) =>
     return new Stage(data);
   });
 
+/**
+ * To understand the stages order see: https://1024pix.atlassian.net/wiki/spaces/DXE/pages/1756069889/Profil+Cible+R+sultats+Th+matiques+Paliers#Paliers
+ */
 const buildBaseQuery = (knexConnection) => {
   return knexConnection('stages')
     .select('stages.*')
-    .join('campaigns', 'campaigns.targetProfileId', 'stages.targetProfileId')
-    .orderBy(['stages.threshold', 'stages.level']);
+    .join('campaigns', 'campaigns.targetProfileId', 'stages.targetProfileId').orderByRaw(`
+      CASE
+        WHEN level = 0 THEN 0
+        WHEN threshold = 0 THEN 0
+        WHEN "isFirstSkill" = true THEN 1
+        ELSE 2
+        END, level, threshold
+    `);
 };
 
 /**

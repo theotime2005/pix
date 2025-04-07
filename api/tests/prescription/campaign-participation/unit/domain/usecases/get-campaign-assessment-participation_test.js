@@ -13,12 +13,7 @@ describe('Unit | UseCase | get-campaign-assessment-participation', function () {
   beforeEach(function () {
     sinon.stub(DomainTransaction, 'execute').callsFake((lambda) => lambda());
     stageCollectionRepository = { findStageCollection: sinon.stub() };
-    stageCollectionRepository.findStageCollection.resolves(
-      domainBuilder.buildStageCollectionForUserCampaignResults({
-        campaignId: 1,
-        stages: [],
-      }),
-    );
+    stageCollectionRepository.findStageCollection.resolves(domainBuilder.buildStageAcquisitionCollection());
     campaignRepository = {
       checkIfUserOrganizationHasAccessToCampaign: sinon.stub(),
       get: sinon.stub(),

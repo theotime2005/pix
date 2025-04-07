@@ -9,9 +9,7 @@ const getUserCampaignAssessmentResult = async function ({
   knowledgeElementRepository,
   badgeForCalculationRepository,
   participantResultRepository,
-  stageRepository,
-  stageAcquisitionRepository,
-  compareStagesAndAcquiredStages,
+  stageAcquisitionCollectionRepository,
   campaignParticipationRepository,
 }) {
   const { SHARED, TO_SHARE } = CampaignParticipationStatuses;
@@ -50,23 +48,20 @@ const getUserCampaignAssessmentResult = async function ({
       ).acquisitionPercentage,
     }));
 
-    const [stages, acquiredStages] = await Promise.all([
-      stageRepository.getByCampaignId(campaignId),
-      stageAcquisitionRepository.getByCampaignParticipation(campaignParticipation.id),
-    ]);
-
-    const stagesAndAcquiredStagesComparison = compareStagesAndAcquiredStages.compare(stages, acquiredStages);
+    const stageAcquisitionCollection = await stageAcquisitionCollectionRepository.getByCampaignParticipationId(
+      campaignParticipation.id,
+    );
 
     return await participantResultRepository.get({
       userId,
       campaignId,
       locale,
       badges: badgesWithValidity,
-      stages,
+      stages: stageAcquisitionCollection.stages,
       reachedStage: {
-        ...stagesAndAcquiredStagesComparison.reachedStage,
-        totalStage: stagesAndAcquiredStagesComparison.totalNumberOfStages,
-        reachedStage: stagesAndAcquiredStagesComparison.reachedStageNumber,
+        ...stageAcquisitionCollection.reachedStage,
+        totalStage: stageAcquisitionCollection.totalNumberOfStages,
+        reachedStage: stageAcquisitionCollection.reachedStageNumber,
       },
     });
   } catch (error) {

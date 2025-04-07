@@ -216,7 +216,7 @@ import { buildCampaign as boundedContextCampaignBuildCampaign } from './prescrip
 import { buildCampaignResultLevelsPerTubesAndCompetences as boundedContextCampaignBuildCampaignResultLevelsPerTubesAndCompetences } from './prescription/campaign/build-campaign-result-levels-per-tubes-and-competences.js';
 import { buildCampaignParticipation as boundedContextCampaignParticipationBuildCampaignParticipation } from './prescription/campaign-participation/build-campaign-participation.js';
 import { buildStageCollection as buildStageCollectionForTargetProfileManagement } from './target-profile-management/build-stage-collection.js';
-import { buildStageCollection as buildStageCollectionForUserCampaignResults } from './user-campaign-results/build-stage-collection.js';
+import { buildStageAcquisitionCollection } from './user-campaign-results/build-stage-acquisition-collection.js';
 
 const banner = {
   buildEmptyInformationBanner,
@@ -447,8 +447,8 @@ export {
   buildSolution,
   buildStage,
   buildStageAcquisition,
+  buildStageAcquisitionCollection,
   buildStageCollectionForTargetProfileManagement,
-  buildStageCollectionForUserCampaignResults,
   buildSupOrganizationLearner,
   buildTag,
   buildTargetProfile,

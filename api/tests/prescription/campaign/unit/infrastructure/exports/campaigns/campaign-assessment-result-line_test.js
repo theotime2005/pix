@@ -1,5 +1,6 @@
 import { CampaignAssessmentResultLine } from '../../../../../../../src/prescription/campaign/infrastructure/exports/campaigns/campaign-assessment-result-line.js';
 import { KnowledgeElement } from '../../../../../../../src/shared/domain/models/index.js';
+import { StageAcquisitionCollection } from '../../../../../../../src/shared/domain/models/user-campaign-results/StageAcquisitionCollection.js';
 import { getI18n } from '../../../../../../../src/shared/infrastructure/i18n/i18n.js';
 import { domainBuilder, expect } from '../../../../../../test-helper.js';
 
@@ -11,7 +12,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
   });
 
   describe('#toCsvLine', function () {
-    let organization, campaign, targetProfile, learningContent, stageCollection, areas, competences;
+    let organization, campaign, targetProfile, learningContent, stageAcquisitionCollection, areas, competences;
     const createdAt = new Date('2020-03-01T10:00:00Z');
     const createdAtFormated = '01/03/2020 11:00';
     const sharedAt = new Date('2020-04-01T10:00:00Z');
@@ -24,10 +25,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
       learningContent = domainBuilder.buildLearningContent.withSimpleContent();
       areas = learningContent.areas;
       competences = learningContent.competences;
-      stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-        campaignId: campaign.id,
-        stages: [],
-      });
+      stageAcquisitionCollection = new StageAcquisitionCollection([], []);
     });
 
     describe('common participation case', function () {
@@ -47,7 +45,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -57,7 +55,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -78,7 +76,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
 
         it('should not return shared info, on participation not already shared', function () {
@@ -97,7 +95,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -107,7 +105,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -128,7 +126,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
 
@@ -148,7 +146,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -158,7 +156,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -180,7 +178,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
 
         it('should not return shared info, on participation not already shared', function () {
@@ -199,7 +197,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -209,7 +207,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -231,7 +229,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
 
@@ -254,7 +252,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -264,7 +262,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -288,7 +286,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
 
         it('should not write the additionalHeaders when has no associated headers', function () {
@@ -308,7 +306,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -319,7 +317,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
           // then
-          const csvExcpectedLine =
+          const csvExceptedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -341,7 +339,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExceptedLine);
         });
       });
 
@@ -363,7 +361,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           learningContent,
           competences,
           areas,
-          stageCollection,
+          stageAcquisitionCollection,
           participantKnowledgeElementsByCompetenceId: {
             [competences[0].id]: [],
           },
@@ -373,7 +371,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
         // when
         const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-        const csvExcpectedLine =
+        const csvExpectedLine =
           `"${organization.name}";` +
           `${campaign.id};` +
           `"${campaign.code}";` +
@@ -396,7 +394,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           '\n';
 
         // then
-        expect(csvLine).to.equal(csvExcpectedLine);
+        expect(csvLine).to.equal(csvExpectedLine);
       });
 
       context('when organization is SUP managingStudents', function () {
@@ -421,7 +419,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             campaignParticipationInfo,
             targetProfile,
             learningContent,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -476,7 +474,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             campaignParticipationInfo,
             targetProfile,
             learningContent,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -487,7 +485,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
           // then
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -505,7 +503,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
     });
@@ -605,7 +603,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               learningContent,
               competences: learningContent.competences,
               areas: learningContent.areas,
-              stageCollection,
+              stageAcquisitionCollection,
               participantKnowledgeElementsByCompetenceId,
               translate,
             });
@@ -613,7 +611,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             // when
             const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-            const csvExcpectedLine =
+            const csvExpectedLine =
               `"${organization.name}";` +
               `${campaign.id};` +
               `"${campaign.code}";` +
@@ -649,7 +647,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               '\n';
 
             // then
-            expect(csvLine).to.equal(csvExcpectedLine);
+            expect(csvLine).to.equal(csvExpectedLine);
           });
         });
 
@@ -669,7 +667,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               learningContent,
               competences,
               areas,
-              stageCollection,
+              stageAcquisitionCollection,
               participantKnowledgeElementsByCompetenceId,
               translate,
             });
@@ -677,7 +675,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             // when
             const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-            const csvExcpectedLine =
+            const csvExpectedLine =
               `"${organization.name}";` +
               `${campaign.id};` +
               `"${campaign.code}";` +
@@ -704,7 +702,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               '\n';
 
             // then
-            expect(csvLine).to.equal(csvExcpectedLine);
+            expect(csvLine).to.equal(csvExpectedLine);
           });
         });
       });
@@ -725,7 +723,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [],
             },
@@ -737,7 +735,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
           // then
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -760,7 +758,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
 
@@ -773,10 +771,6 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           });
           const badge = domainBuilder.buildBadge({ title: 'badge title' });
           const targetProfile = domainBuilder.buildTargetProfile({ badges: [badge] });
-          const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-            campaignId: campaign.id,
-            stages: [],
-          });
           const knowledgeElement = domainBuilder.buildKnowledgeElement({
             status: KnowledgeElement.StatusType.VALIDATED,
             earnedPix: 3,
@@ -791,7 +785,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [knowledgeElement],
             },
@@ -802,7 +796,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -825,7 +819,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
 
         it('should show badges not acquired', function () {
@@ -850,7 +844,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId: {
               [competences[0].id]: [knowledgeElement],
             },
@@ -860,7 +854,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -883,13 +877,13 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
     });
 
     context('when there are stages', function () {
-      let learningContent, stageCollection, knowledgeElement1, knowledgeElement2, knowledgeElement3;
+      let learningContent, stageAcquisitionCollection, knowledgeElement1, knowledgeElement2, knowledgeElement3;
 
       beforeEach(function () {
         const skill1 = domainBuilder.buildSkill({ id: 'recSkill1_1', tubeId: 'recTube1' });
@@ -907,15 +901,19 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
         const area = domainBuilder.buildArea({ id: 'recArea1', competences: [competence] });
         const framework = domainBuilder.buildFramework({ areas: [area] });
         learningContent = domainBuilder.buildLearningContent([framework]);
-        stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-          campaignId: campaign.id,
-          stages: [
-            domainBuilder.buildStage({ threshold: 0 }),
-            domainBuilder.buildStage({ threshold: 33 }),
-            domainBuilder.buildStage({ threshold: 66 }),
-            domainBuilder.buildStage({ threshold: 99 }),
+        stageAcquisitionCollection = domainBuilder.buildStageAcquisitionCollection(
+          [
+            domainBuilder.buildStage({ id: 1, threshold: 0 }),
+            domainBuilder.buildStage({ id: 2, threshold: 33 }),
+            domainBuilder.buildStage({ id: 3, threshold: 66 }),
+            domainBuilder.buildStage({ id: 4, threshold: 99 }),
           ],
-        });
+          [
+            domainBuilder.buildStageAcquisition({ stageId: 1 }),
+            domainBuilder.buildStageAcquisition({ stageId: 2 }),
+            domainBuilder.buildStageAcquisition({ stageId: 3 }),
+          ],
+        );
         knowledgeElement1 = domainBuilder.buildKnowledgeElement({
           status: KnowledgeElement.StatusType.VALIDATED,
           earnedPix: 3,
@@ -955,7 +953,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               learningContent,
               areas: learningContent.areas,
               competences: learningContent.competences,
-              stageCollection,
+              stageAcquisitionCollection,
               participantKnowledgeElementsByCompetenceId,
               translate,
             });
@@ -963,7 +961,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             // when
             const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-            const csvExcpectedLine =
+            const csvExpectedLine =
               `"${organization.name}";` +
               `${campaign.id};` +
               `"${campaign.code}";` +
@@ -986,13 +984,27 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               '\n';
 
             // then
-            expect(csvLine).to.equal(csvExcpectedLine);
+            expect(csvLine).to.equal(csvExpectedLine);
           });
         });
 
         context('when all stages have been reached', function () {
           it('tells that last stage has been reached', function () {
             // given
+            stageAcquisitionCollection = domainBuilder.buildStageAcquisitionCollection(
+              [
+                domainBuilder.buildStage({ id: 1, threshold: 0 }),
+                domainBuilder.buildStage({ id: 2, threshold: 33 }),
+                domainBuilder.buildStage({ id: 3, threshold: 66 }),
+                domainBuilder.buildStage({ id: 4, threshold: 99 }),
+              ],
+              [
+                domainBuilder.buildStageAcquisition({ stageId: 1 }),
+                domainBuilder.buildStageAcquisition({ stageId: 2 }),
+                domainBuilder.buildStageAcquisition({ stageId: 3 }),
+                domainBuilder.buildStageAcquisition({ stageId: 4 }),
+              ],
+            );
             const campaignParticipationInfo = domainBuilder.buildCampaignParticipationInfo({
               sharedAt,
               createdAt,
@@ -1008,7 +1020,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               learningContent,
               competences: learningContent.competences,
               areas: learningContent.areas,
-              stageCollection,
+              stageAcquisitionCollection,
               participantKnowledgeElementsByCompetenceId,
               translate,
             });
@@ -1016,7 +1028,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             // when
             const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-            const csvExcpectedLine =
+            const csvExpectedLine =
               `"${organization.name}";` +
               `${campaign.id};` +
               `"${campaign.code}";` +
@@ -1039,7 +1051,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
               '\n';
 
             // then
-            expect(csvLine).to.equal(csvExcpectedLine);
+            expect(csvLine).to.equal(csvExpectedLine);
           });
         });
       });
@@ -1060,7 +1072,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             learningContent,
             competences,
             areas,
-            stageCollection,
+            stageAcquisitionCollection,
             participantKnowledgeElementsByCompetenceId,
             translate,
           });
@@ -1068,7 +1080,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
           // when
           const csvLine = campaignAssessmentCsvLine.toCsvLine();
 
-          const csvExcpectedLine =
+          const csvExpectedLine =
             `"${organization.name}";` +
             `${campaign.id};` +
             `"${campaign.code}";` +
@@ -1091,7 +1103,7 @@ describe('Unit | Infrastructure | Utils | CampaignAssessmentResultLine', functio
             '\n';
 
           // then
-          expect(csvLine).to.equal(csvExcpectedLine);
+          expect(csvLine).to.equal(csvExpectedLine);
         });
       });
     });

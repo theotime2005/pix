@@ -2,10 +2,8 @@ const findUserCampaignParticipationOverviews = async function ({
   userId,
   states,
   page,
-  stageRepository,
-  stageAcquisitionRepository,
+  stageAcquisitionCollectionRepository,
   campaignParticipationOverviewRepository,
-  compareStagesAndAcquiredStages,
 }) {
   const concatenatedStates = states ? [].concat(states) : undefined;
 
@@ -16,33 +14,17 @@ const findUserCampaignParticipationOverviews = async function ({
       page,
     });
 
-  // We deduplicate targetProfileIds in the case where several campaigns belong to the same target profile
-  const targetProfileIds = [...new Set(campaignParticipationOverviews.map(({ targetProfileId }) => targetProfileId))];
-  const campaignParticipationIds = campaignParticipationOverviews.map(({ id }) => id);
-
-  const [stages, acquiredStages] = await Promise.all([
-    stageRepository.getByTargetProfileIds(targetProfileIds),
-    stageAcquisitionRepository.getByCampaignParticipations(campaignParticipationIds),
-  ]);
-
-  const campaignParticipationOverviewsWithStages = campaignParticipationOverviews.map(
-    (campaignParticipationOverview) => {
-      const stagesForThisCampaign = stages.filter(
-        ({ targetProfileId }) => targetProfileId === campaignParticipationOverview.targetProfileId,
-      );
-      const acquiredStagesForThisCampaign = acquiredStages.filter(
-        ({ campaignParticipationId }) => campaignParticipationId === campaignParticipationOverview.id,
-      );
-      const stagesComparison = compareStagesAndAcquiredStages.compare(
-        stagesForThisCampaign,
-        acquiredStagesForThisCampaign,
+  const campaignParticipationOverviewsWithStages = await Promise.all(
+    campaignParticipationOverviews.map(async (campaignParticipationOverview) => {
+      const stageAcquisitionCollection = await stageAcquisitionCollectionRepository.getByCampaignParticipationId(
+        campaignParticipationOverview.id,
       );
 
-      campaignParticipationOverview.totalStagesCount = stagesComparison.totalNumberOfStages;
-      campaignParticipationOverview.validatedStagesCount = stagesComparison.reachedStageNumber;
+      campaignParticipationOverview.totalStagesCount = stageAcquisitionCollection.totalNumberOfStages;
+      campaignParticipationOverview.validatedStagesCount = stageAcquisitionCollection.reachedStageNumber;
 
       return campaignParticipationOverview;
-    },
+    }),
   );
 
   return { campaignParticipationOverviews: campaignParticipationOverviewsWithStages, pagination };

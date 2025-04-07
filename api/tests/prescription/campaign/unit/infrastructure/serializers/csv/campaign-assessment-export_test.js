@@ -15,7 +15,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
       competences,
       targetProfile,
       learningContent,
-      stageCollection,
+      stageAcquisitionCollection,
       translate;
 
     beforeEach(function () {
@@ -27,7 +27,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
       targetProfile = {
         badges: [],
       };
-      stageCollection = {};
+      stageAcquisitionCollection = {};
       learningContent = { skillNames: [], competences: [], areas: [] };
       campaign = domainBuilder.prescription.campaign.buildCampaign.ofTypeAssessment({ externalIdLabel: null });
 
@@ -57,7 +57,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -95,7 +95,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -132,7 +132,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
         additionalHeaders: [{ columnName: 'hobby' }, { columnName: 'holiday' }],
       });
@@ -174,7 +174,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -209,8 +209,8 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
     it('should display stages header before badges header', async function () {
       //given
       targetProfile.badges = [{ title: 'Une gomette' }];
-      stageCollection.hasStage = true;
-      stageCollection.totalStages = 3;
+      stageAcquisitionCollection.hasStage = true;
+      stageAcquisitionCollection.totalNumberOfStages = 3;
 
       const campaignProfile = new CampaignAssessmentExport({
         outputStream,
@@ -219,7 +219,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -262,7 +262,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -305,7 +305,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -347,7 +347,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 
@@ -389,7 +389,7 @@ describe('Unit | Serializer | CSV | campaign-assessment-export', function () {
         competences,
         targetProfile,
         learningContent,
-        stageCollection,
+        stageAcquisitionCollection,
         translate,
       });
 

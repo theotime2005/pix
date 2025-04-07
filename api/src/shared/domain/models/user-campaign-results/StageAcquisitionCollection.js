@@ -2,6 +2,11 @@ class StageAcquisitionCollection {
   /**
    * @type {Stage[]}
    */
+  #stages = [];
+
+  /**
+   * @type {Stage[]}
+   */
   #acquiredStages = [];
 
   /**
@@ -10,29 +15,17 @@ class StageAcquisitionCollection {
   #totalNumberOfStages;
 
   /**
-   * @param {Stage[]} availableStages
+   * @param {Stage[]} orderedStages
    * @param {StageAcquisition[]} stageAcquisitions
    */
-  constructor(availableStages, stageAcquisitions) {
-    this.#totalNumberOfStages = availableStages.length;
-    this.#acquiredStages = availableStages
-      .sort(this.#sortByLevelOrThreshold)
-      .filter((availableStage) => stageAcquisitions.find(({ stageId }) => stageId === availableStage.id));
+  constructor(orderedStages, stageAcquisitions) {
+    this.#totalNumberOfStages = orderedStages.length;
+    this.#stages = orderedStages;
+    this.#acquiredStages = orderedStages.filter(({ id }) => stageAcquisitions.find(({ stageId }) => stageId === id));
   }
 
-  /**
-   * @param {Stage} previousStage
-   * @param {Stage} currentStage
-   *
-   * @returns {-1, 0, 1}
-   */
-  #sortByLevelOrThreshold(previousStage, currentStage) {
-    if (currentStage.isFirstSkill) {
-      return previousStage.isZeroStage ? -1 : 1;
-    }
-    return currentStage.level
-      ? previousStage.level - currentStage.level
-      : previousStage.threshold - currentStage.threshold;
+  get stages() {
+    return this.#stages;
   }
 
   /**
@@ -54,6 +47,13 @@ class StageAcquisitionCollection {
    */
   get reachedStage() {
     return this.#acquiredStages[this.#acquiredStages.length - 1];
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  get hasStage() {
+    return this.#totalNumberOfStages > 0;
   }
 }
 

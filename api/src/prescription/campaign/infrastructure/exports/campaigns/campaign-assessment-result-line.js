@@ -11,6 +11,7 @@ const STATS_COLUMNS_COUNT = 3;
 
 import * as csvSerializer from '../../../../../shared/infrastructure/serializers/csv/csv-serializer.js';
 import * as campaignParticipationService from '../../../domain/services/campaign-participation-service.js';
+
 class CampaignAssessmentResultLine {
   constructor({
     organization,
@@ -21,7 +22,7 @@ class CampaignAssessmentResultLine {
     learningContent,
     areas,
     competences,
-    stageCollection,
+    stageAcquisitionCollection,
     participantKnowledgeElementsByCompetenceId,
     acquiredBadges,
     translate,
@@ -34,7 +35,7 @@ class CampaignAssessmentResultLine {
     this.learningContent = learningContent;
     this.areas = areas;
     this.competences = competences;
-    this.stageCollection = stageCollection;
+    this.stageAcquisitionCollection = stageAcquisitionCollection;
     this.targetedKnowledgeElementsCount = _.sum(
       _.map(participantKnowledgeElementsByCompetenceId, (knowledgeElements) => knowledgeElements.length),
     );
@@ -134,7 +135,7 @@ class CampaignAssessmentResultLine {
       this.campaignParticipationInfo.isShared
         ? dayjs.utc(this.campaignParticipationInfo.sharedAt).tz('Europe/Paris').format('DD/MM/YYYY HH:mm')
         : this.emptyContent,
-      ...(this.stageCollection.hasStage ? [this._getReachedStage()] : []),
+      ...(this.stageAcquisitionCollection.hasStage ? [this._getReachedStage()] : []),
       ...(this.campaignParticipationInfo.isShared
         ? this._makeBadgesColumns()
         : this._makeEmptyColumns(this.targetProfile.badges.length)),
@@ -198,10 +199,7 @@ class CampaignAssessmentResultLine {
       return this.emptyContent;
     }
 
-    const masteryPercentage = this.campaignParticipationInfo.masteryRate * 100;
-    const validatedSkillsCount = this.campaignParticipationInfo.validatedSkillsCount;
-
-    return this.stageCollection.getReachedStage(validatedSkillsCount, masteryPercentage).reachedStage - 1;
+    return this.stageAcquisitionCollection.reachedStageNumber - 1;
   }
 
   get _studentNumber() {

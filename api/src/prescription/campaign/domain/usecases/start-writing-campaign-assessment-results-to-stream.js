@@ -4,6 +4,7 @@ import utc from 'dayjs/plugin/utc.js';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+import { getByCampaignParticipationId } from '../../../../evaluation/infrastructure/repositories/stage-acquisition-collection-repository.js';
 import { CampaignTypeError } from '../../../../shared/domain/errors.js';
 import { CampaignAssessmentExport } from '../../infrastructure/serializers/csv/campaign-assessment-export.js';
 
@@ -48,7 +49,7 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
   badgeAcquisitionRepository,
   targetProfileRepository,
   learningContentRepository,
-  stageCollectionRepository,
+  stageAcquisitionCollectionRepository,
   organizationFeatureApi,
   organizationLearnerImportFormatRepository,
 }) {
@@ -62,7 +63,8 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
 
   const targetProfile = await targetProfileRepository.getByCampaignId({ campaignId: campaign.id });
   const learningContent = await learningContentRepository.findByCampaignId(campaign.id, i18n.getLocale());
-  const stageCollection = await stageCollectionRepository.findStageCollection({ campaignId });
+  const stageAcquisitionCollection =
+    await stageAcquisitionCollectionRepository.getByCampaignParticipationId(campaignId);
 
   const organization = await organizationRepository.get(campaign.organizationId);
   const campaignParticipationInfos = await campaignParticipationInfoRepository.findByCampaignId(campaign.id);
@@ -78,7 +80,7 @@ const startWritingCampaignAssessmentResultsToStream = async function ({
     organization,
     targetProfile,
     learningContent,
-    stageCollection,
+    stageAcquisitionCollection,
     campaign,
     translate,
     additionalHeaders,

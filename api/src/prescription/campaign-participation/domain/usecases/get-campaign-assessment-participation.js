@@ -8,7 +8,7 @@ const getCampaignAssessmentParticipation = withTransaction(async function ({
   campaignRepository,
   campaignAssessmentParticipationRepository,
   badgeAcquisitionRepository,
-  stageCollectionRepository,
+  stageAcquisitionCollectionRepository,
 }) {
   // TODO : throw when campaignId not matching campaignParticipationId ? may be move this to pre handler
   if (!(await campaignRepository.checkIfUserOrganizationHasAccessToCampaign(campaignId, userId))) {
@@ -28,15 +28,14 @@ const getCampaignAssessmentParticipation = withTransaction(async function ({
     await badgeAcquisitionRepository.getAcquiredBadgesByCampaignParticipations({
       campaignParticipationsIds: [campaignParticipationId],
     });
+
   const badges = acquiredBadgesByCampaignParticipations[campaignAssessmentParticipation.campaignParticipationId];
   campaignAssessmentParticipation.setBadges(badges);
 
-  const stageCollection = await stageCollectionRepository.findStageCollection({ campaignId });
-  const reachedStage = stageCollection.getReachedStage(
-    campaignAssessmentParticipation.validatedSkillsCount,
-    campaignAssessmentParticipation.masteryRate * 100,
-  );
-  campaignAssessmentParticipation.setStageInfo(reachedStage);
+  const stageAcquisitionCollection =
+    await stageAcquisitionCollectionRepository.getByCampaignParticipationId(campaignParticipationId);
+
+  campaignAssessmentParticipation.setStageInfo(stageAcquisitionCollection.reachedStage);
 
   return campaignAssessmentParticipation;
 });

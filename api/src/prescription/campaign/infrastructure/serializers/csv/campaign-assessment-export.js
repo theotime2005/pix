@@ -14,7 +14,7 @@ class CampaignAssessmentExport {
     organization,
     targetProfile,
     learningContent,
-    stageCollection,
+    stageAcquisitionCollection,
     campaign,
     translate,
     additionalHeaders = [],
@@ -24,7 +24,7 @@ class CampaignAssessmentExport {
     this.campaign = campaign;
     this.targetProfile = targetProfile;
     this.learningContent = learningContent;
-    this.stageCollection = stageCollection;
+    this.stageAcquisitionCollection = stageAcquisitionCollection;
     this.externalIdLabel = campaign.externalIdLabel;
     this.competences = learningContent.competences;
     this.areas = learningContent.areas;
@@ -95,8 +95,12 @@ class CampaignAssessmentExport {
       this.translate('campaign-export.assessment.is-shared'),
       this.translate('campaign-export.assessment.shared-on'),
 
-      ...(this.stageCollection.hasStage
-        ? [this.translate('campaign-export.assessment.success-rate', { value: this.stageCollection.totalStages - 1 })]
+      ...(this.stageAcquisitionCollection.hasStage
+        ? [
+            this.translate('campaign-export.assessment.success-rate', {
+              value: this.stageAcquisitionCollection.totalNumberOfStages - 1,
+            }),
+          ]
         : []),
 
       ..._.flatMap(this.targetProfile.badges, (badge) => [
@@ -150,7 +154,7 @@ class CampaignAssessmentExport {
       learningContent: this.learningContent,
       areas: this.areas,
       competences: this.competences,
-      stageCollection: this.stageCollection,
+      stageAcquisitionCollection: this.stageAcquisitionCollection,
       participantKnowledgeElementsByCompetenceId: await this.#getParticipantKnowledgeElementsByCompetenceId({
         campaignParticipationInfo,
         campaignParticipationInfoChunk,
@@ -180,12 +184,11 @@ class CampaignAssessmentExport {
           sharedParticipations.map(({ campaignParticipationId }) => campaignParticipationId),
         );
       const sharedResultInfo = sharedKnowledgeElementsByUserIdAndCompetenceId.find(
-        (knowledElementForSharedParticipation) => {
-          const sameParticipationId =
+        (knowledgeElementForSharedParticipation) => {
+          return (
             campaignParticipationInfo.campaignParticipationId ===
-            knowledElementForSharedParticipation.campaignParticipationId;
-
-          return sameParticipationId;
+            knowledgeElementForSharedParticipation.campaignParticipationId
+          );
         },
       );
 
@@ -200,8 +203,8 @@ class CampaignAssessmentExport {
         userIds: startedParticipations.map(({ userId }) => userId),
       });
       const othersResultInfo = othersKnowledgeElementsByUserIdAndCompetenceId.find(
-        (knowledElementForOtherParticipation) =>
-          campaignParticipationInfo.userId === knowledElementForOtherParticipation.userId,
+        (knowledgeElementForOtherParticipation) =>
+          campaignParticipationInfo.userId === knowledgeElementForOtherParticipation.userId,
       );
       participantKnowledgeElementsByCompetenceId = this.learningContent.getKnowledgeElementsGroupedByCompetence(
         othersResultInfo.knowledgeElements,

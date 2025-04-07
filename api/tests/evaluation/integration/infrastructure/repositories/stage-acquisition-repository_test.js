@@ -1,5 +1,6 @@
 import { StageAcquisition } from '../../../../../src/evaluation/domain/models/StageAcquisition.js';
 import {
+  getAverageReachedStageByCampaignId,
   getByCampaignParticipation,
   getByCampaignParticipations,
   getStageIdsByCampaignParticipation,
@@ -8,6 +9,20 @@ import {
 import { databaseBuilder, expect, knex } from '../../../../test-helper.js';
 
 describe('Evaluation | Integration | Repository | Stage Acquisition', function () {
+  let targetProfileId;
+
+  beforeEach(async function () {
+    // given
+    targetProfileId = databaseBuilder.factory.buildTargetProfile().id;
+
+    const campaignId = databaseBuilder.factory.buildCampaign({ targetProfileId }).id;
+
+    databaseBuilder.factory.buildUser();
+    databaseBuilder.factory.buildCampaignParticipation({ campaignId }).id;
+
+    await databaseBuilder.commit();
+  });
+
   describe('getByCampaignParticipation', function () {
     let stageAcquisition;
 
@@ -132,6 +147,221 @@ describe('Evaluation | Integration | Repository | Stage Acquisition', function (
 
       expect(result).to.have.lengthOf(2);
       expect(result[0]).to.contains({ stageId: stages[0].id });
+    });
+  });
+
+  describe('getOrderedStages', function () {
+    context('when the stages are ordered by levels', function () {
+      it('should return ordered stages', async function () {
+        // given
+        const stage1 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: true, level: null });
+        const stage2 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 1 });
+        const stage3 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 5 });
+        const stage5 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 0 });
+        const stage4 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 7 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const result = await getOrderedStagesByTargetProfile(targetProfileId);
+
+        const orderedStagesIds = result.map((stage) => stage.id);
+
+        // then
+        expect(orderedStagesIds).to.deep.equal([stage5.id, stage1.id, stage2.id, stage3.id, stage4.id]);
+      });
+    });
+
+    context('when the stages are ordered by thresholds', function () {
+      it('should return ordered stages', async function () {
+        // given
+        const stage1 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: true, threshold: null });
+        const stage2 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 10 });
+        const stage3 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 50 });
+        const stage4 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 70 });
+        const stage5 = databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 0 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const result = await getOrderedStagesByTargetProfile(targetProfileId);
+
+        const orderedStagesIds = result.map((stage) => stage.id);
+
+        // then
+        expect(orderedStagesIds).to.deep.equal([stage5.id, stage1.id, stage2.id, stage3.id, stage4.id]);
+      });
+    });
+
+    context('when there are just two stages', function () {
+      it('should return the highest stage', async function () {
+        // given
+        const highestStageId = databaseBuilder.factory.buildStage({
+          targetProfileId,
+          isFirstSkill: true,
+          threshold: null,
+        }).id;
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 0 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const stages = await getOrderedStagesByTargetProfile(targetProfileId);
+
+        // then
+        expect(stages[1].id).to.deep.equal(highestStageId);
+      });
+    });
+  });
+
+  describe('getHighestStage', function () {
+    context('when the stages are ordered by levels', function () {
+      it('should return the highest stage', async function () {
+        // given
+        const highestStageId = databaseBuilder.factory.buildStage({
+          targetProfileId,
+          isFirstSkill: false,
+          level: 7,
+        }).id;
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: true, level: null });
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 1 });
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 5 });
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, level: 0 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const highestStage = await getHighestStageByTargetProfile(targetProfileId);
+
+        // then
+        expect(highestStage.id).to.equal(highestStageId);
+      });
+    });
+
+    context('when the stages are ordered by thresholds', function () {
+      it('should return the highest stage', async function () {
+        // given
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: true, threshold: null });
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 10 });
+        const highestStageId = databaseBuilder.factory.buildStage({
+          targetProfileId,
+          isFirstSkill: false,
+          threshold: 70,
+        }).id;
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 50 });
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 0 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const highestStage = await getHighestStageByTargetProfile(targetProfileId);
+
+        // then
+        expect(highestStage.id).to.deep.equal(highestStageId);
+      });
+    });
+
+    context('when there are just two stages', function () {
+      it('should return the highest stage', async function () {
+        // given
+        const highestStageId = databaseBuilder.factory.buildStage({
+          targetProfileId,
+          isFirstSkill: true,
+          threshold: null,
+        }).id;
+        databaseBuilder.factory.buildStage({ targetProfileId, isFirstSkill: false, threshold: 0 });
+
+        await databaseBuilder.commit();
+
+        // when
+        const highestStage = await getHighestStageByTargetProfile(targetProfileId);
+
+        // then
+        expect(highestStage.id).to.deep.equal(highestStageId);
+      });
+    });
+
+    context('when there is only one stage', function () {
+      it('should return the only existing stage', async function () {
+        // given
+        const highestStageId = databaseBuilder.factory.buildStage({
+          targetProfileId,
+          isFirstSkill: true,
+          threshold: null,
+        }).id;
+
+        await databaseBuilder.commit();
+
+        // when
+        const highestStage = await getHighestStageByTargetProfile(targetProfileId);
+
+        // then
+        expect(highestStage.id).to.deep.equal(highestStageId);
+      });
+    });
+  });
+
+  describe(getAverageReachedStageByCampaignId.name, function () {
+    it('should return the averaged reached stage for a campaign', async function () {
+      // given
+      const targetProfileId = databaseBuilder.factory.buildTargetProfile().id;
+      const campaignId = databaseBuilder.factory.buildCampaign({ targetProfileId }).id;
+
+      databaseBuilder.factory.buildStage({ id: 1, targetProfileId });
+      databaseBuilder.factory.buildStage({ id: 2, targetProfileId });
+      databaseBuilder.factory.buildStage({ id: 3, targetProfileId });
+
+      const campaignParticipationId1 = databaseBuilder.factory.buildCampaignParticipation({
+        campaignId,
+      }).id;
+
+      const campaignParticipationId2 = databaseBuilder.factory.buildCampaignParticipation({
+        campaignId,
+      }).id;
+
+      const campaignParticipationId3 = databaseBuilder.factory.buildCampaignParticipation({
+        campaignId,
+      }).id;
+
+      // first participation acquired stages
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 1,
+        campaignParticipationId: campaignParticipationId1,
+      });
+      // first participation acquired stages
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 2,
+        campaignParticipationId: campaignParticipationId1,
+      });
+
+      // second participation acquired stages
+      databaseBuilder.factory.buildStageAcquisition({ stageId: 1, campaignParticipationId: campaignParticipationId2 });
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 2,
+        campaignParticipationId: campaignParticipationId2,
+      });
+
+      // third participation acquired stages
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 1,
+        campaignParticipationId: campaignParticipationId3,
+      });
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 2,
+        campaignParticipationId: campaignParticipationId3,
+      });
+      databaseBuilder.factory.buildStageAcquisition({
+        stageId: 3,
+        campaignParticipationId: campaignParticipationId3,
+      });
+
+      await databaseBuilder.commit();
+
+      // when
+      const averageReachedStageNumber = await getAverageReachedStageByCampaignId(campaignId);
+
+      // then
+      expect(averageReachedStageNumber).to.deep.equal(2);
     });
   });
 });

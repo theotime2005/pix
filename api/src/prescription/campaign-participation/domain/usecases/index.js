@@ -4,10 +4,10 @@ import { fileURLToPath } from 'node:url';
 import * as learningContentRepository from '../../../../../lib/infrastructure/repositories/learning-content-repository.js';
 import * as stageCollectionRepository from '../../../../../lib/infrastructure/repositories/user-campaign-results/stage-collection-repository.js';
 import * as tutorialRepository from '../../../../devcomp/infrastructure/repositories/tutorial-repository.js';
-import * as compareStagesAndAcquiredStages from '../../../../evaluation/domain/services/stages/stage-and-stage-acquisition-comparison-service.js';
 import * as badgeAcquisitionRepository from '../../../../evaluation/infrastructure/repositories/badge-acquisition-repository.js';
 import * as badgeRepository from '../../../../evaluation/infrastructure/repositories/badge-repository.js';
 import * as competenceEvaluationRepository from '../../../../evaluation/infrastructure/repositories/competence-evaluation-repository.js';
+import * as stageAcquisitionCollectionRepository from '../../../../evaluation/infrastructure/repositories/stage-acquisition-collection-repository.js';
 import * as stageAcquisitionRepository from '../../../../evaluation/infrastructure/repositories/stage-acquisition-repository.js';
 import * as stageRepository from '../../../../evaluation/infrastructure/repositories/stage-repository.js';
 import * as authenticationMethodRepository from '../../../../identity-access-management/infrastructure/repositories/authentication-method.repository.js';
@@ -59,7 +59,6 @@ import * as poleEmploiSendingRepository from '../../infrastructure/repositories/
  * @typedef { import ('../../infrastructure/repositories/campaign-profile-repository.js')} CampaignProfileRepository
  * @typedef { import ('../../../campaign/infrastructure/repositories/campaign-repository.js')} CampaignRepository
  * @typedef { import ('../../../target-profile/infrastructure/repositories/target-profile-repository.js')} targetProfileRepository
- * @typedef { import ('../../../../evaluation/domain/services/stages/stage-and-stage-acquisition-comparison-service.js')} CompareStagesAndAcquiredStages
  * @typedef { import ('../../../../evaluation/infrastructure/repositories/competence-evaluation-repository.js')} CompetenceEvaluationRepository
  * @typedef { import ('../../../../shared/infrastructure/repositories/competence-repository.js')} CompetenceRepository
  * @typedef { import ('../../../../shared/infrastructure/repositories/knowledge-element-repository.js')} KnowledgeElementRepository
@@ -105,7 +104,7 @@ const dependencies = {
   campaignParticipationResultRepository,
   campaignProfileRepository,
   targetProfileRepository,
-  compareStagesAndAcquiredStages,
+  stageAcquisitionCollectionRepository,
   competenceEvaluationRepository,
   competenceRepository,
   knowledgeElementRepository: injectedSharedRepositories.knowledgeElementRepository,

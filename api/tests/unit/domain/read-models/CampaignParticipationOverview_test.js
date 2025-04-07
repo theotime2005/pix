@@ -8,7 +8,7 @@ describe('Unit | Domain | Read-Models | CampaignParticipationOverview', function
   describe('constructor', function () {
     it('should create CampaignParticipationOverview', function () {
       // when
-      const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({ campaignId: 3, stages: [] });
+      const stageCollection = domainBuilder.buildStageAcquisitionCollection();
       const campaignParticipationOverview = new CampaignParticipationOverview({
         id: 3,
         createdAt: new Date('2020-02-15T15:00:34Z'),
@@ -39,10 +39,7 @@ describe('Unit | Domain | Read-Models | CampaignParticipationOverview', function
       context('when the masteryRate is undefined', function () {
         it('should return null for the masteryRate', function () {
           // when
-          const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-            campaignId: 3,
-            stages: [],
-          });
+          const stageCollection = domainBuilder.buildStageAcquisitionCollection();
           const campaignParticipationOverview = new CampaignParticipationOverview({
             stageCollection,
             masteryRate: undefined,
@@ -55,10 +52,7 @@ describe('Unit | Domain | Read-Models | CampaignParticipationOverview', function
       context('when the masteryRate is null', function () {
         it('should return null for the masteryRate', function () {
           // when
-          const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-            campaignId: 3,
-            stages: [],
-          });
+          const stageCollection = domainBuilder.buildStageAcquisitionCollection();
           const campaignParticipationOverview = new CampaignParticipationOverview({
             stageCollection,
             masteryRate: null,
@@ -72,10 +66,7 @@ describe('Unit | Domain | Read-Models | CampaignParticipationOverview', function
       context('when the masteryRate equals to 0', function () {
         it('should return 0 for the masteryRate', function () {
           // when
-          const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-            campaignId: 3,
-            stages: [],
-          });
+          const stageCollection = domainBuilder.buildStageAcquisitionCollection();
           const campaignParticipationOverview = new CampaignParticipationOverview({
             stageCollection,
             masteryRate: 0,
@@ -89,10 +80,7 @@ describe('Unit | Domain | Read-Models | CampaignParticipationOverview', function
       context('when the masteryRate is a string', function () {
         it('should return the number for the masteryRate', function () {
           // when
-          const stageCollection = domainBuilder.buildStageCollectionForUserCampaignResults({
-            campaignId: 3,
-            stages: [],
-          });
+          const stageCollection = domainBuilder.buildStageAcquisitionCollection();
           const campaignParticipationOverview = new CampaignParticipationOverview({
             stageCollection,
             masteryRate: '0.75',

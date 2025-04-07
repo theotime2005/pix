@@ -79,4 +79,78 @@ const saveStages = async (stages, campaignParticipationId) => {
   return knexConnection(STAGE_ACQUISITIONS_TABLE_NAME).insert(acquiredStages);
 };
 
+/**
+ * @param {number} campaignId
+ *
+ * @returns {Promise<number>}
+ */
+export const getAverageReachedStageByCampaignId = async (campaignId) => {
+  const knexConnection = DomainTransaction.getConnection();
+
+  // TODO: use knex builder
+  const result = await knexConnection.raw(
+    `
+    SELECT AVG(entry_count)
+    FROM (
+        SELECT "campaignParticipationId", COUNT(*) AS entry_count
+        FROM "stage-acquisitions"
+        JOIN "campaign-participations" ON "campaign-participations"."id" = "stage-acquisitions"."campaignParticipationId"
+        JOIN "campaigns" ON "campaigns"."id" = "campaign-participations"."campaignId"
+        WHERE "campaigns"."id" = ??
+        GROUP BY "campaignParticipationId"
+    ) AS sub;
+  `,
+    campaignId,
+  );
+
+  return Math.round(result.rows[0].avg);
+};
+
 export { getByCampaignParticipation, getByCampaignParticipations, getStageIdsByCampaignParticipation, saveStages };
+
+/**
+ * Get the ordered stages for a given target profile
+ *
+ * @param {number} targetProfileId
+ * @returns {Promise<*>}
+ */
+export const getOrderedStagesByTargetProfile = async (targetProfileId) => {
+  const result = await knex.raw(
+    `SELECT * FROM stages
+      WHERE "targetProfileId" = ??
+      ORDER BY
+      CASE
+      WHEN level = 0 THEN 0
+      WHEN threshold = 0 THEN 0
+      WHEN "isFirstSkill" = true THEN 1
+      ELSE 2
+      END, level, threshold`,
+    [targetProfileId],
+  );
+
+  return toDomain(result.rows);
+};
+
+/**
+ * Get the highest stage for a given target profile
+ *
+ * @param {number} targetProfileId
+ * @returns {Promise<*>}
+ */
+export const getHighestStageByTargetProfile = async (targetProfileId) => {
+  const result = await knex.raw(
+    `SELECT * FROM stages
+      WHERE "targetProfileId" = ??
+      ORDER BY CASE
+      WHEN level = 0 THEN 0
+      WHEN threshold = 0 THEN 0
+      WHEN "isFirstSkill" = true THEN 1
+      ELSE 2 END DESC,
+      level DESC,
+      threshold DESC
+     LIMIT 1`,
+    [targetProfileId],
+  );
+
+  return new StageAcquisition(result.rows[0]);
+};
