@@ -24,6 +24,12 @@ class PassageEventInstantiationError extends TypeError {
   }
 }
 
+class PassageElementEventInstantiationError extends TypeError {
+  constructor(message = 'A passage element event cannot be instantiated directly') {
+    super(message);
+  }
+}
+
 class PassageDoesNotExistError extends DomainError {
   constructor(message = 'The passage does not exist') {
     super(message);
@@ -47,6 +53,7 @@ export {
   ModuleDoesNotExistError,
   ModuleInstantiationError,
   PassageDoesNotExistError,
+  PassageElementEventInstantiationError,
   PassageEventInstantiationError,
   PassageTerminatedError,
   UserNotAuthorizedToFindTrainings,
