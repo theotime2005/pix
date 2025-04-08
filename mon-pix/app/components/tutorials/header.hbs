@@ -6,14 +6,10 @@
 
   <ul class="user-tutorials-banner__filters">
     <li class="user-tutorials-banner-filters__filter">
-      <ChoiceChip @route="authenticated.user-tutorials.recommended">
-        {{t "pages.user-tutorials.recommended"}}
-      </ChoiceChip>
-    </li>
-    <li class="user-tutorials-banner-filters__filter">
-      <ChoiceChip @route="authenticated.user-tutorials.saved">
-        {{t "pages.user-tutorials.saved"}}
-      </ChoiceChip>
+      <PixToggleButton @route="authenticated.user-tutorials.show" @toggled={{this.filterToggleSwitched}} @onChange={{this.switchToggle}}>
+        <:viewA><LinkTo @route="authenticated.user-tutorials.recommended"> {{t "pages.user-tutorials.recommended"}} </LinkTo></:viewA>
+        <:viewB><LinkTo @route="authenticated.user-tutorials.saved"> {{t "pages.user-tutorials.saved"}} </LinkTo></:viewB>
+      </PixToggleButton>
     </li>
     {{#if @shouldShowFilterButton}}
       <li class="user-tutorials-banner-filters__filter">
