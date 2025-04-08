@@ -16,7 +16,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const occurredAt = new Date();
       const createdAt = new Date();
       const passageId = 2;
-      const elementId = Symbol('elementId');
+      const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
       // when
       const flashcardsStartedEvent = new FlashcardsStartedEvent({ id, occurredAt, createdAt, passageId, elementId });
@@ -30,23 +30,6 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       expect(flashcardsStartedEvent.elementId).to.equal(elementId);
       expect(flashcardsStartedEvent.data).to.deep.equal({ elementId });
     });
-
-    describe('when elementId is not given', function () {
-      it('should throw an error', function () {
-        // given
-        const id = Symbol('id');
-        const occurredAt = now;
-        const createdAt = now;
-        const passageId = 2;
-
-        // when
-        const error = catchErrSync(() => new FlashcardsStartedEvent({ id, occurredAt, createdAt, passageId }))();
-
-        // then
-        expect(error).to.be.instanceOf(DomainError);
-        expect(error.message).to.equal('The elementId is required for a FlashcardsStartedEvent');
-      });
-    });
   });
 
   describe('#FlashcardsVersoSeenEvent', function () {
@@ -56,7 +39,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const occurredAt = new Date();
       const createdAt = new Date();
       const passageId = 2;
-      const elementId = Symbol('elementId');
+      const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
       const cardId = Symbol('cardId');
 
       // when
@@ -76,24 +59,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       expect(flashcardsCardAnswerSeenEvent.createdAt).to.equal(createdAt);
       expect(flashcardsCardAnswerSeenEvent.passageId).to.equal(passageId);
       expect(flashcardsCardAnswerSeenEvent.elementId).to.equal(elementId);
-      expect(flashcardsCardAnswerSeenEvent.data).to.deep.equal({ elementId, cardId });
-    });
-
-    describe('when elementId is not given', function () {
-      it('should throw an error', function () {
-        // given
-        const id = Symbol('id');
-        const occurredAt = now;
-        const createdAt = now;
-        const passageId = 2;
-
-        // when
-        const error = catchErrSync(() => new FlashcardsVersoSeenEvent({ id, occurredAt, createdAt, passageId }))();
-
-        // then
-        expect(error).to.be.instanceOf(DomainError);
-        expect(error.message).to.equal('The elementId is required for a FlashcardsVersoSeenEvent');
-      });
+      expect(flashcardsCardAnswerSeenEvent.data).to.deep.equal({ cardId, elementId });
     });
 
     describe('when cardId is not given', function () {
@@ -103,7 +69,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         const occurredAt = new Date();
         const createdAt = new Date();
         const passageId = 2;
-        const elementId = Symbol('elementId');
+        const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
         // when
         const error = catchErrSync(
@@ -124,7 +90,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const occurredAt = new Date();
       const createdAt = new Date();
       const passageId = 2;
-      const elementId = Symbol('elementId');
+      const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
       const cardId = Symbol('cardId');
       const autoAssessment = Symbol('yes');
 
@@ -146,26 +112,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       expect(flashcardsCardAutoAssessedEvent.createdAt).to.equal(createdAt);
       expect(flashcardsCardAutoAssessedEvent.passageId).to.equal(passageId);
       expect(flashcardsCardAutoAssessedEvent.elementId).to.equal(elementId);
-      expect(flashcardsCardAutoAssessedEvent.data).to.deep.equal({ elementId, cardId, autoAssessment });
-    });
-
-    describe('when elementId is not given', function () {
-      it('should throw an error', function () {
-        // given
-        const id = Symbol('id');
-        const occurredAt = now;
-        const createdAt = now;
-        const passageId = 2;
-
-        // when
-        const error = catchErrSync(
-          () => new FlashcardsCardAutoAssessedEvent({ id, occurredAt, createdAt, passageId }),
-        )();
-
-        // then
-        expect(error).to.be.instanceOf(DomainError);
-        expect(error.message).to.equal('The elementId is required for a FlashcardsCardAutoAssessedEvent');
-      });
+      expect(flashcardsCardAutoAssessedEvent.data).to.deep.equal({ cardId, autoAssessment, elementId });
     });
 
     describe('when cardId is not given', function () {
@@ -175,7 +122,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         const occurredAt = new Date();
         const createdAt = new Date();
         const passageId = 2;
-        const elementId = Symbol('elementId');
+        const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
         // when
         const error = catchErrSync(
@@ -196,7 +143,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const occurredAt = new Date();
       const createdAt = new Date();
       const passageId = 2;
-      const elementId = Symbol('elementId');
+      const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
       const cardId = Symbol('cardId');
 
       // when
@@ -216,24 +163,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       expect(flashcardsCardQuestionReviewedEvent.createdAt).to.equal(createdAt);
       expect(flashcardsCardQuestionReviewedEvent.passageId).to.equal(passageId);
       expect(flashcardsCardQuestionReviewedEvent.elementId).to.equal(elementId);
-      expect(flashcardsCardQuestionReviewedEvent.data).to.deep.equal({ elementId, cardId });
-    });
-
-    describe('when elementId is not given', function () {
-      it('should throw an error', function () {
-        // given
-        const id = Symbol('id');
-        const occurredAt = now;
-        const createdAt = now;
-        const passageId = 2;
-
-        // when
-        const error = catchErrSync(() => new FlashcardsRectoReviewedEvent({ id, occurredAt, createdAt, passageId }))();
-
-        // then
-        expect(error).to.be.instanceOf(DomainError);
-        expect(error.message).to.equal('The elementId is required for a FlashcardsRectoReviewedEvent');
-      });
+      expect(flashcardsCardQuestionReviewedEvent.data).to.deep.equal({ cardId, elementId });
     });
 
     describe('when cardId is not given', function () {
@@ -243,7 +173,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         const occurredAt = new Date();
         const createdAt = new Date();
         const passageId = 2;
-        const elementId = Symbol('elementId');
+        const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
         // when
         const error = catchErrSync(
@@ -264,7 +194,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const occurredAt = new Date();
       const createdAt = new Date();
       const passageId = 2;
-      const elementId = Symbol('elementId');
+      const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
       // when
       const flashcardsRetriedEvent = new FlashcardsRetriedEvent({
@@ -283,23 +213,6 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       expect(flashcardsRetriedEvent.passageId).to.equal(passageId);
       expect(flashcardsRetriedEvent.elementId).to.equal(elementId);
       expect(flashcardsRetriedEvent.data).to.deep.equal({ elementId });
-    });
-
-    describe('when elementId is not given', function () {
-      it('should throw an error', function () {
-        // given
-        const id = Symbol('id');
-        const occurredAt = now;
-        const createdAt = now;
-        const passageId = 2;
-
-        // when
-        const error = catchErrSync(() => new FlashcardsRetriedEvent({ id, occurredAt, createdAt, passageId }))();
-
-        // then
-        expect(error).to.be.instanceOf(DomainError);
-        expect(error.message).to.equal('The elementId is required for a FlashcardsRetriedEvent');
-      });
     });
   });
 });
