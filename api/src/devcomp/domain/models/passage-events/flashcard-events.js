@@ -7,10 +7,10 @@ import { PassageElementEvent } from './PassageElementEvent.js';
  * A FlashcardsStartedEvent is generated when a set of Modulix flashcards is started and saved in DB.
  */
 class FlashcardsStartedEvent extends PassageElementEvent {
-  constructor({ id, occurredAt, createdAt, passageId, elementId }) {
-    super({ id, type: 'FLASHCARDS_STARTED', occurredAt, createdAt, passageId, elementId });
+  constructor(props) {
+    super({ type: 'FLASHCARDS_STARTED', ...props });
 
-    this.elementId = elementId;
+    this.elementId = props.data?.elementId;
   }
 }
 
@@ -20,14 +20,14 @@ class FlashcardsStartedEvent extends PassageElementEvent {
  * A FlashcardsVersoSeenEvent is generated when a card's answer is seen and saved in DB.
  */
 class FlashcardsVersoSeenEvent extends PassageElementEvent {
-  constructor({ id, occurredAt, createdAt, passageId, elementId, cardId }) {
-    super({ id, type: 'FLASHCARDS_VERSO_SEEN', occurredAt, createdAt, passageId, elementId, data: { cardId } });
+  constructor(props) {
+    super({ type: 'FLASHCARDS_VERSO_SEEN', ...props });
 
-    assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsVersoSeenEvent');
-    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
+    assertNotNullOrUndefined(props.data?.cardId, 'The cardId is required for a FlashcardsVersoSeenEvent');
+    assertHasUuidLength(props.data?.cardId, 'The cardId property should be exactly 36 characters long');
 
-    this.elementId = elementId;
-    this.cardId = cardId;
+    this.elementId = props.data?.elementId;
+    this.cardId = props.data?.cardId;
   }
 }
 
@@ -37,24 +37,22 @@ class FlashcardsVersoSeenEvent extends PassageElementEvent {
  * A FlashcardsCardAutoAssessedEvent is generated when an auto-assessment is given and saved in DB.
  */
 class FlashcardsCardAutoAssessedEvent extends PassageElementEvent {
-  constructor({ id, occurredAt, createdAt, passageId, elementId, cardId, autoAssessment }) {
+  constructor(props) {
     super({
-      id,
       type: 'FLASHCARDS_CARD_AUTO_ASSESSED',
-      occurredAt,
-      createdAt,
-      passageId,
-      elementId,
-      data: { cardId, autoAssessment },
+      ...props,
     });
 
-    assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsCardAutoAssessedEvent');
-    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
-    assertNotNullOrUndefined(autoAssessment, 'The autoAssessment is required for a FlashcardsCardAutoAssessedEvent');
+    assertNotNullOrUndefined(props.data?.cardId, 'The cardId is required for a FlashcardsCardAutoAssessedEvent');
+    assertHasUuidLength(props.data?.cardId, 'The cardId property should be exactly 36 characters long');
+    assertNotNullOrUndefined(
+      props.data?.autoAssessment,
+      'The autoAssessment is required for a FlashcardsCardAutoAssessedEvent',
+    );
 
-    this.elementId = elementId;
-    this.cardId = cardId;
-    this.autoAssessment = autoAssessment;
+    this.elementId = props.data?.elementId;
+    this.cardId = props.data?.cardId;
+    this.autoAssessment = props.data?.autoAssessment;
   }
 }
 
@@ -64,22 +62,14 @@ class FlashcardsCardAutoAssessedEvent extends PassageElementEvent {
  * A FlashcardsRectoReviewedEvent is generated when a card's question is reviewed and saved in DB.
  */
 class FlashcardsRectoReviewedEvent extends PassageElementEvent {
-  constructor({ id, occurredAt, createdAt, passageId, elementId, cardId }) {
-    super({
-      id,
-      type: 'FLASHCARDS_RECTO_REVIEWED',
-      occurredAt,
-      createdAt,
-      passageId,
-      elementId,
-      data: { cardId },
-    });
+  constructor(props) {
+    super({ type: 'FLASHCARDS_RECTO_REVIEWED', ...props });
 
-    assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsRectoReviewedEvent');
-    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
+    assertNotNullOrUndefined(props.data?.cardId, 'The cardId is required for a FlashcardsRectoReviewedEvent');
+    assertHasUuidLength(props.data?.cardId, 'The cardId property should be exactly 36 characters long');
 
-    this.elementId = elementId;
-    this.cardId = cardId;
+    this.elementId = props.data?.elementId;
+    this.cardId = props.data?.cardId;
   }
 }
 
@@ -89,10 +79,10 @@ class FlashcardsRectoReviewedEvent extends PassageElementEvent {
  * A FlashcardsRetriedEvent is generated when a set of Modulix flashcards is retried and saved in DB.
  */
 class FlashcardsRetriedEvent extends PassageElementEvent {
-  constructor({ id, occurredAt, createdAt, passageId, elementId }) {
-    super({ id, type: 'FLASHCARDS_RETRIED', occurredAt, createdAt, passageId, elementId });
+  constructor(props) {
+    super({ type: 'FLASHCARDS_RETRIED', ...props });
 
-    this.elementId = elementId;
+    this.elementId = props.data?.elementId;
   }
 }
 

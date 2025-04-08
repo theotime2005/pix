@@ -19,7 +19,15 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
 
       // when
-      const flashcardsStartedEvent = new FlashcardsStartedEvent({ id, occurredAt, createdAt, passageId, elementId });
+      const flashcardsStartedEvent = new FlashcardsStartedEvent({
+        id,
+        occurredAt,
+        createdAt,
+        passageId,
+        data: {
+          elementId,
+        },
+      });
 
       // then
       expect(flashcardsStartedEvent.id).to.equal(id);
@@ -48,8 +56,10 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         occurredAt,
         createdAt,
         passageId,
-        elementId,
-        cardId,
+        data: {
+          elementId,
+          cardId,
+        },
       });
 
       // then
@@ -73,7 +83,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
 
         // when
         const error = catchErrSync(
-          () => new FlashcardsVersoSeenEvent({ id, occurredAt, createdAt, passageId, elementId }),
+          () => new FlashcardsVersoSeenEvent({ id, occurredAt, createdAt, passageId, data: { elementId } }),
         )();
 
         // then
@@ -95,8 +105,10 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
               occurredAt: new Date(),
               createdAt: new Date(),
               passageId: 2,
-              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
-              cardId,
+              data: {
+                elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+                cardId,
+              },
             }),
         )();
 
@@ -124,9 +136,11 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         occurredAt,
         createdAt,
         passageId,
-        elementId,
-        cardId,
-        autoAssessment,
+        data: {
+          elementId,
+          cardId,
+          autoAssessment,
+        },
       });
 
       // then
@@ -150,7 +164,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
 
         // when
         const error = catchErrSync(
-          () => new FlashcardsCardAutoAssessedEvent({ id, occurredAt, createdAt, passageId, elementId }),
+          () => new FlashcardsCardAutoAssessedEvent({ id, occurredAt, createdAt, passageId, data: { elementId } }),
         )();
 
         // then
@@ -172,8 +186,10 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
               occurredAt: new Date(),
               createdAt: new Date(),
               passageId: 2,
-              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
-              cardId,
+              data: {
+                elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+                cardId,
+              },
             }),
         )();
 
@@ -200,8 +216,10 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         occurredAt,
         createdAt,
         passageId,
-        elementId,
-        cardId,
+        data: {
+          elementId,
+          cardId,
+        },
       });
 
       // then
@@ -225,7 +243,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
 
         // when
         const error = catchErrSync(
-          () => new FlashcardsRectoReviewedEvent({ id, occurredAt, createdAt, passageId, elementId }),
+          () => new FlashcardsRectoReviewedEvent({ id, occurredAt, createdAt, passageId, data: { elementId } }),
         )();
 
         // then
@@ -247,8 +265,10 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
               occurredAt: new Date(),
               createdAt: new Date(),
               passageId: 2,
-              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
-              cardId,
+              data: {
+                elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+                cardId,
+              },
             }),
         )();
 
@@ -274,7 +294,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         occurredAt,
         createdAt,
         passageId,
-        elementId,
+        data: { elementId },
       });
 
       // then

@@ -1,4 +1,3 @@
-import { DomainError } from '../../../../shared/domain/errors.js';
 import { assertHasUuidLength, assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
 import { PassageElementEventInstantiationError } from '../../errors.js';
 import { PassageEvent } from './PassageEvent.js';
@@ -13,15 +12,15 @@ import { PassageEvent } from './PassageEvent.js';
  * This is the base class for all PassageElementEvent. Subclasses should be named in past tense.
  */
 class PassageElementEvent extends PassageEvent {
-  constructor({ id, type, occurredAt, createdAt, passageId, elementId, data } = {}) {
-    super({ id, type, occurredAt, createdAt, passageId, data: { ...data, elementId } });
+  constructor(props) {
+    super(props);
 
     if (this.constructor === PassageElementEvent) {
       throw new PassageElementEventInstantiationError();
     }
 
-    assertNotNullOrUndefined(elementId, 'The elementId property is required for a PassageElementEvent');
-    assertHasUuidLength(elementId, 'The elementId property should be exactly 36 characters long');
+    assertNotNullOrUndefined(props.data?.elementId, 'The elementId property is required for a PassageElementEvent');
+    assertHasUuidLength(props.data?.elementId, 'The elementId property should be exactly 36 characters long');
   }
 }
 
