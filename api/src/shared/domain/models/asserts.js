@@ -18,3 +18,9 @@ export function assertInstanceOf(value, clazz) {
     throw new TypeError('Illegal value provided');
   }
 }
+
+export function assertHasUuidLength(value, errorMessage = 'Uuid value must be exactly 36 characters long') {
+  if (value.length !== 36) {
+    throw new DomainError(errorMessage);
+  }
+}
