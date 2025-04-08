@@ -23,7 +23,7 @@ class PassageEvent {
 
     this.id = id;
     this.type = type;
-    this.occurredAt = occurredAt;
+    this.setOccurredAt(occurredAt);
     this.createdAt = createdAt;
     this.setPassageId(passageId);
     this.data = data;
@@ -35,6 +35,14 @@ class PassageEvent {
     }
 
     this.passageId = passageId;
+  }
+
+  setOccurredAt(occurredAt) {
+    if (isNaN(occurredAt)) {
+      throw new DomainError('The occurredAt property should be a number');
+    }
+
+    this.occurredAt = occurredAt;
   }
 }
 
