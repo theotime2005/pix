@@ -40,7 +40,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const createdAt = new Date();
       const passageId = 2;
       const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
-      const cardId = Symbol('cardId');
+      const cardId = 'c4675f66-97f1-4202-8aeb-0388edf102d5';
 
       // when
       const flashcardsCardAnswerSeenEvent = new FlashcardsVersoSeenEvent({
@@ -81,6 +81,30 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         expect(error.message).to.equal('The cardId is required for a FlashcardsVersoSeenEvent');
       });
     });
+
+    describe('when cardId is not a valid uuid', function () {
+      it('should throw an error', function () {
+        // given
+        const cardId = '00e0c3fa-d812-45c8-b0cc-f317004988f';
+
+        // when
+        const error = catchErrSync(
+          () =>
+            new FlashcardsVersoSeenEvent({
+              id: Symbol('id'),
+              occurredAt: new Date(),
+              createdAt: new Date(),
+              passageId: 2,
+              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+              cardId,
+            }),
+        )();
+
+        // then
+        expect(error).to.be.instanceOf(DomainError);
+        expect(error.message).to.equal('The cardId property should be exactly 36 characters long');
+      });
+    });
   });
 
   describe('#FlashcardsCardAutoAssessedEvent', function () {
@@ -91,7 +115,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const createdAt = new Date();
       const passageId = 2;
       const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
-      const cardId = Symbol('cardId');
+      const cardId = 'c4675f66-97f1-4202-8aeb-0388edf102d5';
       const autoAssessment = Symbol('yes');
 
       // when
@@ -134,6 +158,30 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         expect(error.message).to.equal('The cardId is required for a FlashcardsCardAutoAssessedEvent');
       });
     });
+
+    describe('when cardId is not a valid uuid', function () {
+      it('should throw an error', function () {
+        // given
+        const cardId = '00e0c3fa-d812-45c8-b0cc-f317004988f';
+
+        // when
+        const error = catchErrSync(
+          () =>
+            new FlashcardsCardAutoAssessedEvent({
+              id: Symbol('id'),
+              occurredAt: new Date(),
+              createdAt: new Date(),
+              passageId: 2,
+              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+              cardId,
+            }),
+        )();
+
+        // then
+        expect(error).to.be.instanceOf(DomainError);
+        expect(error.message).to.equal('The cardId property should be exactly 36 characters long');
+      });
+    });
   });
 
   describe('#FlashcardsRectoReviewedEvent', function () {
@@ -144,7 +192,7 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
       const createdAt = new Date();
       const passageId = 2;
       const elementId = '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095';
-      const cardId = Symbol('cardId');
+      const cardId = 'c4675f66-97f1-4202-8aeb-0388edf102d5';
 
       // when
       const flashcardsCardQuestionReviewedEvent = new FlashcardsRectoReviewedEvent({
@@ -183,6 +231,30 @@ describe('Integration | Devcomp | Domain | Models | passage-events | flashcard-e
         // then
         expect(error).to.be.instanceOf(DomainError);
         expect(error.message).to.equal('The cardId is required for a FlashcardsRectoReviewedEvent');
+      });
+    });
+
+    describe('when cardId is not a valid uuid', function () {
+      it('should throw an error', function () {
+        // given
+        const cardId = 'not-a-valid-uuid';
+
+        // when
+        const error = catchErrSync(
+          () =>
+            new FlashcardsRectoReviewedEvent({
+              id: Symbol('id'),
+              occurredAt: new Date(),
+              createdAt: new Date(),
+              passageId: 2,
+              elementId: '5ad40bc9-8b5c-47ee-b893-f8ab1a1b8095',
+              cardId,
+            }),
+        )();
+
+        // then
+        expect(error).to.be.instanceOf(DomainError);
+        expect(error.message).to.equal('The cardId property should be exactly 36 characters long');
       });
     });
   });

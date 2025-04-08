@@ -1,4 +1,4 @@
-import { assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
+import { assertHasUuidLength, assertNotNullOrUndefined } from '../../../../shared/domain/models/asserts.js';
 import { PassageElementEvent } from './PassageElementEvent.js';
 
 /**
@@ -24,6 +24,7 @@ class FlashcardsVersoSeenEvent extends PassageElementEvent {
     super({ id, type: 'FLASHCARDS_VERSO_SEEN', occurredAt, createdAt, passageId, elementId, data: { cardId } });
 
     assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsVersoSeenEvent');
+    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
 
     this.elementId = elementId;
     this.cardId = cardId;
@@ -48,6 +49,7 @@ class FlashcardsCardAutoAssessedEvent extends PassageElementEvent {
     });
 
     assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsCardAutoAssessedEvent');
+    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
     assertNotNullOrUndefined(autoAssessment, 'The autoAssessment is required for a FlashcardsCardAutoAssessedEvent');
 
     this.elementId = elementId;
@@ -74,6 +76,7 @@ class FlashcardsRectoReviewedEvent extends PassageElementEvent {
     });
 
     assertNotNullOrUndefined(cardId, 'The cardId is required for a FlashcardsRectoReviewedEvent');
+    assertHasUuidLength(cardId, 'The cardId property should be exactly 36 characters long');
 
     this.elementId = elementId;
     this.cardId = cardId;
