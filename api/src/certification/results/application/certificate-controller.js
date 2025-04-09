@@ -3,7 +3,7 @@ import { usecases } from '../domain/usecases/index.js';
 import * as privateCertificateSerializer from '../infrastructure/serializers/private-certificate-serializer.js';
 import * as shareableCertificateSerializer from '../infrastructure/serializers/shareable-certificate-serializer.js';
 
-const getCertificationByVerificationCode = async function (request, h, dependencies = { requestResponseUtils }) {
+const getCertificateByVerificationCode = async function (request, h, dependencies = { requestResponseUtils }) {
   const verificationCode = request.payload.verificationCode;
   const locale = dependencies.requestResponseUtils.extractLocaleFromRequest(request);
 
@@ -11,7 +11,7 @@ const getCertificationByVerificationCode = async function (request, h, dependenc
   return shareableCertificateSerializer.serialize(shareableCertificate);
 };
 
-const getCertification = async function (request, h, dependencies = { requestResponseUtils }) {
+const getCertificate = async function (request, h, dependencies = { requestResponseUtils }) {
   const userId = request.auth.credentials.userId;
   const certificationCourseId = request.params.certificationCourseId;
   const translate = request.i18n.__;
@@ -25,7 +25,7 @@ const getCertification = async function (request, h, dependencies = { requestRes
   return privateCertificateSerializer.serialize(privateCertificate, { translate });
 };
 
-const findUserCertifications = async function (request) {
+const findUserCertificates = async function (request) {
   const userId = request.auth.credentials.userId;
   const translate = request.i18n.__;
 
@@ -33,10 +33,10 @@ const findUserCertifications = async function (request) {
   return privateCertificateSerializer.serialize(privateCertificates, { translate });
 };
 
-const certificationController = {
-  getCertification,
-  findUserCertifications,
-  getCertificationByVerificationCode,
+const certificateController = {
+  getCertificate,
+  findUserCertificates,
+  getCertificateByVerificationCode,
 };
 
-export { certificationController };
+export { certificateController };

@@ -1,11 +1,11 @@
-import { certificationController } from '../../../../../src/certification/results/application/certification-controller.js';
+import { certificateController } from '../../../../../src/certification/results/application/certificate-controller.js';
 import { usecases } from '../../../../../src/certification/results/domain/usecases/index.js';
 import { SESSIONS_VERSIONS } from '../../../../../src/certification/shared/domain/models/SessionVersion.js';
 import { getI18n } from '../../../../../src/shared/infrastructure/i18n/i18n.js';
 import { domainBuilder, expect, hFake, sinon } from '../../../../test-helper.js';
 
-describe('Certification | Results | Unit | Application | certifications-controller', function () {
-  describe('#getCertificationByVerificationCode', function () {
+describe('Certification | Results | Unit | Application | certificate-controller', function () {
+  describe('#getCertificateByVerificationCode', function () {
     it('should return a serialized shareable certificate given by verification code', async function () {
       // given
       const request = { payload: { verificationCode: 'P-123456BB' } };
@@ -33,7 +33,7 @@ describe('Certification | Results | Unit | Application | certifications-controll
       requestResponseUtilsStub.extractLocaleFromRequest.withArgs(request).returns(locale);
 
       // when
-      const response = await certificationController.getCertificationByVerificationCode(request, hFake, {
+      const response = await certificateController.getCertificateByVerificationCode(request, hFake, {
         requestResponseUtils: requestResponseUtilsStub,
       });
 
@@ -66,7 +66,7 @@ describe('Certification | Results | Unit | Application | certifications-controll
     });
   });
 
-  describe('#getCertification', function () {
+  describe('#getCertificate', function () {
     it('should return a serialized private certificate given by id', async function () {
       // given
       const userId = 1;
@@ -100,7 +100,7 @@ describe('Certification | Results | Unit | Application | certifications-controll
       requestResponseUtilsStub.extractLocaleFromRequest.withArgs(request).returns(locale);
 
       // when
-      const response = await certificationController.getCertification(request, hFake, {
+      const response = await certificateController.getCertificate(request, hFake, {
         requestResponseUtils: requestResponseUtilsStub,
       });
 
@@ -136,7 +136,7 @@ describe('Certification | Results | Unit | Application | certifications-controll
     });
   });
 
-  describe('#findUserCertifications', function () {
+  describe('#findUserCertificates', function () {
     it('should return the serialized private certificates of the user', async function () {
       // given
       const userId = 1;
@@ -162,7 +162,7 @@ describe('Certification | Results | Unit | Application | certifications-controll
       usecases.findUserPrivateCertificates.withArgs({ userId }).resolves([privateCertificate1]);
 
       // when
-      const response = await certificationController.findUserCertifications(request, hFake);
+      const response = await certificateController.findUserCertificates(request, hFake);
 
       // then
       expect(response).to.deep.equal({

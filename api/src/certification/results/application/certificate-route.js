@@ -1,7 +1,7 @@
 import Joi from 'joi';
 
 import { identifiersType } from '../../../shared/domain/types/identifiers-type.js';
-import { certificationController } from './certification-controller.js';
+import { certificateController } from './certificate-controller.js';
 
 const register = async function (server) {
   server.route([
@@ -15,7 +15,7 @@ const register = async function (server) {
           }),
         },
         auth: false,
-        handler: certificationController.getCertificationByVerificationCode,
+        handler: certificateController.getCertificateByVerificationCode,
         notes: [
           "- **Route accessible par n'importe qui**\n" +
             '- Récupération des informations d’une certification d’un utilisateur' +
@@ -33,7 +33,7 @@ const register = async function (server) {
             certificationCourseId: identifiersType.certificationCourseId,
           }),
         },
-        handler: certificationController.getCertification,
+        handler: certificateController.getCertificate,
         notes: [
           '- **Route nécessitant une authentification**\n' +
             '- Seules les certifications de l’utilisateur authentifié sont accessibles\n' +
@@ -46,7 +46,7 @@ const register = async function (server) {
       method: 'GET',
       path: '/api/certifications',
       config: {
-        handler: certificationController.findUserCertifications,
+        handler: certificateController.findUserCertificates,
         notes: [
           '- **Route nécessitant une authentification**\n' +
             '- Récupération de toutes les certifications complétées de l’utilisateur courant',
@@ -57,5 +57,5 @@ const register = async function (server) {
   ]);
 };
 
-const name = 'certification-api';
+const name = 'certificate-routes';
 export { name, register };

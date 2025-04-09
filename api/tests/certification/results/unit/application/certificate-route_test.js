@@ -1,5 +1,5 @@
-import { certificationController } from '../../../../../src/certification/results/application/certification-controller.js';
-import * as moduleUnderTest from '../../../../../src/certification/results/application/certification-route.js';
+import { certificateController } from '../../../../../src/certification/results/application/certificate-controller.js';
+import * as moduleUnderTest from '../../../../../src/certification/results/application/certificate-route.js';
 import { securityPreHandlers } from '../../../../../src/shared/application/security-pre-handlers.js';
 import { expect, HttpTestServer, sinon } from '../../../../test-helper.js';
 
@@ -7,8 +7,8 @@ describe('Certification | Results | Unit | Application | Certification Route', f
   let httpTestServer;
 
   beforeEach(async function () {
-    sinon.stub(certificationController, 'findUserCertifications').returns('ok');
-    sinon.stub(certificationController, 'getCertification').callsFake((request, h) => h.response('ok').code(200));
+    sinon.stub(certificateController, 'findUserCertificates').returns('ok');
+    sinon.stub(certificateController, 'getCertificate').callsFake((request, h) => h.response('ok').code(200));
     sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
 
     httpTestServer = new HttpTestServer();
