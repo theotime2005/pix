@@ -9,7 +9,6 @@ describe('Certification | Results | Unit | Application | Certification Route', f
   beforeEach(async function () {
     sinon.stub(certificateController, 'findUserCertificates').returns('ok');
     sinon.stub(certificateController, 'getCertificate').callsFake((request, h) => h.response('ok').code(200));
-    sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
 
     httpTestServer = new HttpTestServer();
     await httpTestServer.register(moduleUnderTest);
@@ -17,6 +16,7 @@ describe('Certification | Results | Unit | Application | Certification Route', f
 
   describe('GET /api/certifications/{certificationCourseId}', function () {
     it('should exist', async function () {
+      sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
       // when
       const response = await httpTestServer.request('GET', '/api/certifications/1');
 
@@ -27,6 +27,7 @@ describe('Certification | Results | Unit | Application | Certification Route', f
 
   describe('GET /api/certifications', function () {
     it('should exist', async function () {
+      sinon.stub(securityPreHandlers, 'hasAtLeastOneAccessOf').returns(() => true);
       // when
       const response = await httpTestServer.request('GET', '/api/certifications');
 

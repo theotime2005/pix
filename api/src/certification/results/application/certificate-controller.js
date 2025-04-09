@@ -39,7 +39,7 @@ const findUserCertificates = async function (request) {
   return privateCertificateSerializer.serialize(privateCertificates, { translate });
 };
 
-const getPDFAttestation = async function (
+const getPDFCertificate = async function (
   request,
   h,
   dependencies = { certificationAttestationPdf, v3CertificationAttestationPdf },
@@ -83,7 +83,7 @@ const getPDFAttestation = async function (
     .header('Content-Type', 'application/pdf');
 };
 
-const getCertificationPDFAttestationsForSession = async function (
+const getSessionCertificates = async function (
   request,
   h,
   dependencies = { certificationAttestationPdf, v3CertificationAttestationPdf },
@@ -126,7 +126,7 @@ const getCertificationPDFAttestationsForSession = async function (
     .header('Content-Type', 'application/pdf');
 };
 
-const downloadCertificationAttestationsForDivision = async function (
+const downloadDivisionCertificates = async function (
   request,
   h,
   dependencies = { certificationAttestationPdf, v3CertificationAttestationPdf },
@@ -178,9 +178,9 @@ const certificateController = {
   getCertificate,
   findUserCertificates,
   getCertificateByVerificationCode,
-  getPDFAttestation,
-  getCertificationPDFAttestationsForSession,
-  downloadCertificationAttestationsForDivision,
+  getPDFCertificate,
+  getSessionCertificates,
+  downloadDivisionCertificates,
 };
 
 export { certificateController };

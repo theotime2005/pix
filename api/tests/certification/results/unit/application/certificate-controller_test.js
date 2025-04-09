@@ -203,7 +203,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
     });
   });
 
-  describe('#getPDFAttestation', function () {
+  describe('#getPDFCertificate', function () {
     describe('when the attestation is for v3', function () {
       it('should return attestation in PDF binary format', async function () {
         // given
@@ -232,7 +232,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
         };
 
         // when
-        const response = await certificateController.getPDFAttestation(request, hFake, {
+        const response = await certificateController.getPDFCertificate(request, hFake, {
           v3CertificationAttestationPdf: generatePdfStub,
         });
 
@@ -281,7 +281,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
           .resolves({ buffer: attestationPDF, fileName: filename });
 
         // when
-        const response = await certificateController.getPDFAttestation(request, hFake, {
+        const response = await certificateController.getPDFCertificate(request, hFake, {
           certificationAttestationPdf: certificationAttestationPdfStub,
         });
 
@@ -292,7 +292,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
     });
   });
 
-  describe('#getCertificationPDFAttestationsForSession', function () {
+  describe('#getSessionCertificates', function () {
     describe('when attestations are for a v3 session', function () {
       it('should return attestation in PDF binary format', async function () {
         // given
@@ -322,7 +322,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
         };
 
         // when
-        const response = await certificateController.getCertificationPDFAttestationsForSession(request, hFake, {
+        const response = await certificateController.getSessionCertificates(request, hFake, {
           v3CertificationAttestationPdf: generatePdfStub,
         });
 
@@ -393,7 +393,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
           .resolves({ buffer: attestationPDF });
 
         // when
-        const response = await certificateController.getCertificationPDFAttestationsForSession(request, hFake, {
+        const response = await certificateController.getSessionCertificates(request, hFake, {
           certificationAttestationPdf,
         });
 
@@ -406,7 +406,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
     });
   });
 
-  describe('#downloadCertificationAttestationsForDivision', function () {
+  describe('#downloadDivisionCertificates', function () {
     const now = new Date('2019-01-01T05:06:07Z');
     let clock;
 
@@ -450,7 +450,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
         };
 
         // when
-        const response = await certificateController.downloadCertificationAttestationsForDivision(request, hFake, {
+        const response = await certificateController.downloadDivisionCertificates(request, hFake, {
           v3CertificationAttestationPdf: generatePdfStub,
         });
 
@@ -508,11 +508,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
           .resolves({ buffer: attestationsPDF });
 
         // when
-        const response = await certificateController.downloadCertificationAttestationsForDivision(
-          request,
-          hFake,
-          dependencies,
-        );
+        const response = await certificateController.downloadDivisionCertificates(request, hFake, dependencies);
 
         // then
         expect(response.source).to.deep.equal(attestationsPDF);

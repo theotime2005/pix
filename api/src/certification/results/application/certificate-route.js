@@ -22,7 +22,7 @@ const register = async function (server) {
             lang: Joi.string().valid(FRENCH_SPOKEN, ENGLISH_SPOKEN),
           }),
         },
-        handler: certificateController.getPDFAttestation,
+        handler: certificateController.getPDFCertificate,
         notes: [
           '- **Route accessible par un user authentifié**\n' +
             '- Récupération des informations d’un certificat au format PDF' +
@@ -79,7 +79,7 @@ const register = async function (server) {
             assign: 'hasAuthorizationToAccessAdminScope',
           },
         ],
-        handler: certificateController.getCertificationPDFAttestationsForSession,
+        handler: certificateController.getSessionCertificates,
         plugins: {
           'hapi-swagger': {
             produces: ['application/pdf'],
@@ -87,7 +87,7 @@ const register = async function (server) {
         },
         notes: [
           '- **Route accessible par un user Admin**\n' +
-            "- Récupération des attestations de certification d'une session au format PDF" +
+            "- Récupération les certificats d'une session au format PDF" +
             ' via un id de session et un user id',
         ],
         tags: ['api', 'certifications', 'PDF'],
