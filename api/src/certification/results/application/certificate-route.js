@@ -25,7 +25,7 @@ const register = async function (server) {
         handler: certificateController.getPDFAttestation,
         notes: [
           '- **Route accessible par un user authentifié**\n' +
-            '- Récupération des informations d’une attestation de certification au format PDF' +
+            '- Récupération des informations d’un certificat au format PDF' +
             ' via un id de certification et un user id',
         ],
         tags: ['api', 'certifications', 'PDF'],

@@ -49,20 +49,20 @@ const getPDFAttestation = async function (
   const { i18n } = request;
   const { isFrenchDomainExtension } = request.query;
 
-  const attestation = await usecases.getCertificationAttestation({
+  const certificate = await usecases.getCertificationAttestation({
     userId,
     certificationCourseId,
   });
 
-  if (attestation instanceof V3CertificationAttestation) {
+  if (certificate instanceof V3CertificationAttestation) {
     const fileName = i18n.__('certification-confirmation.file-name', {
-      deliveredAt: dayjs(attestation.deliveredAt).format('YYYYMMDD'),
+      deliveredAt: dayjs(certificate.deliveredAt).format('YYYYMMDD'),
     });
 
     return h
       .response(
         dependencies.v3CertificationAttestationPdf.generate({
-          certificates: [attestation],
+          certificates: [certificate],
           i18n,
         }),
       )
@@ -72,7 +72,7 @@ const getPDFAttestation = async function (
   }
 
   const { buffer, fileName } = await dependencies.certificationAttestationPdf.getCertificationAttestationsPdfBuffer({
-    certificates: [attestation],
+    certificates: [certificate],
     isFrenchDomainExtension,
     i18n,
   });
@@ -92,19 +92,19 @@ const getCertificationPDFAttestationsForSession = async function (
 
   const sessionId = request.params.sessionId;
   const isFrenchDomainExtension = request.query.isFrenchDomainExtension;
-  const attestations = await usecases.getCertificationAttestationsForSession({
+  const certificates = await usecases.getCertificationAttestationsForSession({
     sessionId,
   });
 
-  if (attestations.every((attestation) => attestation instanceof V3CertificationAttestation)) {
+  if (certificates.every((certificate) => certificate instanceof V3CertificationAttestation)) {
     const translatedFileName = i18n.__('certification-confirmation.file-name', {
-      deliveredAt: dayjs(attestations[0].deliveredAt).format('YYYYMMDD'),
+      deliveredAt: dayjs(certificates[0].deliveredAt).format('YYYYMMDD'),
     });
 
     return h
       .response(
         dependencies.v3CertificationAttestationPdf.generate({
-          certificates: attestations,
+          certificates,
           i18n,
         }),
       )
@@ -114,7 +114,7 @@ const getCertificationPDFAttestationsForSession = async function (
   }
 
   const { buffer } = await dependencies.certificationAttestationPdf.getCertificationAttestationsPdfBuffer({
-    certificates: attestations,
+    certificates,
     isFrenchDomainExtension,
     i18n,
   });
@@ -135,22 +135,22 @@ const downloadCertificationAttestationsForDivision = async function (
   const { i18n } = request;
   const { division, isFrenchDomainExtension } = request.query;
 
-  const attestations = await usecases.findCertificationAttestationsForDivision({
+  const certificates = await usecases.findCertificationAttestationsForDivision({
     organizationId,
     division,
   });
 
-  if (attestations.every((attestation) => attestation instanceof V3CertificationAttestation)) {
+  if (certificates.every((certificate) => certificate instanceof V3CertificationAttestation)) {
     const normalizedDivision = normalizeAndRemoveAccents(division);
 
     const translatedFileName = i18n.__('certification-confirmation.file-name', {
-      deliveredAt: dayjs(attestations[0].deliveredAt).format('YYYYMMDD'),
+      deliveredAt: dayjs(certificates[0].deliveredAt).format('YYYYMMDD'),
     });
 
     return h
       .response(
         dependencies.v3CertificationAttestationPdf.generate({
-          certificates: attestations,
+          certificates,
           i18n,
         }),
       )
@@ -160,7 +160,7 @@ const downloadCertificationAttestationsForDivision = async function (
   }
 
   const { buffer } = await dependencies.certificationAttestationPdf.getCertificationAttestationsPdfBuffer({
-    certificates: attestations,
+    certificates,
     isFrenchDomainExtension,
     i18n,
   });
