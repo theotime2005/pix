@@ -1,10 +1,98 @@
 import Joi from 'joi';
 
+import { securityPreHandlers } from '../../../shared/application/security-pre-handlers.js';
+import { LOCALE } from '../../../shared/domain/constants.js';
 import { identifiersType } from '../../../shared/domain/types/identifiers-type.js';
 import { certificateController } from './certificate-controller.js';
 
+const { FRENCH_SPOKEN, ENGLISH_SPOKEN } = LOCALE;
+
 const register = async function (server) {
   server.route([
+    {
+      method: 'GET',
+      path: '/api/attestation/{certificationCourseId}',
+      config: {
+        validate: {
+          params: Joi.object({
+            certificationCourseId: identifiersType.certificationCourseId,
+          }),
+          query: Joi.object({
+            isFrenchDomainExtension: Joi.boolean().required(),
+            lang: Joi.string().valid(FRENCH_SPOKEN, ENGLISH_SPOKEN),
+          }),
+        },
+        handler: certificateController.getPDFAttestation,
+        notes: [
+          '- **Route accessible par un user authentifié**\n' +
+            '- Récupération des informations d’une attestation de certification au format PDF' +
+            ' via un id de certification et un user id',
+        ],
+        tags: ['api', 'certifications', 'PDF'],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/organizations/{organizationId}/certification-attestations',
+      config: {
+        pre: [
+          {
+            method: securityPreHandlers.checkUserIsAdminInSCOOrganizationManagingStudents,
+            assign: 'belongsToOrganizationManagingStudents',
+          },
+        ],
+        validate: {
+          params: Joi.object({
+            organizationId: identifiersType.organizationId,
+          }),
+          query: Joi.object({
+            division: Joi.string().required(),
+            isFrenchDomainExtension: Joi.boolean().required(),
+            lang: Joi.string().valid(FRENCH_SPOKEN, ENGLISH_SPOKEN),
+          }),
+        },
+        handler: certificateController.downloadDivisionCertificates,
+        tags: ['api', 'organizations'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          "Elle retourne les certificats par classe liées à l'organisation sous forme de fichier PDF.",
+        ],
+      },
+    },
+    {
+      method: 'GET',
+      path: '/api/admin/sessions/{sessionId}/attestations',
+      config: {
+        validate: {
+          params: Joi.object({
+            sessionId: identifiersType.sessionId,
+          }),
+        },
+        pre: [
+          {
+            method: (request, h) =>
+              securityPreHandlers.hasAtLeastOneAccessOf([
+                securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
+                securityPreHandlers.checkAdminMemberHasRoleCertif,
+                securityPreHandlers.checkAdminMemberHasRoleSupport,
+              ])(request, h),
+            assign: 'hasAuthorizationToAccessAdminScope',
+          },
+        ],
+        handler: certificateController.getCertificationPDFAttestationsForSession,
+        plugins: {
+          'hapi-swagger': {
+            produces: ['application/pdf'],
+          },
+        },
+        notes: [
+          '- **Route accessible par un user Admin**\n' +
+            "- Récupération des attestations de certification d'une session au format PDF" +
+            ' via un id de session et un user id',
+        ],
+        tags: ['api', 'certifications', 'PDF'],
+      },
+    },
     {
       method: 'POST',
       path: '/api/shared-certifications',
@@ -57,5 +145,5 @@ const register = async function (server) {
   ]);
 };
 
-const name = 'certificate-routes';
+const name = 'certificate-api';
 export { name, register };
