@@ -418,8 +418,8 @@ describe('Certification | Results | Unit | Application | certificate-controller'
       clock.restore();
     });
 
-    describe('when attestations are for v3', function () {
-      it('should return division attestations in PDF binary format', async function () {
+    describe('when there are at least one v3 attestation', function () {
+      it('should return only v3 division attestations in PDF binary format', async function () {
         // given
         const userId = 1;
         const i18n = getI18n();
