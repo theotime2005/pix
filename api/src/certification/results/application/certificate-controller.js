@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 
 import * as requestResponseUtils from '../../../../src/shared/infrastructure/utils/request-response-utils.js';
 import { normalizeAndRemoveAccents } from '../../../shared/infrastructure/utils/string-utils.js';
+import { usecases as sharedUsecases } from '../../shared/domain/usecases/index.js';
 import { V3CertificationAttestation } from '../domain/models/V3CertificationAttestation.js';
 import { usecases } from '../domain/usecases/index.js';
 import * as privateCertificateSerializer from '../infrastructure/serializers/private-certificate-serializer.js';
@@ -9,12 +10,23 @@ import * as shareableCertificateSerializer from '../infrastructure/serializers/s
 import * as certificationAttestationPdf from '../infrastructure/utils/pdf/certification-attestation-pdf.js';
 import * as v3CertificationAttestationPdf from '../infrastructure/utils/pdf/v3-certification-attestation-pdf.js';
 
-const getCertificateByVerificationCode = async function (request, h, dependencies = { requestResponseUtils }) {
+const getCertificateByVerificationCode = async function (
+  request,
+  h,
+  dependencies = { requestResponseUtils, shareableCertificateSerializer },
+) {
   const verificationCode = request.payload.verificationCode;
   const locale = dependencies.requestResponseUtils.extractLocaleFromRequest(request);
 
-  const shareableCertificate = await usecases.getShareableCertificate({ verificationCode, locale });
-  return shareableCertificateSerializer.serialize(shareableCertificate);
+  const certificationCourse = await sharedUsecases.getCertificationCourse({ verificationCode });
+
+  if (!certificationCourse.isV3()) {
+    const shareableCertificate = await usecases.getShareableCertificate({
+      verificationCode: certificationCourse._verificationCode,
+      locale,
+    });
+    return dependencies.shareableCertificateSerializer.serialize(shareableCertificate);
+  }
 };
 
 const getCertificate = async function (request, h, dependencies = { requestResponseUtils }) {

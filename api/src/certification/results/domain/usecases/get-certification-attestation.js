@@ -15,8 +15,6 @@ export const getCertificationAttestation = async function ({
   certificateRepository,
   certificationCourseRepository,
 }) {
-  const certificationCourse = await certificationCourseRepository.get({ id: certificationCourseId });
-
   if (certificationCourse.getUserId() !== userId) {
     throw new UnauthorizedError();
   }
