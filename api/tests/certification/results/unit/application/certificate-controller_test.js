@@ -425,6 +425,9 @@ describe('Certification | Results | Unit | Application | certificate-controller'
         const i18n = getI18n();
 
         const v3CertificationAttestation = domainBuilder.certification.results.buildV3CertificationAttestation();
+        const v2CertificationAttestation = domainBuilder.buildCertificationAttestation({
+          version: SESSIONS_VERSIONS.V2,
+        });
         const generatedPdf = Symbol('Stream');
 
         const organizationId = domainBuilder.buildOrganization().id;
@@ -443,7 +446,7 @@ describe('Certification | Results | Unit | Application | certificate-controller'
             division,
             organizationId,
           })
-          .resolves([v3CertificationAttestation, v3CertificationAttestation]);
+          .resolves([v3CertificationAttestation, v3CertificationAttestation, v2CertificationAttestation]);
 
         const generatePdfStub = {
           generate: sinon.stub().returns(generatedPdf),
