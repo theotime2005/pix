@@ -43,10 +43,6 @@ async function save({ certificationCourse }) {
   return get({ id: certificationCourseId });
 }
 
-const _findCertificationCourse = async function (id, knexConn = knex) {
-  return knexConn('certification-courses').where({ id }).first();
-};
-
 const _findAssessment = async function (certificationCourseId, knexConn = knex) {
   return knexConn('assessments').where({ certificationCourseId }).first();
 };
@@ -55,25 +51,28 @@ const _findAllChallenges = async function (certificationCourseId, knexConn = kne
   return knexConn('certification-challenges').where({ courseId: certificationCourseId });
 };
 
-async function get({ id }) {
+async function get({ id = null, verificationCode = null }) {
   const knexConn = DomainTransaction.getConnection();
-  const certificationCourseDTO = await _findCertificationCourse(id, knexConn);
+  const certificationCourseDTO = await knexConn('certification-courses')
+    .where({ id })
+    .orWhere({ verificationCode })
+    .first();
 
   if (!certificationCourseDTO) {
     throw new NotFoundError(`Certification course of id ${id} does not exist.`);
   }
 
-  const assessmentDTO = await _findAssessment(id, knexConn);
+  const assessmentDTO = await _findAssessment(certificationCourseDTO.id, knexConn);
 
   const certificationIssueReportsDTO = await knexConn('certification-issue-reports').where({
-    certificationCourseId: id,
+    certificationCourseId: certificationCourseDTO.id,
   });
 
   const complementaryCertificationCoursesDTO = await knexConn('complementary-certification-courses').where({
-    certificationCourseId: id,
+    certificationCourseId: certificationCourseDTO.id,
   });
 
-  const challengesDTO = await _findAllChallenges(id, knexConn);
+  const challengesDTO = await _findAllChallenges(certificationCourseDTO.id, knexConn);
 
   let accessibilityAdjustmentNeeded;
   if (certificationCourseDTO.version === 3) {

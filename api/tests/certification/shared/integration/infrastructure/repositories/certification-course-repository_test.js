@@ -156,66 +156,101 @@ describe('Integration | Repository | Certification Course', function () {
     let sessionId, expectedCertificationCourse, userId;
 
     context('When the certification course exists', function () {
-      context('When the certification course is v2', function () {
-        beforeEach(async function () {
+      it('should retrieve certification course informations by its ID', async function () {
+        // given
+        ({ sessionId, expectedCertificationCourse, userId } = _buildCertificationCourse({
+          description,
+        }));
+
+        await databaseBuilder.commit();
+
+        // when
+        const actualCertificationCourse = await certificationCourseRepository.get({
+          id: expectedCertificationCourse.id,
+        });
+
+        // then
+        const actualCertificationCourseDTO = actualCertificationCourse.toDTO();
+        expect(actualCertificationCourseDTO.id).to.equal(expectedCertificationCourse.id);
+        expect(actualCertificationCourseDTO.completedAt).to.equal(expectedCertificationCourse.completedAt);
+        expect(actualCertificationCourseDTO.firstName).to.equal(expectedCertificationCourse.firstName);
+        expect(actualCertificationCourseDTO.lastName).to.equal(expectedCertificationCourse.lastName);
+        expect(actualCertificationCourseDTO.birthdate).to.equal(expectedCertificationCourse.birthdate);
+        expect(actualCertificationCourseDTO.birthplace).to.equal(expectedCertificationCourse.birthplace);
+        expect(actualCertificationCourseDTO.sessionId).to.equal(sessionId);
+        expect(actualCertificationCourseDTO.isPublished).to.equal(expectedCertificationCourse.isPublished);
+        expect(actualCertificationCourseDTO.isRejectedForFraud).to.equal(
+          expectedCertificationCourse.isRejectedForFraud,
+        );
+        expect(actualCertificationCourseDTO.certificationIssueReports[0].description).to.equal(description);
+      });
+
+      it('should retrieve certification course informations by its verification code', async function () {
+        // given
+        ({ sessionId, expectedCertificationCourse, userId } = _buildCertificationCourse({
+          description,
+        }));
+        const verificationCode = `P-${expectedCertificationCourse.id}`.padEnd(10, '3');
+
+        await databaseBuilder.commit();
+
+        // when
+        const actualCertificationCourse = await certificationCourseRepository.get({
+          verificationCode,
+        });
+
+        // then
+        const actualCertificationCourseDTO = actualCertificationCourse.toDTO();
+        expect(actualCertificationCourseDTO.id).to.equal(expectedCertificationCourse.id);
+        expect(actualCertificationCourseDTO.completedAt).to.equal(expectedCertificationCourse.completedAt);
+        expect(actualCertificationCourseDTO.firstName).to.equal(expectedCertificationCourse.firstName);
+        expect(actualCertificationCourseDTO.lastName).to.equal(expectedCertificationCourse.lastName);
+        expect(actualCertificationCourseDTO.birthdate).to.equal(expectedCertificationCourse.birthdate);
+        expect(actualCertificationCourseDTO.birthplace).to.equal(expectedCertificationCourse.birthplace);
+        expect(actualCertificationCourseDTO.sessionId).to.equal(sessionId);
+        expect(actualCertificationCourseDTO.isPublished).to.equal(expectedCertificationCourse.isPublished);
+        expect(actualCertificationCourseDTO.isRejectedForFraud).to.equal(
+          expectedCertificationCourse.isRejectedForFraud,
+        );
+        expect(actualCertificationCourseDTO.certificationIssueReports[0].description).to.equal(description);
+      });
+
+      it('should retrieve associated challenges with the certification course', async function () {
+        // given
+        ({ sessionId, expectedCertificationCourse, userId } = _buildCertificationCourse({
+          description,
+        }));
+        await databaseBuilder.commit();
+
+        // when
+        const thisCertificationCourse = await certificationCourseRepository.get({
+          id: expectedCertificationCourse.id,
+        });
+
+        // then
+        expect(thisCertificationCourse.toDTO().challenges).to.have.lengthOf(2);
+      });
+
+      context('When the certification course has one assessment', function () {
+        it('should retrieve associated assessment', async function () {
+          // given
           ({ sessionId, expectedCertificationCourse, userId } = _buildCertificationCourse({
             description,
           }));
-
+          const assessmentId = databaseBuilder.factory.buildAssessment({
+            type: 'CERTIFICATION',
+            certificationCourseId: expectedCertificationCourse.id,
+            userId,
+          }).id;
           await databaseBuilder.commit();
-        });
-        it('should retrieve certification course informations', async function () {
-          // when
-          const actualCertificationCourse = await certificationCourseRepository.get({
-            id: expectedCertificationCourse.id,
-          });
 
-          // then
-          const actualCertificationCourseDTO = actualCertificationCourse.toDTO();
-          expect(actualCertificationCourseDTO.id).to.equal(expectedCertificationCourse.id);
-          expect(actualCertificationCourseDTO.completedAt).to.equal(expectedCertificationCourse.completedAt);
-          expect(actualCertificationCourseDTO.firstName).to.equal(expectedCertificationCourse.firstName);
-          expect(actualCertificationCourseDTO.lastName).to.equal(expectedCertificationCourse.lastName);
-          expect(actualCertificationCourseDTO.birthdate).to.equal(expectedCertificationCourse.birthdate);
-          expect(actualCertificationCourseDTO.birthplace).to.equal(expectedCertificationCourse.birthplace);
-          expect(actualCertificationCourseDTO.sessionId).to.equal(sessionId);
-          expect(actualCertificationCourseDTO.isPublished).to.equal(expectedCertificationCourse.isPublished);
-          expect(actualCertificationCourseDTO.isRejectedForFraud).to.equal(
-            expectedCertificationCourse.isRejectedForFraud,
-          );
-          expect(actualCertificationCourseDTO.certificationIssueReports[0].description).to.equal(description);
-        });
-
-        it('should retrieve associated challenges with the certification course', async function () {
           // when
           const thisCertificationCourse = await certificationCourseRepository.get({
             id: expectedCertificationCourse.id,
           });
 
           // then
-          expect(thisCertificationCourse.toDTO().challenges).to.have.lengthOf(2);
-        });
-        context('When the certification course has one assessment', function () {
-          let assessmentId;
-
-          beforeEach(function () {
-            assessmentId = databaseBuilder.factory.buildAssessment({
-              type: 'CERTIFICATION',
-              certificationCourseId: expectedCertificationCourse.id,
-              userId,
-            }).id;
-            return databaseBuilder.commit();
-          });
-
-          it('should retrieve associated assessment', async function () {
-            // when
-            const thisCertificationCourse = await certificationCourseRepository.get({
-              id: expectedCertificationCourse.id,
-            });
-
-            // then
-            expect(thisCertificationCourse.toDTO().assessment.id).to.equal(assessmentId);
-          });
+          expect(thisCertificationCourse.toDTO().assessment.id).to.equal(assessmentId);
         });
       });
 
