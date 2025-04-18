@@ -653,7 +653,7 @@
           "independent": "Independent",
           "level": "Your level"
         },
-        "progressbar-explanation": "Bar de progression indiquant votre niveau atteint ( {level}, ou niveau {globalLevelLabel} ) sur un niveau maximum atteignable de 7 ( niveau Expert 1 )"
+        "progressbar-explanation": "Progress bar indicating the level you have reached ( {level}, i.e. level {globalLevelLabel} ) out of a maximum attainable level of 7 ( Expert 1 level )",
       },
       "hexagon-score": {
         "certified": "certified"
