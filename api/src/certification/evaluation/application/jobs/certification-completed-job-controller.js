@@ -1,7 +1,9 @@
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
+import { usecases } from '../../../../certification/evaluation/domain/usecases/index.js';
 import { JobController } from '../../../../shared/application/jobs/job-controller.js';
-import { V3_REPRODUCIBILITY_RATE } from '../../../../shared/domain/constants.js';
 import { CertificationComputeError } from '../../../../shared/domain/errors.js';
-import * as events from '../../../../shared/domain/events/index.js';
+import { CertificationRescoringCompleted } from '../../../../shared/domain/events/CertificationRescoringCompleted.js';
+import { checkEventTypes } from '../../../../shared/domain/events/check-event-types.js';
 import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
 import { assessmentResultRepository } from '../../../session-management/infrastructure/repositories/index.js';
 import { AlgorithmEngineVersion } from '../../../shared/domain/models/AlgorithmEngineVersion.js';
@@ -10,6 +12,8 @@ import * as certificationCourseRepository from '../../../shared/infrastructure/r
 import { CertificationCompletedJob } from '../../domain/events/CertificationCompleted.js';
 import { CertificationScoringCompleted } from '../../domain/events/CertificationScoringCompleted.js';
 import { services } from '../../domain/services/index.js';
+
+const eventTypes = [CertificationScoringCompleted, CertificationRescoringCompleted];
 
 export class CertificationCompletedJobController extends JobController {
   constructor() {
@@ -21,9 +25,9 @@ export class CertificationCompletedJobController extends JobController {
     dependencies = {
       assessmentResultRepository,
       certificationAssessmentRepository,
+      complementaryCertificationScoringCriteriaRepository,
       certificationCourseRepository,
       services,
-      events,
     },
   }) {
     const { assessmentId, locale } = data;
@@ -33,7 +37,7 @@ export class CertificationCompletedJobController extends JobController {
       certificationAssessmentRepository,
       certificationCourseRepository,
       services,
-      events,
+      complementaryCertificationScoringCriteriaRepository,
     } = dependencies;
 
     const certificationAssessment = await certificationAssessmentRepository.get(assessmentId);
@@ -44,7 +48,7 @@ export class CertificationCompletedJobController extends JobController {
     }
 
     if (AlgorithmEngineVersion.isV3(certificationAssessment.version)) {
-      certificationScoringCompletedEvent = await _handleV3CertificationScoring({
+      await _handleV3CertificationScoring({
         certificationAssessment,
         locale,
         certificationCourseRepository,
@@ -57,10 +61,23 @@ export class CertificationCompletedJobController extends JobController {
         certificationCourseRepository,
         services,
       });
-    }
 
-    if (certificationScoringCompletedEvent) {
-      await events.eventDispatcher.dispatch(certificationScoringCompletedEvent);
+      if (certificationScoringCompletedEvent) {
+        checkEventTypes(certificationScoringCompletedEvent, eventTypes);
+        const certificationCourseId = certificationScoringCompletedEvent.certificationCourseId;
+
+        const complementaryCertificationScoringCriteria =
+          await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
+            certificationCourseId,
+          });
+
+        if (complementaryCertificationScoringCriteria.length > 0) {
+          await usecases.scoreComplementaryCertifications({
+            certificationCourseId,
+            complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+          });
+        }
+      }
     }
   }
 }
@@ -110,13 +127,7 @@ async function _handleV3CertificationScoring({
   });
 
   certificationCourse.complete({ now: new Date() });
-  await certificationCourseRepository.update({ certificationCourse });
-
-  return new CertificationScoringCompleted({
-    userId: certificationAssessment.userId,
-    certificationCourseId: certificationAssessment.certificationCourseId,
-    reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-  });
+  return certificationCourseRepository.update({ certificationCourse });
 }
 
 async function _saveResultAfterCertificationComputeError({

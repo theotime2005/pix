@@ -1,33 +1,18 @@
-import { CertificationScoringCompleted } from '../../../certification/evaluation/domain/events/CertificationScoringCompleted.js';
-import { ComplementaryCertificationCourseResult } from '../../../certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
-import { AnswerCollectionForScoring } from '../models/AnswerCollectionForScoring.js';
-import { ComplementaryCertificationScoringWithComplementaryReferential } from '../models/ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
-import { ReproducibilityRate } from '../models/ReproducibilityRate.js';
-import { CertificationRescoringCompleted } from './CertificationRescoringCompleted.js';
-import { checkEventTypes } from './check-event-types.js';
+import { AnswerCollectionForScoring } from '../../../../shared/domain/models/AnswerCollectionForScoring.js';
+import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
+import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
+import { ReproducibilityRate } from '../../../../shared/domain/models/ReproducibilityRate.js';
+import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
 
-const eventTypes = [CertificationScoringCompleted, CertificationRescoringCompleted];
-
-async function handleComplementaryCertificationsScoring({
-  event,
+export async function scoreComplementaryCertifications({
+  certificationCourseId,
+  complementaryCertificationScoringCriteria,
   assessmentResultRepository,
   certificationAssessmentRepository,
   complementaryCertificationCourseResultRepository,
-  complementaryCertificationScoringCriteriaRepository,
   certificationCourseRepository,
   complementaryCertificationBadgesRepository,
 }) {
-  checkEventTypes(event, eventTypes);
-  const certificationCourseId = event.certificationCourseId;
-
-  const [complementaryCertificationScoringCriteria] =
-    await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({ certificationCourseId });
-
-  if (!complementaryCertificationScoringCriteria) {
-    return;
-  }
-
   const certificationCourse = await certificationCourseRepository.get({ id: certificationCourseId });
   const assessmentResult = await assessmentResultRepository.getByCertificationCourseId({ certificationCourseId });
 
@@ -270,6 +255,3 @@ function _buildComplementaryCertificationScoringWithReferential({
 function _isNextLowerLevel(badgeLevel) {
   return ({ level }) => badgeLevel - level === 1;
 }
-
-handleComplementaryCertificationsScoring.eventTypes = eventTypes;
-export { handleComplementaryCertificationsScoring };

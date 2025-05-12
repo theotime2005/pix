@@ -1,13 +1,12 @@
 import { CertificationCompletedJobController } from '../../../../../../src/certification/evaluation/application/jobs/certification-completed-job-controller.js';
 import { CertificationCompletedJob } from '../../../../../../src/certification/evaluation/domain/events/CertificationCompleted.js';
-import { CertificationScoringCompleted } from '../../../../../../src/certification/evaluation/domain/events/CertificationScoringCompleted.js';
+import { usecases } from '../../../../../../src/certification/evaluation/domain/usecases/index.js';
 import { AssessmentResultFactory } from '../../../../../../src/certification/scoring/domain/models/factories/AssessmentResultFactory.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
 import {
   ABORT_REASONS,
   CertificationCourse,
 } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
-import { V3_REPRODUCIBILITY_RATE } from '../../../../../../src/shared/domain/constants.js';
 import { CertificationComputeError } from '../../../../../../src/shared/domain/errors.js';
 import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
@@ -17,6 +16,7 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
   let assessmentResultRepository;
   let certificationCourseRepository;
   let scoringConfigurationRepository;
+  let complementaryCertificationScoringCriteriaRepository;
   let competenceMarkRepository;
   let answerRepository;
   let flashAlgorithmConfigurationRepository;
@@ -52,7 +52,10 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
     answerRepository = { findByAssessment: sinon.stub() };
     flashAlgorithmConfigurationRepository = { getMostRecentBeforeDate: sinon.stub() };
     certificationAssessmentHistoryRepository = { save: sinon.stub() };
+    complementaryCertificationScoringCriteriaRepository = { findByCertificationCourseId: sinon.stub() };
     events = { eventDispatcher: { dispatch: sinon.stub() } };
+
+    sinon.stub(usecases, 'scoreComplementaryCertifications');
   });
 
   afterEach(function () {
@@ -177,10 +180,27 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
             certificationAssessmentScore,
           });
 
+          const complementaryCertificationScoringCriteria =
+            domainBuilder.buildComplementaryCertificationScoringCriteria({
+              complementaryCertificationCourseId: 999,
+              complementaryCertificationBadgeId: 888,
+              minimumReproducibilityRate: 75,
+              minimumReproducibilityRateLowerLevel: 60,
+              minimumEarnedPix: 20,
+              complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+              hasComplementaryReferential: true,
+            });
+          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+            .withArgs({
+              certificationCourseId: 1234,
+            })
+            .resolves([complementaryCertificationScoringCriteria]);
+
           const dependencies = {
             assessmentResultRepository,
             certificationAssessmentRepository,
             certificationCourseRepository,
+            complementaryCertificationScoringCriteriaRepository,
             competenceMarkRepository,
             services,
             events,
@@ -196,13 +216,10 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               completedAt: new Date(clock.now),
             }),
           });
-          expect(events.eventDispatcher.dispatch).to.have.been.calledOnceWithExactly(
-            new CertificationScoringCompleted({
-              userId,
-              certificationCourseId: certificationCourseId,
-              reproducibilityRate: certificationAssessmentScore.getPercentageCorrectAnswers(),
-            }),
-          );
+          expect(usecases.scoreComplementaryCertifications).to.have.been.calledOnceWithExactly({
+            certificationCourseId: 1234,
+            complementaryCertificationScoringCriteria,
+          });
         });
       });
 
@@ -336,13 +353,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                 abortReason: ABORT_REASONS.CANDIDATE,
               }),
             });
-            expect(events.eventDispatcher.dispatch).to.have.been.calledOnceWithExactly(
-              new CertificationScoringCompleted({
-                userId,
-                certificationCourseId: certificationCourseId,
-                reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-              }),
-            );
           });
         });
       });
@@ -385,13 +395,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                 completedAt: now,
               }),
             });
-            expect(events.eventDispatcher.dispatch).to.have.been.calledOnceWithExactly(
-              new CertificationScoringCompleted({
-                userId,
-                certificationCourseId: certificationCourseId,
-                reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-              }),
-            );
           });
         });
 
@@ -436,13 +439,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                   abortReason,
                 }),
               });
-              expect(events.eventDispatcher.dispatch).to.have.been.calledOnceWithExactly(
-                new CertificationScoringCompleted({
-                  userId,
-                  certificationCourseId: certificationCourseId,
-                  reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-                }),
-              );
             });
           });
 
@@ -486,13 +482,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                   abortReason,
                 }),
               });
-              expect(events.eventDispatcher.dispatch).to.have.been.calledOnceWithExactly(
-                new CertificationScoringCompleted({
-                  userId,
-                  certificationCourseId: certificationCourseId,
-                  reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-                }),
-              );
             });
           });
         });

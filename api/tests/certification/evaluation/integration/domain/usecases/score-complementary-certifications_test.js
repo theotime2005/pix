@@ -1,0 +1,362 @@
+import _ from 'lodash';
+
+import * as complementaryCertificationCourseResultRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
+import { scoreComplementaryCertifications } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certifications.js';
+import { AutoJuryCommentKeys } from '../../../../../../src/certification/shared/domain/models/JuryComment.js';
+import * as certificationAssessmentRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
+import * as certificationCourseRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
+import * as complementaryCertificationBadgesRepository from '../../../../../../src/certification/shared/infrastructure/repositories/complementary-certification-badge-repository.js';
+import { AnswerStatus } from '../../../../../../src/shared/domain/models/index.js';
+import * as assessmentResultRepository from '../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
+import { databaseBuilder, expect, knex } from '../../../../../test-helper.js';
+
+describe('Integration | Usecase | Score Complementary Certifications', function () {
+  afterEach(async function () {
+    await knex('complementary-certification-course-results').delete();
+  });
+
+  describe('when the candidate has taken a complementary certification', function () {
+    describe('when it is acquired', function () {
+      it('should save a result', async function () {
+        // given
+        const complementaryCertificationScoringCriteria = {
+          minimumReproducibilityRate: 80,
+          minimumReproducibilityRateLowerLevel: 60.0,
+          complementaryCertificationCourseId: 99,
+          complementaryCertificationBadgeId: 501,
+          complementaryCertificationBadgeKey: 'badge_key',
+          hasComplementaryReferential: false,
+          minimumEarnedPix: 500,
+        };
+        const complementaryCertificationCourseId = 99;
+
+        _buildComplementaryCertificationBadge({
+          complementaryCertificationId: 101,
+          complementaryCertificationBadgeId: 501,
+          minimumReproducibilityRate: 80,
+          minimumEarnedPix: 500,
+          hasComplementaryReferential: false,
+        });
+        _buildComplementaryCertificationCourse({
+          certificationCourseId: 900,
+          complementaryCertificationId: 101,
+          complementaryCertificationCourseId,
+          complementaryCertificationBadgeId: 501,
+          userId: 401,
+          pixScore: 700,
+          reproducibilityRate: 90,
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        await scoreComplementaryCertifications({
+          certificationCourseId: 900,
+          complementaryCertificationScoringCriteria,
+          assessmentResultRepository,
+          certificationAssessmentRepository,
+          complementaryCertificationCourseResultRepository,
+          complementaryCertificationScoringCriteriaRepository,
+          certificationCourseRepository,
+        });
+
+        // then
+        const complementaryCertificationCourseResults = await knex('complementary-certification-course-results')
+          .select()
+          .first();
+
+        expect(_.omit(complementaryCertificationCourseResults, ['id'])).to.deep.equal({
+          acquired: true,
+          complementaryCertificationCourseId,
+          complementaryCertificationBadgeId: 501,
+          source: 'PIX',
+        });
+      });
+
+      describe('when it has been rejected for fraud', function () {
+        it('should save a complementary certification not acquired', async function () {
+          // given
+          const complementaryCertificationCourseId = 99;
+          const complementaryCertificationScoringCriteria = {
+            minimumReproducibilityRate: 80,
+            minimumReproducibilityRateLowerLevel: 60.0,
+            complementaryCertificationCourseId: 99,
+            complementaryCertificationBadgeId: 501,
+            complementaryCertificationBadgeKey: 'badge_key',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 500,
+          };
+
+          _buildComplementaryCertificationBadge({
+            complementaryCertificationId: 101,
+            complementaryCertificationBadgeId: 501,
+            minimumReproducibilityRate: 80,
+            minimumEarnedPix: 500,
+            hasComplementaryReferential: false,
+          });
+          _buildComplementaryCertificationCourse({
+            certificationCourseId: 900,
+            complementaryCertificationId: 101,
+            complementaryCertificationCourseId,
+            complementaryCertificationBadgeId: 501,
+            userId: 401,
+            pixScore: 700,
+            reproducibilityRate: 90,
+            isRejectedForFraud: true,
+          });
+
+          await databaseBuilder.commit();
+
+          // when
+          await scoreComplementaryCertifications({
+            certificationCourseId: 900,
+            complementaryCertificationScoringCriteria,
+            assessmentResultRepository,
+            certificationAssessmentRepository,
+            complementaryCertificationCourseResultRepository,
+            complementaryCertificationScoringCriteriaRepository,
+            certificationCourseRepository,
+          });
+          // then
+          const complementaryCertificationCourseResults = await knex('complementary-certification-course-results')
+            .select()
+            .first();
+
+          expect(_.omit(complementaryCertificationCourseResults, ['id', 'partnerKey'])).to.deep.equal({
+            acquired: false,
+            complementaryCertificationCourseId,
+            complementaryCertificationBadgeId: 501,
+            source: 'PIX',
+          });
+        });
+      });
+    });
+
+    describe('when the lower level is acquired', function () {
+      beforeEach(async function () {
+        databaseBuilder.factory.learningContent.buildChallenge({
+          id: 'recCompetence0_Tube1_Skill1_Challenge1',
+          competenceId: 'recCompetence0',
+          skillId: 'someSkillId',
+        });
+        databaseBuilder.factory.learningContent.buildChallenge({
+          id: 'recCompetence0_Tube1_Skill2_Challenge2',
+          competenceId: 'recCompetence0',
+          skillId: 'someSkillId',
+        });
+        databaseBuilder.factory.learningContent.buildChallenge({
+          id: 'recCompetence0_Tube1_Skill2_Challenge3',
+          competenceId: 'recCompetence0',
+          skillId: 'someSkillId',
+        });
+        databaseBuilder.factory.learningContent.buildSkill({ id: 'someSkillId' });
+        await databaseBuilder.commit();
+      });
+
+      it('should save a result', async function () {
+        // given
+        const complementaryCertificationCourseId = 99;
+        const assessmentId = 123;
+
+        const complementaryCertificationScoringCriteria = {
+          minimumReproducibilityRate: 80,
+          minimumReproducibilityRateLowerLevel: 0,
+          complementaryCertificationCourseId: 99,
+          complementaryCertificationBadgeId: 501,
+          complementaryCertificationBadgeKey: 'badge_key',
+          hasComplementaryReferential: true,
+          minimumEarnedPix: 200,
+        };
+
+        _buildComplementaryCertificationBadges({
+          complementaryCertificationId: 101,
+          minimumReproducibilityRate: 80,
+          minimumEarnedPix: 500,
+          hasComplementaryReferential: true,
+        });
+
+        _buildComplementaryCertificationCourse({
+          certificationCourseId: 900,
+          complementaryCertificationId: 101,
+          complementaryCertificationCourseId,
+          complementaryCertificationBadgeId: 501,
+          userId: 401,
+          pixScore: 450,
+          reproducibilityRate: 65,
+          assessmentId,
+        });
+
+        const certificationChallengeKo = databaseBuilder.factory.buildCertificationChallenge({
+          courseId: 900,
+          isNeutralized: false,
+          challengeId: 'recCompetence0_Tube1_Skill1_Challenge1',
+          competenceId: 'recCompetence0',
+          certifiableBadgeKey: 'badge_key_1',
+        });
+        databaseBuilder.factory.buildAnswer({
+          assessmentId,
+          challengeId: certificationChallengeKo.challengeId,
+          result: AnswerStatus.KO.status,
+        });
+
+        const { challengeId: challengeId1 } = databaseBuilder.factory.buildCertificationChallenge({
+          courseId: 900,
+          isNeutralized: false,
+          challengeId: 'recCompetence0_Tube1_Skill2_Challenge2',
+          competenceId: 'recCompetence0',
+          certifiableBadgeKey: 'badge_key_1',
+        });
+        databaseBuilder.factory.buildAnswer({
+          assessmentId,
+          challengeId: challengeId1,
+          result: AnswerStatus.OK.status,
+        });
+
+        const { challengeId: challengeId2 } = databaseBuilder.factory.buildCertificationChallenge({
+          courseId: 900,
+          isNeutralized: false,
+          challengeId: 'recCompetence0_Tube1_Skill2_Challenge3',
+          competenceId: 'recCompetence0',
+          certifiableBadgeKey: 'badge_key_1',
+        });
+        databaseBuilder.factory.buildAnswer({
+          assessmentId,
+          challengeId: challengeId2,
+          result: AnswerStatus.OK.status,
+        });
+
+        await databaseBuilder.commit();
+
+        // when
+        await scoreComplementaryCertifications({
+          certificationCourseId: 900,
+          complementaryCertificationScoringCriteria,
+          assessmentResultRepository,
+          certificationAssessmentRepository,
+          complementaryCertificationCourseResultRepository,
+          complementaryCertificationScoringCriteriaRepository,
+          complementaryCertificationBadgesRepository,
+          certificationCourseRepository,
+        });
+
+        // then
+        const complementaryCertificationCourseResults = await knex('complementary-certification-course-results')
+          .select()
+          .first();
+        const { commentByAutoJury } = await knex('assessment-results').select().first();
+
+        expect(commentByAutoJury).to.equal(AutoJuryCommentKeys.LOWER_LEVEL_COMPLEMENTARY_CERTIFICATION_ACQUIRED);
+        expect(_.omit(complementaryCertificationCourseResults, ['id'])).to.deep.equal({
+          acquired: true,
+          complementaryCertificationCourseId,
+          complementaryCertificationBadgeId: 401,
+          source: 'PIX',
+        });
+      });
+    });
+  });
+});
+
+function _buildComplementaryCertificationCourse({
+  certificationCourseId,
+  complementaryCertificationId,
+  complementaryCertificationBadgeId,
+  complementaryCertificationCourseId,
+  userId,
+  pixScore,
+  reproducibilityRate,
+  isRejectedForFraud = false,
+  assessmentId = undefined,
+}) {
+  databaseBuilder.factory.buildUser({ id: userId });
+  databaseBuilder.factory.buildCertificationCourse({
+    id: certificationCourseId,
+    userId,
+    isRejectedForFraud,
+  });
+  databaseBuilder.factory.buildComplementaryCertificationCourse({
+    id: complementaryCertificationCourseId,
+    certificationCourseId,
+    complementaryCertificationId,
+    complementaryCertificationBadgeId,
+  });
+  if (assessmentId) {
+    databaseBuilder.factory.buildAssessment({
+      id: assessmentId,
+      certificationCourseId,
+    });
+  }
+  databaseBuilder.factory.buildAssessmentResult({
+    certificationCourseId,
+    pixScore,
+    reproducibilityRate,
+    assessmentId,
+  });
+}
+
+function _buildComplementaryCertificationBadge({
+  complementaryCertificationBadgeId,
+  complementaryCertificationId,
+  minimumReproducibilityRate,
+  minimumEarnedPix,
+  hasComplementaryReferential,
+  targetProfileId,
+  level,
+}) {
+  databaseBuilder.factory.buildComplementaryCertification({
+    id: complementaryCertificationId,
+    minimumReproducibilityRate,
+    hasComplementaryReferential,
+  });
+  const { id: badgeId } = databaseBuilder.factory.buildBadge({
+    key: 'badge_key',
+    isCertifiable: true,
+    targetProfileId,
+  });
+  databaseBuilder.factory.buildComplementaryCertificationBadge({
+    id: complementaryCertificationBadgeId,
+    complementaryCertificationId,
+    badgeId,
+    minimumEarnedPix,
+    level,
+  });
+}
+
+function _buildComplementaryCertificationBadges({
+  minimumReproducibilityRate,
+  minimumEarnedPix,
+  hasComplementaryReferential,
+  complementaryCertificationId,
+}) {
+  databaseBuilder.factory.buildTargetProfile({ id: 1 });
+  databaseBuilder.factory.buildComplementaryCertification({
+    id: complementaryCertificationId,
+    minimumReproducibilityRate,
+    hasComplementaryReferential,
+  });
+  const { id: badgeId1 } = databaseBuilder.factory.buildBadge({
+    key: 'badge_key_1',
+    isCertifiable: true,
+    targetProfileId: 1,
+  });
+  databaseBuilder.factory.buildComplementaryCertificationBadge({
+    id: 501,
+    complementaryCertificationId: complementaryCertificationId,
+    badgeId: badgeId1,
+    minimumEarnedPix,
+    level: 3,
+  });
+  const { id: badgeId2 } = databaseBuilder.factory.buildBadge({
+    key: 'badge_key_2',
+    isCertifiable: true,
+    targetProfileId: 1,
+  });
+  databaseBuilder.factory.buildComplementaryCertificationBadge({
+    id: 401,
+    complementaryCertificationId: complementaryCertificationId,
+    badgeId: badgeId2,
+    minimumEarnedPix: 400,
+    level: 2,
+  });
+}

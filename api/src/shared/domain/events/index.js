@@ -9,7 +9,6 @@ import * as complementaryCertificationCourseResultRepository from '../../../../l
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as badgeAcquisitionRepository from '../../../../src/evaluation/infrastructure/repositories/badge-acquisition-repository.js';
 import { handleCertificationRescoring } from '../../../../src/shared/domain/events/handle-certification-rescoring.js';
-import { handleComplementaryCertificationsScoring } from '../../../../src/shared/domain/events/handle-complementary-certifications-scoring.js';
 import { services as certificationEvaluationServices } from '../../../certification/evaluation/domain/services/index.js';
 import * as certificationAssessmentHistoryRepository from '../../../certification/evaluation/infrastructure/repositories/certification-assessment-history-repository.js';
 import * as challengeCalibrationRepository from '../../../certification/evaluation/infrastructure/repositories/challenge-calibration-repository.js';
@@ -85,7 +84,6 @@ const dependencies = {
 
 const handlersToBeInjected = {
   handleCertificationRescoring,
-  handleComplementaryCertificationsScoring,
 };
 
 function buildEventDispatcher(handlersStubs) {
