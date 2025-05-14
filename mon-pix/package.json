@@ -150,5 +150,8 @@
   "exports": {
     "./tests/*": "./tests/*",
     "./*": "./app/*"
+  },
+  "dependencies": {
+    "i18next-browser-languagedetector": "^8.1.0"
   }
 }
