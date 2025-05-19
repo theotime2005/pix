@@ -287,6 +287,41 @@ export const userRoutes = [
     },
   },
   {
+    method: 'PATCH',
+    path: '/api/users/{id}',
+    config: {
+      pre: [
+        {
+          method: (request, h) => securityPreHandlers.checkRequestedUserIsAuthenticatedUser(request, h),
+          assign: 'requestedUserIsAuthenticatedUser',
+        },
+      ],
+      validate: {
+        params: Joi.object({
+          id: identifiersType.userId,
+        }),
+        payload: Joi.object({
+          data: Joi.object({
+            type: Joi.string(),
+            attributes: Joi.object().required(), //le token est ici
+            relationships: Joi.object(),
+          }).required(),
+          meta: Joi.object(),
+        }),
+        options: {
+          allowUnknown: true,
+        },
+      },
+      handler: (request, h) => userController.deanonymiseUserAfterAnonymousFlow(request, h),
+      notes: [
+        '- **Cette route est restreinte aux utilisateurs anonymes**\n' +
+        "- Crée un compte Pix en conservant les points et l'id de l'utilisateur anonyme" +
+        '- L’id demandé doit correspondre à celui de l’utilisateur désanonymisé',
+      ],
+      tags: ['identity-access-management', 'api', 'user'],
+    },
+  },
+  {
     method: 'GET',
     path: '/api/users/validate-email',
     config: {
