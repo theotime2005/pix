@@ -195,7 +195,9 @@ export default class EvaluationResultsHero extends Component {
             <MarkdownToHtml @isInline={{true}} @markdown={{@campaignParticipationResult.reachedStage.message}} />
           </div>
         {{/if}}
-
+        <PixButtonLink @variant="secondary" @route="inscription">
+          {{t "pages.sign-up.actions.submit"}}
+        </PixButtonLink>
         {{#if @isSharableCampaign}}
           {{#if @campaignParticipationResult.isShared}}
             <PixNotificationAlert
