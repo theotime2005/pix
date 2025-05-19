@@ -204,6 +204,28 @@ const rememberUserHasSeenLastDataProtectionPolicyInformation = async function (
   return dependencies.userSerializer.serialize(updatedUser);
 };
 
+/**
+ * @param request
+ * @param h
+ * @param {object} dependencies
+ * @param {UserDetailsForAdminSerializer} dependencies.userDetailsForAdminSerializer
+ * @return {Promise<*>}
+ */
+const deanonymiseUserAfterAnonymousFlow = async function (request, h, dependencies = { userSerializer }) {
+  console.log("je suis passé dans le back");
+  const userId = request.params.id;
+  console.log(userId);
+  //récupérer le token dans les attributs :
+  //request.data.attributes.anonymousToken
+  const userDetailsToUpdate = dependencies.userSerializer.deserialize(request.payload);
+  const password = request.payload.data.attributes.password;
+  const updatedUser = await usecases.deanonymiseUserAfterAnonymousFlow({ userId, userDetailsToUpdate, password });
+  const serializedResult = dependencies.userSerializer.serialize(updatedUser);
+  return serializedResult;
+};
+
+
+
 const selfDeleteUserAccount = async function (request, h, dependencies = { requestResponseUtils }) {
   const authenticatedUserId = request.auth.credentials.userId;
   const locale = dependencies.requestResponseUtils.extractLocaleFromRequest(request);
@@ -257,6 +279,7 @@ export const userController = {
   acceptPixLastTermsOfService,
   acceptPixOrgaTermsOfService,
   changeUserLanguage,
+  deanonymiseUserAfterAnonymousFlow,
   getCertificationPointOfContact,
   getCurrentUser,
   getCurrentUserAccountInfo,
