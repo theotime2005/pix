@@ -94,9 +94,24 @@ export default class SignupForm extends Component {
     try {
       const campaignCode = get(this.session, 'attemptedTransition.from.parent.params.code');
       user.lang = this.intl.primaryLocale;
+      console.log({campaignCode});
 
-      await user.save({ adapterOptions: { campaignCode } });
-      await this.session.authenticateUser(user.email, user.password);
+      if (!user.id){
+        await user.save({ adapterOptions: { campaignCode } });
+        console.log(this.session.data);
+        await this.session.authenticateUser(user.email, user.password);
+      }
+      else{
+        await user.save();
+        const email = user.email;
+        const password = user.password;
+        this.session.set('skipRedirectAfterSessionInvalidation', true);//évite la redirection après invalidation
+        await this.session.invalidate();
+        await this.session.authenticateUser(email, password);
+        //si session.invalidate ligne suivante inutile
+        //this.router.transitionTo('authenticated.user-dashboard');
+      }
+
 
       user.password = null;
     } catch (errorResponse) {
