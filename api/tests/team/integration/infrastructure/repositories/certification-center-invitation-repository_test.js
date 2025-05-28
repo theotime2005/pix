@@ -3,6 +3,42 @@ import * as certificationCenterInvitationRepository from '../../../../../src/tea
 import { databaseBuilder, expect, knex, sinon } from '../../../../test-helper.js';
 
 describe('Integration | Team | Infrastructure | Repositories | CertificationCenterInvitationRepository', function () {
+  describe('#update', function () {
+    it('updates invitation', async function () {
+      // given
+      const certificationCenterId = databaseBuilder.factory.buildCertificationCenter().id;
+      const invitation = databaseBuilder.factory.buildCertificationCenterInvitation({
+        certificationCenterId,
+      });
+      await databaseBuilder.commit();
+
+      const now = new Date('2023-10-13');
+      const clock = sinon.useFakeTimers({ now, toFake: ['Date'] });
+
+      // when
+      await certificationCenterInvitationRepository.update({
+        ...invitation,
+        role: 'ADMIN',
+        locale: 'EN',
+      });
+
+      // then
+      const updatedInvitation = await knex('certification-center-invitations').where({ id: invitation.id }).first();
+      expect(updatedInvitation).to.deep.equal({
+        id: invitation.id,
+        email: invitation.email,
+        code: invitation.code,
+        role: 'ADMIN',
+        locale: 'EN',
+        certificationCenterId,
+        status: CertificationCenterInvitation.StatusType.PENDING,
+        createdAt: invitation.createdAt,
+        updatedAt: now,
+      });
+      clock.restore();
+    });
+  });
+
   describe('#updateModificationDate', function () {
     it('updates the certification center invitation modification date', async function () {
       // given

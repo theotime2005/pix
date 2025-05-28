@@ -115,7 +115,10 @@ const create = async function (invitation) {
  */
 const update = async function (certificationCenterInvitation) {
   const [updatedCertificationCenterInvitation] = await knex('certification-center-invitations')
-    .update({ updatedAt: new Date() })
+    .update({
+      ...certificationCenterInvitation,
+      updatedAt: new Date(),
+    })
     .where({ id: certificationCenterInvitation.id })
     .returning(['id', 'email', 'code', 'certificationCenterId', 'updatedAt', 'role', 'locale']);
 

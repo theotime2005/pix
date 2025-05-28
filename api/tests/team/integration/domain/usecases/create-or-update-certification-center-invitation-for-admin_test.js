@@ -85,6 +85,7 @@ describe('Integration | Team | UseCase | create-or-update-certification-center-i
       email,
       code: 'AAALLLPPP1',
       certificationCenterId,
+      role: 'MEMBER',
       status: CertificationCenterInvitation.StatusType.PENDING,
       updatedAt: someTimeInThePastDate,
     }).id;
@@ -94,6 +95,7 @@ describe('Integration | Team | UseCase | create-or-update-certification-center-i
     // when
     const result = await usecases.createOrUpdateCertificationCenterInvitationForAdmin({
       email,
+      role: 'ADMIN',
       certificationCenterId,
       mailService,
     });
@@ -110,7 +112,7 @@ describe('Integration | Team | UseCase | create-or-update-certification-center-i
       certificationCenterName: 'Centre Pixou',
       updatedAt: now,
       code: 'AAALLLPPP1',
-      role: 'MEMBER',
+      role: 'ADMIN',
       locale: 'fr',
     });
   });
