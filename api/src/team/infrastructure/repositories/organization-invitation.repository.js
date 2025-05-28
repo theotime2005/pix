@@ -126,6 +126,15 @@ const updateModificationDate = async function (id) {
   return new OrganizationInvitation(organizationInvitation);
 };
 
+const update = async function (organizationInvitation) {
+  return await knex('organization-invitations')
+    .update({
+      ...organizationInvitation,
+      updatedAt: new Date(),
+    })
+    .where({ id: organizationInvitation.id });
+};
+
 export const organizationInvitationRepository = {
   create,
   findOnePendingByOrganizationIdAndEmail,
@@ -135,4 +144,5 @@ export const organizationInvitationRepository = {
   markAsAccepted,
   markAsCancelled,
   updateModificationDate,
+  update,
 };

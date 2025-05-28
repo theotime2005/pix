@@ -353,4 +353,42 @@ describe('Integration | Team | Infrastructure | Repository | organization-invita
       expect(error).to.be.instanceOf(NotFoundError);
     });
   });
+
+  describe('#update', function () {
+    it('updates organization invitation with new informations', async function () {
+      // given
+      const organizationId = databaseBuilder.factory.buildOrganization().id;
+      const organizationInvitation = databaseBuilder.factory.buildOrganizationInvitation({
+        organizationId,
+        status: OrganizationInvitation.StatusType.PENDING,
+        role: Membership.roles.MEMBER,
+        locale: 'fr',
+        updatedAt: new Date('2020-01-01T00:00:00Z'),
+      });
+      await databaseBuilder.commit();
+
+      // when
+      await organizationInvitationRepository.update({
+        id: organizationInvitation.id,
+        role: Membership.roles.ADMIN,
+        locale: 'en',
+      });
+
+      // then
+      const updatedOrganizationInvitation = await knex('organization-invitations')
+        .where({ id: organizationInvitation.id })
+        .first();
+      expect(updatedOrganizationInvitation).to.deep.equal({
+        id: organizationInvitation.id,
+        organizationId: organizationInvitation.organizationId,
+        email: organizationInvitation.email,
+        status: OrganizationInvitation.StatusType.PENDING,
+        code: organizationInvitation.code,
+        role: Membership.roles.ADMIN,
+        locale: 'en',
+        createdAt: organizationInvitation.createdAt,
+        updatedAt: now,
+      });
+    });
+  });
 });
