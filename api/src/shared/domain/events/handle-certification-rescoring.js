@@ -106,7 +106,7 @@ async function _handleV2CertificationScoring({
       });
 
     if (complementaryCertificationScoringCriteria.length > 0) {
-      await usecases.scoreComplementaryCertification({
+      await usecases.scoreComplementaryCertificationV2({
         certificationCourseId: certificationCourse.getId(),
         complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
       });

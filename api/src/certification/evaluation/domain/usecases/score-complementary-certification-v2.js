@@ -4,7 +4,7 @@ import { ComplementaryCertificationScoringWithoutComplementaryReferential } from
 import { ReproducibilityRate } from '../../../../shared/domain/models/ReproducibilityRate.js';
 import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
 
-export async function scoreComplementaryCertification({
+export async function scoreComplementaryCertificationV2({
   certificationCourseId,
   complementaryCertificationScoringCriteria,
   assessmentResultRepository,

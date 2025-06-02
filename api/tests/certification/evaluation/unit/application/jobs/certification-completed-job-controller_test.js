@@ -55,7 +55,7 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
     complementaryCertificationScoringCriteriaRepository = { findByCertificationCourseId: sinon.stub() };
     events = { eventDispatcher: { dispatch: sinon.stub() } };
 
-    sinon.stub(usecases, 'scoreComplementaryCertification');
+    sinon.stub(usecases, 'scoreComplementaryCertificationV2');
   });
 
   afterEach(function () {
@@ -206,7 +206,7 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               completedAt: new Date(clock.now),
             }),
           });
-          expect(usecases.scoreComplementaryCertification).to.have.been.calledOnceWithExactly({
+          expect(usecases.scoreComplementaryCertificationV2).to.have.been.calledOnceWithExactly({
             certificationCourseId: 1234,
             complementaryCertificationScoringCriteria,
           });

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import * as complementaryCertificationCourseResultRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
-import { scoreComplementaryCertification } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification.js';
+import { scoreComplementaryCertificationV2 } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification-v2.js';
 import { AutoJuryCommentKeys } from '../../../../../../src/certification/shared/domain/models/JuryComment.js';
 import * as certificationAssessmentRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
@@ -51,7 +51,7 @@ describe('Integration | Usecase | Score Complementary Certification', function (
         await databaseBuilder.commit();
 
         // when
-        await scoreComplementaryCertification({
+        await scoreComplementaryCertificationV2({
           certificationCourseId: 900,
           complementaryCertificationScoringCriteria,
           assessmentResultRepository,
@@ -109,7 +109,7 @@ describe('Integration | Usecase | Score Complementary Certification', function (
           await databaseBuilder.commit();
 
           // when
-          await scoreComplementaryCertification({
+          await scoreComplementaryCertificationV2({
             certificationCourseId: 900,
             complementaryCertificationScoringCriteria,
             assessmentResultRepository,
@@ -229,7 +229,7 @@ describe('Integration | Usecase | Score Complementary Certification', function (
         await databaseBuilder.commit();
 
         // when
-        await scoreComplementaryCertification({
+        await scoreComplementaryCertificationV2({
           certificationCourseId: 900,
           complementaryCertificationScoringCriteria,
           assessmentResultRepository,
