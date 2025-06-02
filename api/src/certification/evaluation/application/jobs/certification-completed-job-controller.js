@@ -72,7 +72,7 @@ export class CertificationCompletedJobController extends JobController {
           });
 
         if (complementaryCertificationScoringCriteria.length > 0) {
-          await usecases.scoreComplementaryCertifications({
+          await usecases.scoreComplementaryCertification({
             certificationCourseId,
             complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
           });

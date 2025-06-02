@@ -1,11 +1,11 @@
 import range from 'lodash/range.js';
 
-import { scoreComplementaryCertifications } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certifications.js';
+import { scoreComplementaryCertification } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification.js';
 import { ComplementaryCertificationCourseResult } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
 import { status as assessmentResultStatuses } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
-describe('Unit | Domain | Usecases | Score Complementary Certifications', function () {
+describe('Unit | Domain | Usecases | Score Complementary Certification', function () {
   const certificationAssessmentRepository = {};
   const complementaryCertificationCourseResultRepository = {};
   const assessmentResultRepository = {};
@@ -79,7 +79,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
       ]);
 
       // when
-      await scoreComplementaryCertifications({
+      await scoreComplementaryCertification({
         ...dependencies,
         complementaryCertificationScoringCriteria,
         certificationCourseId,
@@ -378,7 +378,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
               .resolves(domainBuilder.buildCertificationCourse());
 
             // when
-            await scoreComplementaryCertifications({
+            await scoreComplementaryCertification({
               ...dependencies,
               certificationCourseId,
               complementaryCertificationScoringCriteria,
@@ -447,7 +447,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
             .resolves([complementaryCertificationScoringCriteria]);
 
           // when
-          await scoreComplementaryCertifications({
+          await scoreComplementaryCertification({
             ...dependencies,
             certificationCourseId,
             complementaryCertificationScoringCriteria,
@@ -516,7 +516,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
             ]);
 
             // when
-            await scoreComplementaryCertifications({
+            await scoreComplementaryCertification({
               ...dependencies,
               certificationCourseId,
               complementaryCertificationScoringCriteria,
@@ -584,7 +584,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
             ]);
 
             // when
-            await scoreComplementaryCertifications({
+            await scoreComplementaryCertification({
               ...dependencies,
               certificationCourseId,
               complementaryCertificationScoringCriteria,
@@ -672,7 +672,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
                   .resolves(domainBuilder.buildAssessmentResult.validated({ pixScore: 50 }));
 
                 // when
-                await scoreComplementaryCertifications({
+                await scoreComplementaryCertification({
                   ...dependencies,
                   certificationCourseId,
                   complementaryCertificationScoringCriteria,
@@ -752,7 +752,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
                   .resolves(domainBuilder.buildAssessmentResult.validated({ pixScore: 50 }));
 
                 // when
-                await scoreComplementaryCertifications({
+                await scoreComplementaryCertification({
                   ...dependencies,
                   certificationCourseId,
                   complementaryCertificationScoringCriteria,
@@ -819,7 +819,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
         .resolves(domainBuilder.buildCertificationCourse());
 
       // when
-      await scoreComplementaryCertifications({
+      await scoreComplementaryCertification({
         ...dependencies,
         certificationCourseId,
         complementaryCertificationScoringCriteria,
@@ -880,7 +880,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
           .resolves(domainBuilder.buildCertificationCourse());
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           ...dependencies,
           certificationCourseId,
           complementaryCertificationScoringCriteria,
@@ -945,7 +945,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
           .resolves(domainBuilder.buildCertificationCourse());
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           ...dependencies,
           certificationCourseId,
           complementaryCertificationScoringCriteria,
@@ -1010,7 +1010,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
           .resolves(domainBuilder.buildCertificationCourse());
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           ...dependencies,
           certificationCourseId,
           complementaryCertificationScoringCriteria,
@@ -1075,7 +1075,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
           .resolves(domainBuilder.buildCertificationCourse());
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           ...dependencies,
           certificationCourseId,
           complementaryCertificationScoringCriteria,
@@ -1140,7 +1140,7 @@ describe('Unit | Domain | Usecases | Score Complementary Certifications', functi
           .resolves(domainBuilder.buildCertificationCourse({ isRejectedForFraud: true }));
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           ...dependencies,
           certificationCourseId,
           complementaryCertificationScoringCriteria,

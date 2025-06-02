@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import * as complementaryCertificationCourseResultRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
-import { scoreComplementaryCertifications } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certifications.js';
+import { scoreComplementaryCertification } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification.js';
 import { AutoJuryCommentKeys } from '../../../../../../src/certification/shared/domain/models/JuryComment.js';
 import * as certificationAssessmentRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
@@ -11,7 +11,7 @@ import { AnswerStatus } from '../../../../../../src/shared/domain/models/index.j
 import * as assessmentResultRepository from '../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
 import { databaseBuilder, expect, knex } from '../../../../../test-helper.js';
 
-describe('Integration | Usecase | Score Complementary Certifications', function () {
+describe('Integration | Usecase | Score Complementary Certification', function () {
   afterEach(async function () {
     await knex('complementary-certification-course-results').delete();
   });
@@ -51,7 +51,7 @@ describe('Integration | Usecase | Score Complementary Certifications', function 
         await databaseBuilder.commit();
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           certificationCourseId: 900,
           complementaryCertificationScoringCriteria,
           assessmentResultRepository,
@@ -109,7 +109,7 @@ describe('Integration | Usecase | Score Complementary Certifications', function 
           await databaseBuilder.commit();
 
           // when
-          await scoreComplementaryCertifications({
+          await scoreComplementaryCertification({
             certificationCourseId: 900,
             complementaryCertificationScoringCriteria,
             assessmentResultRepository,
@@ -229,7 +229,7 @@ describe('Integration | Usecase | Score Complementary Certifications', function 
         await databaseBuilder.commit();
 
         // when
-        await scoreComplementaryCertifications({
+        await scoreComplementaryCertification({
           certificationCourseId: 900,
           complementaryCertificationScoringCriteria,
           assessmentResultRepository,
