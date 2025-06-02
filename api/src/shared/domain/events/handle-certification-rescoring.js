@@ -39,6 +39,7 @@ async function handleCertificationRescoring({
   scoringCertificationService,
   certificationEvaluationServices,
   certificationCourseRepository,
+  complementaryCertificationScoringCriteriaRepository,
 }) {
   checkEventTypes(event, eventTypes);
 
@@ -51,6 +52,7 @@ async function handleCertificationRescoring({
   }
 
   if (AlgorithmEngineVersion.isV3(certificationAssessment.version)) {
+    // TODO : add new complementary scoring VERSION 3 (CLEA)
     return _handleV3CertificationScoring({
       certificationAssessment,
       event,
@@ -66,6 +68,7 @@ async function handleCertificationRescoring({
     event,
     assessmentResultRepository,
     certificationCourseRepository,
+    complementaryCertificationScoringCriteriaRepository,
     certificationEvaluationServices,
   });
 }
@@ -75,6 +78,7 @@ async function _handleV2CertificationScoring({
   certificationAssessment,
   assessmentResultRepository,
   certificationCourseRepository,
+  complementaryCertificationScoringCriteriaRepository,
   scoringCertificationService,
   certificationEvaluationServices,
 }) {
@@ -96,11 +100,17 @@ async function _handleV2CertificationScoring({
       scoringCertificationService,
     });
 
-    return new CertificationRescoringCompleted({
-      userId: certificationAssessment.userId,
-      certificationCourseId: certificationAssessment.certificationCourseId,
-      reproducibilityRate: certificationAssessmentScore.percentageCorrectAnswers,
-    });
+    const complementaryCertificationScoringCriteria =
+      await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
+        certificationCourseId: certificationCourse.getId(),
+      });
+
+    if (complementaryCertificationScoringCriteria.length > 0) {
+      await usecases.scoreComplementaryCertification({
+        certificationCourseId: certificationCourse.getId(),
+        complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+      });
+    }
   } catch (error) {
     if (!(error instanceof CertificationComputeError)) {
       throw error;

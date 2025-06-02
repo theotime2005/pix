@@ -160,25 +160,15 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
       context('when scoring is successful', function () {
         it('should save a complete certification course', async function () {
           // given
-          const assessmentResultId = 1234;
           const certificationCourse = domainBuilder.buildCertificationCourse({
             id: certificationCourseId,
             completedAt: null,
             isCancelled: false,
             abortReason: null,
           });
-          const competenceMark1 = domainBuilder.buildCompetenceMark({ assessmentResultId, score: 5 });
-          const competenceMark2 = domainBuilder.buildCompetenceMark({ assessmentResultId, score: 4 });
-          const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-            competenceMarks: [competenceMark1, competenceMark2],
-            percentageCorrectAnswers: 80,
-          });
 
           certificationCourseRepository.update.resolves(certificationCourse);
-          services.handleV2CertificationScoring.resolves({
-            certificationCourse,
-            certificationAssessmentScore,
-          });
+          services.handleV2CertificationScoring.resolves({ certificationCourse });
 
           const complementaryCertificationScoringCriteria =
             domainBuilder.buildComplementaryCertificationScoringCriteria({

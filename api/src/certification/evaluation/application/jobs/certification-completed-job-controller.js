@@ -2,18 +2,13 @@ import * as complementaryCertificationScoringCriteriaRepository from '../../../.
 import { usecases } from '../../../../certification/evaluation/domain/usecases/index.js';
 import { JobController } from '../../../../shared/application/jobs/job-controller.js';
 import { CertificationComputeError } from '../../../../shared/domain/errors.js';
-import { CertificationRescoringCompleted } from '../../../../shared/domain/events/CertificationRescoringCompleted.js';
-import { checkEventTypes } from '../../../../shared/domain/events/check-event-types.js';
 import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
 import { assessmentResultRepository } from '../../../session-management/infrastructure/repositories/index.js';
 import { AlgorithmEngineVersion } from '../../../shared/domain/models/AlgorithmEngineVersion.js';
 import * as certificationAssessmentRepository from '../../../shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../shared/infrastructure/repositories/certification-course-repository.js';
 import { CertificationCompletedJob } from '../../domain/events/CertificationCompleted.js';
-import { CertificationScoringCompleted } from '../../domain/events/CertificationScoringCompleted.js';
 import { services } from '../../domain/services/index.js';
-
-const eventTypes = [CertificationScoringCompleted, CertificationRescoringCompleted];
 
 export class CertificationCompletedJobController extends JobController {
   constructor() {
@@ -41,7 +36,6 @@ export class CertificationCompletedJobController extends JobController {
     } = dependencies;
 
     const certificationAssessment = await certificationAssessmentRepository.get(assessmentId);
-    let certificationScoringCompletedEvent;
 
     if (certificationAssessment.isScoringBlockedDueToComplementaryOnlyChallenges) {
       return;
@@ -55,29 +49,13 @@ export class CertificationCompletedJobController extends JobController {
         services,
       });
     } else {
-      certificationScoringCompletedEvent = await _handleV2CertificationScoring({
+      await _handleV2CertificationScoring({
         certificationAssessment,
         assessmentResultRepository,
         certificationCourseRepository,
+        complementaryCertificationScoringCriteriaRepository,
         services,
       });
-
-      if (certificationScoringCompletedEvent) {
-        checkEventTypes(certificationScoringCompletedEvent, eventTypes);
-        const certificationCourseId = certificationScoringCompletedEvent.certificationCourseId;
-
-        const complementaryCertificationScoringCriteria =
-          await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
-            certificationCourseId,
-          });
-
-        if (complementaryCertificationScoringCriteria.length > 0) {
-          await usecases.scoreComplementaryCertification({
-            certificationCourseId,
-            complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
-          });
-        }
-      }
     }
   }
 }
@@ -86,21 +64,28 @@ async function _handleV2CertificationScoring({
   certificationAssessment,
   assessmentResultRepository,
   certificationCourseRepository,
+  complementaryCertificationScoringCriteriaRepository,
   services,
 }) {
   try {
-    const { certificationCourse, certificationAssessmentScore } = await services.handleV2CertificationScoring({
+    const { certificationCourse } = await services.handleV2CertificationScoring({
       certificationAssessment,
     });
 
     certificationCourse.complete({ now: new Date() });
     await certificationCourseRepository.update({ certificationCourse });
 
-    return new CertificationScoringCompleted({
-      userId: certificationAssessment.userId,
-      certificationCourseId: certificationAssessment.certificationCourseId,
-      reproducibilityRate: certificationAssessmentScore.percentageCorrectAnswers,
-    });
+    const complementaryCertificationScoringCriteria =
+      await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
+        certificationCourseId: certificationCourse.getId(),
+      });
+
+    if (complementaryCertificationScoringCriteria.length > 0) {
+      await usecases.scoreComplementaryCertification({
+        certificationCourseId: certificationCourse.getId(),
+        complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+      });
+    }
   } catch (error) {
     if (!(error instanceof CertificationComputeError)) {
       throw error;

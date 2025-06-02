@@ -264,6 +264,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
       assessmentResultRepository,
       certificationAssessmentRepository,
       competenceMarkRepository,
+      complementaryCertificationScoringCriteriaRepository,
       scoringCertificationService,
       certificationEvaluationServices;
 
@@ -279,6 +280,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
       };
       certificationEvaluationServices = {
         handleV2CertificationScoring: sinon.stub(),
+      };
+
+      complementaryCertificationScoringCriteriaRepository = {
+        findByCertificationCourseId: sinon.stub(),
       };
     });
 
@@ -314,6 +319,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         certificationAssessmentRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId: 789 })
           .resolves(certificationAssessment);
+
+        complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+          .withArgs({ certificationCourseId: 789 })
+          .resolves([]);
+
         certificationEvaluationServices.handleV2CertificationScoring.resolves({
           certificationCourse,
           certificationAssessmentScore,
@@ -327,6 +337,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           assessmentResultRepository,
           certificationAssessmentRepository,
           competenceMarkRepository,
+          complementaryCertificationScoringCriteriaRepository,
           scoringCertificationService,
           certificationEvaluationServices,
           certificationCourseRepository,
@@ -371,6 +382,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           certificationAssessmentRepository.getByCertificationCourseId
             .withArgs({ certificationCourseId: 789 })
             .resolves(certificationAssessment);
+
+          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+            .withArgs({ certificationCourseId: 789 })
+            .resolves([]);
+
           certificationEvaluationServices.handleV2CertificationScoring.resolves({
             certificationCourse,
             certificationAssessmentScore,
@@ -384,9 +400,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
             assessmentResultRepository,
             certificationAssessmentRepository,
             competenceMarkRepository,
+            certificationCourseRepository,
+            complementaryCertificationScoringCriteriaRepository,
             scoringCertificationService,
             certificationEvaluationServices,
-            certificationCourseRepository,
           });
 
           // then
@@ -432,6 +449,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         certificationAssessmentRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId: 789 })
           .resolves(certificationAssessment);
+
+        complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+          .withArgs({ certificationCourseId: 789 })
+          .resolves([]);
+
         certificationEvaluationServices.handleV2CertificationScoring.resolves({
           certificationCourse,
           certificationAssessmentScore,
@@ -445,9 +467,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           assessmentResultRepository,
           certificationAssessmentRepository,
           competenceMarkRepository,
+          certificationCourseRepository,
+          complementaryCertificationScoringCriteriaRepository,
           scoringCertificationService,
           certificationEvaluationServices,
-          certificationCourseRepository,
         });
 
         // then
@@ -494,6 +517,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           certificationAssessmentRepository.getByCertificationCourseId
             .withArgs({ certificationCourseId: 789 })
             .resolves(certificationAssessment);
+
+          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+            .withArgs({ certificationCourseId: 789 })
+            .resolves([]);
+
           certificationEvaluationServices.handleV2CertificationScoring.resolves({
             certificationCourse,
             certificationAssessmentScore,
@@ -507,9 +535,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
             assessmentResultRepository,
             certificationAssessmentRepository,
             competenceMarkRepository,
+            certificationCourseRepository,
+            complementaryCertificationScoringCriteriaRepository,
             scoringCertificationService,
             certificationEvaluationServices,
-            certificationCourseRepository,
           });
 
           // then
@@ -558,6 +587,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           certificationAssessmentRepository.getByCertificationCourseId
             .withArgs({ certificationCourseId: 789 })
             .resolves(certificationAssessment);
+
+          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+            .withArgs({ certificationCourseId: 789 })
+            .resolves([]);
+
           certificationEvaluationServices.handleV2CertificationScoring.resolves({
             certificationCourse,
             certificationAssessmentScore,
@@ -571,9 +605,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
             assessmentResultRepository,
             certificationAssessmentRepository,
             competenceMarkRepository,
+            certificationCourseRepository,
+            complementaryCertificationScoringCriteriaRepository,
             scoringCertificationService,
             certificationEvaluationServices,
-            certificationCourseRepository,
           });
 
           // then
@@ -614,6 +649,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
             certificationAssessmentRepository.getByCertificationCourseId
               .withArgs({ certificationCourseId: 789 })
               .resolves(certificationAssessment);
+
+            complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+              .withArgs({ certificationCourseId: 789 })
+              .resolves([]);
+
             certificationEvaluationServices.handleV2CertificationScoring.resolves({
               certificationCourse,
               certificationAssessmentScore,
@@ -627,9 +667,10 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
               assessmentResultRepository,
               certificationAssessmentRepository,
               competenceMarkRepository,
+              certificationCourseRepository,
+              complementaryCertificationScoringCriteriaRepository,
               scoringCertificationService,
               certificationEvaluationServices,
-              certificationCourseRepository,
             });
 
             // then
@@ -644,50 +685,6 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
             });
           });
         });
-      });
-
-      it('returns a CertificationRescoringCompleted event', async function () {
-        // given
-        const certificationCourse = domainBuilder.buildCertificationCourse();
-
-        const event = new ChallengeNeutralized({ certificationCourseId: certificationCourse.getId(), juryId: 7 });
-        const certificationAssessment = domainBuilder.buildCertificationAssessment({
-          userId: 123,
-          certificationCourseId: certificationCourse.getId(),
-        });
-        const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-          competenceMarks: [],
-          percentageCorrectAnswers: 80,
-          hasEnoughNonNeutralizedChallengesToBeTrusted: true,
-        });
-
-        certificationEvaluationServices.handleV2CertificationScoring.resolves({
-          certificationCourse,
-          certificationAssessmentScore,
-        });
-        certificationAssessmentRepository.getByCertificationCourseId
-          .withArgs({ certificationCourseId: certificationCourse.getId() })
-          .resolves(certificationAssessment);
-        certificationCourseRepository.get.withArgs({ id: certificationCourse.getId() }).resolves(certificationCourse);
-
-        // when
-        const returnedEvent = await handleCertificationRescoring({
-          event,
-          assessmentResultRepository,
-          certificationAssessmentRepository,
-          competenceMarkRepository,
-          scoringCertificationService,
-          certificationEvaluationServices,
-          certificationCourseRepository,
-        });
-
-        // then
-        const expectedReturnedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
-          certificationCourseId: certificationCourse.getId(),
-          userId: 123,
-          reproducibilityRate: 80,
-        });
-        expect(returnedEvent).to.deep.equal(expectedReturnedEvent);
       });
     });
 
