@@ -13,6 +13,7 @@ const reject = async function (request, h, dependencies = { events }) {
     juryId,
   });
 
+  // TODO : deprecated (no more handler)
   await dependencies.events.eventDispatcher.dispatch(certificationCourseRejectedEvent);
   return h.response().code(204);
 };
@@ -25,6 +26,7 @@ const unreject = async function (request, h, dependencies = { events }) {
     juryId,
   });
 
+  // TODO : deprecated (no more handler)
   await dependencies.events.eventDispatcher.dispatch(certificationCourseRejectedEvent);
   return h.response().code(204);
 };

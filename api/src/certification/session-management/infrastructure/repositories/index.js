@@ -1,4 +1,3 @@
-import { handlersAsServices as libServices } from '../../../../../src/shared/domain/events/index.js';
 import * as certificationIssueReportRepository from '../../../../certification/shared/infrastructure/repositories/certification-issue-report-repository.js';
 import * as issueReportCategoryRepository from '../../../../certification/shared/infrastructure/repositories/issue-report-category-repository.js';
 import * as answerRepository from '../../../../shared/infrastructure/repositories/answer-repository.js';
@@ -9,6 +8,7 @@ import * as competenceRepository from '../../../../shared/infrastructure/reposit
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import * as certificationCpfCityRepository from '../../../enrolment/infrastructure/repositories/certification-cpf-city-repository.js';
 import * as certificationCpfCountryRepository from '../../../enrolment/infrastructure/repositories/certification-cpf-country-repository.js';
+import * as certificationEvaluationApi from '../../../evaluation/application/api/rescore-certification-api.js';
 import * as certificationAssessmentRepository from '../../../shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationChallengeLiveAlertRepository from '../../../shared/infrastructure/repositories/certification-challenge-live-alert-repository.js';
 import * as certificationChallengeRepository from '../../../shared/infrastructure/repositories/certification-challenge-repository.js';
@@ -117,10 +117,10 @@ const repositoriesWithoutInjectedDependencies = {
 
 /**
  * Using {@link https://jsdoc.app/tags-type "Closure Compiler's syntax"} to document injected dependencies
- * @typedef {libServices} LibServices
+ * @typedef {certificationEvaluationApi} CertificationEvaluationApi
  */
 const dependencies = {
-  libServices,
+  certificationEvaluationApi,
 };
 
 const sessionRepositories = injectDependencies(repositoriesWithoutInjectedDependencies, dependencies);

@@ -10,6 +10,7 @@ const neutralizeChallenge = async function (request, h, dependencies = { events 
     certificationCourseId,
     juryId,
   });
+  // TODO : deprecated (no more handler)
   await dependencies.events.eventDispatcher.dispatch(event);
   return h.response().code(204);
 };
@@ -23,6 +24,7 @@ const deneutralizeChallenge = async function (request, h, dependencies = { event
     certificationCourseId,
     juryId,
   });
+  // TODO : deprecated (no more handler)
   await dependencies.events.eventDispatcher.dispatch(event);
   return h.response().code(204);
 };

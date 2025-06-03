@@ -8,8 +8,6 @@ import { EventDispatcherLogger } from '../../../../lib/infrastructure/events/Eve
 import * as complementaryCertificationCourseResultRepository from '../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as badgeAcquisitionRepository from '../../../../src/evaluation/infrastructure/repositories/badge-acquisition-repository.js';
-import { handleCertificationRescoring } from '../../../../src/shared/domain/events/handle-certification-rescoring.js';
-import { services as certificationEvaluationServices } from '../../../certification/evaluation/domain/services/index.js';
 import * as certificationAssessmentHistoryRepository from '../../../certification/evaluation/infrastructure/repositories/certification-assessment-history-repository.js';
 import * as challengeCalibrationRepository from '../../../certification/evaluation/infrastructure/repositories/challenge-calibration-repository.js';
 import * as flashAlgorithmService from '../../../certification/flash-certification/domain/services/algorithm-methods/flash.js';
@@ -39,7 +37,7 @@ import * as competenceRepository from '../../infrastructure/repositories/compete
 import * as knowledgeElementRepository from '../../infrastructure/repositories/knowledge-element-repository.js';
 import * as organizationRepository from '../../infrastructure/repositories/organization-repository.js';
 import * as skillRepository from '../../infrastructure/repositories/skill-repository.js';
-import { injectDefaults, injectDependencies } from '../../infrastructure/utils/dependency-injection.js';
+import { injectDefaults } from '../../infrastructure/utils/dependency-injection.js';
 import { logger } from '../../infrastructure/utils/logger.js';
 
 const { performance } = perf_hooks;
@@ -79,15 +77,11 @@ const dependencies = {
   supervisorAccessRepository,
   targetProfileRepository,
   userRepository,
-  certificationEvaluationServices,
-};
-
-const handlersToBeInjected = {
-  handleCertificationRescoring,
 };
 
 function buildEventDispatcher(handlersStubs) {
   const eventDispatcher = new EventDispatcher(new EventDispatcherLogger(MonitoringTools, config, performance));
+  const handlersToBeInjected = {};
 
   const handlersNames = _.map(handlersToBeInjected, (handler) => handler.name);
 
@@ -113,17 +107,5 @@ function buildEventDispatcher(handlersStubs) {
 
 const eventDispatcher = buildEventDispatcher({});
 const eventBus = eventBusBuilder.build();
-const _forTestOnly = {
-  handlers: handlersToBeInjected,
-  buildEventDispatcher: function (stubbedHandlers) {
-    return buildEventDispatcher(stubbedHandlers);
-  },
-};
 
-/**
- * Using {@link https://jsdoc.app/tags-type "Closure Compiler's syntax"} to document injected dependencies
- * @typedef {handleCertificationRescoring} HandleCertificationRescoring
- */
-const handlersAsServices = injectDependencies(handlersToBeInjected, dependencies);
-
-export { _forTestOnly, eventBus, eventDispatcher, handlersAsServices };
+export { eventBus, eventDispatcher };

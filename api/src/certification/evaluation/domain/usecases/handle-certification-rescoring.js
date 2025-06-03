@@ -1,21 +1,26 @@
 /**
  * @typedef {import('./index.js').CertificationAssessmentRepository} CertificationAssessmentRepository
+ * @typedef {import('./index.js').AssessmentResultRepository} AssessmentResultRepository
+ * @typedef {import('../services/index.js').ScoringCertificationService} ScoringCertificationService
+ * @typedef {import('./index.js').ScoringV2Service} ScoringV2Service
+ * @typedef {import('./index.js').CertificationCourseRepository} CertificationCourseRepository
+ * @typedef {import('./index.js').ComplementaryCertificationScoringCriteriaRepository} ComplementaryCertificationScoringCriteriaRepository
+ * @typedef {import('./index.js').Services} Services
  */
-import CertificationRescored from '../../../certification/evaluation/domain/events/CertificationRescored.js';
-import { ChallengeDeneutralized } from '../../../certification/evaluation/domain/events/ChallengeDeneutralized.js';
-import { ChallengeNeutralized } from '../../../certification/evaluation/domain/events/ChallengeNeutralized.js';
-import { services } from '../../../certification/evaluation/domain/services/index.js';
-import { AssessmentResultFactory } from '../../../certification/scoring/domain/models/factories/AssessmentResultFactory.js';
-import { CertificationCourseRejected } from '../../../certification/session-management/domain/events/CertificationCourseRejected.js';
-import { CertificationJuryDone } from '../../../certification/session-management/domain/events/CertificationJuryDone.js';
-import { AlgorithmEngineVersion } from '../../../certification/shared/domain/models/AlgorithmEngineVersion.js';
-import { V3_REPRODUCIBILITY_RATE } from '../constants.js';
-import { CertificationComputeError } from '../errors.js';
-import CertificationCancelled from './CertificationCancelled.js';
-import { CertificationCourseUnrejected } from './CertificationCourseUnrejected.js';
-import { CertificationRescoringCompleted } from './CertificationRescoringCompleted.js';
-import CertificationUncancelled from './CertificationUncancelled.js';
-import { checkEventTypes } from './check-event-types.js';
+import { V3_REPRODUCIBILITY_RATE } from '../../../../shared/domain/constants.js';
+import { CertificationComputeError } from '../../../../shared/domain/errors.js';
+import CertificationCancelled from '../../../../shared/domain/events/CertificationCancelled.js';
+import { CertificationCourseUnrejected } from '../../../../shared/domain/events/CertificationCourseUnrejected.js';
+import { CertificationRescoringCompleted } from '../../../../shared/domain/events/CertificationRescoringCompleted.js';
+import CertificationUncancelled from '../../../../shared/domain/events/CertificationUncancelled.js';
+import { checkEventTypes } from '../../../../shared/domain/events/check-event-types.js';
+import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
+import { CertificationCourseRejected } from '../../../session-management/domain/events/CertificationCourseRejected.js';
+import { CertificationJuryDone } from '../../../session-management/domain/events/CertificationJuryDone.js';
+import { AlgorithmEngineVersion } from '../../../shared/domain/models/AlgorithmEngineVersion.js';
+import CertificationRescored from '../events/CertificationRescored.js';
+import { ChallengeDeneutralized } from '../events/ChallengeDeneutralized.js';
+import { ChallengeNeutralized } from '../events/ChallengeNeutralized.js';
 
 const eventTypes = [
   ChallengeNeutralized,
@@ -30,16 +35,22 @@ const eventTypes = [
 
 /**
  * @param {Object} params
+ * @param {AssessmentResultRepository} params.assessmentResultRepository
  * @param {CertificationAssessmentRepository} params.certificationAssessmentRepository
+ * @param {ScoringCertificationService} params.scoringCertificationService
+ * @param {CertificationCourseRepository} params.certificationCourseRepository
+ * @param {ComplementaryCertificationScoringCriteriaRepository} params.complementaryCertificationScoringCriteriaRepository
+ * @typedef {certificationCourseRepository} CertificationCourseRepository
+ * @typedef {services} Services
  */
 async function handleCertificationRescoring({
   event,
+  scoringCertificationService,
   assessmentResultRepository,
   certificationAssessmentRepository,
-  scoringCertificationService,
-  certificationEvaluationServices,
   certificationCourseRepository,
   complementaryCertificationScoringCriteriaRepository,
+  services,
 }) {
   checkEventTypes(event, eventTypes);
 
@@ -58,7 +69,7 @@ async function handleCertificationRescoring({
       event,
       locale: event.locale,
       certificationCourseRepository,
-      certificationEvaluationServices,
+      services,
     });
   }
 
@@ -69,7 +80,7 @@ async function handleCertificationRescoring({
     assessmentResultRepository,
     certificationCourseRepository,
     complementaryCertificationScoringCriteriaRepository,
-    certificationEvaluationServices,
+    services,
   });
 }
 
@@ -80,14 +91,13 @@ async function _handleV2CertificationScoring({
   certificationCourseRepository,
   complementaryCertificationScoringCriteriaRepository,
   scoringCertificationService,
-  certificationEvaluationServices,
+  services,
 }) {
   try {
-    const { certificationCourse, certificationAssessmentScore } =
-      await certificationEvaluationServices.handleV2CertificationScoring({
-        event,
-        certificationAssessment,
-      });
+    const { certificationCourse, certificationAssessmentScore } = await services.handleV2CertificationScoring({
+      event,
+      certificationAssessment,
+    });
 
     // isCancelled will be removed
     // this block will be removed
@@ -106,10 +116,13 @@ async function _handleV2CertificationScoring({
       });
 
     if (complementaryCertificationScoringCriteria.length > 0) {
-      await usecases.scoreComplementaryCertificationV2({
-        certificationCourseId: certificationCourse.getId(),
-        complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
-      });
+      // TODO : un service ne peut pas appeler un usecase + pourquoi
+      //        scoreComplementaryCertificationV2 en usecase alors que le reste en service ?
+      //        le prochain commit modifiera cela
+      // await usecases.scoreComplementaryCertificationV2({
+      //   certificationCourseId: certificationCourse.getId(),
+      //   complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+      // });
     }
   } catch (error) {
     if (!(error instanceof CertificationComputeError)) {
@@ -118,7 +131,6 @@ async function _handleV2CertificationScoring({
     await _saveResultAfterCertificationComputeError({
       certificationAssessment,
       assessmentResultRepository,
-      certificationCourseRepository,
       certificationComputeError: error,
       juryId: event.juryId,
     });
@@ -130,9 +142,9 @@ async function _handleV3CertificationScoring({
   event,
   locale,
   certificationCourseRepository,
-  certificationEvaluationServices,
+  services,
 }) {
-  const certificationCourse = await certificationEvaluationServices.handleV3CertificationScoring({
+  const certificationCourse = await services.handleV3CertificationScoring({
     event,
     certificationAssessment,
     locale,

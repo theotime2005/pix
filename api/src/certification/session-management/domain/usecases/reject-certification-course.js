@@ -7,5 +7,6 @@ export const rejectCertificationCourse = async ({ certificationCourseId, juryId,
 
   await certificationCourseRepository.update({ certificationCourse });
 
+  // TODO : change this line to call the certification-rescoring-repository
   return new CertificationCourseRejected({ certificationCourseId, juryId });
 };
