@@ -1,33 +1,26 @@
-import * as events from '../../../shared/domain/events/index.js';
 import { usecases as certificationSharedUsecases } from '../../shared/domain/usecases/index.js';
 import { usecases } from '../domain/usecases/index.js';
 import * as certificationSerializer from '../infrastructure/serializers/certification-serializer.js';
 import * as juryCommentSerializer from '../infrastructure/serializers/jury-comment-serializer.js';
 import * as v3CertificationDetailsForAdministrationSerializer from '../infrastructure/serializers/v3-certification-course-details-for-administration-serializer.js';
 
-const reject = async function (request, h, dependencies = { events }) {
+const reject = async function (request, h) {
   const certificationCourseId = request.params.certificationCourseId;
   const juryId = request.auth.credentials.userId;
-  const certificationCourseRejectedEvent = await usecases.rejectCertificationCourse({
+  await usecases.rejectCertificationCourse({
     certificationCourseId,
     juryId,
   });
-
-  // TODO : deprecated (no more handler)
-  await dependencies.events.eventDispatcher.dispatch(certificationCourseRejectedEvent);
   return h.response().code(204);
 };
 
-const unreject = async function (request, h, dependencies = { events }) {
+const unreject = async function (request, h) {
   const certificationCourseId = request.params.certificationCourseId;
   const juryId = request.auth.credentials.userId;
-  const certificationCourseRejectedEvent = await usecases.unrejectCertificationCourse({
+  await usecases.unrejectCertificationCourse({
     certificationCourseId,
     juryId,
   });
-
-  // TODO : deprecated (no more handler)
-  await dependencies.events.eventDispatcher.dispatch(certificationCourseRejectedEvent);
   return h.response().code(204);
 };
 

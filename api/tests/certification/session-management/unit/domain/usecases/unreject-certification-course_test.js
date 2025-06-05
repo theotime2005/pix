@@ -7,10 +7,12 @@ describe('Unit | UseCase | unreject-certification-course', function () {
   it('should unreject a rejected certification course', async function () {
     // given
     const certificationCourseRepository = { get: sinon.stub(), update: sinon.stub() };
+    const certificationRescoringRepository = { execute: sinon.stub() };
     const juryId = 123;
 
     const dependencies = {
       certificationCourseRepository,
+      certificationRescoringRepository,
     };
     const certificationCourse = domainBuilder.buildCertificationCourse({
       isRejectedForFraud: true,
@@ -19,9 +21,10 @@ describe('Unit | UseCase | unreject-certification-course', function () {
 
     certificationCourseRepository.get.withArgs({ id: certificationCourseId }).resolves(certificationCourse);
     certificationCourseRepository.update.resolves();
+    certificationRescoringRepository.execute.resolves();
 
     // when
-    const event = await unrejectCertificationCourse({
+    await unrejectCertificationCourse({
       ...dependencies,
       juryId,
       certificationCourseId: certificationCourseId,
@@ -36,12 +39,11 @@ describe('Unit | UseCase | unreject-certification-course', function () {
     expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
       certificationCourse: expectedCertificationCourse,
     });
-    expect(event).to.be.instanceOf(CertificationCourseUnrejected);
-    expect(event).to.deep.equal(
-      new CertificationCourseUnrejected({
+    expect(certificationRescoringRepository.execute).to.have.been.calledOnceWithExactly({
+      event: new CertificationCourseUnrejected({
         certificationCourseId,
         juryId,
       }),
-    );
+    });
   });
 });

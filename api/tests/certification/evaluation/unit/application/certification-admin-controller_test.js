@@ -19,15 +19,13 @@ describe('Certification | Evaluation | Unit | Application | Controller | certifi
         },
         auth: { credentials: { userId: 7 } },
       };
-      sinon.stub(usecases, 'neutralizeChallenge');
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
+      sinon
+        .stub(usecases, 'neutralizeChallenge')
+        .resolves(new ChallengeNeutralized({ certificationCourseId: 1, juryId: 7 }));
+      sinon.stub(usecases, 'handleCertificationRescoring').resolves();
 
       // when
-      await certificationAdminController.neutralizeChallenge(request, hFake, { events: eventsStub });
+      const response = await certificationAdminController.neutralizeChallenge(request, hFake);
 
       // then
       expect(usecases.neutralizeChallenge).to.have.been.calledWithExactly({
@@ -35,61 +33,10 @@ describe('Certification | Evaluation | Unit | Application | Controller | certifi
         challengeRecId: 'rec43mpMIR5dUzdjh',
         juryId: 7,
       });
-    });
-
-    it('returns 204', async function () {
-      // given
-      const request = {
-        payload: {
-          data: {
-            attributes: {
-              certificationCourseId: 1,
-              challengeRecId: 'rec43mpMIR5dUzdjh',
-            },
-          },
-        },
-        auth: { credentials: { userId: 7 } },
-      };
-      sinon.stub(usecases, 'neutralizeChallenge');
-
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
-      // when
-      const response = await certificationAdminController.neutralizeChallenge(request, hFake, { events: eventsStub });
-
-      // then
+      expect(usecases.handleCertificationRescoring).to.have.been.calledOnceWithExactly({
+        event: new ChallengeNeutralized({ certificationCourseId: 1, juryId: 7 }),
+      });
       expect(response.statusCode).to.equal(204);
-    });
-
-    it('dispatches an event', async function () {
-      // given
-      const request = {
-        payload: {
-          data: {
-            attributes: {
-              certificationCourseId: 1,
-              challengeRecId: 'rec43mpMIR5dUzdjh',
-            },
-          },
-        },
-        auth: { credentials: { userId: 7 } },
-      };
-      const eventToBeDispatched = new ChallengeNeutralized({ certificationCourseId: 1, juryId: 7 });
-      sinon.stub(usecases, 'neutralizeChallenge').resolves(eventToBeDispatched);
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
-
-      // when
-      await certificationAdminController.neutralizeChallenge(request, hFake, { events: eventsStub });
-
-      // then
-      expect(eventsStub.eventDispatcher.dispatch).to.have.been.calledWithExactly(eventToBeDispatched);
     });
   });
 
@@ -107,15 +54,13 @@ describe('Certification | Evaluation | Unit | Application | Controller | certifi
         },
         auth: { credentials: { userId: 7 } },
       };
-      sinon.stub(usecases, 'deneutralizeChallenge');
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
+      sinon
+        .stub(usecases, 'deneutralizeChallenge')
+        .resolves(new ChallengeDeneutralized({ certificationCourseId: 1, juryId: 7 }));
+      sinon.stub(usecases, 'handleCertificationRescoring').resolves();
 
       // when
-      await certificationAdminController.deneutralizeChallenge(request, hFake, { events: eventsStub });
+      const response = await certificationAdminController.deneutralizeChallenge(request, hFake);
 
       // then
       expect(usecases.deneutralizeChallenge).to.have.been.calledWithExactly({
@@ -123,61 +68,10 @@ describe('Certification | Evaluation | Unit | Application | Controller | certifi
         challengeRecId: 'rec43mpMIR5dUzdjh',
         juryId: 7,
       });
-    });
-
-    it('returns 204', async function () {
-      // given
-      const request = {
-        payload: {
-          data: {
-            attributes: {
-              certificationCourseId: 1,
-              challengeRecId: 'rec43mpMIR5dUzdjh',
-            },
-          },
-        },
-        auth: { credentials: { userId: 7 } },
-      };
-      sinon.stub(usecases, 'deneutralizeChallenge');
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
-      // when
-      const response = await certificationAdminController.deneutralizeChallenge(request, hFake, { events: eventsStub });
-
-      // then
+      expect(usecases.handleCertificationRescoring).to.have.been.calledOnceWithExactly({
+        event: new ChallengeDeneutralized({ certificationCourseId: 1, juryId: 7 }),
+      });
       expect(response.statusCode).to.equal(204);
-    });
-
-    it('dispatches the event', async function () {
-      // given
-      const request = {
-        payload: {
-          data: {
-            attributes: {
-              certificationCourseId: 1,
-              challengeRecId: 'rec43mpMIR5dUzdjh',
-            },
-          },
-        },
-        auth: { credentials: { userId: 7 } },
-      };
-      const eventToBeDispatched = new ChallengeDeneutralized({ certificationCourseId: 1, juryId: 7 });
-
-      sinon.stub(usecases, 'deneutralizeChallenge').resolves(eventToBeDispatched);
-      const eventsStub = {
-        eventDispatcher: {
-          dispatch: sinon.stub(),
-        },
-      };
-
-      // when
-      await certificationAdminController.deneutralizeChallenge(request, hFake, { events: eventsStub });
-
-      // then
-      expect(eventsStub.eventDispatcher.dispatch).to.have.been.calledWithExactly(eventToBeDispatched);
     });
   });
 });

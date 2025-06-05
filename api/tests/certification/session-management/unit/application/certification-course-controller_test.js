@@ -11,7 +11,6 @@ describe('Certification | Session Management | Unit | Application | Controller |
       const rejectCertificationCourse = sinon.stub(usecases, 'rejectCertificationCourse');
       const certificationCourseId = 12;
       const juryId = 456;
-      const events = { eventDispatcher: { dispatch: sinon.stub() } };
       const certificationCourseRejectedEvent = new CertificationCourseRejected({ certificationCourseId, juryId });
       rejectCertificationCourse.withArgs({ certificationCourseId, juryId }).resolves(certificationCourseRejectedEvent);
 
@@ -22,13 +21,12 @@ describe('Certification | Session Management | Unit | Application | Controller |
         },
       };
 
-      const response = await certificationCourseController.reject(request, hFake, { events });
+      const response = await certificationCourseController.reject(request, hFake);
 
       expect(rejectCertificationCourse).to.have.been.calledWithExactly({
         certificationCourseId,
         juryId,
       });
-      expect(events.eventDispatcher.dispatch).to.have.been.calledWithExactly(certificationCourseRejectedEvent);
       expect(response.statusCode).to.equal(204);
     });
   });
@@ -38,7 +36,6 @@ describe('Certification | Session Management | Unit | Application | Controller |
       const unrejectCertificationCourse = sinon.stub(usecases, 'unrejectCertificationCourse');
       const certificationCourseId = 12;
       const juryId = 456;
-      const events = { eventDispatcher: { dispatch: sinon.stub() } };
       const certificationCourseRejectedEvent = new CertificationCourseUnrejected({ certificationCourseId, juryId });
       unrejectCertificationCourse
         .withArgs({ certificationCourseId, juryId })
@@ -51,13 +48,12 @@ describe('Certification | Session Management | Unit | Application | Controller |
         },
       };
 
-      const response = await certificationCourseController.unreject(request, hFake, { events });
+      const response = await certificationCourseController.unreject(request, hFake);
 
       expect(unrejectCertificationCourse).to.have.been.calledWithExactly({
         certificationCourseId,
         juryId,
       });
-      expect(events.eventDispatcher.dispatch).to.have.been.calledWithExactly(certificationCourseRejectedEvent);
       expect(response.statusCode).to.equal(204);
     });
   });

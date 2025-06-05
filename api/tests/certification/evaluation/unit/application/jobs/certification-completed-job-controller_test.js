@@ -105,7 +105,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
           expect(AssessmentResultFactory.buildAlgoErrorResult).to.not.have.been.called;
           expect(assessmentResultRepository.save).to.not.have.been.called;
           expect(certificationCourseRepository.update).to.not.have.been.called;
-          expect(events.eventDispatcher.dispatch).to.not.have.been.called;
         });
       });
 
@@ -153,7 +152,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               completedAt: new Date(clock.now),
             }),
           });
-          expect(events.eventDispatcher.dispatch).to.not.have.been.called;
         });
       });
 
@@ -255,7 +253,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
 
           // then
           expect(certificationCourseRepository.update).to.not.have.been.called;
-          expect(events.eventDispatcher.dispatch).to.not.have.been.called;
         });
       });
     });
