@@ -130,7 +130,7 @@ describe('Certification | Session Management | Acceptance | Application | Routes
         const userId = (await insertUserWithRoleSuperAdmin()).id;
 
         const session = databaseBuilder.factory.buildSession({
-          publishedAt: new Date('2018-12-01T01:02:03Z'),
+          finalizedAt: new Date('2018-12-01T01:02:03Z'),
         });
 
         const certificationCourse = databaseBuilder.factory.buildCertificationCourse({
@@ -188,7 +188,7 @@ describe('Certification | Session Management | Acceptance | Application | Routes
         });
 
         const session = databaseBuilder.factory.buildSession({
-          publishedAt: new Date('2018-12-01T01:02:03Z'),
+          finalizedAt: new Date('2018-12-01T01:02:03Z'),
           version: 3,
         });
 
@@ -268,7 +268,7 @@ describe('Certification | Session Management | Acceptance | Application | Routes
       const userId = (await insertUserWithRoleSuperAdmin()).id;
 
       const session = databaseBuilder.factory.buildSession({
-        publishedAt: new Date('2018-12-01T01:02:03Z'),
+        finalizedAt: new Date('2018-12-01T01:02:03Z'),
         version: AlgorithmEngineVersion.V3,
       });
 

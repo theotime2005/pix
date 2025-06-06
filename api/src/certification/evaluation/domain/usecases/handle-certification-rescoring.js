@@ -5,16 +5,18 @@
  * @typedef {import('./index.js').ScoringV2Service} ScoringV2Service
  * @typedef {import('./index.js').CertificationCourseRepository} CertificationCourseRepository
  * @typedef {import('./index.js').ComplementaryCertificationScoringCriteriaRepository} ComplementaryCertificationScoringCriteriaRepository
+ * @typedef {import('./index.js').EvaluationSessionRepository} EvaluationSessionRepository
  * @typedef {import('./index.js').Services} Services
  */
 import { V3_REPRODUCIBILITY_RATE } from '../../../../shared/domain/constants.js';
-import { CertificationComputeError } from '../../../../shared/domain/errors.js';
+import { CertificationComputeError, NotFinalizedSessionError } from '../../../../shared/domain/errors.js';
 import CertificationCancelled from '../../../../shared/domain/events/CertificationCancelled.js';
 import { CertificationCourseUnrejected } from '../../../../shared/domain/events/CertificationCourseUnrejected.js';
 import { CertificationRescoringCompleted } from '../../../../shared/domain/events/CertificationRescoringCompleted.js';
 import CertificationUncancelled from '../../../../shared/domain/events/CertificationUncancelled.js';
 import { checkEventTypes } from '../../../../shared/domain/events/check-event-types.js';
 import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
+import { SessionAlreadyPublishedError } from '../../../session-management/domain/errors.js';
 import { CertificationCourseRejected } from '../../../session-management/domain/events/CertificationCourseRejected.js';
 import { CertificationJuryDone } from '../../../session-management/domain/events/CertificationJuryDone.js';
 import { AlgorithmEngineVersion } from '../../../shared/domain/models/AlgorithmEngineVersion.js';
@@ -40,22 +42,33 @@ const eventTypes = [
  * @param {ScoringCertificationService} params.scoringCertificationService
  * @param {CertificationCourseRepository} params.certificationCourseRepository
  * @param {ComplementaryCertificationScoringCriteriaRepository} params.complementaryCertificationScoringCriteriaRepository
- * @typedef {certificationCourseRepository} CertificationCourseRepository
- * @typedef {services} Services
+ * @param {CertificationCourseRepository} params.certificationCourseRepository
+ * @param {EvaluationSessionRepository} params.evaluationSessionRepository
+ * @param {Services} services
+ *
+ * @returns {Promise<void>}
+ * @throws {Error} unrecognized event
+ * @throws {NotFinalizedSessionError}
+ * @throws {SessionAlreadyPublishedError}
  */
 async function handleCertificationRescoring({
   event,
-  scoringCertificationService,
   assessmentResultRepository,
   certificationAssessmentRepository,
   certificationCourseRepository,
   complementaryCertificationScoringCriteriaRepository,
+  evaluationSessionRepository,
+  scoringCertificationService,
   services,
 }) {
   checkEventTypes(event, eventTypes);
 
+  const certificationCourseId = event.certificationCourseId;
+
+  await _verifySessionIsPublishable({ certificationCourseId, evaluationSessionRepository });
+
   const certificationAssessment = await certificationAssessmentRepository.getByCertificationCourseId({
-    certificationCourseId: event.certificationCourseId,
+    certificationCourseId,
   });
 
   if (certificationAssessment.isScoringBlockedDueToComplementaryOnlyChallenges) {
@@ -83,6 +96,27 @@ async function handleCertificationRescoring({
     services,
   });
 }
+
+/**
+ * @param {Object} params
+ * @param {number} params.certificationCourseId
+ * @param {EvaluationSessionRepository} params.evaluationSessionRepository
+ *
+ * @returns {Promise<void>}
+ * @throws {NotFinalizedSessionError}
+ * @throws {SessionAlreadyPublishedError}
+ */
+const _verifySessionIsPublishable = async ({ certificationCourseId, evaluationSessionRepository }) => {
+  const session = await evaluationSessionRepository.getByCertificationCourseId({ certificationCourseId });
+
+  if (!session.isFinalized) {
+    throw new NotFinalizedSessionError();
+  }
+
+  if (session.isPublished) {
+    throw new SessionAlreadyPublishedError();
+  }
+};
 
 async function _handleV2CertificationScoring({
   event,

@@ -15,11 +15,7 @@ describe('Integration | Repository | certification-rescoring-repository', functi
       });
 
       // then
-      expect(error).to.deepEqualInstance(
-        new NotFoundError(
-          `L'assessment de certification avec un certificationCourseId de ${certificationCancelledEvent.certificationCourseId} n'existe pas ou son accès est restreint`,
-        ),
-      );
+      expect(error).to.deepEqualInstance(new NotFoundError('Certification course does not exist'));
     });
   });
 });

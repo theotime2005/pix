@@ -1,28 +1,82 @@
 import { ChallengeDeneutralized } from '../../../../../../src/certification/evaluation/domain/events/ChallengeDeneutralized.js';
 import { ChallengeNeutralized } from '../../../../../../src/certification/evaluation/domain/events/ChallengeNeutralized.js';
 import { handleCertificationRescoring } from '../../../../../../src/certification/evaluation/domain/usecases/handle-certification-rescoring.js';
+import { SessionAlreadyPublishedError } from '../../../../../../src/certification/session-management/domain/errors.js';
 import { CertificationCourseRejected } from '../../../../../../src/certification/session-management/domain/events/CertificationCourseRejected.js';
 import { CertificationJuryDone } from '../../../../../../src/certification/session-management/domain/events/CertificationJuryDone.js';
 import { CertificationAssessment } from '../../../../../../src/certification/session-management/domain/models/CertificationAssessment.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
 import { ABORT_REASONS } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
-import { CertificationComputeError } from '../../../../../../src/shared/domain/errors.js';
+import { CertificationComputeError, NotFinalizedSessionError } from '../../../../../../src/shared/domain/errors.js';
 import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
-import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
+import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | Events | handle-certification-rescoring', function () {
+  describe('session is not in a publishable state', function () {
+    it('should reject to do a rescoring is session is still in progress', async function () {
+      // given
+
+      const certificationCourseId = 123;
+      const sessionNotFinalized = domainBuilder.certification.evaluation.buildResultsSession();
+      const evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(sessionNotFinalized) };
+
+      const event = new CertificationCourseRejected({
+        certificationCourseId,
+      });
+
+      // when
+      const error = await catchErr(handleCertificationRescoring)({
+        event,
+        evaluationSessionRepository,
+      });
+
+      // then
+      expect(evaluationSessionRepository.getByCertificationCourseId).to.have.been.calledOnceWithExactly({
+        certificationCourseId,
+      });
+      expect(error).to.be.instanceOf(NotFinalizedSessionError);
+    });
+
+    it('should reject to do a rescoring on a published session', async function () {
+      // given
+
+      const certificationCourseId = 123;
+      const sessionStillPublished = domainBuilder.certification.evaluation.buildResultsSession.published();
+      const evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(sessionStillPublished) };
+
+      const event = new CertificationCourseRejected({
+        certificationCourseId,
+      });
+
+      // when
+      const error = await catchErr(handleCertificationRescoring)({
+        event,
+        evaluationSessionRepository,
+      });
+
+      // then
+      expect(evaluationSessionRepository.getByCertificationCourseId).to.have.been.calledOnceWithExactly({
+        certificationCourseId,
+      });
+      expect(error).to.be.instanceOf(SessionAlreadyPublishedError);
+    });
+  });
+
   describe('when handling a v3 certification', function () {
     let assessmentResultRepository,
       certificationCourseRepository,
-      services,
       certificationAssessmentRepository,
-      scoringCertificationService,
       complementaryCertificationScoringCriteriaRepository,
+      evaluationSessionRepository,
+      scoringCertificationService,
+      services,
       dependencies;
 
     beforeEach(function () {
       certificationAssessmentRepository = { getByCertificationCourseId: sinon.stub() };
       certificationCourseRepository = { update: sinon.stub() };
+      const session = domainBuilder.certification.evaluation.buildResultsSession.finalized();
+      evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(session) };
       services = { handleV3CertificationScoring: sinon.stub(), handleV2CertificationScoring: sinon.stub() };
 
       dependencies = {
@@ -30,6 +84,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         certificationAssessmentRepository,
         certificationCourseRepository,
         complementaryCertificationScoringCriteriaRepository,
+        evaluationSessionRepository,
         scoringCertificationService,
         services,
       };
@@ -247,10 +302,11 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
   describe('when handling a v2 certification', function () {
     let assessmentResultRepository,
       certificationCourseRepository,
-      services,
       certificationAssessmentRepository,
-      scoringCertificationService,
       complementaryCertificationScoringCriteriaRepository,
+      evaluationSessionRepository,
+      scoringCertificationService,
+      services,
       dependencies;
 
     beforeEach(function () {
@@ -258,6 +314,8 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         get: sinon.stub(),
         update: sinon.stub(),
       };
+      const session = domainBuilder.certification.evaluation.buildResultsSession.finalized();
+      evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(session) };
       assessmentResultRepository = { save: sinon.stub() };
       certificationAssessmentRepository = { getByCertificationCourseId: sinon.stub() };
       scoringCertificationService = {
@@ -276,6 +334,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         certificationAssessmentRepository,
         certificationCourseRepository,
         complementaryCertificationScoringCriteriaRepository,
+        evaluationSessionRepository,
         scoringCertificationService,
         services,
       };

@@ -8,4 +8,20 @@ const buildSession = function ({ id = 123, isFinalized = false, isPublished = fa
   });
 };
 
+buildSession.finalized = ({ id = 123 } = {}) => {
+  return new Session({
+    id,
+    finalizedAt: new Date('2020-01-01'),
+    publishedAt: null,
+  });
+};
+
+buildSession.published = ({ id = 123 } = {}) => {
+  return new Session({
+    id,
+    finalizedAt: new Date('2020-01-01'),
+    publishedAt: new Date('2020-01-01'),
+  });
+};
+
 export { buildSession as buildResultsSession };
