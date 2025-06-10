@@ -1,5 +1,4 @@
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
-import { usecases } from '../../../../certification/evaluation/domain/usecases/index.js';
 import { JobController } from '../../../../shared/application/jobs/job-controller.js';
 import { CertificationComputeError } from '../../../../shared/domain/errors.js';
 import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
@@ -81,7 +80,7 @@ async function _handleV2CertificationScoring({
       });
 
     if (complementaryCertificationScoringCriteria.length > 0) {
-      await usecases.scoreComplementaryCertificationV2({
+      await services.scoreComplementaryCertificationV2({
         certificationCourseId: certificationCourse.getId(),
         complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
       });

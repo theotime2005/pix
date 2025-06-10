@@ -1,6 +1,5 @@
 import { CertificationCompletedJobController } from '../../../../../../src/certification/evaluation/application/jobs/certification-completed-job-controller.js';
 import { CertificationCompletedJob } from '../../../../../../src/certification/evaluation/domain/events/CertificationCompleted.js';
-import { usecases } from '../../../../../../src/certification/evaluation/domain/usecases/index.js';
 import { AssessmentResultFactory } from '../../../../../../src/certification/scoring/domain/models/factories/AssessmentResultFactory.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
 import {
@@ -27,7 +26,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
 
   let now;
   let clock;
-  let events;
 
   beforeEach(function () {
     clock = sinon.useFakeTimers({ now: new Date('2019-01-01T05:06:07Z'), toFake: ['Date'] });
@@ -38,6 +36,7 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
     services = {
       handleV2CertificationScoring: sinon.stub(),
       handleV3CertificationScoring: sinon.stub(),
+      scoreComplementaryCertificationV2: sinon.stub(),
     };
     certificationAssessmentRepository = { get: sinon.stub() };
     assessmentResultRepository = { save: sinon.stub() };
@@ -53,9 +52,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
     flashAlgorithmConfigurationRepository = { getMostRecentBeforeDate: sinon.stub() };
     certificationAssessmentHistoryRepository = { save: sinon.stub() };
     complementaryCertificationScoringCriteriaRepository = { findByCertificationCourseId: sinon.stub() };
-    events = { eventDispatcher: { dispatch: sinon.stub() } };
-
-    sinon.stub(usecases, 'scoreComplementaryCertificationV2');
   });
 
   afterEach(function () {
@@ -191,7 +187,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
             complementaryCertificationScoringCriteriaRepository,
             competenceMarkRepository,
             services,
-            events,
           };
 
           // when
@@ -204,7 +199,7 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               completedAt: new Date(clock.now),
             }),
           });
-          expect(usecases.scoreComplementaryCertificationV2).to.have.been.calledOnceWithExactly({
+          expect(services.scoreComplementaryCertificationV2).to.have.been.calledOnceWithExactly({
             certificationCourseId: 1234,
             complementaryCertificationScoringCriteria,
           });
@@ -245,7 +240,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
             certificationCourseRepository,
             competenceMarkRepository,
             services,
-            events,
           };
 
           // when
@@ -326,7 +320,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               flashAlgorithmConfigurationRepository,
               flashAlgorithmService,
               certificationAssessmentHistoryRepository,
-              events,
             };
 
             // when
@@ -369,7 +362,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
               flashAlgorithmConfigurationRepository,
               flashAlgorithmService,
               certificationAssessmentHistoryRepository,
-              events,
             };
 
             // when
@@ -412,7 +404,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                 flashAlgorithmConfigurationRepository,
                 flashAlgorithmService,
                 certificationAssessmentHistoryRepository,
-                events,
               };
 
               // when
@@ -455,7 +446,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
                 flashAlgorithmConfigurationRepository,
                 flashAlgorithmService,
                 certificationAssessmentHistoryRepository,
-                events,
               };
 
               // when

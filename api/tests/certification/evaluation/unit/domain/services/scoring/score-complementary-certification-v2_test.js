@@ -1,11 +1,11 @@
 import range from 'lodash/range.js';
 
-import { scoreComplementaryCertificationV2 } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification-v2.js';
-import { ComplementaryCertificationCourseResult } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
-import { status as assessmentResultStatuses } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
-import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
+import { scoreComplementaryCertificationV2 } from '../../../../../../../src/certification/evaluation/domain/services/scoring/score-complementary-certification-v2.js';
+import { ComplementaryCertificationCourseResult } from '../../../../../../../src/certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
+import { status as assessmentResultStatuses } from '../../../../../../../src/shared/domain/models/AssessmentResult.js';
+import { domainBuilder, expect, sinon } from '../../../../../../test-helper.js';
 
-describe('Unit | Domain | Usecases | Score Complementary Certification', function () {
+describe('Unit | Domain | Scoring | Score Complementary Certification', function () {
   const certificationAssessmentRepository = {};
   const complementaryCertificationCourseResultRepository = {};
   const assessmentResultRepository = {};

@@ -16,8 +16,11 @@ import * as assessmentResultRepository from '../../../../shared/infrastructure/r
 import * as challengeRepository from '../../../../shared/infrastructure/repositories/challenge-repository.js';
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
+import * as certificationAssessmentRepository from '../../../shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../shared/infrastructure/repositories/certification-course-repository.js';
 import * as competenceMarkRepository from '../../../shared/infrastructure/repositories/competence-mark-repository.js';
+import * as complementaryCertificationBadgesRepository from '../../../shared/infrastructure/repositories/complementary-certification-badge-repository.js';
+import * as complementaryCertificationCourseResultRepository from '../../../shared/infrastructure/repositories/complementary-certification-course-result-repository.js';
 import * as flashAlgorithmConfigurationRepository from '../../../shared/infrastructure/repositories/flash-algorithm-configuration-repository.js';
 import * as scoringConfigurationRepository from '../../../shared/infrastructure/repositories/scoring-configuration-repository.js';
 import * as certificationAssessmentHistoryRepository from '../../infrastructure/repositories/certification-assessment-history-repository.js';
@@ -44,6 +47,9 @@ import * as challengeCalibrationRepository from '../../infrastructure/repositori
  * @typedef {placementProfileService} PlacementProfileService
  * @typedef {scoringCertificationService} ScoringCertificationService
  * @typedef {certificationCandidateRepository} CertificationCandidateRepository
+ * @typedef {complementaryCertificationBadgesRepository} ComplementaryCertificationBadgesRepository
+ * @typedef {certificationAssessmentRepository} CertificationAssessmentRepository
+ * @typedef {complementaryCertificationCourseResultRepository} ComplementaryCertificationCourseResultRepository
  */
 const dependencies = {
   assessmentResultRepository,
@@ -63,6 +69,9 @@ const dependencies = {
   scoringService,
   scoringCertificationService,
   certificationCandidateRepository,
+  complementaryCertificationBadgesRepository,
+  certificationAssessmentRepository,
+  complementaryCertificationCourseResultRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));

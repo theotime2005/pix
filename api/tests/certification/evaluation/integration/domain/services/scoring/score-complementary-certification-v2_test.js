@@ -1,17 +1,17 @@
 import _ from 'lodash';
 
-import * as complementaryCertificationCourseResultRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
-import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
-import { scoreComplementaryCertificationV2 } from '../../../../../../src/certification/evaluation/domain/usecases/score-complementary-certification-v2.js';
-import { AutoJuryCommentKeys } from '../../../../../../src/certification/shared/domain/models/JuryComment.js';
-import * as certificationAssessmentRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
-import * as certificationCourseRepository from '../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
-import * as complementaryCertificationBadgesRepository from '../../../../../../src/certification/shared/infrastructure/repositories/complementary-certification-badge-repository.js';
-import { AnswerStatus } from '../../../../../../src/shared/domain/models/index.js';
-import * as assessmentResultRepository from '../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
-import { databaseBuilder, expect, knex } from '../../../../../test-helper.js';
+import * as complementaryCertificationCourseResultRepository from '../../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
+import { scoreComplementaryCertificationV2 } from '../../../../../../../src/certification/evaluation/domain/services/scoring/score-complementary-certification-v2.js';
+import { AutoJuryCommentKeys } from '../../../../../../../src/certification/shared/domain/models/JuryComment.js';
+import * as certificationAssessmentRepository from '../../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
+import * as certificationCourseRepository from '../../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
+import * as complementaryCertificationBadgesRepository from '../../../../../../../src/certification/shared/infrastructure/repositories/complementary-certification-badge-repository.js';
+import { AnswerStatus } from '../../../../../../../src/shared/domain/models/index.js';
+import * as assessmentResultRepository from '../../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
+import { databaseBuilder, expect, knex } from '../../../../../../test-helper.js';
 
-describe('Integration | Usecase | Score Complementary Certification', function () {
+describe('Integration | Services | Score Complementary Certification', function () {
   afterEach(async function () {
     await knex('complementary-certification-course-results').delete();
   });

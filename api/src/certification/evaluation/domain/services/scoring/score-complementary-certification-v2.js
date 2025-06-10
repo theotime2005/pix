@@ -1,9 +1,25 @@
-import { AnswerCollectionForScoring } from '../../../../shared/domain/models/AnswerCollectionForScoring.js';
-import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
-import { ReproducibilityRate } from '../../../../shared/domain/models/ReproducibilityRate.js';
-import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
+/**
+ * @typedef {import('../index.js').AssessmentResultRepository} AssessmentResultRepository
+ * @typedef {import('../index.js').CertificationAssessmentRepository} CertificationAssessmentRepository
+ * @typedef {import('../index.js').CertificationAssessmentHistoryRepository} ComplementaryCertificationCourseResultRepository
+ * @typedef {import('../index.js').CertificationCourseRepository} CertificationCourseRepository
+ * @typedef {import('../index.js').ComplementaryCertificationBadgesRepository} ComplementaryCertificationBadgesRepository
+ */
 
+import { AnswerCollectionForScoring } from '../../../../../shared/domain/models/AnswerCollectionForScoring.js';
+import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../../shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
+import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../../shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
+import { ReproducibilityRate } from '../../../../../shared/domain/models/ReproducibilityRate.js';
+import { ComplementaryCertificationCourseResult } from '../../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
+
+/**
+ * @param {Object} params
+ * @param {AssessmentResultRepository} params.assessmentResultRepository
+ * @param {CertificationAssessmentRepository} params.certificationAssessmentRepository
+ * @param {ComplementaryCertificationCourseResultRepository} params.complementaryCertificationCourseResultRepository
+ * @param {CertificationCourseRepository} params.certificationCourseRepository
+ * @param {ComplementaryCertificationBadgesRepository} params.complementaryCertificationBadgesRepository
+ */
 export async function scoreComplementaryCertificationV2({
   certificationCourseId,
   complementaryCertificationScoringCriteria,
