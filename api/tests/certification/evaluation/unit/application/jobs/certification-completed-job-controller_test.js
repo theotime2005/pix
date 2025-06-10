@@ -1,13 +1,12 @@
 import { CertificationCompletedJobController } from '../../../../../../src/certification/evaluation/application/jobs/certification-completed-job-controller.js';
 import { CertificationCompletedJob } from '../../../../../../src/certification/evaluation/domain/events/CertificationCompleted.js';
-import { AssessmentResultFactory } from '../../../../../../src/certification/scoring/domain/models/factories/AssessmentResultFactory.js';
+import { usecases } from '../../../../../../src/certification/evaluation/domain/usecases/index.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
 import {
   ABORT_REASONS,
   CertificationCourse,
 } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
-import { CertificationComputeError } from '../../../../../../src/shared/domain/errors.js';
-import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
+import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | Certification | Application | jobs | CertificationCompletedJobController', function () {
   let certificationCompletedJobController;
@@ -15,7 +14,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
   let assessmentResultRepository;
   let certificationCourseRepository;
   let scoringConfigurationRepository;
-  let complementaryCertificationScoringCriteriaRepository;
   let competenceMarkRepository;
   let answerRepository;
   let flashAlgorithmConfigurationRepository;
@@ -51,7 +49,6 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
     answerRepository = { findByAssessment: sinon.stub() };
     flashAlgorithmConfigurationRepository = { getMostRecentBeforeDate: sinon.stub() };
     certificationAssessmentHistoryRepository = { save: sinon.stub() };
-    complementaryCertificationScoringCriteriaRepository = { findByCertificationCourseId: sinon.stub() };
   });
 
   afterEach(function () {
@@ -82,175 +79,24 @@ describe('Unit | Certification | Application | jobs | CertificationCompletedJobC
         certificationAssessmentRepository.get.withArgs(assessmentId).resolves(certificationAssessment);
       });
 
-      context('when an error different from a compute error happens', function () {
-        it('should not save any results', async function () {
-          // given
-          const otherError = new Error();
-          services.handleV2CertificationScoring.rejects(otherError);
-          sinon.stub(AssessmentResultFactory, 'buildAlgoErrorResult');
+      it('should call the scoreCompletedV2Certification usecase', async function () {
+        // given
+        sinon.stub(usecases, 'scoreCompletedV2Certification');
 
-          const dependencies = {
-            certificationAssessmentRepository,
-            services,
-          };
-
-          // when
-          await catchErr(certificationCompletedJobController.handle)(data, dependencies);
-
-          // then
-          expect(AssessmentResultFactory.buildAlgoErrorResult).to.not.have.been.called;
-          expect(assessmentResultRepository.save).to.not.have.been.called;
-          expect(certificationCourseRepository.update).to.not.have.been.called;
+        // when
+        await certificationCompletedJobController.handle({
+          data,
+          dependencies: { certificationAssessmentRepository },
         });
-      });
 
-      context('when an error of type CertificationComputeError happens while scoring the assessment', function () {
-        it('should save the error result appropriately', async function () {
-          // given
-          const errorAssessmentResult = domainBuilder.buildAssessmentResult({ id: 98 });
-          const certificationCourse = domainBuilder.buildCertificationCourse({
-            id: certificationCourseId,
-            completedAt: null,
-          });
-          const computeError = new CertificationComputeError();
-
-          services.handleV2CertificationScoring.rejects(computeError);
-          sinon.stub(AssessmentResultFactory, 'buildAlgoErrorResult').returns(errorAssessmentResult);
-          assessmentResultRepository.save.resolves(errorAssessmentResult);
-          certificationCourseRepository.get
-            .withArgs({ id: certificationAssessment.certificationCourseId })
-            .resolves(certificationCourse);
-          certificationCourseRepository.update.resolves(certificationCourse);
-
-          const dependencies = {
-            assessmentResultRepository,
-            certificationCourseRepository,
-            competenceMarkRepository,
-            certificationAssessmentRepository,
-            services,
-          };
-
-          // when
-          await certificationCompletedJobController.handle({ data, dependencies });
-
-          // then
-          expect(AssessmentResultFactory.buildAlgoErrorResult).to.have.been.calledWithExactly({
-            error: computeError,
-            assessmentId: certificationAssessment.id,
-          });
-          expect(assessmentResultRepository.save).to.have.been.calledWithExactly({
-            certificationCourseId: 1234,
-            assessmentResult: errorAssessmentResult,
-          });
-          expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-            certificationCourse: new CertificationCourse({
-              ...certificationCourse.toDTO(),
-              completedAt: new Date(clock.now),
-            }),
-          });
-        });
-      });
-
-      context('when scoring is successful', function () {
-        it('should save a complete certification course', async function () {
-          // given
-          const certificationCourse = domainBuilder.buildCertificationCourse({
-            id: certificationCourseId,
-            completedAt: null,
-            isCancelled: false,
-            abortReason: null,
-          });
-
-          certificationCourseRepository.update.resolves(certificationCourse);
-          services.handleV2CertificationScoring.resolves({ certificationCourse });
-
-          const complementaryCertificationScoringCriteria =
-            domainBuilder.buildComplementaryCertificationScoringCriteria({
-              complementaryCertificationCourseId: 999,
-              complementaryCertificationBadgeId: 888,
-              minimumReproducibilityRate: 75,
-              minimumReproducibilityRateLowerLevel: 60,
-              minimumEarnedPix: 20,
-              complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-              hasComplementaryReferential: true,
-            });
-          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-            .withArgs({
-              certificationCourseId: 1234,
-            })
-            .resolves([complementaryCertificationScoringCriteria]);
-
-          const dependencies = {
-            assessmentResultRepository,
-            certificationAssessmentRepository,
-            certificationCourseRepository,
-            complementaryCertificationScoringCriteriaRepository,
-            competenceMarkRepository,
-            services,
-          };
-
-          // when
-          await certificationCompletedJobController.handle({ data, dependencies });
-
-          // then
-          expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-            certificationCourse: new CertificationCourse({
-              ...certificationCourse.toDTO(),
-              completedAt: new Date(clock.now),
-            }),
-          });
-          expect(services.scoreComplementaryCertificationV2).to.have.been.calledOnceWithExactly({
-            certificationCourseId: 1234,
-            complementaryCertificationScoringCriteria,
-          });
-        });
-      });
-
-      context('when assessment only has only complementary certification challenges', function () {
-        it('should return', async function () {
-          // given
-          const certificationAssessmentWithOnlyComplementaryCertificationChallenges =
-            domainBuilder.buildCertificationAssessment({
-              id: assessmentId,
-              certificationCourseId,
-              userId,
-              version: AlgorithmEngineVersion.V2,
-              certificationChallenges: [
-                domainBuilder.buildCertificationChallengeWithType({
-                  id: 1234,
-                  certifiableBadgeKey: 'TOTO',
-                }),
-                domainBuilder.buildCertificationChallengeWithType({
-                  id: 567,
-                  certifiableBadgeKey: 'TOTO',
-                }),
-                domainBuilder.buildCertificationChallengeWithType({
-                  id: 8910,
-                  certifiableBadgeKey: 'TOTO',
-                }),
-              ],
-            });
-          certificationAssessmentRepository.get
-            .withArgs(assessmentId)
-            .resolves(certificationAssessmentWithOnlyComplementaryCertificationChallenges);
-
-          const dependencies = {
-            assessmentResultRepository,
-            certificationAssessmentRepository,
-            certificationCourseRepository,
-            competenceMarkRepository,
-            services,
-          };
-
-          // when
-          await certificationCompletedJobController.handle({ data, dependencies });
-
-          // then
-          expect(certificationCourseRepository.update).to.not.have.been.called;
+        // then
+        expect(usecases.scoreCompletedV2Certification).to.have.been.calledWithExactly({
+          certificationAssessment,
         });
       });
     });
 
+    // TODO: move to usecase unit
     context('when certification is V3', function () {
       let data;
       let certificationAssessment;

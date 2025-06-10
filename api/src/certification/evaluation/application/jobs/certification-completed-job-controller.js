@@ -1,13 +1,12 @@
 import * as complementaryCertificationScoringCriteriaRepository from '../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import { JobController } from '../../../../shared/application/jobs/job-controller.js';
-import { CertificationComputeError } from '../../../../shared/domain/errors.js';
-import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
 import { assessmentResultRepository } from '../../../session-management/infrastructure/repositories/index.js';
 import { AlgorithmEngineVersion } from '../../../shared/domain/models/AlgorithmEngineVersion.js';
 import * as certificationAssessmentRepository from '../../../shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../shared/infrastructure/repositories/certification-course-repository.js';
 import { CertificationCompletedJob } from '../../domain/events/CertificationCompleted.js';
 import { services } from '../../domain/services/index.js';
+import { usecases } from '../../domain/usecases/index.js';
 
 export class CertificationCompletedJobController extends JobController {
   constructor() {
@@ -26,13 +25,7 @@ export class CertificationCompletedJobController extends JobController {
   }) {
     const { assessmentId, locale } = data;
 
-    const {
-      assessmentResultRepository,
-      certificationAssessmentRepository,
-      certificationCourseRepository,
-      services,
-      complementaryCertificationScoringCriteriaRepository,
-    } = dependencies;
+    const { certificationAssessmentRepository, certificationCourseRepository, services } = dependencies;
 
     const certificationAssessment = await certificationAssessmentRepository.get(assessmentId);
 
@@ -48,55 +41,49 @@ export class CertificationCompletedJobController extends JobController {
         services,
       });
     } else {
-      await _handleV2CertificationScoring({
-        certificationAssessment,
-        assessmentResultRepository,
-        certificationCourseRepository,
-        complementaryCertificationScoringCriteriaRepository,
-        services,
-      });
+      await usecases.scoreCompletedV2Certification({ certificationAssessment });
     }
   }
 }
 
-async function _handleV2CertificationScoring({
-  certificationAssessment,
-  assessmentResultRepository,
-  certificationCourseRepository,
-  complementaryCertificationScoringCriteriaRepository,
-  services,
-}) {
-  try {
-    const { certificationCourse } = await services.handleV2CertificationScoring({
-      certificationAssessment,
-    });
+// async function _handleV2CertificationScoring({
+//   certificationAssessment,
+//   assessmentResultRepository,
+//   certificationCourseRepository,
+//   complementaryCertificationScoringCriteriaRepository,
+//   services,
+// }) {
+//   try {
+//     const { certificationCourse } = await services.handleV2CertificationScoring({
+//       certificationAssessment,
+//     });
 
-    certificationCourse.complete({ now: new Date() });
-    await certificationCourseRepository.update({ certificationCourse });
+//     certificationCourse.complete({ now: new Date() });
+//     await certificationCourseRepository.update({ certificationCourse });
 
-    const complementaryCertificationScoringCriteria =
-      await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
-        certificationCourseId: certificationCourse.getId(),
-      });
+//     const complementaryCertificationScoringCriteria =
+//       await complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId({
+//         certificationCourseId: certificationCourse.getId(),
+//       });
 
-    if (complementaryCertificationScoringCriteria.length > 0) {
-      await services.scoreComplementaryCertificationV2({
-        certificationCourseId: certificationCourse.getId(),
-        complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
-      });
-    }
-  } catch (error) {
-    if (!(error instanceof CertificationComputeError)) {
-      throw error;
-    }
-    await _saveResultAfterCertificationComputeError({
-      certificationAssessment,
-      assessmentResultRepository,
-      certificationCourseRepository,
-      certificationComputeError: error,
-    });
-  }
-}
+//     if (complementaryCertificationScoringCriteria.length > 0) {
+//       await services.scoreComplementaryCertificationV2({
+//         certificationCourseId: certificationCourse.getId(),
+//         complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+//       });
+//     }
+//   } catch (error) {
+//     if (!(error instanceof CertificationComputeError)) {
+//       throw error;
+//     }
+//     await _saveResultAfterCertificationComputeError({
+//       certificationAssessment,
+//       assessmentResultRepository,
+//       certificationCourseRepository,
+//       certificationComputeError: error,
+//     });
+//   }
+// }
 
 async function _handleV3CertificationScoring({
   certificationAssessment,
@@ -114,23 +101,23 @@ async function _handleV3CertificationScoring({
   return certificationCourseRepository.update({ certificationCourse });
 }
 
-async function _saveResultAfterCertificationComputeError({
-  certificationAssessment,
-  assessmentResultRepository,
-  certificationCourseRepository,
-  certificationComputeError,
-}) {
-  const certificationCourse = await certificationCourseRepository.get({
-    id: certificationAssessment.certificationCourseId,
-  });
-  const assessmentResult = AssessmentResultFactory.buildAlgoErrorResult({
-    error: certificationComputeError,
-    assessmentId: certificationAssessment.id,
-  });
-  await assessmentResultRepository.save({
-    certificationCourseId: certificationAssessment.certificationCourseId,
-    assessmentResult,
-  });
-  certificationCourse.complete({ now: new Date() });
-  return certificationCourseRepository.update({ certificationCourse });
-}
+// async function _saveResultAfterCertificationComputeError({
+//   certificationAssessment,
+//   assessmentResultRepository,
+//   certificationCourseRepository,
+//   certificationComputeError,
+// }) {
+//   const certificationCourse = await certificationCourseRepository.get({
+//     id: certificationAssessment.certificationCourseId,
+//   });
+//   const assessmentResult = AssessmentResultFactory.buildAlgoErrorResult({
+//     error: certificationComputeError,
+//     assessmentId: certificationAssessment.id,
+//   });
+//   await assessmentResultRepository.save({
+//     certificationCourseId: certificationAssessment.certificationCourseId,
+//     assessmentResult,
+//   });
+//   certificationCourse.complete({ now: new Date() });
+//   return certificationCourseRepository.update({ certificationCourse });
+// }
