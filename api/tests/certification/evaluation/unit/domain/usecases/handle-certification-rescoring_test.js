@@ -7,8 +7,9 @@ import { CertificationJuryDone } from '../../../../../../src/certification/sessi
 import { CertificationAssessment } from '../../../../../../src/certification/session-management/domain/models/CertificationAssessment.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
 import { ABORT_REASONS } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
+import { ComplementaryCertificationKeys } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
 import { CertificationComputeError, NotFinalizedSessionError } from '../../../../../../src/shared/domain/errors.js';
-import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
+import { AssessmentResult, ComplementaryCertification } from '../../../../../../src/shared/domain/models/index.js';
 import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | Events | handle-certification-rescoring', function () {
@@ -323,6 +324,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
       };
       services = {
         handleV2CertificationScoring: sinon.stub(),
+        scoreComplementaryCertificationV2: sinon.stub(),
       };
 
       complementaryCertificationScoringCriteriaRepository = {
@@ -788,6 +790,67 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         // then
         expect(services.handleV2CertificationScoring).to.not.have.been.called;
         expect(assessmentResultRepository.save).to.not.have.been.called;
+      });
+    });
+
+    context('when certification is a complementary certification', function () {
+      it('should also trigger the complementary certification scoring', async function () {
+        // given
+        const certificationCourseId = 1;
+        const event = new ChallengeNeutralized({ certificationCourseId, juryId: 7 });
+        const certificationAssessment = new CertificationAssessment({
+          id: 123,
+          userId: 123,
+          certificationCourseId,
+          createdAt: new Date('2020-01-01'),
+          completedAt: new Date('2020-01-01'),
+          state: CertificationAssessment.states.STARTED,
+          version: 2,
+          certificationChallenges: [
+            domainBuilder.buildCertificationChallengeWithType({}),
+            domainBuilder.buildCertificationChallengeWithType({}),
+          ],
+          certificationAnswersByDate: ['answer'],
+        });
+
+        certificationAssessmentRepository.getByCertificationCourseId
+          .withArgs({ certificationCourseId })
+          .resolves(certificationAssessment);
+
+        const certificationCourse = domainBuilder.buildCertificationCourse({
+          id: certificationCourseId,
+          isRejectedForFraud: true,
+        });
+        services.handleV2CertificationScoring.resolves({
+          certificationCourse,
+          certificationAssessmentScore: {},
+        });
+        scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
+        certificationCourseRepository.update.resolves(certificationCourse);
+        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
+          complementaryCertificationCourseId: 999,
+          complementaryCertificationBadgeId: 888,
+          minimumReproducibilityRate: 75,
+          minimumReproducibilityRateLowerLevel: 60,
+          minimumEarnedPix: 20,
+          complementaryCertificationBadgeKey: ComplementaryCertificationKeys.PIX_PLUS_DROIT,
+          hasComplementaryReferential: true,
+        });
+        complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
+          .withArgs({ certificationCourseId })
+          .resolves([complementaryCertificationScoringCriteria]);
+
+        // when
+        await handleCertificationRescoring({
+          event,
+          ...dependencies,
+        });
+
+        // then
+        expect(services.scoreComplementaryCertificationV2).to.have.been.calledOnceWithExactly({
+          certificationCourseId,
+          complementaryCertificationScoringCriteria,
+        });
       });
     });
   });

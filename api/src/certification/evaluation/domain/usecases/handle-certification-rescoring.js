@@ -150,13 +150,10 @@ async function _handleV2CertificationScoring({
       });
 
     if (complementaryCertificationScoringCriteria.length > 0) {
-      // TODO : un service ne peut pas appeler un usecase + pourquoi
-      //        scoreComplementaryCertificationV2 en usecase alors que le reste en service ?
-      //        le prochain commit modifiera cela
-      // await usecases.scoreComplementaryCertificationV2({
-      //   certificationCourseId: certificationCourse.getId(),
-      //   complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
-      // });
+      await services.scoreComplementaryCertificationV2({
+        certificationCourseId: certificationCourse.getId(),
+        complementaryCertificationScoringCriteria: complementaryCertificationScoringCriteria[0],
+      });
     }
   } catch (error) {
     if (!(error instanceof CertificationComputeError)) {
