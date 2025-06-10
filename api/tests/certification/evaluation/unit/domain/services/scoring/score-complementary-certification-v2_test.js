@@ -5,7 +5,7 @@ import { ComplementaryCertificationCourseResult } from '../../../../../../../src
 import { status as assessmentResultStatuses } from '../../../../../../../src/shared/domain/models/AssessmentResult.js';
 import { domainBuilder, expect, sinon } from '../../../../../../test-helper.js';
 
-describe('Unit | Domain | Scoring | Score Complementary Certification', function () {
+describe('Certification | Evaluation | Unit | Domain | Services | Scoring Complementary Certification V2', function () {
   const certificationAssessmentRepository = {};
   const complementaryCertificationCourseResultRepository = {};
   const assessmentResultRepository = {};

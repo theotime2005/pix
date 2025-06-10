@@ -39,4 +39,4 @@ class PartnerCertificationScoring {
   }
 }
 
-export { PartnerCertificationScoring };
+export { PartnerCertificationScoring, SOURCES };

@@ -11,7 +11,7 @@ import { AnswerStatus } from '../../../../../../../src/shared/domain/models/inde
 import * as assessmentResultRepository from '../../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
 import { databaseBuilder, expect, knex } from '../../../../../../test-helper.js';
 
-describe('Integration | Services | Score Complementary Certification', function () {
+describe('Certification | Evaluation | Integration | Domain | Services | Score Complementary Certification', function () {
   afterEach(async function () {
     await knex('complementary-certification-course-results').delete();
   });

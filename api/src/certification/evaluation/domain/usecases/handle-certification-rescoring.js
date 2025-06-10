@@ -8,11 +8,9 @@
  * @typedef {import('./index.js').EvaluationSessionRepository} EvaluationSessionRepository
  * @typedef {import('./index.js').Services} Services
  */
-import { V3_REPRODUCIBILITY_RATE } from '../../../../shared/domain/constants.js';
 import { CertificationComputeError, NotFinalizedSessionError } from '../../../../shared/domain/errors.js';
 import CertificationCancelled from '../../../../shared/domain/events/CertificationCancelled.js';
 import { CertificationCourseUnrejected } from '../../../../shared/domain/events/CertificationCourseUnrejected.js';
-import { CertificationRescoringCompleted } from '../../../../shared/domain/events/CertificationRescoringCompleted.js';
 import CertificationUncancelled from '../../../../shared/domain/events/CertificationUncancelled.js';
 import { checkEventTypes } from '../../../../shared/domain/events/check-event-types.js';
 import { AssessmentResultFactory } from '../../../scoring/domain/models/factories/AssessmentResultFactory.js';
@@ -76,7 +74,6 @@ async function handleCertificationRescoring({
   }
 
   if (AlgorithmEngineVersion.isV3(certificationAssessment.version)) {
-    // TODO : add new complementary scoring VERSION 3 (CLEA)
     return _handleV3CertificationScoring({
       certificationAssessment,
       event,
@@ -187,11 +184,7 @@ async function _handleV3CertificationScoring({
     await certificationCourseRepository.update({ certificationCourse });
   }
 
-  return new CertificationRescoringCompleted({
-    userId: certificationAssessment.userId,
-    certificationCourseId: certificationAssessment.certificationCourseId,
-    reproducibilityRate: V3_REPRODUCIBILITY_RATE,
-  });
+  await services.scoreDoubleCertificationV3({ certificationCourseId: certificationCourse.getId() });
 }
 
 async function _toggleCertificationCourseCancellationIfNotTrustableOrLackOfAnswersForTechnicalReason({

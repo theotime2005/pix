@@ -29,5 +29,7 @@ export const scoreCompletedV3Certification = async ({
   });
 
   certificationCourse.complete({ now: new Date() });
-  return certificationCourseRepository.update({ certificationCourse });
+  await certificationCourseRepository.update({ certificationCourse });
+
+  return services.scoreDoubleCertificationV3({ certificationCourseId: certificationCourse.getId() });
 };

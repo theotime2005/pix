@@ -228,7 +228,7 @@ const userCompetences = [
   _buildUserCompetence(competence_4, pixForCompetence4, 4),
 ];
 
-describe('Certification | Shared | Unit | Domain | Services | Scoring V2', function () {
+describe('Certification | Evaluation | Unit | Domain | Services | Scoring V2', function () {
   context('#handleV2CertificationScoring', function () {
     let assessmentResultRepository,
       competenceMarkRepository,

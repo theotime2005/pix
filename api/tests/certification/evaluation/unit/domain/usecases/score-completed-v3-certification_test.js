@@ -19,6 +19,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
 
     services = {
       handleV3CertificationScoring: sinon.stub(),
+      scoreDoubleCertificationV3: sinon.stub().throws(new Error('Expected to be called')),
     };
     certificationCourseRepository = {
       get: sinon.stub(),
@@ -67,6 +68,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
             });
 
             services.handleV3CertificationScoring.resolves(abortedCertificationCourse);
+            services.scoreDoubleCertificationV3.resolves();
 
             const dependencies = {
               certificationCourseRepository,
@@ -84,6 +86,9 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
                 abortReason: ABORT_REASONS.CANDIDATE,
               }),
             });
+            expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
+              certificationCourseId: certificationCourse.getId(),
+            });
           });
         });
       });
@@ -100,6 +105,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
             });
 
             services.handleV3CertificationScoring.resolves(certificationCourse);
+            services.scoreDoubleCertificationV3.resolves();
 
             const dependencies = {
               certificationCourseRepository,
@@ -115,6 +121,9 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
                 ...certificationCourse.toDTO(),
                 completedAt: now,
               }),
+            });
+            expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
+              certificationCourseId: certificationCourse.getId(),
             });
           });
         });
@@ -133,6 +142,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
               });
 
               services.handleV3CertificationScoring.resolves(certificationCourse);
+              services.scoreDoubleCertificationV3.resolves(certificationCourse);
 
               const dependencies = {
                 certificationCourseRepository,
@@ -149,6 +159,9 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
                   completedAt: now,
                   abortReason,
                 }),
+              });
+              expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
+                certificationCourseId: certificationCourse.getId(),
               });
             });
           });
@@ -166,6 +179,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
               });
 
               services.handleV3CertificationScoring.resolves(certificationCourse);
+              services.scoreDoubleCertificationV3.resolves(certificationCourse);
 
               const dependencies = {
                 certificationCourseRepository,
@@ -182,6 +196,9 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
                   completedAt: now,
                   abortReason,
                 }),
+              });
+              expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
+                certificationCourseId: certificationCourse.getId(),
               });
             });
           });

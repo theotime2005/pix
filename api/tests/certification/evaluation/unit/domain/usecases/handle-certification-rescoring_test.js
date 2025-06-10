@@ -9,7 +9,7 @@ import { AlgorithmEngineVersion } from '../../../../../../src/certification/shar
 import { ABORT_REASONS } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
 import { ComplementaryCertificationKeys } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
 import { CertificationComputeError, NotFinalizedSessionError } from '../../../../../../src/shared/domain/errors.js';
-import { AssessmentResult, ComplementaryCertification } from '../../../../../../src/shared/domain/models/index.js';
+import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
 import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | Events | handle-certification-rescoring', function () {
@@ -78,7 +78,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
       certificationCourseRepository = { update: sinon.stub() };
       const session = domainBuilder.certification.evaluation.buildResultsSession.finalized();
       evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(session) };
-      services = { handleV3CertificationScoring: sinon.stub(), handleV2CertificationScoring: sinon.stub() };
+      services = { handleV3CertificationScoring: sinon.stub(), scoreDoubleCertificationV3: sinon.stub() };
 
       dependencies = {
         assessmentResultRepository,
@@ -113,18 +113,15 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           });
 
           // when
-          const result = await handleCertificationRescoring({
+          await handleCertificationRescoring({
             ...dependencies,
             event,
           });
 
           // then
-          const expectedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
+          expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
             certificationCourseId,
-            userId: certificationAssessment.certificationCourseId,
-            reproducibilityRate: 100,
           });
-          expect(result).to.deep.equal(expectedEvent);
         });
       });
 
@@ -152,7 +149,7 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           });
 
           // when
-          const result = await handleCertificationRescoring({
+          await handleCertificationRescoring({
             ...dependencies,
             event,
           });
@@ -166,13 +163,9 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           expect(certificationCourseRepository.update).to.have.been.calledOnceWithExactly({
             certificationCourse: expectedCertificationCourse,
           });
-
-          const expectedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
+          expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
             certificationCourseId,
-            userId: certificationAssessment.certificationCourseId,
-            reproducibilityRate: 100,
           });
-          expect(result).to.deep.equal(expectedEvent);
         });
       });
     });
@@ -202,19 +195,15 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           });
 
           // when
-          const result = await handleCertificationRescoring({
+          await handleCertificationRescoring({
             ...dependencies,
             event,
           });
 
           // then
-          const expectedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
+          expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
             certificationCourseId,
-            userId: certificationAssessment.certificationCourseId,
-            reproducibilityRate: 100,
           });
-
-          expect(result).to.deep.equal(expectedEvent);
         });
       });
     });
@@ -242,19 +231,15 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         });
 
         // when
-        const result = await handleCertificationRescoring({
+        await handleCertificationRescoring({
           ...dependencies,
           event,
         });
 
         // then
-        const expectedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
+        expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
           certificationCourseId,
-          userId: certificationAssessment.certificationCourseId,
-          reproducibilityRate: 100,
         });
-
-        expect(result).to.deep.equal(expectedEvent);
       });
 
       describe('when certification is rejected for fraud', function () {
@@ -282,19 +267,53 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
           });
 
           // when
-          const result = await handleCertificationRescoring({
+          await handleCertificationRescoring({
             ...dependencies,
             event,
           });
 
           // then
-          const expectedEvent = domainBuilder.buildCertificationRescoringCompletedEvent({
+          expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
             certificationCourseId,
-            userId: certificationAssessment.certificationCourseId,
-            reproducibilityRate: 100,
           });
+        });
+      });
+    });
 
-          expect(result).to.deep.equal(expectedEvent);
+    context('when it is a complementary certification', function () {
+      it('should trigger complementary certification scoring', async function () {
+        // given
+        const certificationCourseStartDate = new Date('2022-01-01');
+        const certificationAssessment = domainBuilder.buildCertificationAssessment({
+          version: AlgorithmEngineVersion.V3,
+        });
+
+        const abortedCertificationCourse = domainBuilder.buildCertificationCourse({
+          abortReason: ABORT_REASONS.TECHNICAL,
+          createdAt: certificationCourseStartDate,
+        });
+        const { certificationCourseId } = certificationAssessment;
+
+        certificationAssessmentRepository.getByCertificationCourseId
+          .withArgs({ certificationCourseId })
+          .resolves(certificationAssessment);
+
+        services.handleV3CertificationScoring.resolves(abortedCertificationCourse);
+        services.scoreDoubleCertificationV3.resolves(abortedCertificationCourse);
+
+        const event = new CertificationJuryDone({
+          certificationCourseId,
+        });
+
+        // when
+        await handleCertificationRescoring({
+          ...dependencies,
+          event,
+        });
+
+        // then
+        expect(services.scoreDoubleCertificationV3).to.have.been.calledWithExactly({
+          certificationCourseId,
         });
       });
     });

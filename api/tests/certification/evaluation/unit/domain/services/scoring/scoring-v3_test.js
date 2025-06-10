@@ -14,7 +14,7 @@ const { minimumAnswersRequiredToValidateACertification } = config.v3Certificatio
 
 const maximumAssessmentLength = 32;
 
-describe('Certification | Shared | Unit | Domain | Services | Scoring V3', function () {
+describe('Certification | Evaluation | Unit | Domain | Services | Scoring V3', function () {
   context('#handleV3CertificationScoring', function () {
     let answerRepository,
       assessmentResultRepository,

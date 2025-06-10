@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 // TODO: cross-bounded context violation
 import * as flashAlgorithmService from '../../../../certification/flash-certification/domain/services/algorithm-methods/flash.js';
 // TODO: cross-bounded context violation
@@ -49,7 +50,8 @@ import * as challengeCalibrationRepository from '../../infrastructure/repositori
  * @typedef {certificationCandidateRepository} CertificationCandidateRepository
  * @typedef {complementaryCertificationBadgesRepository} ComplementaryCertificationBadgesRepository
  * @typedef {certificationAssessmentRepository} CertificationAssessmentRepository
- * @typedef {complementaryCertificationCourseResultRepository} ComplementaryCertificationCourseResultRepository
+ * @typedef {complementaryCertificationCourseResultRepository} ComplementaryCertificationCourseResultRepository *
+ * @typedef {complementaryCertificationScoringCriteriaRepository} ComplementaryCertificationScoringCriteriaRepository
  */
 const dependencies = {
   assessmentResultRepository,
@@ -72,6 +74,7 @@ const dependencies = {
   complementaryCertificationBadgesRepository,
   certificationAssessmentRepository,
   complementaryCertificationCourseResultRepository,
+  complementaryCertificationScoringCriteriaRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));

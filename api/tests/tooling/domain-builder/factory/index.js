@@ -55,7 +55,6 @@ import { buildCertificationIssueReport } from './build-certification-issue-repor
 import { buildCertificationOfficer } from './build-certification-officer.js';
 import { buildCertificationPointOfContact } from './build-certification-point-of-contact.js';
 import { buildCertificationReport } from './build-certification-report.js';
-import { buildCertificationRescoringCompletedEvent } from './build-certification-rescoring-completed-event.js';
 import { buildCertificationResult } from './build-certification-result.js';
 import { buildCertificationScoringCompletedEvent } from './build-certification-scoring-completed-event.js';
 import { buildCertificationSessionCandidate } from './build-certification-session-candidate.js';
@@ -370,7 +369,6 @@ export {
   buildCertificationOfficer,
   buildCertificationPointOfContact,
   buildCertificationReport,
-  buildCertificationRescoringCompletedEvent,
   buildCertificationResult,
   buildCertificationScoringCompletedEvent,
   buildCertifiedArea,
