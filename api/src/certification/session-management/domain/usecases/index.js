@@ -68,6 +68,7 @@ import * as sessionPublicationService from '../services/session-publication-serv
  * @typedef {import('../../../shared/domain/services/certification-cpf-service.js')} CertificationCpfService
  * @typedef {import('../../infrastructure/repositories/index.js').CertificationCandidateRepository} CertificationCandidateRepository
  * @typedef {import('../../infrastructure/repositories/index.js').CertificationCompanionAlertRepository} CertificationCompanionAlertRepository
+ * @typedef {import('../../infrastructure/repositories/index.js').CertificationRescoringRepository} CertificationRescoringRepository
  * @typedef {import('../../../../identity-access-management/infrastructure/repositories/user.respository.js').UserRepository} UserRepository
  **/
 

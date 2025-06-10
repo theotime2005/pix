@@ -1,7 +1,7 @@
 /**
- * @typedef {import('./index.js'.CertificationCourseRepository} CertificationCourseRepository
- * @typedef {import('./index.js'.SessionRepository} SessionRepository
- * @typedef {import('./index.js'.CertificationRescoringRepository} CertificationRescoringRepository
+ * @typedef {import('./index.js').CertificationCourseRepository} CertificationCourseRepository
+ * @typedef {import('./index.js').SessionRepository} SessionRepository
+ * @typedef {import('./index.js').CertificationRescoringRepository} CertificationRescoringRepository
  */
 
 import CertificationCancelled from '../../../../../src/shared/domain/events/CertificationCancelled.js';
