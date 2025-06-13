@@ -85,7 +85,6 @@ import { AreaForAdmin, CompetenceForAdmin, ThematicForAdmin, TubeForAdmin } from
 import { Membership } from './Membership.js';
 import { OrganizationMemberIdentity } from './OrganizationMemberIdentity.js';
 import { OrganizationTag } from './OrganizationTag.js';
-import { PartnerCertificationScoring } from './PartnerCertificationScoring.js';
 import { PlacementProfile } from './PlacementProfile.js';
 import { ReproducibilityRate } from './ReproducibilityRate.js';
 import { ScoringSimulation } from './ScoringSimulation.js';

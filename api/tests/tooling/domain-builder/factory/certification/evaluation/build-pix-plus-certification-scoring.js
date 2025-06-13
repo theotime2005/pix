@@ -1,5 +1,5 @@
-import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../src/shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { buildReproducibilityRate } from './build-reproducibility-rate.js';
+import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../../../src/certification/evaluation/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
+import { buildReproducibilityRate } from '../../build-reproducibility-rate.js';
 
 const buildComplementaryCertificationScoringWithComplementaryReferential = function ({
   complementaryCertificationCourseId = 999,

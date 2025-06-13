@@ -1,5 +1,5 @@
-import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../src/shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { domainBuilder, expect } from '../../../test-helper.js';
+import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../../../src/certification/evaluation/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
+import { domainBuilder, expect } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | Models | ComplementaryCertificationScoringWithComplementaryReferential', function () {
   context('#constructor', function () {
@@ -36,7 +36,7 @@ describe('Unit | Domain | Models | ComplementaryCertificationScoringWithCompleme
       // given
       const reproducibilityRate = domainBuilder.buildReproducibilityRate({ value: 71 });
       const complementaryCertificationScoringWithComplementaryReferential =
-        domainBuilder.buildComplementaryCertificationScoringWithComplementaryReferential({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithComplementaryReferential({
           hasAcquiredPixCertification: true,
           reproducibilityRate,
           minimumReproducibilityRate: 70,
@@ -55,7 +55,7 @@ describe('Unit | Domain | Models | ComplementaryCertificationScoringWithCompleme
       // given
       const reproducibilityRate = domainBuilder.buildReproducibilityRate({ value: 70 });
       const complementaryCertificationScoringWithComplementaryReferential =
-        domainBuilder.buildComplementaryCertificationScoringWithComplementaryReferential({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithComplementaryReferential({
           hasAcquiredPixCertification: true,
           reproducibilityRate,
           minimumReproducibilityRate: 70,
@@ -74,7 +74,7 @@ describe('Unit | Domain | Models | ComplementaryCertificationScoringWithCompleme
       // given
       const reproducibilityRate = domainBuilder.buildReproducibilityRate({ value: 71 });
       const complementaryCertificationScoringWithComplementaryReferential =
-        domainBuilder.buildComplementaryCertificationScoringWithComplementaryReferential({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithComplementaryReferential({
           hasAcquiredPixCertification: false,
           reproducibilityRate,
           minimumReproducibilityRate: 70,
@@ -93,7 +93,7 @@ describe('Unit | Domain | Models | ComplementaryCertificationScoringWithCompleme
       // given
       const reproducibilityRate = domainBuilder.buildReproducibilityRate({ value: 69 });
       const complementaryCertificationScoringWithComplementaryReferential =
-        domainBuilder.buildComplementaryCertificationScoringWithComplementaryReferential({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithComplementaryReferential({
           hasAcquiredPixCertification: true,
           reproducibilityRate,
           minimumReproducibilityRate: 70,
@@ -113,7 +113,7 @@ describe('Unit | Domain | Models | ComplementaryCertificationScoringWithCompleme
         // given
         const reproducibilityRate = domainBuilder.buildReproducibilityRate({ value: 69 });
         const complementaryCertificationScoringWithComplementaryReferential =
-          domainBuilder.buildComplementaryCertificationScoringWithComplementaryReferential({
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithComplementaryReferential({
             hasAcquiredPixCertification: true,
             reproducibilityRate,
             minimumReproducibilityRate: 70,

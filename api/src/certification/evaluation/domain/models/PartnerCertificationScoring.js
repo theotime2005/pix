@@ -1,8 +1,8 @@
 import JoiDate from '@joi/date';
 import BaseJoi from 'joi';
 const Joi = BaseJoi.extend(JoiDate);
-import { NotImplementedError } from '../errors.js';
-import { validateEntity } from '../validators/entity-validator.js';
+import { NotImplementedError } from '../../../../shared/domain/errors.js';
+import { validateEntity } from '../../../../shared/domain/validators/entity-validator.js';
 
 const SOURCES = {
   PIX: 'PIX',

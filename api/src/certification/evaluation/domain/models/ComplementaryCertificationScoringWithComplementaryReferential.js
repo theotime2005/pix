@@ -1,4 +1,4 @@
-import { ComplementaryCertificationCourseResult } from '../../../certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
+import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
 import { PartnerCertificationScoring } from './PartnerCertificationScoring.js';
 
 class ComplementaryCertificationScoringWithComplementaryReferential extends PartnerCertificationScoring {
