@@ -5,9 +5,9 @@
  * @typedef {import('../index.js').ComplementaryCertificationCourseResultRepository} ComplementaryCertificationCourseResultRepository
  */
 import { NotImplementedError } from '../../../../../shared/domain/errors.js';
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../../shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 import { logger } from '../../../../../shared/infrastructure/utils/logger.js';
 import { ComplementaryCertificationCourseResult } from '../../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
+import {ComplementaryCertificationScoringWithoutComplementaryReferential} from '../../models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 
 /**
  * @param {Object} params

@@ -8,9 +8,9 @@
 
 import { AnswerCollectionForScoring } from '../../../../../shared/domain/models/AnswerCollectionForScoring.js';
 import { ComplementaryCertificationScoringWithComplementaryReferential } from '../../../../../shared/domain/models/ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../../shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 import { ReproducibilityRate } from '../../../../../shared/domain/models/ReproducibilityRate.js';
 import { ComplementaryCertificationCourseResult } from '../../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
+import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 
 /**
  * @param {Object} params

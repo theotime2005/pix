@@ -1,4 +1,4 @@
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../src/shared/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
+import { ComplementaryCertificationScoringWithoutComplementaryReferential } from '../../../../../../src/certification/evaluation/domain/models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 
 const buildComplementaryCertificationScoringWithoutComplementaryReferential = function ({
   complementaryCertificationCourseId = 99,

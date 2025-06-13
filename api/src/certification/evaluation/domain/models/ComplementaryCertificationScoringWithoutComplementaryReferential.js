@@ -1,4 +1,4 @@
-import { PartnerCertificationScoring } from './PartnerCertificationScoring.js';
+import { PartnerCertificationScoring } from '../../../../shared/domain/models/PartnerCertificationScoring.js';
 
 class ComplementaryCertificationScoringWithoutComplementaryReferential extends PartnerCertificationScoring {
   constructor({

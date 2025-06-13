@@ -81,7 +81,6 @@ import { buildComplementaryCertificationCourseResultForJuryCertificationWithExte
 import { buildComplementaryCertificationForSupervising } from './build-complementary-certification-for-supervising.js';
 import { buildComplementaryCertificationForTargetProfileAttachment } from './build-complementary-certification-for-target-profile-attachment.js';
 import { buildComplementaryCertificationHabilitation } from './build-complementary-certification-habilitation.js';
-import { buildComplementaryCertificationScoringWithoutComplementaryReferential } from './build-complementary-certification-scoring-without-complementary-referential.js';
 import { buildComplementaryCertificationTargetProfileHistory } from './build-complementary-certification-target-profile-history-for-admin.js';
 import {
   buildComplementaryCertificationBadge as buildCertificationComplementaryCertificationBadge,
@@ -189,6 +188,7 @@ import { buildUserCertificationEligibility } from './certification/enrolment/bui
 import { buildV3CertificationEligibility } from './certification/enrolment/build-v3-certification-eligibility.js';
 import { buildEvaluationCandidate } from './certification/evaluation/build-candidate.js';
 import { buildComplementaryCertificationScoringCriteria } from './certification/evaluation/build-complementary-certification-scoring-criteria.js';
+import { buildComplementaryCertificationScoringWithoutComplementaryReferential } from './certification/evaluation/build-complementary-certification-scoring-without-complementary-referential.js';
 import { buildResultsSession } from './certification/evaluation/build-session.js';
 import { buildFlashAssessmentAlgorithm } from './certification/flash-certification/build-flash-assessment-algorithm.js';
 import { buildGlobalCertificationLevel } from './certification/results/build-global-mesh-level.js';
@@ -260,6 +260,7 @@ const certification = {
     buildCandidate: buildEvaluationCandidate,
     buildResultsSession,
     buildComplementaryCertificationScoringCriteria,
+    buildComplementaryCertificationScoringWithoutComplementaryReferential,
   },
   sessionManagement: {
     buildCertificationSessionComplementaryCertification,
@@ -397,7 +398,6 @@ export {
   buildComplementaryCertificationForTargetProfileAttachment,
   buildComplementaryCertificationHabilitation,
   buildComplementaryCertificationScoringWithComplementaryReferential,
-  buildComplementaryCertificationScoringWithoutComplementaryReferential,
   buildComplementaryCertificationTargetProfileHistory,
   buildComplementarySubscription,
   buildCoreSubscription,

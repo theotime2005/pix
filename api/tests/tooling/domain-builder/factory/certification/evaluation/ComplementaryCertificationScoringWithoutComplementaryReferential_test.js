@@ -1,4 +1,4 @@
-import { domainBuilder, expect } from '../../../test-helper.js';
+import { domainBuilder, expect } from '../../../../../test-helper.js';
 
 describe('Unit | Domain | Models | ComplementaryCertificationScoringWithoutComplementaryReferential', function () {
   context('#isAcquired', function () {
@@ -126,7 +126,7 @@ function _buildComplementaryCertificationScoringWithoutComplementaryReferential(
   const complementaryCertificationCourseId = 999;
   const complementaryCertificationBadgeId = 99;
 
-  return domainBuilder.buildComplementaryCertificationScoringWithoutComplementaryReferential({
+  return domainBuilder.certification.evaluation.buildComplementaryCertificationScoringWithoutComplementaryReferential({
     complementaryCertificationCourseId,
     certificationCourseId,
     reproducibilityRate,
