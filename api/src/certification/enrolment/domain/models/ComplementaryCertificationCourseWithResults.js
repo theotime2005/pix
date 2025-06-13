@@ -9,7 +9,7 @@
  */
 
 import { _ } from '../../../../shared/infrastructure/utils/lodash-utils.js';
-import { sources } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
+import { ChallengesReferential } from '../../../shared/domain/models/ChallengesReferential.js';
 
 class ComplementaryCertificationCourseWithResults {
   /**
@@ -28,7 +28,7 @@ class ComplementaryCertificationCourseWithResults {
 
   isAcquiredExpectedLevelByPixSource() {
     return _.some(this.results, {
-      source: sources.PIX,
+      source: ChallengesReferential.PIX,
       acquired: true,
       complementaryCertificationBadgeId: this.complementaryCertificationBadgeId,
     });

@@ -188,6 +188,7 @@ import { buildV3CertificationEligibility } from './certification/enrolment/build
 import { buildEvaluationCandidate } from './certification/evaluation/build-candidate.js';
 import { buildComplementaryCertificationScoringCriteria } from './certification/evaluation/build-complementary-certification-scoring-criteria.js';
 import { buildComplementaryCertificationScoringWithoutComplementaryReferential } from './certification/evaluation/build-complementary-certification-scoring-without-complementary-referential.js';
+import { buildDoubleCertificationScoring } from './certification/evaluation/build-double-certification-scoring.js';
 import { buildComplementaryCertificationScoringWithComplementaryReferential } from './certification/evaluation/build-pix-plus-certification-scoring.js';
 import { buildResultsSession } from './certification/evaluation/build-session.js';
 import { buildFlashAssessmentAlgorithm } from './certification/flash-certification/build-flash-assessment-algorithm.js';
@@ -262,6 +263,7 @@ const certification = {
     buildComplementaryCertificationScoringCriteria,
     buildComplementaryCertificationScoringWithoutComplementaryReferential,
     buildComplementaryCertificationScoringWithComplementaryReferential,
+    buildDoubleCertificationScoring,
   },
   sessionManagement: {
     buildCertificationSessionComplementaryCertification,

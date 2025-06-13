@@ -1,4 +1,5 @@
 import { ComplementaryCertification } from '../../../certification/complementary-certification/domain/models/ComplementaryCertification.js';
+import { PartnerCertificationScoring } from '../../../certification/evaluation/domain/models/PartnerCertificationScoring.js';
 import { AssessmentSimulator } from '../../../certification/flash-certification/domain/models/AssessmentSimulator.js';
 import { FlashAssessmentAlgorithm } from '../../../certification/flash-certification/domain/models/FlashAssessmentAlgorithm.js';
 import { CertificationAttestation } from '../../../certification/results/domain/models/CertificationAttestation.js';

@@ -30,6 +30,7 @@ import * as userRepository from '../../../shared/infrastructure/repositories/use
 import * as certificationCandidateRepository from '../../infrastructure/repositories/certification-candidate-repository.js';
 import * as certificationCompanionAlertRepository from '../../infrastructure/repositories/certification-companion-alert-repository.js';
 import * as challengeCalibrationRepository from '../../infrastructure/repositories/challenge-calibration-repository.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as evaluationSessionRepository from '../../infrastructure/repositories/session-repository.js';
 import * as certificationChallengesService from '../services/certification-challenges-service.js';
 import { services } from '../services/index.js';

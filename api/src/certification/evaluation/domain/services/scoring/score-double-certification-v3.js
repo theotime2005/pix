@@ -7,7 +7,7 @@
 import { NotImplementedError } from '../../../../../shared/domain/errors.js';
 import { logger } from '../../../../../shared/infrastructure/utils/logger.js';
 import { ComplementaryCertificationCourseResult } from '../../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
-import {ComplementaryCertificationScoringWithoutComplementaryReferential} from '../../models/ComplementaryCertificationScoringWithoutComplementaryReferential.js';
+import { DoubleCertificationScoring } from '../../models/DoubleCertificationScoring.js';
 
 /**
  * @param {Object} params
@@ -48,7 +48,7 @@ export const scoreDoubleCertificationV3 = async ({
 
   const assessmentResult = await assessmentResultRepository.getByCertificationCourseId({ certificationCourseId });
 
-  const doubleCertificationScoring = new ComplementaryCertificationScoringWithoutComplementaryReferential({
+  const doubleCertificationScoring = new DoubleCertificationScoring({
     complementaryCertificationCourseId,
     complementaryCertificationBadgeId,
     reproducibilityRate: assessmentResult.reproducibilityRate,

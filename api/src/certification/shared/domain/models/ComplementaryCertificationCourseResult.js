@@ -1,7 +1,4 @@
-const sources = {
-  EXTERNAL: 'EXTERNAL',
-  PIX: 'PIX',
-};
+import { ChallengesReferential } from './ChallengesReferential.js';
 
 const juryOptions = {
   REJECTED: 'REJECTED',
@@ -33,7 +30,7 @@ class ComplementaryCertificationCourseResult {
         complementaryCertificationCourseId,
         complementaryCertificationBadgeId,
         acquired: false,
-        source: sources.EXTERNAL,
+        source: ChallengesReferential.EXTERNAL,
       });
     }
 
@@ -41,16 +38,16 @@ class ComplementaryCertificationCourseResult {
       complementaryCertificationCourseId,
       complementaryCertificationBadgeId: juryLevel,
       acquired: true,
-      source: sources.EXTERNAL,
+      source: ChallengesReferential.EXTERNAL,
     });
   }
 
   isFromPixSource() {
-    return this.source === sources.PIX;
+    return this.source === ChallengesReferential.PIX;
   }
 
   isFromExternalSource() {
-    return this.source === sources.EXTERNAL;
+    return this.source === ChallengesReferential.EXTERNAL;
   }
 
   isAcquired() {
@@ -58,7 +55,7 @@ class ComplementaryCertificationCourseResult {
   }
 }
 
-ComplementaryCertificationCourseResult.sources = sources;
+ComplementaryCertificationCourseResult.sources = ChallengesReferential;
 ComplementaryCertificationCourseResult.juryOptions = juryOptions;
 
-export { ComplementaryCertificationCourseResult, juryOptions, sources };
+export { ComplementaryCertificationCourseResult, juryOptions };

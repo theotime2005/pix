@@ -1,7 +1,9 @@
 import { getUserCertificationEligibility } from '../../../../../../src/certification/enrolment/domain/usecases/get-user-certification-eligibility.js';
-import { sources } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
 import { ComplementaryCertificationKeys } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
-import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
+import {
+  AssessmentResult,
+  ComplementaryCertificationCourseResult,
+} from '../../../../../../src/shared/domain/models/index.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Certification | Enrolment | Unit | Usecases | get-user-certification-eligibility', function () {
@@ -423,7 +425,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -575,7 +577,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -725,7 +727,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -838,7 +840,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -886,7 +888,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -1167,7 +1169,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -1274,7 +1276,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                     complementaryCertificationBadgeId,
                     results: [
                       {
-                        source: sources.PIX,
+                        source: ComplementaryCertificationCourseResult.sources.PIX,
                         acquired: true,
                         complementaryCertificationBadgeId,
                       },
@@ -1378,7 +1380,7 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                   complementaryCertificationBadgeId,
                   results: [
                     {
-                      source: sources.PIX,
+                      source: ComplementaryCertificationCourseResult.sources.PIX,
                       acquired: true,
                       complementaryCertificationBadgeId,
                     },

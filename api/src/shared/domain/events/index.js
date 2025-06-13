@@ -9,6 +9,7 @@ import * as complementaryCertificationCourseResultRepository from '../../../../l
 import * as badgeAcquisitionRepository from '../../../../src/evaluation/infrastructure/repositories/badge-acquisition-repository.js';
 import * as certificationAssessmentHistoryRepository from '../../../certification/evaluation/infrastructure/repositories/certification-assessment-history-repository.js';
 import * as challengeCalibrationRepository from '../../../certification/evaluation/infrastructure/repositories/challenge-calibration-repository.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../../certification/evaluation/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as flashAlgorithmService from '../../../certification/flash-certification/domain/services/algorithm-methods/flash.js';
 import * as finalizedSessionRepository from '../../../certification/session-management/infrastructure/repositories/finalized-session-repository.js';
 import * as juryCertificationSummaryRepository from '../../../certification/session-management/infrastructure/repositories/jury-certification-summary-repository.js';

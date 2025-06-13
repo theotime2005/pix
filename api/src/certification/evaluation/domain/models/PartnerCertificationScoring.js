@@ -3,17 +3,13 @@ import BaseJoi from 'joi';
 const Joi = BaseJoi.extend(JoiDate);
 import { NotImplementedError } from '../../../../shared/domain/errors.js';
 import { validateEntity } from '../../../../shared/domain/validators/entity-validator.js';
-
-const SOURCES = {
-  PIX: 'PIX',
-  EXTERNAL: 'EXTERNAL',
-};
+import { ChallengesReferential } from '../../../shared/domain/models/ChallengesReferential.js';
 
 class PartnerCertificationScoring {
   constructor({
     complementaryCertificationCourseId,
     complementaryCertificationBadgeId,
-    source = SOURCES.PIX,
+    source = ChallengesReferential.PIX,
     isRejectedForFraud = false,
     hasAcquiredPixCertification,
   } = {}) {
@@ -29,7 +25,7 @@ class PartnerCertificationScoring {
       hasAcquiredPixCertification: Joi.boolean().required(),
       source: Joi.string()
         .required()
-        .valid(...Object.values(SOURCES)),
+        .valid(...Object.values(ChallengesReferential)),
     });
     validateEntity(schema, this);
   }
@@ -39,4 +35,4 @@ class PartnerCertificationScoring {
   }
 }
 
-export { PartnerCertificationScoring, SOURCES };
+export { PartnerCertificationScoring };

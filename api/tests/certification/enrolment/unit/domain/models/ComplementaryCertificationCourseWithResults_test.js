@@ -1,5 +1,5 @@
 import { ComplementaryCertificationCourseWithResults } from '../../../../../../src/certification/enrolment/domain/models/ComplementaryCertificationCourseWithResults.js';
-import { sources } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationCourseResult.js';
+import { ChallengesReferential } from '../../../../../../src/certification/shared/domain/models/ChallengesReferential.js';
 import { expect } from '../../../../../test-helper.js';
 
 describe('Unit | Certification | Enrolment | Domain | Models | ComplementaryCertificationCourseWithResults', function () {
@@ -10,7 +10,7 @@ describe('Unit | Certification | Enrolment | Domain | Models | ComplementaryCert
           // given
           const complementaryCertificationCourseWithResults = new ComplementaryCertificationCourseWithResults({
             complementaryCertificationBadgeId: 3,
-            results: [{ complementaryCertificationBadgeId: 3, source: sources.PIX, acquired: true }],
+            results: [{ complementaryCertificationBadgeId: 3, source: ChallengesReferential.PIX, acquired: true }],
           });
 
           // when
@@ -26,7 +26,9 @@ describe('Unit | Certification | Enrolment | Domain | Models | ComplementaryCert
           // given
           const complementaryCertificationCourseWithResults = new ComplementaryCertificationCourseWithResults({
             complementaryCertificationBadgeId: 4,
-            results: [{ complementaryCertificationBadgeId: 4, source: sources.EXTERNAL, acquired: false }],
+            results: [
+              { complementaryCertificationBadgeId: 4, source: ChallengesReferential.EXTERNAL, acquired: false },
+            ],
           });
 
           // when
@@ -43,7 +45,7 @@ describe('Unit | Certification | Enrolment | Domain | Models | ComplementaryCert
           // given
           const complementaryCertificationCourseWithResults = new ComplementaryCertificationCourseWithResults({
             complementaryCertificationBadgeId: 3,
-            results: [{ complementaryCertificationBadgeId: 4, source: sources.PIX, acquired: true }],
+            results: [{ complementaryCertificationBadgeId: 4, source: ChallengesReferential.PIX, acquired: true }],
           });
 
           // when
@@ -59,7 +61,7 @@ describe('Unit | Certification | Enrolment | Domain | Models | ComplementaryCert
           // given
           const complementaryCertificationCourseWithResults = new ComplementaryCertificationCourseWithResults({
             complementaryCertificationBadgeId: 4,
-            results: [{ complementaryCertificationBadgeId: 3, source: sources.PIX, acquired: false }],
+            results: [{ complementaryCertificationBadgeId: 3, source: ChallengesReferential.PIX, acquired: false }],
           });
 
           // when

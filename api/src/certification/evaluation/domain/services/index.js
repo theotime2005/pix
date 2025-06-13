@@ -26,6 +26,7 @@ import * as scoringConfigurationRepository from '../../../shared/infrastructure/
 import * as certificationAssessmentHistoryRepository from '../../infrastructure/repositories/certification-assessment-history-repository.js';
 import * as certificationCandidateRepository from '../../infrastructure/repositories/certification-candidate-repository.js';
 import * as challengeCalibrationRepository from '../../infrastructure/repositories/challenge-calibration-repository.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 
 /**
  * Using {@link https://jsdoc.app/tags-type "Closure Compiler's syntax"} to document injected dependencies

@@ -2,9 +2,8 @@ import lodash from 'lodash';
 
 const { minBy } = lodash;
 
-import { juryOptions, sources } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
-
-const { EXTERNAL, PIX } = sources;
+import { ChallengesReferential } from '../../../shared/domain/models/ChallengesReferential.js';
+import { juryOptions } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
 
 class ComplementaryCertificationCourseResultForJuryCertificationWithExternal {
   constructor({
@@ -41,10 +40,10 @@ class ComplementaryCertificationCourseResultForJuryCertificationWithExternal {
       return;
     }
     const pixComplementaryCertificationCourseResult = complementaryCertificationCourseResultWithExternal.find(
-      ({ source }) => source === PIX,
+      ({ source }) => source === ChallengesReferential.PIX,
     );
     const externalComplementaryCertificationCourseResult = complementaryCertificationCourseResultWithExternal.find(
-      ({ source }) => source === EXTERNAL,
+      ({ source }) => source === ChallengesReferential.EXTERNAL,
     );
 
     const allowedExternalLevels = badgesIdAndLabels.map(({ id, label }) => ({ label, value: id }));
