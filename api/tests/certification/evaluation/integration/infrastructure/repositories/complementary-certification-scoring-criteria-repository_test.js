@@ -1,5 +1,5 @@
-import * as complementaryCertificationScoringCriteriaRepository from '../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
-import { databaseBuilder, domainBuilder, expect } from '../../../test-helper.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../src/certification/evaluation/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
+import { databaseBuilder, domainBuilder, expect } from '../../../../../test-helper.js';
 
 describe('Integration | Repository | complementary certification scoring criteria', function () {
   describe('#findByCertificationCourseId', function () {
@@ -62,7 +62,7 @@ describe('Integration | Repository | complementary certification scoring criteri
 
       // then
       expect(results).to.deep.equal([
-        domainBuilder.buildComplementaryCertificationScoringCriteria({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
           complementaryCertificationCourseId: complementaryCertificationCourse1.id,
           complementaryCertificationBadgeId: complementaryCertificationCourse1.complementaryCertificationBadgeId,
           minimumReproducibilityRate: complementaryCertification1.minimumReproducibilityRate,
@@ -70,7 +70,7 @@ describe('Integration | Repository | complementary certification scoring criteri
           complementaryCertificationBadgeKey: badge1.key,
           hasComplementaryReferential: complementaryCertification1.hasComplementaryReferential,
         }),
-        domainBuilder.buildComplementaryCertificationScoringCriteria({
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
           complementaryCertificationCourseId: complementaryCertificationCourse2.id,
           complementaryCertificationBadgeId: complementaryCertificationCourse2.complementaryCertificationBadgeId,
           minimumReproducibilityRate: complementaryCertification2.minimumReproducibilityRate,

@@ -846,15 +846,16 @@ describe('Unit | Domain | Events | handle-certification-rescoring', function () 
         });
         scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
         certificationCourseRepository.update.resolves(certificationCourse);
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 75,
-          minimumReproducibilityRateLowerLevel: 60,
-          minimumEarnedPix: 20,
-          complementaryCertificationBadgeKey: ComplementaryCertificationKeys.PIX_PLUS_DROIT,
-          hasComplementaryReferential: true,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 75,
+            minimumReproducibilityRateLowerLevel: 60,
+            minimumEarnedPix: 20,
+            complementaryCertificationBadgeKey: ComplementaryCertificationKeys.PIX_PLUS_DROIT,
+            hasComplementaryReferential: true,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({ certificationCourseId })
           .resolves([complementaryCertificationScoringCriteria]);

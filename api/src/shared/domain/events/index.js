@@ -6,7 +6,6 @@ import * as eventBusBuilder from '../../../../lib/infrastructure/events/EventBus
 import { EventDispatcher } from '../../../../lib/infrastructure/events/EventDispatcher.js';
 import { EventDispatcherLogger } from '../../../../lib/infrastructure/events/EventDispatcherLogger.js';
 import * as complementaryCertificationCourseResultRepository from '../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
-import * as complementaryCertificationScoringCriteriaRepository from '../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as badgeAcquisitionRepository from '../../../../src/evaluation/infrastructure/repositories/badge-acquisition-repository.js';
 import * as certificationAssessmentHistoryRepository from '../../../certification/evaluation/infrastructure/repositories/certification-assessment-history-repository.js';
 import * as challengeCalibrationRepository from '../../../certification/evaluation/infrastructure/repositories/challenge-calibration-repository.js';

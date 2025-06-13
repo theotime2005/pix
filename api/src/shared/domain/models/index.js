@@ -73,9 +73,6 @@ import { Competence } from './Competence.js';
 import { CompetenceResult } from './CompetenceResult.js';
 import { CompetenceTree } from './CompetenceTree.js';
 import { ComplementaryCertificationHabilitation } from './ComplementaryCertificationHabilitation.js';
-import { ComplementaryCertificationScoringCriteria } from './ComplementaryCertificationScoringCriteria.js';
-import { ComplementaryCertificationScoringWithComplementaryReferential } from './ComplementaryCertificationScoringWithComplementaryReferential.js';
-import { ComplementaryCertificationScoringWithoutComplementaryReferential } from './ComplementaryCertificationScoringWithoutComplementaryReferential.js';
 import { Correction } from './Correction.js';
 import { Course } from './Course.js';
 import { EmailingAttempt } from './EmailingAttempt.js';
@@ -160,9 +157,6 @@ export {
   ComplementaryCertification,
   ComplementaryCertificationCourseResult,
   ComplementaryCertificationHabilitation,
-  ComplementaryCertificationScoringCriteria,
-  ComplementaryCertificationScoringWithComplementaryReferential,
-  ComplementaryCertificationScoringWithoutComplementaryReferential,
   Correction,
   Course,
   DataProtectionOfficer,

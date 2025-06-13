@@ -140,7 +140,7 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV2Certifi
           services.handleV2CertificationScoring.resolves({ certificationCourse });
 
           const complementaryCertificationScoringCriteria =
-            domainBuilder.buildComplementaryCertificationScoringCriteria({
+            domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
               complementaryCertificationCourseId: 999,
               complementaryCertificationBadgeId: 888,
               minimumReproducibilityRate: 75,

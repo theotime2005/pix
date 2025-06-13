@@ -27,14 +27,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
     it('should score the complementary certification', async function () {
       // given
       const certificationCourseId = 123;
-      const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-        complementaryCertificationCourseId: 999,
-        complementaryCertificationBadgeId: 888,
-        minimumReproducibilityRate: 70,
-        minimumEarnedPix: 50,
-        complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-        hasComplementaryReferential: false,
-      });
+      const complementaryCertificationScoringCriteria =
+        domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+          complementaryCertificationCourseId: 999,
+          complementaryCertificationBadgeId: 888,
+          minimumReproducibilityRate: 70,
+          minimumEarnedPix: 50,
+          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+          hasComplementaryReferential: false,
+        });
       complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
         .withArgs({
           certificationCourseId,
@@ -76,14 +77,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
             reproducibilityRate: 70,
           }),
         );
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 75,
-          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-          hasComplementaryReferential: false,
-          minimumEarnedPix: 50,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 75,
+            complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 50,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({
             certificationCourseId,
@@ -113,14 +115,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
       it('should save a "not acquired" complementary certification when pix score is above expectation and repro rate is not', async function () {
         // given
         const certificationCourseId = 123;
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 75,
-          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-          hasComplementaryReferential: false,
-          minimumEarnedPix: 50,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 75,
+            complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 50,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({
             certificationCourseId,
@@ -156,14 +159,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
       it('should save a "not acquired" complementary certification when pix score is below expectation and repro rate is above', async function () {
         // given
         const certificationCourseId = 123;
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 70,
-          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-          hasComplementaryReferential: false,
-          minimumEarnedPix: 50,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 70,
+            complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 50,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({
             certificationCourseId,
@@ -199,14 +203,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
       it('should save an "acquired" complementary certification when pix score and repro rate are above expectations', async function () {
         // given
         const certificationCourseId = 123;
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 70,
-          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-          hasComplementaryReferential: false,
-          minimumEarnedPix: 50,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 70,
+            complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 50,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({
             certificationCourseId,
@@ -242,14 +247,15 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring Double
       it('should save a "not acquired" complementary certification when pix core is rejected for fraud', async function () {
         // given
         const certificationCourseId = 123;
-        const complementaryCertificationScoringCriteria = domainBuilder.buildComplementaryCertificationScoringCriteria({
-          complementaryCertificationCourseId: 999,
-          complementaryCertificationBadgeId: 888,
-          minimumReproducibilityRate: 70,
-          complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
-          hasComplementaryReferential: false,
-          minimumEarnedPix: 50,
-        });
+        const complementaryCertificationScoringCriteria =
+          domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
+            complementaryCertificationCourseId: 999,
+            complementaryCertificationBadgeId: 888,
+            minimumReproducibilityRate: 70,
+            complementaryCertificationBadgeKey: 'PIX_PLUS_TEST',
+            hasComplementaryReferential: false,
+            minimumEarnedPix: 50,
+          });
         complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
           .withArgs({
             certificationCourseId,

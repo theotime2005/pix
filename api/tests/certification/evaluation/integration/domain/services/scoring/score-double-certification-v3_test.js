@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
 import * as complementaryCertificationCourseResultRepository from '../../../../../../../lib/infrastructure/repositories/complementary-certification-course-result-repository.js';
-import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../../lib/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import { scoreDoubleCertificationV3 } from '../../../../../../../src/certification/evaluation/domain/services/scoring/score-double-certification-v3.js';
+import * as complementaryCertificationScoringCriteriaRepository from '../../../../../../../src/certification/evaluation/infrastructure/repositories/complementary-certification-scoring-criteria-repository.js';
 import * as certificationAssessmentRepository from '../../../../../../../src/certification/shared/infrastructure/repositories/certification-assessment-repository.js';
 import * as certificationCourseRepository from '../../../../../../../src/certification/shared/infrastructure/repositories/certification-course-repository.js';
 import * as assessmentResultRepository from '../../../../../../../src/shared/infrastructure/repositories/assessment-result-repository.js';
