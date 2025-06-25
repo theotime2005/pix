@@ -9,6 +9,7 @@ const saveComputedCampaignParticipationResult = async function ({
   if (!campaignParticipation.isShared) throw new CantCalculateCampaignParticipationResultError();
 
   const participantResultsShared = await participantResultsSharedRepository.get(campaignParticipationId);
+
   return participantResultsSharedRepository.save(participantResultsShared);
 };
 

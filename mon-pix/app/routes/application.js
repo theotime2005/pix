@@ -18,6 +18,8 @@ export default class ApplicationRoute extends Route {
     super(...arguments);
 
     const trackRouteChange = (transition) => {
+      console.log(transition.from);
+      console.log(transition.to);
       if (!transition.to || transition.to.metadata?.doNotTrackPage) {
         return;
       }

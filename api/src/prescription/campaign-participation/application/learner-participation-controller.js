@@ -26,6 +26,7 @@ const shareCampaignResult = async function (request, _, dependencies = { profile
       userId,
       campaignParticipationId,
     });
+
     const questResults = await dependencies.questUsecases.getQuestResultsForCampaignParticipation({
       userId,
       campaignParticipationId,

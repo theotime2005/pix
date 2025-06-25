@@ -31,14 +31,20 @@ const CAMPAIGN_PARTICIPATION_ATTRIBUTES = [
 
 const updateWithSnapshot = async function (campaignParticipation) {
   await update(campaignParticipation);
+
+  // I think the campaign is already present in the
+  // campaignParticipation object, and we don't need to fetch it again
   const campaign = await campaignRepository.getByCampaignParticipationId(campaignParticipation.id);
+
   if (campaign.isExam) {
     return;
   }
+
   const knowledgeElements = await knowledgeElementRepository.findUniqByUserId({
     userId: campaignParticipation.userId,
     limitDate: campaignParticipation.sharedAt,
   });
+
   await knowledgeElementSnapshotRepository.save({
     snapshot: new KnowledgeElementCollection(knowledgeElements).toSnapshot(),
     campaignParticipationId: campaignParticipation.id,

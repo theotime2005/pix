@@ -17,10 +17,10 @@ export default class ProfilesCollectionCampaignsStartOrResumeRoute extends Route
     return this.modelFor('campaigns.profiles-collection');
   }
 
-  redirect({ campaign, campaignParticipation }) {
-    if (campaignParticipation.isShared) {
-      return this.router.replaceWith('campaigns.profiles-collection.profile-already-shared', campaign.code);
-    }
-    return this.router.replaceWith('campaigns.profiles-collection.send-profile', campaign.code);
+  async redirect({ campaign, campaignParticipation }) {
+    campaignParticipation.isShared = true;
+    await campaignParticipation.save();
+
+    return this.router.replaceWith('campaigns.profiles-collection.profile-already-shared', campaign.code);
   }
 }

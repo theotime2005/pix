@@ -15,10 +15,13 @@ const participantResultsSharedRepository = {
     const skillIds = await campaignRepository.findSkillIdsByCampaignParticipationId({
       campaignParticipationId,
     });
+
     const knowledgeElements = await knowledgeElementSnapshotRepository.findByCampaignParticipationIds([
       campaignParticipationId,
     ]);
+
     const competences = await competenceRepository.listPixCompetencesOnly();
+
     const { userId, sharedAt, id } = await campaignParticipationRepository.get(campaignParticipationId);
 
     const [placementProfile] = await placementProfileService.getPlacementProfilesWithSnapshotting({

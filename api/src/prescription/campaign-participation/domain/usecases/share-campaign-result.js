@@ -19,6 +19,7 @@ const shareCampaignResult = async function ({
   await participationResultCalculationJobRepository.performAsync(
     new ParticipationResultCalculationJob({ campaignParticipationId }),
   );
+
   await participationSharedJobRepository.performAsync(
     new ParticipationSharedJob({
       campaignParticipationId,
