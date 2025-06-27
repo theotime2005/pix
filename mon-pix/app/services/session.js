@@ -1,5 +1,6 @@
 import { service } from '@ember/service';
 import SessionService from 'ember-simple-auth/services/session';
+import LanguageDetector from 'i18next-browser-languagedetector';
 import get from 'lodash/get';
 import { DEFAULT_LOCALE, FRENCH_FRANCE_LOCALE, FRENCH_INTERNATIONAL_LOCALE } from 'mon-pix/services/locale';
 import { SessionStorageEntry } from 'mon-pix/utils/session-storage-entry.js';
@@ -59,6 +60,8 @@ export default class CurrentSessionService extends SessionService {
   }
 
   async handleUserLanguageAndLocale(transition = null) {
+    console.log('handleUserLanguageAndLocale')
+
     const language = this.locale.handleUnsupportedLanguage(transition?.to?.queryParams?.lang);
     await this._loadCurrentUserAndSetLocale(language);
   }
@@ -122,9 +125,50 @@ export default class CurrentSessionService extends SessionService {
 
   async _handleLocale(localeFromQueryParam = null) {
     const isUserLoaded = !!this.currentUser.user;
-    const domain = this.currentDomain.getExtension();
+    const domain = this.currentDomain.getDomain();
+    console.log({domain})
 
-    if (domain === FRANCE_TLD) {
+    // Create language detector instance
+    const languageDetector = new LanguageDetector();
+
+    // Add custom detector for Pix domains
+    languageDetector.addDetector({
+      name: 'pix-domains',
+      lookup() {
+        const hostname = window.location.hostname;
+        if (hostname.endsWith('.fr')) {
+          return FRENCH_FRANCE_LOCALE;
+        }
+        return null;
+      },
+    });
+
+    // Initialize the language detector with options
+    languageDetector.init(null, {
+      // order and from where user language should be detected
+      order: ['pix-domains', 'querystring', 'cookie', 'navigator'],
+
+      // keys or params to lookup language from
+      lookupQuerystring: 'lang',
+      lookupCookie: 'locale',
+
+      // cache user language on
+      caches: ['cookie'],
+
+      // optional expiry and domain for set cookie
+      cookieMinutes: 7 * 24 * 60, // 7 days
+      cookieDomain: `.${domain}`,
+      cookieOptions: { path: '/', sameSite: 'strict' },
+    });
+
+    // Detect the language
+    const detectedLanguage = languageDetector.detect();
+    console.log('Detected language:', detectedLanguage);
+
+    // Save the detected language in the cookie
+    languageDetector.cacheUserLanguage(detectedLanguage);
+
+    if (this.currentDomain.isFranceDomain) {
       this.locale.setLocale(FRENCH_INTERNATIONAL_LOCALE);
 
       if (!this.locale.hasLocaleCookie()) {
