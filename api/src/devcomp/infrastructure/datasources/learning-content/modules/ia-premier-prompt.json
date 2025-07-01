@@ -380,7 +380,7 @@
           "element": {
             "id": "ebd5d937-c04e-47da-98b2-7ddde874cb50",
             "type": "text",
-            "content": "<p>Même si le prompt est clair et précis, et que la réponse paraît bien rédigée, <strong>une IA conversationnelle peut se tromper</strong>.😓 Il faut TOUJOURS relire et vérifier la réponse.</p><p>💡<strong>Astuce</strong></p><p>On peut continuer la conversation en lui envoyant un nouveau message pour <strong>ajuster ou corriger</strong> la réponse.</p>"
+            "content": "<p>Même si le prompt est clair et précis, et que la réponse paraît bien rédigée, <strong>une IA conversationnelle peut se tromper</strong>.😓 Il faut TOUJOURS relire et vérifier la réponse.</p><p><br>💡<strong>Astuce</strong></p><p>On peut continuer la conversation en lui envoyant un nouveau message pour <strong>ajuster ou corriger</strong> la réponse.</p>"
           }
         }
       ]
