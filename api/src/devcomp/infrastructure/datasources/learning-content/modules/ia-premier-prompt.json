@@ -25,16 +25,33 @@
           "type": "element",
           "element": {
             "id": "09245327-cd08-4874-b006-1018c3b6b419",
-            "type": "text",
-            "content": "<p>Gustave cherche un nom pour son association. Il demande conseil à son amie Maëlle. Découvrez leur discussion.</p>"
-          }
-        },
-        {
-          "type": "element",
-          "element": {
-            "id": "663586ee-338f-434d-a0bb-a46fa2d80635",
-            "type": "text",
-            "content": "<iframe title=\"dnd\" src=\"https://1024pix.github.io/atelier-contenus/NAI/NomAssoYogaaRoulettes.html\" height=\"500\"></iframe>"
+            "type": "custom",
+            "tagName": "message-conversation",
+            "props": {
+              "title": "Asso Yoga à Roulette",
+              "messages": [
+                {
+                  "userName": "Gustave",
+                  "direction": "incoming",
+                  "content": "J'ai du mal à trouver un nom pour mon association de yoga à roulettes. J’aimerais quelque chose d’original mais je n’ai pas d’inspiration... 🤯"
+                },
+                {
+                  "userName": "Maëlle",
+                  "direction": "outgoing",
+                  "content": "🤖 Tu devrais essayer avec une IA conversationnelle, ça peut vraiment t’aider à trouver des idées sympas ! 💡"
+                },
+                {
+                  "userName": "Gustave",
+                  "direction": "incoming",
+                  "content": "Vraiment ? 😮 Mais… Je fais comment ?"
+                },
+                {
+                  "userName": "Maëlle",
+                  "direction": "outgoing",
+                  "content": "C’est super simple ! 😄 Tu lui écris ce que tu veux, comme si tu parlais à quelqu’un. Mais fais bien attention à ton prompt. 😉"
+                }
+              ]
+            }
           }
         }
       ]
@@ -344,7 +361,7 @@
                 "id": "1",
                 "content": "<p>La réponse de l'IA conversationnelle est adaptée à la demande.</p>",
                 "feedback": {
-                  "state": "<p>Et non !</p>",
+                  "state": "<p>Et non !</p>",
                   "diagnosis": "<p>La réponse de l’IA conversationnelle ne respecte pas ce qui est demandé dans le prompt ! Le crocodile n'est pas l'animal le plus adapté pour un appartement, c'est dangereux et même illégal !</p>"
                 }
               },
@@ -353,7 +370,7 @@
                 "content": "<p>La réponse de l'IA conversationnelle n'est pas adaptée à la demande.</p>",
                 "feedback": {
                   "state": "<p>Bien vu !</p>",
-                  "diagnosis": "<p>La réponse de l’IA conversationnelle n’est pas adaptée : adopter un crocodile n'est pas une bonne option pour quelqu’un qui habite en appartement, c'est dangereux et même illégal !<br><br></p>"
+                  "diagnosis": "<p>La réponse de l’IA conversationnelle n’est pas adaptée&nbsp;: adopter un crocodile n'est pas une bonne option pour quelqu’un qui habite en appartement, c'est dangereux et même illégal !<br><br></p>"
                 }
               },
               {
@@ -361,7 +378,7 @@
                 "content": "<p>Je ne sais pas.</p>",
                 "feedback": {
                   "state": "<p>Petit coup de pouce !</p>",
-                  "diagnosis": "<p>Regardez bien, la réponse de l’IA conversationnelle ne respecte pas ce qui est demandé dans le prompt : le crocodile n'est pas l'animal le plus adapté pour un appartement !</p>"
+                  "diagnosis": "<p>Regardez bien, la réponse de l’IA conversationnelle ne respecte pas ce qui est demandé dans le prompt&nbsp;: le crocodile n'est pas l'animal le plus adapté pour un appartement !</p>"
                 }
               }
             ],
@@ -395,7 +412,7 @@
           "element": {
             "id": "33210c11-0e87-4d93-9190-089654d57ee4",
             "type": "text",
-            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite : <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne à l'IA conversationnelle pour qu’elle produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse de l'IA conversationnelle sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> de l'IA conversationnelle pour vérifier qu'elle répond bien à la demande.🕵️</li><li>Si la réponse de l’IA conversationnelle ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider l'IA.📝</li></ul>"
+            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite&nbsp;: <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne à l'IA conversationnelle pour qu’elle produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse de l'IA conversationnelle sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> de l'IA conversationnelle pour vérifier qu'elle répond bien à la demande.🕵️</li><li>Si la réponse de l’IA conversationnelle ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider l'IA.📝</li></ul>"
           }
         }
       ]
