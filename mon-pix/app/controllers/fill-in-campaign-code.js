@@ -33,7 +33,7 @@ export default class FillInCampaignCodeController extends Controller {
   @action
   async startCampaign(campaignCode) {
     try {
-      this.verifiedCode = await this.store.findRecord('verified-code', campaignCode);
+      const verifiedCode = await this.store.findRecord('verified-code', campaignCode);
       this.campaign = await this.verifiedCode.campaign;
       const organizationToJoin = await this.store.queryRecord('organization-to-join', { code: this.verifiedCode.id });
       const isGARCampaign = organizationToJoin.identityProvider === IDENTITY_PROVIDER_ID_GAR;
@@ -42,7 +42,12 @@ export default class FillInCampaignCodeController extends Controller {
         return;
       }
 
-      this.router.transitionTo('campaigns.entry-point', this.campaign.code);
+      if (verifiedCode.type === 'campaign') {
+        this.campaign = await verifiedCode.campaign;
+        this.router.transitionTo('campaigns.entry-point', verifiedCode.id);
+      } else {
+        this.router.transitionTo('combined-courses', verifiedCode.id);
+      }
     } catch (error) {
       this.onStartCampaignError(error);
     }

@@ -1,6 +1,8 @@
-import Model, { attr } from '@ember-data/model';
+import { attr } from '@ember-data/model';
 
-export default class Campaign extends Model {
+import CourseType from './course-type';
+
+export default class Campaign extends CourseType {
   @attr('string') code;
   @attr('string') title;
   @attr('string') type;

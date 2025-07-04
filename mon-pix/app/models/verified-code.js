@@ -1,5 +1,6 @@
-import Model, { belongsTo } from '@ember-data/model';
+import Model, { attr, hasMany } from '@ember-data/model';
 
 export default class VerifiedCode extends Model {
-  @belongsTo('campaign', { async: true, inverse: null }) campaign;
+  @attr('string') type;
+  @hasMany('course-type', { polymorphic: true, async: true }) courseTypes;
 }

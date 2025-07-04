@@ -95,7 +95,7 @@ export default Factory.extend({
     afterCreate(campaign, server) {
       server.create('verified-code', {
         id: campaign.code,
-        campaign,
+        courseTypes: [{ type: 'campaign' }],
       });
     },
   }),
