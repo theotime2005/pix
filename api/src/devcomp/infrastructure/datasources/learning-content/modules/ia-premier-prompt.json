@@ -66,7 +66,7 @@
           "element": {
             "id": "f30fee84-9b24-4f58-b216-375817170298",
             "type": "text",
-            "content": "<p>Gustave a suivi le conseil de Maëlle. Il a demandé à un logiciel d'IA générative de lui donner des idées de noms pour son association. Voici sa discussion avec l’IA.</p>"
+            "content": "<p>Gustave a suivi le conseil de Maëlle. Il a demandé à un logiciel d'IA générative de lui donner des idées de noms pour son association. Voici sa discussion avec le logiciel.</p>"
           }
         }
       ]
@@ -139,7 +139,7 @@
           "element": {
             "id": "6080355f-69c8-4803-a7e2-b301556ac9e3",
             "type": "text",
-            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses de l’IA conversationnelle s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
+            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses du logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
           }
         }
       ]
@@ -201,7 +201,7 @@
               },
               {
                 "id": "6",
-                "content": "<p>L’IA conversationnelle répond toujours, mais parfois sans lien avec la question.</p>"
+                "content": "<p>Le logiciel d'IA générative répond toujours, mais parfois sans lien avec la question.</p>"
               }
             ],
             "feedbacks": {
@@ -232,7 +232,7 @@
           "element": {
             "id": "90cd34bf-4182-4c72-ab1a-22ea98ab9c46",
             "type": "text",
-            "content": "<p>Comme vous avez pu le voir, il est possible de faire des demandes variées au logiciel d'IA générative. <br>La demande est exprimée en <strong>langage courant</strong>, pas besoin de connaître des commandes spéciales ! 💬 <br>Pour que l’IA comprenne bien la demande, il faut être <strong>précis</strong>.</p><p><br>📌 <strong>Bon à savoir</strong></p><p>Une bonne façon d’être précis est d’utiliser des <strong>verbes d’actions</strong> comme&nbsp;: «&nbsp;lister&nbsp;», «&nbsp;traduire&nbsp;», «&nbsp;résumer&nbsp;», etc.<br><br></p>"
+            "content": "<p>Comme vous avez pu le voir, il est possible de faire des demandes variées au logiciel d'IA générative. <br>La demande est exprimée en <strong>langage courant</strong>, pas besoin de connaître des commandes spéciales ! 💬 <br>Pour que le logiciel d'IA générative comprenne bien la demande, il faut être <strong>précis</strong>.</p><p><br>📌 <strong>Bon à savoir</strong></p><p>Une bonne façon d’être précis est d’utiliser des <strong>verbes d’actions</strong> comme&nbsp;: «&nbsp;lister&nbsp;», «&nbsp;traduire&nbsp;», «&nbsp;résumer&nbsp;», etc.<br><br></p>"
           }
         }
       ]
@@ -412,7 +412,7 @@
           "element": {
             "id": "33210c11-0e87-4d93-9190-089654d57ee4",
             "type": "text",
-            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite&nbsp;: <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne au logiciel d'IA générative pour qu’elle produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse du logiciel d'IA générative sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> du logiciel d'IA générative pour vérifier qu'elle répond bien à la demande.🕵️</li><li>Si la réponse du logiciel d'IA générative ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider l'IA.📝</li></ul>"
+            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite&nbsp;: <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne au logiciel d'IA générative pour qu’elle produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse du logiciel d'IA générative sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> du logiciel d'IA générative pour vérifier qu'elle répond bien à la demande.🕵️</li><li>Si la réponse du logiciel d'IA générative ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider le logiciel.📝</li></ul>"
           }
         }
       ]
@@ -506,7 +506,7 @@
             "isCompletionRequired": false,
             "title": "Utilisation d'un véritable LLM",
             "url": "https://epreuves.pix.fr/pix-llm/pix-llm.html?mode=cma2ihhoa000bwg011i86qb30",
-            "instruction": "<p>Écrivez un prompt au logiciel d'IA générative ci-dessous pour qu’elle crée un poème sur votre animal préféré.<br><br></p>",
+            "instruction": "<p>Écrivez un prompt au logiciel d'IA générative ci-dessous pour qu’il crée un poème sur votre animal préféré.<br><br></p>",
             "solution": "<p></p>",
             "height": 500
           }
