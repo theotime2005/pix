@@ -139,7 +139,7 @@
           "element": {
             "id": "6080355f-69c8-4803-a7e2-b301556ac9e3",
             "type": "text",
-            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses du logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
+            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses d'un logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
           }
         }
       ]
@@ -367,10 +367,10 @@
               },
               {
                 "id": "2",
-                "content": "<p>La réponse du un logiciel d'IA générative n'est pas adaptée à la demande.</p>",
+                "content": "<p>La réponse du logiciel d'IA générative n'est pas adaptée à la demande.</p>",
                 "feedback": {
                   "state": "<p>Bien vu !</p>",
-                  "diagnosis": "<p>La réponse du un logiciel d'IA générative n’est pas adaptée&nbsp;: adopter un crocodile n'est pas une bonne option pour quelqu’un qui habite en appartement, c'est dangereux et même illégal !<br><br></p>"
+                  "diagnosis": "<p>La réponse du logiciel d'IA générative n’est pas adaptée&nbsp;: adopter un crocodile n'est pas une bonne option pour quelqu’un qui habite en appartement, c'est dangereux et même illégal !<br><br></p>"
                 }
               },
               {
@@ -412,7 +412,7 @@
           "element": {
             "id": "33210c11-0e87-4d93-9190-089654d57ee4",
             "type": "text",
-            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite&nbsp;: <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne au logiciel d'IA générative pour qu’elle produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse du logiciel d'IA générative sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> du logiciel d'IA générative pour vérifier qu'elle répond bien à la demande.🕵️</li><li>Si la réponse du logiciel d'IA générative ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider le logiciel.📝</li></ul>"
+            "content": "<p>📌 Résumons l’essentiel avant de passer à la suite&nbsp;: <br></p><ul><li>Un prompt («&nbsp;instruction&nbsp;» ou «&nbsp;requête&nbsp;» en français) est une <strong>question</strong> que l’on pose ou une <strong>consigne</strong> que l’on donne au logiciel d'IA générative pour qu’il produise une réponse.🧑‍💻</li><li>Un prompt s’écrit en <strong>langage courant</strong>, comme si on parlait à un autre être humain.🗣️</li><li>Plus la <strong>demande est claire et précise</strong>, plus la réponse du logiciel d'IA générative sera adaptée et pertinente.🤓<ul><li>On peut utiliser des <strong>verbes d’action</strong> comme «&nbsp;Traduis&nbsp;», «&nbsp;Liste&nbsp;», «&nbsp;Résume&nbsp;», etc.</li><li>On peut ajouter des <strong>informations supplémentaires</strong> pour donner du contexte.</li></ul></li><li>Il est important de <strong>toujours relire la réponse</strong> du logiciel d'IA générative pour vérifier qu'il répond bien à la demande.🕵️</li><li>Si la réponse du logiciel d'IA générative ne convient pas, il faut <strong>reformuler</strong> son prompt pour mieux guider le logiciel.📝</li></ul>"
           }
         }
       ]
