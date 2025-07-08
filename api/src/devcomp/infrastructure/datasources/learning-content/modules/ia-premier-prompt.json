@@ -491,17 +491,6 @@
               },
               {
                 "id": "b581e981-47db-4513-b05b-19cb219aac00",
-                "text": "Explique à un débutant comment fonctionne un moteur de voiture. ⚙️",
-                "image": {
-                  "url": "",
-                  "altText": ""
-                },
-                "proposalA": "Clair et précis",
-                "proposalB": "Flou et vague",
-                "solution": "A"
-              },
-              {
-                "id": "ad6bccf7-ce67-47ff-a60a-dd9938d61715",
                 "text": "Parle-moi d’histoire, j’ai envie d’apprendre. 📖",
                 "image": {
                   "url": "",
@@ -512,7 +501,7 @@
                 "solution": "B"
               },
               {
-                "id": "1abb2292-e98c-4181-8d00-4e4f5e2f5f89",
+                "id": "ad6bccf7-ce67-47ff-a60a-dd9938d61715",
                 "text": "Donne-moi une recette rapide et végétarienne à base de carottes et pois chiches. 🍲",
                 "image": {
                   "url": "",
@@ -523,7 +512,7 @@
                 "solution": "A"
               },
               {
-                "id": "03ab1311-5107-4ece-83b9-6146c92efad3",
+                "id": "1abb2292-e98c-4181-8d00-4e4f5e2f5f89",
                 "text": "Propose trois idées d’activités d'art plastique pour un atelier enfants (6–8 ans). 🧒",
                 "image": {
                   "url": "",
@@ -534,7 +523,7 @@
                 "solution": "A"
               },
               {
-                "id": "3c599b2c-b4e2-4173-a499-a8ccb816e441",
+                "id": "03ab1311-5107-4ece-83b9-6146c92efad3",
                 "text": "Comment réussir dans la vie pour être heureux ? 🏆",
                 "image": {
                   "url": "",
