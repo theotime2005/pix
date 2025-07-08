@@ -139,7 +139,7 @@
           "element": {
             "id": "6080355f-69c8-4803-a7e2-b301556ac9e3",
             "type": "text",
-            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée à un logiciel d'IA générative.🤖</li><li>Les réponses d'un logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
+            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses d'un logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
           }
         }
       ]
@@ -189,7 +189,7 @@
             "proposals": [
               {
                 "id": "2",
-                "content": "<p>On pose des questions au logiciel d'IA générative en utilisant des mots-clés précis.</p>"
+                "content": "<p>Un logiciel d'IA générative répond mieux quand on écrit des mots-clés isolés dans le champ de saisie.</p>"
               },
               {
                 "id": "3",
@@ -197,11 +197,11 @@
               },
               {
                 "id": "5",
-                "content": "<p>Les réponses du logiciel d'IA générative sont différentes selon les questions posées.</p>"
+                "content": "<p>Un logiciel d'IA générative crée à chaque fois une nouvelle réponse, même pour des questions identiques.</p>"
               },
               {
                 "id": "6",
-                "content": "<p>Le logiciel d'IA générative répond toujours, mais parfois sans lien avec la question.</p>"
+                "content": "<p>Un logiciel d'IA générative donne des réponses&nbsp;déjà prêtes, preparées à l'avance</p>"
               }
             ],
             "feedbacks": {
@@ -232,7 +232,7 @@
           "element": {
             "id": "90cd34bf-4182-4c72-ab1a-22ea98ab9c46",
             "type": "text",
-            "content": "<p>Comme vous avez pu le voir, il est possible de faire des demandes variées à un logiciel d'IA générative. <br>La demande est exprimée en <strong>langage courant</strong>, pas besoin de connaître des commandes spéciales ! 💬 <br>Pour que le logiciel d'IA générative comprenne bien la demande, il faut être <strong>précis</strong>.</p><p><br>📌 <strong>Bon à savoir</strong></p><p>Une bonne façon d’être précis est d’utiliser des <strong>verbes d’actions</strong> comme&nbsp;: «&nbsp;lister&nbsp;», «&nbsp;traduire&nbsp;», «&nbsp;résumer&nbsp;», etc.<br><br></p>"
+            "content": "<p>Comme vous avez pu le voir, il est possible de faire des demandes variées au logiciel d'IA générative. <br>La demande est exprimée en <strong>langage courant</strong>, pas besoin de connaître des commandes spéciales ! 💬 <br>Pour que le logiciel d'IA générative comprenne bien la demande, il faut être <strong>précis</strong>.</p><p><br>📌 <strong>Bon à savoir</strong></p><p>Une bonne façon d’être précis est d’utiliser des <strong>verbes d’actions</strong> comme&nbsp;: «&nbsp;lister&nbsp;», «&nbsp;traduire&nbsp;», «&nbsp;résumer&nbsp;», etc.<br><br></p>"
           }
         }
       ]
@@ -442,7 +442,7 @@
           "element": {
             "id": "23a7796e-475a-467c-b2b1-f45e3a09c2ce",
             "type": "text",
-            "content": "<p>Glissez et déposez le verbe qui convient le plus pour compléter chaque prompt ci-dessous pour que cela corresponde à la réponse donnée par le logiciel.&nbsp;<br></p>"
+            "content": "<p>Glissez et déposez le verbe qui convient le plus pour compléter chaque prompt ci-dessous.&nbsp;<br></p>"
           }
         },
         {
