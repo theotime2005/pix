@@ -442,7 +442,7 @@
           "element": {
             "id": "23a7796e-475a-467c-b2b1-f45e3a09c2ce",
             "type": "text",
-            "content": "<p>Glissez et déposez le verbe qui convient le plus pour compléter chaque prompt ci-dessous.&nbsp;<br></p>"
+            "content": "<p>Glissez et déposez le verbe qui convient le plus pour compléter chaque prompt ci-dessous en fonction des réponses de l'IA générative.<br></p>"
           }
         },
         {
