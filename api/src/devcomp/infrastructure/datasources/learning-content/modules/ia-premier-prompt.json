@@ -139,7 +139,7 @@
           "element": {
             "id": "6080355f-69c8-4803-a7e2-b301556ac9e3",
             "type": "text",
-            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée un logiciel d'IA générative.🤖</li><li>Les réponses d'un logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
+            "content": "<ul><li>Le prompt est la question posée ou la consigne donnée à un logiciel d'IA générative.🤖</li><li>Les réponses d'un logiciel d'IA générative s'affichent comme dans une conversation de messagerie instantanée.&nbsp;</li><li>Il y a toujours une zone pour écrire le prompt suivant.</li></ul>"
           }
         }
       ]
