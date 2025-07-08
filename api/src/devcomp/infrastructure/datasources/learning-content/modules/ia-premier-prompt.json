@@ -463,17 +463,88 @@
         {
           "type": "element",
           "element": {
-            "id": "c9eb0ffd-b345-4a66-bf04-ddfafc294c9e",
-            "type": "text",
-            "content": "<p>Classez chaque prompt ci-dessous selon sa précision dans une des catégories suivantes&nbsp;:&nbsp; «&nbsp;clair et précis&nbsp;» ou «&nbsp;flou et vague&nbsp;».</p>"
-          }
-        },
-        {
-          "type": "element",
-          "element": {
-            "id": "8a38252f-3ae3-48b0-ad3b-014ca1a95858",
-            "type": "text",
-            "content": "<iframe title=\"dnd\" src=\"https://1024pix.github.io/atelier-contenus/NAI/SwipePromptClairetprecis.html\" height=\"600\"></iframe>"
+            "id": "79e24dbc-b512-479b-913d-5df858490409",
+            "type": "qab",
+            "instruction": "<p>Classez chaque prompt ci-dessous selon sa précision dans une des catégories suivantes&nbsp;:&nbsp; «&nbsp;clair et précis&nbsp;» ou «&nbsp;flou et vague&nbsp;».</p>",
+            "cards": [
+              {
+                "id": "5ff6c7e9-b9c5-4b49-a6f9-b381075c2163",
+                "text": "Quels sont les meilleurs outils gratuits pour faire du montage vidéo niveau débutant sur smartphone ? 📹",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "A"
+              },
+              {
+                "id": "b4b01d06-618d-4195-b8a4-f564fc86d8b4",
+                "text": "Aide-moi dans mes projets. 💭",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "B"
+              },
+              {
+                "id": "b581e981-47db-4513-b05b-19cb219aac00",
+                "text": "Explique à un débutant comment fonctionne un moteur de voiture. ⚙️",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "A"
+              },
+              {
+                "id": "ad6bccf7-ce67-47ff-a60a-dd9938d61715",
+                "text": "Parle-moi d’histoire, j’ai envie d’apprendre. 📖",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "B"
+              },
+              {
+                "id": "1abb2292-e98c-4181-8d00-4e4f5e2f5f89",
+                "text": "Donne-moi une recette rapide et végétarienne à base de carottes et pois chiches. 🍲",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "A"
+              },
+              {
+                "id": "03ab1311-5107-4ece-83b9-6146c92efad3",
+                "text": "Propose trois idées d’activités d'art plastique pour un atelier enfants (6–8 ans). 🧒",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "A"
+              },
+              {
+                "id": "3c599b2c-b4e2-4173-a499-a8ccb816e441",
+                "text": "Comment réussir dans la vie pour être heureux ? 🏆",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "Clair et précis",
+                "proposalB": "Flou et vague",
+                "solution": "B"
+              }
+            ]
           }
         }
       ]
