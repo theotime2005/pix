@@ -5,12 +5,12 @@
   "isBeta": true,
   "details": {
     "image": "https://images.pix.fr/modulix/placeholder-details.svg",
-    "description": "<p>ChatGPT, Gemini ou encore Le Chat sont des Intelligences Artificielles (IA) conversationnelles&nbsp;: un utilisateur peut discuter avec ces IA et avoir des réponses à ses demandes.&nbsp; <br>Ces IA peuvent résumer un texte, inventer des histoires, etc. Et ça, sur globalement tous les sujets ! <br>Dans ce module, vous allez découvrir comment une IA conversationnelle réussit toujours à donner une réponse à un utilisateur… mais pas toujours la bonne !<br><br></p>",
+    "description": "<p>ChatGPT, Gemini ou encore Le Chat sont des logiciels d'Intelligences Artificielles (IA)&nbsp;: un utilisateur peut discuter avec ces IA et avoir des réponses à ses demandes.&nbsp; <br>Ces IA peuvent résumer un texte, inventer des histoires, etc. Et ça, sur globalement tous les sujets ! <br>Dans ce module, vous allez découvrir comment un logiciel d'IA générative réussit toujours à donner une réponse à un utilisateur… mais pas toujours la bonne !<br><br></p>",
     "duration": 10,
     "level": "Débutant",
     "objectives": [
-      "<p>Définir simplement une IA conversationnelle</p>",
-      "<p>Expliquer comment une IA conversationnelle construit ses réponses à nos demandes</p>"
+      "<p>Définir simplement un logiciel d'IA générative</p>",
+      "<p>Expliquer comment un logiciel d'IA générative construit ses réponses à nos demandes</p>"
     ],
     "tabletSupport": "comfortable"
   },
@@ -25,7 +25,7 @@
           "element": {
             "id": "bf7e524d-cef5-4cbf-b15d-7a03cfb4195d",
             "type": "text",
-            "content": "<p>Bob utilise chatGPT pour organiser ses prochaines vacances.&nbsp;C’est une IA conversationnelle.<br>Voici sa demande&nbsp;:</p>"
+            "content": "<p>Bob utilise chatGPT pour organiser ses prochaines vacances.&nbsp;C’est un logiciel d'IA générative.<br>Voici sa demande&nbsp;:</p>"
           }
         },
         {
@@ -45,7 +45,7 @@
           "element": {
             "id": "e1dffc31-9bbb-49d9-85e3-3a5caa5dc9fc",
             "type": "qcu",
-            "instruction": "<p>Imaginez que vous êtes à la place de Bob.</p><p>Que souhaiteriez-vous que l'IA conversationnelle réponde à cette demande ?</p>",
+            "instruction": "<p>Imaginez que vous êtes à la place de Bob.</p><p>Que souhaiteriez-vous que ce logiciel d'IA générative réponde à cette demande ?</p>",
             "proposals": [
               {
                 "id": "1",
@@ -87,7 +87,7 @@
           "element": {
             "id": "6b3b7a1f-1245-43fe-bb96-2d5c01a4a30e",
             "type": "text",
-            "content": "<p>Une IA conversationnelle comme chatGPT répond souvent de manière pertinente à nos demandes sur des sujets très variés.&nbsp; <br></p><p>Mais comment ça marche ? Comment sait-elle faire cela ? C’est ce que nous allons découvrir ensemble.<br></p>"
+            "content": "<p>un logiciel d'IA générative comme chatGPT répond souvent de manière pertinente à nos demandes sur des sujets très variés.&nbsp; <br></p><p>Mais comment ça marche ? Comment sait-elle faire cela ? C’est ce que nous allons découvrir ensemble.<br></p>"
           }
         }
       ]
@@ -198,7 +198,7 @@
           "element": {
             "id": "9a7f547c-7d63-4ece-b93e-96c92e48ae5a",
             "type": "text",
-            "content": "<p>Mais comment une IA conversationnelle fait-elle pour construire sa réponse quand un utilisateur lui écrit ?&nbsp; Voyons ça ensemble avec un jeu ! 🕹️<br></p>"
+            "content": "<p>Mais comment un logiciel d'IA générative fait-elle pour construire sa réponse quand un utilisateur lui écrit ?&nbsp; Voyons ça ensemble avec un jeu ! 🕹️<br></p>"
           }
         }
       ]
@@ -266,7 +266,7 @@
                 {
                   "id": "4c59286a-4fe4-4991-a8a7-023fd736c3a5",
                   "type": "text",
-                  "content": "<p>Pour une IA conversationnelle, c’est un peu le même principe&nbsp;: elle construit une réponse en complétant le texte mot après mot. <br>Voyons cela en détails, en reprenant l’exemple de la crêpe.👇<br></p>"
+                  "content": "<p>Pour un logiciel d'IA générative, c’est un peu le même principe&nbsp;: elle construit une réponse en complétant le texte mot après mot. <br>Voyons cela en détails, en reprenant l’exemple de la crêpe.👇<br></p>"
                 },
                 {
                   "id": "cccad926-00ec-456b-be8d-d864ad4b1ba8",
@@ -299,7 +299,7 @@
                       "content": "<p>Elle choisit les mots préférés de l’utilisateur.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p><strong>Pas tout à fait.</strong> Les mots choisis sont  probables&nbsp;: ils ont beaucoup de chances d’être utilisés. </p><p>Mais un utilisateur peut aussi exprimer clairement ses préférences à une IA conversationnelle pendant la discussion.</p>"
+                        "diagnosis": "<p><strong>Pas tout à fait.</strong> Les mots choisis sont  probables&nbsp;: ils ont beaucoup de chances d’être utilisés. </p><p>Mais un utilisateur peut aussi exprimer clairement ses préférences à un logiciel d'IA générative pendant la discussion.</p>"
                       }
                     },
                     {
@@ -356,7 +356,7 @@
           "element": {
             "id": "a67463b3-9762-4ede-8b24-63b9bb2ee4f1",
             "type": "text",
-            "content": "<p>⚠️ Cette méthode a des limites. </p><p>Les réponses d’une IA conversationnelle sont une suite de mots très probables, mais <strong>les phrases produites ne sont pas toujours vraies&nbsp;: il peut y avoir des erreurs.&nbsp;</strong> </p><p>🔍 Il faut donc <strong>toujours vérifier ce qu’une IA conversationnelle écrit.</strong></p>"
+            "content": "<p>⚠️ Cette méthode a des limites. </p><p>Les réponses d’un logiciel d'IA générative sont une suite de mots très probables, mais <strong>les phrases produites ne sont pas toujours vraies&nbsp;: il peut y avoir des erreurs.&nbsp;</strong> </p><p>🔍 Il faut donc <strong>toujours vérifier ce qu’un logiciel d'IA générative écrit.</strong></p>"
           }
         }
       ]
@@ -371,7 +371,7 @@
           "element": {
             "id": "4b21d13f-d359-4d81-8884-327703eea94c",
             "type": "text",
-            "content": "<p>Vous connaissez maintenant la méthode utilisée par une IA conversationnelle pour écrire ses réponses. </p><p>Mais comment connaît-elle tous ces mots ? Et s'ils sont probables ou pas ?<br></p>"
+            "content": "<p>Vous connaissez maintenant la méthode utilisée par un logiciel d'IA générative pour écrire ses réponses. </p><p>Mais comment connaît-elle tous ces mots ? Et s'ils sont probables ou pas ?<br></p>"
           }
         }
       ]
@@ -451,7 +451,7 @@
           "element": {
             "id": "68e15092-f116-4829-b56a-cbc2501bb272",
             "type": "text",
-            "content": "<p>Si on donne à une IA conversationnelle des <strong>milliards de textes variés pour s’entraîner</strong>, elle pourra apporter des <strong>réponses pertinentes à presque toutes les demandes</strong> des utilisateurs.&nbsp; </p>\n<p>✔️ Par exemple, chatGPT ou Mistral sont entraînées sur des textes disponibles sur internet&nbsp;: articles Wikipédia, forum, blogs, revues scientifiques, … </p><br>"
+            "content": "<p>Si on donne à un logiciel d'IA générative des <strong>milliards de textes variés pour s’entraîner</strong>, elle pourra apporter des <strong>réponses pertinentes à presque toutes les demandes</strong> des utilisateurs.&nbsp; </p>\n<p>✔️ Par exemple, chatGPT ou Mistral sont entraînées sur des textes disponibles sur internet&nbsp;: articles Wikipédia, forum, blogs, revues scientifiques, … </p><br>"
           }
         }
       ]
@@ -466,7 +466,7 @@
           "element": {
             "id": "3263a709-65bf-4a6e-8ab7-4e1ef5b4c4a2",
             "type": "text",
-            "content": "<p><strong>⚠️ Attention&nbsp;: les textes sur internet ont parfois des erreurs.</strong> Et une IA conversationnelle ne repère&nbsp;pas ces erreurs pendant l’entraînement. Elle peut donc <strong>reproduire ces erreurs dans ses réponses.</strong></p><br>\n<p>🔍 C’est important de le répéter&nbsp;: vérifiez toujours ce qu’une IA conversationnelle écrit. <br></p>"
+            "content": "<p><strong>⚠️ Attention&nbsp;: les textes sur internet ont parfois des erreurs.</strong> Et un logiciel d'IA générative ne repère&nbsp;pas ces erreurs pendant l’entraînement. Elle peut donc <strong>reproduire ces erreurs dans ses réponses.</strong></p><br>\n<p>🔍 C’est important de le répéter&nbsp;: vérifiez toujours ce qu’un logiciel d'IA générative écrit. <br></p>"
           }
         }
       ]
@@ -481,7 +481,7 @@
           "element": {
             "id": "ed8509d2-d62f-49a8-baa6-acc699562193",
             "type": "text",
-            "content": "<p>📌 Résumons avant de passer à la suite&nbsp;:&nbsp; </p><ul><li>Une IA conversationnelle est un outil qui permet de discuter facilement avec un utilisateur, sur des sujets très variés. 💬</li><li>Elle utilise un programme qui est entraîné avec énormément de textes disponibles sur internet. Cela va lui permettre de répondre précisément aux demandes, sans que ses réponses ne soient préparées à l’avance. 📚</li><li>Elle ne répond pas comme le ferait un humain&nbsp;: elle écrit en construisant mot par mot, avec des mots très probables. 🧩</li><li>Il faut toujours vérifier les réponses qui sont données. Pour vérifier, on peut poursuivre la conversation ou aller chercher soi-même sur internet. 🔍</li></ul>"
+            "content": "<p>📌 Résumons avant de passer à la suite&nbsp;:&nbsp; </p><ul><li>Un logiciel d'IA générative est un outil qui permet de discuter facilement avec un utilisateur, sur des sujets très variés. 💬</li><li>Elle utilise un programme qui est entraîné avec énormément de textes disponibles sur internet. Cela va lui permettre de répondre précisément aux demandes, sans que ses réponses ne soient préparées à l’avance. 📚</li><li>Elle ne répond pas comme le ferait un humain&nbsp;: elle écrit en construisant mot par mot, avec des mots très probables. 🧩</li><li>Il faut toujours vérifier les réponses qui sont données. Pour vérifier, on peut poursuivre la conversation ou aller chercher soi-même sur internet. 🔍</li></ul>"
           }
         }
       ]
@@ -526,7 +526,7 @@
               },
               {
                 "id": "96297870-4f63-4dac-84f6-c9056e843c86",
-                "text": "Une IA conversationnelle construit sa réponse mot après mot, en partant du texte de l'utilisateur.",
+                "text": "Un logiciel d'IA générative construit sa réponse mot après mot, en partant du texte de l'utilisateur.",
                 "image": {
                   "url": "",
                   "altText": ""
@@ -537,7 +537,7 @@
               },
               {
                 "id": "95665e37-f24c-4636-9518-a94032c7f9c8",
-                "text": "Les réponses d’une IA conversationnelle sont toujours correctes.",
+                "text": "Les réponses d’un logiciel d'IA générative sont toujours correctes.",
                 "image": {
                   "url": "",
                   "altText": ""
@@ -561,7 +561,7 @@
           "element": {
             "id": "d1ceb001-5eb8-4f7a-b5f6-c60074c9252e",
             "type": "text",
-            "content": "<p>Une amie de Bob, Alba, a commencé une discussion avec une IA conversationnelle.</p>"
+            "content": "<p>Une amie de Bob, Alba, a commencé une discussion avec un logiciel d'IA générative.</p>"
           }
         },
         {
@@ -638,7 +638,7 @@
           "element": {
             "id": "546fcfcd-a7a8-4290-bde6-a8cc203013f3",
             "type": "qcu-declarative",
-            "instruction": "<p>La prochaine fois que vous utiliserez une IA conversationnelle, que ferez-vous ?</p>",
+            "instruction": "<p>La prochaine fois que vous utiliserez un logiciel d'IA générative, que ferez-vous ?</p>",
             "proposals": [
               {
                 "id": "1",
@@ -661,7 +661,7 @@
                 "content": "<p>Je vérifierai les réponses avec d’autres outils (internet, livres, …).</p>",
                 "feedback": {
                   "state": "",
-                  "diagnosis": "<p><strong>Oui, c'est important !</strong> </p><p>Une IA conversationnelle permet de trouver très rapidement des informations. </p><p>Mais il est très important de vérifier ces informations ailleurs, avec d'autres sources.</p>"
+                  "diagnosis": "<p><strong>Oui, c'est important !</strong> </p><p>un logiciel d'IA générative permet de trouver très rapidement des informations. </p><p>Mais il est très important de vérifier ces informations ailleurs, avec d'autres sources.</p>"
                 }
               },
               {
@@ -669,7 +669,7 @@
                 "content": "<p>Je ne sais pas.</p>",
                 "feedback": {
                   "state": "",
-                  "diagnosis": "<p><strong>Pas toujours facile de choisir !</strong> </p><p>Souvenez-vous qu’une IA conversationnelle peut faire des erreurs. Il faut donc toujours vérifier ses réponses.</p>"
+                  "diagnosis": "<p><strong>Pas toujours facile de choisir !</strong> </p><p>Souvenez-vous qu’un logiciel d'IA générative peut faire des erreurs. Il faut donc toujours vérifier ses réponses.</p>"
                 }
               }
             ]
