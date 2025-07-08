@@ -169,7 +169,7 @@
           "element": {
             "id": "0a3d0ea4-e017-40a1-ae8c-b95275325a02",
             "type": "text",
-            "content": "<p>Glissez et déposez chaque prompt dans la zone où l'on écrit les prompts et observez la réponse du logiciel d'IA générative.</p>"
+            "content": "<p>Glissez et déposez chaque prompt dans la zone où l'on écrit les prompts.</p><br><p>Observez la réponse du logiciel d'IA générative.</p>"
           }
         },
         {
@@ -185,23 +185,19 @@
           "element": {
             "id": "d7c97543-452a-4777-9f6e-7d33e3d0d077",
             "type": "qcm",
-            "instruction": "<p>D’après ce que vous venez de voir, quelles affirmations résument aux mieux vos observations ?</p>",
+            "instruction": "<p>D’après ce que vous venez de voir, laquelle de ses affirmations est vraie ?</p>",
             "proposals": [
               {
-                "id": "2",
-                "content": "<p>Un logiciel d'IA générative répond mieux quand on écrit des mots-clés isolés dans le champ de saisie.</p>"
+                "id": "1",
+                "content": "<p>On parle à un logiciel d'IA générative en langage informatique.</p>"
               },
               {
-                "id": "3",
+                "id": "2",
                 "content": "<p>On parle au logiciel d'IA générative comme on parle avec une autre personne.</p>"
               },
               {
-                "id": "5",
-                "content": "<p>Un logiciel d'IA générative crée à chaque fois une nouvelle réponse, même pour des questions identiques.</p>"
-              },
-              {
-                "id": "6",
-                "content": "<p>Un logiciel d'IA générative donne des réponses&nbsp;déjà prêtes, preparées à l'avance</p>"
+                "id": "3",
+                "content": "<p>On parle à un logiciel d'IA générative avec des mots-clés uniquement.</p>"
               }
             ],
             "feedbacks": {
@@ -215,8 +211,7 @@
               }
             },
             "solutions": [
-              "3",
-              "5"
+              "2"
             ]
           }
         }
