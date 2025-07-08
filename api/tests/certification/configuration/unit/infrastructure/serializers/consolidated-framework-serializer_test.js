@@ -1,4 +1,5 @@
 import * as serializer from '../../../../../../src/certification/configuration/infrastructure/serializers/consolidated-framework-serializer.js';
+import { ComplementaryCertificationKeys } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
 import { expect } from '../../../../../test-helper.js';
 import { domainBuilder } from '../../../../../tooling/domain-builder/domain-builder.js';
 
@@ -7,20 +8,61 @@ describe('Certification | Configuration | Unit | Serializer | consolidated-frame
     it('should serialize attachable a consolidated framework to JSONAPI', function () {
       // given
       const consolidatedFramework = domainBuilder.certification.configuration.buildConsolidatedFramework();
+      const area = domainBuilder.buildArea({
+        competences: [domainBuilder.buildCompetence({ tubes: [domainBuilder.buildTube()] })],
+      });
 
       // when
-      const serializedConsolidatedFramework = serializer.serialize([consolidatedFramework]);
+      const serializedConsolidatedFramework = serializer.serialize({ ...consolidatedFramework, areas: [area] });
 
       // then
       expect(serializedConsolidatedFramework).to.deep.equal({
-        data: [
-          {
-            type: 'certification-consolidated-frameworks',
-            attributes: {
-              'complementary-certification-key': consolidatedFramework.complementaryCertificationKey,
-              version: consolidatedFramework.version,
-              challenges: consolidatedFramework.challenges,
+        data: {
+          attributes: {
+            'complementary-certification-key': ComplementaryCertificationKeys.PIX_PLUS_DROIT,
+            version: consolidatedFramework.version,
+          },
+          id: ComplementaryCertificationKeys.PIX_PLUS_DROIT,
+          relationships: {
+            areas: {
+              data: [
+                {
+                  id: 'recArea123',
+                  type: 'areas',
+                },
+              ],
             },
+          },
+          type: 'certification-consolidated-frameworks',
+        },
+        included: [
+          {
+            attributes: {
+              index: '1.1',
+              name: 'Manger des fruits',
+            },
+            id: 'recCOMP1',
+            type: 'competences',
+          },
+          {
+            attributes: {
+              code: '5',
+              color: 'red',
+              'framework-id': 'recFmk123',
+              title: 'Super domaine',
+            },
+            id: 'recArea123',
+            relationships: {
+              competences: {
+                data: [
+                  {
+                    id: 'recCOMP1',
+                    type: 'competences',
+                  },
+                ],
+              },
+            },
+            type: 'areas',
           },
         ],
       });

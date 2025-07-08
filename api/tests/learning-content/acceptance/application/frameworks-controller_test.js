@@ -168,6 +168,7 @@ describe('Acceptance | Controller | frameworks-controller', function () {
         id: 'skillPix1_1_1_1_1',
         status: 'actif',
         tubeId: 'tubePix1_1_1_1',
+        challenges: [{ id: 'challengePix1_1_1_1' }],
       },
       {
         id: 'skillFrance1_1_1_1_1',

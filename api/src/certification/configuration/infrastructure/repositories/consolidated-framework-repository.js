@@ -29,6 +29,11 @@ export async function getCurrentFrameworkByComplementaryCertificationKey({ compl
     })
     .select('*');
 
+  // add test
+  if (currentFrameworkChallengesDTO.length === 0) {
+    throw new NotFoundError(`There is no framework for complementary ${complementaryCertificationKey}`);
+  }
+
   return _toDomain({ certificationFrameworksChallengesDTO: currentFrameworkChallengesDTO });
 }
 

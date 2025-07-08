@@ -12,6 +12,7 @@ import * as attachableTargetProfileRepository from '../../infrastructure/reposit
 import * as candidateRepository from '../../infrastructure/repositories/candidate-repository.js';
 import * as centerRepository from '../../infrastructure/repositories/center-repository.js';
 import * as consolidatedFrameworkRepository from '../../infrastructure/repositories/consolidated-framework-repository.js';
+import * as learningContentRepository from '../../infrastructure/repositories/learning-content-repository.js';
 
 /**
  *
@@ -24,6 +25,7 @@ import * as consolidatedFrameworkRepository from '../../infrastructure/repositor
  * @typedef {challengeRepository} ChallengeRepository
  * @typedef {complementaryCertificationRepository} ComplementaryCertificationRepository
  * @typedef {consolidatedFrameworkRepository} ConsolidatedFrameworkRepository
+ * @typedef {learningContentRepository} LearningContentRepository
  * @typedef {skillRepository} SkillRepository
  * @typedef {tubeRepository} TubeRepository
  **/
@@ -35,6 +37,7 @@ const dependencies = {
   challengeRepository,
   complementaryCertificationRepository,
   consolidatedFrameworkRepository,
+  learningContentRepository,
   skillRepository,
   tubeRepository,
 };

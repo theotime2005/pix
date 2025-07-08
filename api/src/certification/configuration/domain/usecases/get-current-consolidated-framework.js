@@ -11,8 +11,16 @@
 export const getCurrentConsolidatedFramework = async ({
   complementaryCertificationKey,
   consolidatedFrameworkRepository,
+  learningContentRepository,
 }) => {
-  return consolidatedFrameworkRepository.getCurrentFrameworkByComplementaryCertificationKey({
-    complementaryCertificationKey,
+  const currentConsolidatedFramework =
+    await consolidatedFrameworkRepository.getCurrentFrameworkByComplementaryCertificationKey({
+      complementaryCertificationKey,
+    });
+
+  const frameworkAreas = await learningContentRepository.getConsolidatedFrameworkLearningContentByChallengeIds({
+    challengeIds: currentConsolidatedFramework.challenges.map(({ challengeId }) => challengeId),
   });
+
+  return { ...currentConsolidatedFramework, areas: frameworkAreas };
 };
