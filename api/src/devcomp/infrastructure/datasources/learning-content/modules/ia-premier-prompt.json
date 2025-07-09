@@ -184,36 +184,35 @@
           "type": "element",
           "element": {
             "id": "d7c97543-452a-4777-9f6e-7d33e3d0d077",
-            "type": "qcm",
+            "type": "qcu",
             "instruction": "<p>D’après ce que vous venez de voir, laquelle de ses affirmations est vraie ?</p>",
             "proposals": [
               {
                 "id": "1",
-                "content": "<p>On parle à un logiciel d'IA générative en langage informatique.</p>"
+                "content": "<p>On parle à un logiciel d'IA générative en langage informatique.</p>",
+                "feedback": {
+                  "state": "<p>Et non ! </p>",
+                  "diagnosis": "<p>On parle à un logiciel d'IA générative comme on parle à une autre personne.</p>"
+                }
               },
               {
                 "id": "2",
-                "content": "<p>On parle à un logiciel d'IA générative comme on parle avec une autre personne.</p>"
+                "content": "<p>On parle à un logiciel d'IA générative comme on parle avec une autre personne.</p>",
+                "feedback": {
+                  "state": "<p>Bravo !</p>",
+                  "diagnosis": "<p><br></p>"
+                }
               },
               {
                 "id": "3",
-                "content": "<p>On parle à un logiciel d'IA générative avec des mots-clés uniquement.</p>"
+                "content": "<p>On parle à un logiciel d'IA générative avec des mots-clés uniquement.</p>",
+                "feedback": {
+                  "state": "<p>Et non&nbsp; !</p>",
+                  "diagnosis": "<p>On parle à un logiciel d'IA générative comme on parle à une autre personne.</p>"
+                }
               }
             ],
-            "feedbacks": {
-              "valid": {
-                "state": "<p>Bravo !</p>",
-                "diagnosis": ""
-              },
-              "invalid": {
-                "state": "<p>Oups, réessayez !</p>",
-                "diagnosis": ""
-              }
-            },
-            "solutions": [
-              "2",
-              "3"
-            ]
+            "solution": "1"
           }
         }
       ]
