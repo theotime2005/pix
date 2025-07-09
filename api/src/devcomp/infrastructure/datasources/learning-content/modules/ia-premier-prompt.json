@@ -169,7 +169,7 @@
           "element": {
             "id": "0a3d0ea4-e017-40a1-ae8c-b95275325a02",
             "type": "text",
-            "content": "<p>Glissez et déposez chaque prompt dans la zone où l'on écrit les prompts.</p><br><p>Observez la réponse du logiciel d'IA générative.</p>"
+            "content": "<p>Glissez et déposez chaque prompt dans la zone où l'on écrit les prompts.</p><p>Observez la réponse du logiciel d'IA générative.</p>"
           }
         },
         {
@@ -193,7 +193,7 @@
               },
               {
                 "id": "2",
-                "content": "<p>On parle au logiciel d'IA générative comme on parle avec une autre personne.</p>"
+                "content": "<p>On parle à un logiciel d'IA générative comme on parle avec une autre personne.</p>"
               },
               {
                 "id": "3",
