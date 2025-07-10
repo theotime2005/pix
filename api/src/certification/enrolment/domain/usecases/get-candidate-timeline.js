@@ -4,6 +4,7 @@
  */
 
 import { CandidateCreatedEvent } from '../models/timeline/CandidateCreatedEvent.js';
+import { CandidateReconciledEvent } from '../models/timeline/CandidateReconciledEvent.js';
 import { CandidateTimeline } from '../models/timeline/CandidateTimeline.js';
 
 /**
@@ -18,6 +19,10 @@ export const getCandidateTimeline = async ({ sessionId, certificationCandidateId
 
   const candidate = await candidateRepository.get({ certificationCandidateId });
   timeline.addEvent(new CandidateCreatedEvent({ when: candidate.createdAt }));
+
+  if (candidate.isReconciled()) {
+    timeline.addEvent(new CandidateReconciledEvent({ when: candidate.reconciledAt }));
+  }
 
   return timeline;
 };
