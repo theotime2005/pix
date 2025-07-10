@@ -72,6 +72,11 @@ class AssessmentResult {
       isOrganizationLearnerActive,
       campaignType,
     });
+    this.canRetrySoon = this.#computeCanRetrySoon({
+      isCampaignMultipleSendings,
+      isOrganizationLearnerActive,
+      campaignType,
+    });
     this.canReset = this._computeCanReset({
       isTargetProfileResetAllowed,
       isCampaignMultipleSendings,
@@ -82,6 +87,9 @@ class AssessmentResult {
       campaignType,
     });
     this.sharedAt = sharedAt;
+    this.remainingSecondBeforeRetrying = sharedAt
+      ? dayjs(sharedAt).add(MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING, 'days').diff(Date.now(), 'seconds')
+      : null;
   }
 
   _computeMasteryRate(masteryRate, isShared, totalSkillsCount, validatedSkillsCount) {
@@ -109,14 +117,20 @@ class AssessmentResult {
     return isImprovementPossible && !isShared;
   }
 
-  #computeCanRetry({ isCampaignMultipleSendings, sharedAt, isOrganizationLearnerActive, campaignType }) {
+  #computeCanRetrySoon({ isCampaignMultipleSendings, isOrganizationLearnerActive, campaignType }) {
     return (
       isOrganizationLearnerActive &&
       !this.isDisabled &&
       isCampaignMultipleSendings &&
       this.isShared &&
-      this._timeBeforeRetryingPassed(sharedAt) &&
       (this.masteryRate < MAX_MASTERY_RATE || campaignType === CampaignTypes.EXAM)
+    );
+  }
+
+  #computeCanRetry({ isCampaignMultipleSendings, sharedAt, isOrganizationLearnerActive, campaignType }) {
+    return (
+      this.#computeCanRetrySoon({ isCampaignMultipleSendings, isOrganizationLearnerActive, campaignType }) &&
+      this._timeBeforeRetryingPassed(sharedAt)
     );
   }
 

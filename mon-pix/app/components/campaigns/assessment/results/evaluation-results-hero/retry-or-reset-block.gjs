@@ -7,12 +7,14 @@ import { action } from '@ember/object';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import dayjsDurationHumanize from 'ember-dayjs/helpers/dayjs-duration-humanize';
 import { t } from 'ember-intl';
 
 export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
   @service metrics;
   @service intl;
   @service featureToggles;
+  @service dayjs;
   @tracked isResetModalVisible = false;
 
   retryQueryParams = { retry: true };
@@ -20,7 +22,6 @@ export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
 
   constructor() {
     super(...arguments);
-
     if (this.args.campaignParticipationResult.canRetry) {
       this.metrics.trackEvent({
         event: 'custom-event',
@@ -112,9 +113,19 @@ export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
               {{t "pages.skill-review.hero.retry.actions.retry"}}
             </PixButtonLink>
           {{else}}
-            <PixButton @variant="secondary" @isDisabled={{true}}>
-              {{t "pages.skill-review.hero.retry.actions.retry"}}
-            </PixButton>
+            {{#if @campaignParticipationResult.canRetrySoon}}
+              <div>
+                <p class="evaluation-results-hero-retry__soon-title">
+                  {{t
+                    "pages.skill-review.hero.retry.retryIn"
+                    duration=(dayjsDurationHumanize @campaignParticipationResult.remainingSecondBeforeRetrying "second")
+                  }}
+                </p>
+                <PixButton @variant="secondary" @isDisabled={{true}}>
+                  {{t "pages.skill-review.hero.retry.actions.retry"}}
+                </PixButton>
+              </div>
+            {{/if}}
           {{/if}}
 
           {{#if @campaignParticipationResult.canReset}}

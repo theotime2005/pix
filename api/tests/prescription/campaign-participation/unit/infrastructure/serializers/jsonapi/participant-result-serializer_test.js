@@ -1,4 +1,7 @@
+import sinon from 'sinon';
+
 import * as serializer from '../../../../../../../src/prescription/campaign-participation/infrastructure/serializers/jsonapi/participant-result-serializer.js';
+import { constants } from '../../../../../../../src/shared/domain/constants.js';
 import {
   CampaignParticipationStatuses,
   CampaignTypes,
@@ -15,8 +18,14 @@ describe('Unit | Serializer | JSON API | participant-result-serializer', functio
     const isCampaignArchived = false;
     const sharedAt = new Date('2020-01-01');
     let participationResults, competences, stages, badgeResultsDTO, reachedStage;
+    let clock, now, originalConstantValue;
 
     beforeEach(function () {
+      now = new Date('2020-01-04');
+      originalConstantValue = constants.MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING;
+      clock = sinon.useFakeTimers({ now, toFake: ['Date'] });
+      sinon.stub(constants, 'MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING').value(4);
+
       const knowledgeElements = [
         domainBuilder.buildKnowledgeElement({
           skillId: 'skill1',
@@ -88,6 +97,10 @@ describe('Unit | Serializer | JSON API | participant-result-serializer', functio
         },
       ];
     });
+    afterEach(function () {
+      clock.restore();
+      sinon.stub(constants, 'MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING').value(originalConstantValue);
+    });
 
     it('should convert a CampaignParticipationResult model object into JSON API data', function () {
       // given
@@ -108,8 +121,10 @@ describe('Unit | Serializer | JSON API | participant-result-serializer', functio
         data: {
           attributes: {
             'can-improve': false,
-            'can-reset': true,
-            'can-retry': true,
+            'can-reset': false,
+            'can-retry': false,
+            'can-retry-soon': true,
+            'remaining-second-before-retrying': 3600 * 24 * 1,
             'is-completed': true,
             'is-disabled': false,
             'is-shared': true,

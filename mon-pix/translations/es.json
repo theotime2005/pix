@@ -1963,6 +1963,7 @@
             "retry": "Repetir el test"
           },
           "description": "Su organizador le pedirá que repita el curso.",
+          "retryIn": "Aún no puede retomar este curso. Vuelva dentro de {duration}.",
           "title": "Mejore sus resultados"
         },
         "see-trainings": "Ver los cursos",

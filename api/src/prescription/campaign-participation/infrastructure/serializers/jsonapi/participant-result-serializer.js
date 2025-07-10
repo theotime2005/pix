@@ -17,10 +17,12 @@ const serialize = function (results) {
       'competenceResults',
       'reachedStage',
       'canRetry',
+      'canRetrySoon',
       'canReset',
       'canImprove',
       'isDisabled',
       'sharedAt',
+      'remainingSecondBeforeRetrying',
     ],
     campaignParticipationBadges: {
       ref: 'id',

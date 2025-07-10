@@ -41,7 +41,12 @@ module(
       test('displays a disabled button', async function (assert) {
         // given
         this.set('campaign', { code: 'CODECAMPAIGN' });
-        this.set('campaignParticipationResult', { canRetry: false, canReset: false });
+        this.set('campaignParticipationResult', {
+          canRetry: false,
+          canReset: false,
+          canRetrySoon: true,
+          remainingSecondBeforeRetrying: null,
+        });
 
         // when
         const screen = await render(
@@ -59,6 +64,29 @@ module(
           .dom(screen.queryByRole('button', { name: t('pages.skill-review.hero.retry.actions.reset') }))
           .doesNotExist();
         assert.dom(screen.getByText(t('pages.skill-review.retry.notification'))).exists();
+      });
+
+      test('should display remaining time', async function (assert) {
+        // given
+        this.set('campaign', { code: 'CODECAMPAIGN' });
+        this.set('campaignParticipationResult', {
+          canRetry: false,
+          canReset: false,
+          canRetrySoon: true,
+          remainingSecondBeforeRetrying: '90',
+        });
+
+        // when
+        const screen = await render(
+          hbs`<Campaigns::Assessment::Results::EvaluationResultsHero::RetryOrResetBlock
+  @campaign={{this.campaign}}
+  @campaignParticipationResult={{this.campaignParticipationResult}}
+/>`,
+        );
+        // then
+        assert.ok(
+          screen.getByText(t('pages.skill-review.hero.retry.retryIn', { duration: '2 minutes' }), { exact: false }),
+        );
       });
 
       module('with auto share enabled', function (hooks) {

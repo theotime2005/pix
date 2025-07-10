@@ -434,11 +434,11 @@ describe('Acceptance | API | Campaign Participations', function () {
 
     let server, badge1, badge2, stage;
 
-    let recentDate;
+    let recentDate, clock;
 
     beforeEach(async function () {
       server = await createServer();
-
+      clock = sinon.useFakeTimers({ now: new Date('2018-05-07'), toFake: ['Date'] });
       const oldDate = new Date('2018-02-03');
       recentDate = new Date('2018-05-06');
       const futureDate = new Date('2018-07-10');
@@ -621,6 +621,9 @@ describe('Acceptance | API | Campaign Participations', function () {
       await mockLearningContent(learningContentObjects);
       await databaseBuilder.commit();
     });
+    afterEach(function () {
+      clock.restore();
+    });
 
     it('should return the campaign assessment result', async function () {
       // given
@@ -636,10 +639,12 @@ describe('Acceptance | API | Campaign Participations', function () {
             'is-completed': true,
             'is-shared': true,
             'can-retry': false,
+            'can-retry-soon': false,
             'can-reset': false,
             'can-improve': false,
             'is-disabled': false,
             'participant-external-id': 'participantExternalId',
+            'remaining-second-before-retrying': 3600 * 24 * 3,
             'shared-at': recentDate,
           },
           relationships: {

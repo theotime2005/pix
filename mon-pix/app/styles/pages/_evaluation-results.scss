@@ -228,7 +228,7 @@
   gap: var(--pix-spacing-10x);
 
   &::after {
-    background-image: url("/images/illustrations/results/retry-assessment.svg");
+    background-image: url('/images/illustrations/results/retry-assessment.svg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
@@ -264,6 +264,12 @@
   align-items: center;
   margin-block: var(--pix-spacing-4x);
   padding-block: var(--pix-spacing-1x);
+}
+
+.evaluation-results-hero-retry__soon-title {
+  @extend %pix-body-m;
+
+  margin-bottom: var(--pix-spacing-4x);
 }
 
 /**
