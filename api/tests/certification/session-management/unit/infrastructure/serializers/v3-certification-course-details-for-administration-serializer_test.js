@@ -21,7 +21,6 @@ describe('Unit | Serializer | JSONAPI | v3-certification-details-for-administrat
       const skillName = '@toto';
       const answerValue = 'Some answer';
       const isRejectedForFraud = true;
-      const isCancelled = true;
       const numberOfChallenges = 20;
       const createdAt = new Date('2022-02-02');
       const completedAt = new Date('2022-02-03');
@@ -57,7 +56,6 @@ describe('Unit | Serializer | JSONAPI | v3-certification-details-for-administrat
           attributes: {
             'certification-course-id': certificationCourseId,
             'is-rejected-for-fraud': isRejectedForFraud,
-            'is-cancelled': isCancelled,
             'created-at': createdAt,
             'completed-at': completedAt,
             'ended-at': endedAt,
@@ -91,7 +89,6 @@ describe('Unit | Serializer | JSONAPI | v3-certification-details-for-administrat
       const certificationDetails = new V3CertificationCourseDetailsForAdministration({
         certificationCourseId,
         isRejectedForFraud,
-        isCancelled,
         createdAt,
         completedAt,
         endedAt,

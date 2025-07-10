@@ -4,9 +4,9 @@ import {
   CertificationIssueReportCategory,
   CertificationIssueReportSubcategories,
 } from '../../../../../../src/certification/shared/domain/models/CertificationIssueReportCategory.js';
-import { AnswerStatus } from '../../../../../../src/shared/domain/models/AnswerStatus.js';
-import { Assessment } from '../../../../../../src/shared/domain/models/Assessment.js';
-import { AssessmentResult } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
+import { AnswerStatus } from '../../../../../../src/shared/domain/models/index.js';
+import { Assessment } from '../../../../../../src/shared/domain/models/index.js';
+import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
 import { databaseBuilder, domainBuilder, expect } from '../../../../../test-helper.js';
 
 describe('Integration | Infrastructure | Repository | v3-certification-course-details-for-administration', function () {
@@ -24,7 +24,6 @@ describe('Integration | Infrastructure | Repository | v3-certification-course-de
       const assessmentResultStatus = AssessmentResult.status.VALIDATED;
       const abortReason = ABORT_REASONS.CANDIDATE;
       const pixScore = 60;
-      const isCancelled = false;
 
       databaseBuilder.factory.buildCertificationCourse({
         id: certificationCourseId,
@@ -32,7 +31,6 @@ describe('Integration | Infrastructure | Repository | v3-certification-course-de
         createdAt,
         completedAt,
         abortReason,
-        isCancelled,
       });
       databaseBuilder.factory.buildCertificationChallenge({
         courseId: certificationCourseId,
@@ -103,7 +101,6 @@ describe('Integration | Infrastructure | Repository | v3-certification-course-de
         assessmentResultStatus,
         abortReason,
         pixScore,
-        isCancelled,
         numberOfChallenges,
         certificationChallengesForAdministration: [certificationChallengeForAdministration],
       });

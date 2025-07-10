@@ -104,7 +104,6 @@ export default class DetailsV3 extends Component {
 
   get detailStatusLabel() {
     const { assessmentResultStatus, isRejectedForFraud } = this.args.details;
-    // isCancelled will be removed
     if (this.args.details.isCertificationCancelled) {
       return assessmentResultStatusLabelAndColor(assessmentResultStatus).label;
     }

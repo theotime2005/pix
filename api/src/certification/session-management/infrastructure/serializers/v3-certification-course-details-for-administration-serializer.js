@@ -7,7 +7,6 @@ const serialize = function ({ certificationDetails }) {
     'certificationCourseId',
     'certificationChallengesForAdministration',
     'isRejectedForFraud',
-    'isCancelled',
     'createdAt',
     'completedAt',
     'endedAt',

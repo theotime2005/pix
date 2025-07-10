@@ -1,5 +1,5 @@
 import { getV3CertificationCourseDetailsForAdministration } from '../../../../../../src/certification/session-management/domain/usecases/get-v3-certification-course-details-for-administration.js';
-import { AnswerStatus } from '../../../../../../src/shared/domain/models/AnswerStatus.js';
+import { AnswerStatus } from '../../../../../../src/shared/domain/models/index.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Unit | UseCase | get-certification-course-details-for-administration', function () {

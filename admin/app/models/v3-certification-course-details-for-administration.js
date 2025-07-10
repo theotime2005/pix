@@ -9,11 +9,9 @@ export const abortReasons = {
   TECHNICAL: 'technical',
 };
 
-// isCancelled will be removed
 export default class V3CertificationCourseDetailsForAdministration extends Model {
   @attr('number') certificationCourseId;
   @attr('boolean') isRejectedForFraud;
-  @attr('boolean') isCancelled;
   @attr('date') createdAt;
   @attr('date') completedAt;
   @attr('date') endedAt;
@@ -46,9 +44,8 @@ export default class V3CertificationCourseDetailsForAdministration extends Model
     return this.assessmentState === assessmentStates.COMPLETED;
   }
 
-  // isCancelled will be removed
   get isCertificationCancelled() {
-    return this.isCancelled || this.assessmentResultStatus === assessmentResultStatus.CANCELLED;
+    return this.assessmentResultStatus === assessmentResultStatus.CANCELLED;
   }
 
   get numberOfOkAnswers() {

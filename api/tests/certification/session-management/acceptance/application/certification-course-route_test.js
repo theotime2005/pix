@@ -463,7 +463,6 @@ describe('Certification | Session Management | Acceptance | Application | Routes
           'created-at': certificationCourse.createdAt,
           'ended-at': null,
           'is-rejected-for-fraud': false,
-          'is-cancelled': false,
           'pix-score': assessmentResult.pixScore,
           'number-of-challenges': 10,
           'assessment-state': 'completed',

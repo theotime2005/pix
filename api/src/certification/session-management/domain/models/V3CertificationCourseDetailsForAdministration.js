@@ -3,7 +3,6 @@ export class V3CertificationCourseDetailsForAdministration {
     certificationCourseId,
     certificationChallengesForAdministration = [],
     isRejectedForFraud,
-    isCancelled,
     createdAt,
     completedAt,
     endedAt = null,
@@ -15,7 +14,6 @@ export class V3CertificationCourseDetailsForAdministration {
   }) {
     this.certificationCourseId = certificationCourseId;
     this.isRejectedForFraud = isRejectedForFraud;
-    this.isCancelled = isCancelled;
     this.certificationChallengesForAdministration = certificationChallengesForAdministration;
     this.createdAt = createdAt;
     this.completedAt = completedAt;

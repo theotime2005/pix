@@ -26,7 +26,6 @@ const getV3DetailsByCertificationCourseId = async function ({ certificationCours
     .where('certification-challenge-live-alerts.status', CertificationChallengeLiveAlertStatus.VALIDATED)
     .orderBy('certification-challenge-live-alerts.createdAt', 'ASC');
 
-  // isCancelled will be removed
   const certificationCourseDTO = await knex
     .select({
       isRejectedForFraud: 'certification-courses.isRejectedForFraud',
@@ -35,7 +34,6 @@ const getV3DetailsByCertificationCourseId = async function ({ certificationCours
       completedAt: 'certification-courses.completedAt',
       abortReason: 'certification-courses.abortReason',
       assessmentState: 'assessments.state',
-      isCancelled: 'certification-courses.isCancelled',
       assessmentResultStatus: 'assessment-results.status',
       pixScore: 'assessment-results.pixScore',
       endedAt: 'certification-courses.endedAt',
