@@ -1213,7 +1213,7 @@ module('Integration | Components | Campaigns | Assessment | Results | Evaluation
     module('when the user can retry the campaign', function () {
       test('displays the retry or reset block', async function (assert) {
         // given
-        this.set('campaign', { organizationId: 1 });
+        this.set('campaign', { organizationId: 1, multipleSendings: true });
         this.set('campaignParticipationResult', { masteryRate: 0.1, canRetry: true, canReset: true });
 
         // when
@@ -1232,7 +1232,7 @@ module('Integration | Components | Campaigns | Assessment | Results | Evaluation
     module('when the user can not retry the campaign', function () {
       test('not display the retry or reset block', async function (assert) {
         // given
-        this.set('campaign', { organizationId: 1 });
+        this.set('campaign', { organizationId: 1, multipleSendings: false });
         this.set('campaignParticipationResult', { masteryRate: 0.1, canRetry: false, canReset: true });
 
         // when
@@ -1245,6 +1245,25 @@ module('Integration | Components | Campaigns | Assessment | Results | Evaluation
 
         // then
         assert.dom(screen.queryByText(t('pages.skill-review.hero.retry.title'))).doesNotExist();
+      });
+    });
+
+    module('when the user can not yet retry the campaign', function () {
+      test('not display the retry or reset block', async function (assert) {
+        // given
+        this.set('campaign', { organizationId: 1, multipleSendings: true });
+        this.set('campaignParticipationResult', { masteryRate: 0.1, canRetry: false, canReset: true });
+
+        // when
+        const screen = await render(
+          hbs`<Campaigns::Assessment::Results::EvaluationResultsHero
+  @campaign={{this.campaign}}
+  @campaignParticipationResult={{this.campaignParticipationResult}}
+/>`,
+        );
+
+        // then
+        assert.ok(screen.queryByText(t('pages.skill-review.hero.retry.title')));
       });
     });
   });

@@ -111,7 +111,12 @@ export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
             >
               {{t "pages.skill-review.hero.retry.actions.retry"}}
             </PixButtonLink>
+          {{else}}
+            <PixButton @variant="secondary" @isDisabled={{true}}>
+              {{t "pages.skill-review.hero.retry.actions.retry"}}
+            </PixButton>
           {{/if}}
+
           {{#if @campaignParticipationResult.canReset}}
             <PixButton @variant="tertiary" @triggerAction={{this.toggleResetModalVisibility}}>
               {{t "pages.skill-review.hero.retry.actions.reset"}}

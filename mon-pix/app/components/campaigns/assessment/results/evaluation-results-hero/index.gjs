@@ -332,7 +332,7 @@ export default class EvaluationResultsHero extends Component {
         />
       {{/if}}
 
-      {{#if @campaignParticipationResult.canRetry}}
+      {{#if @campaign.multipleSendings}}
         <RetryOrResetBlock @campaign={{@campaign}} @campaignParticipationResult={{@campaignParticipationResult}} />
       {{/if}}
     </div>
