@@ -6,7 +6,7 @@ import { Subscription } from '../../domain/models/Subscription.js';
 
 /**
  * @function
- * @param {Candidate} params
+ * @param {Object} params
  * @param {number} params.certificationCandidateId
  *
  * @return {Candidate}

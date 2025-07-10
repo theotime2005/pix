@@ -14,6 +14,7 @@ import * as certificationBadgesService from '../../../shared/domain/services/cer
 import * as certificationCpfService from '../../../shared/domain/services/certification-cpf-service.js';
 import * as sessionValidator from '../../../shared/domain/validators/session-validator.js';
 import * as certificationCandidateRepository from '../../../shared/infrastructure/repositories/certification-candidate-repository.js';
+import * as certificationCourseRepository from '../../../shared/infrastructure/repositories/certification-course-repository.js';
 import * as complementaryCertificationBadgesRepository from '../../../shared/infrastructure/repositories/complementary-certification-badge-repository.js';
 import { enrolmentRepositories } from '../../infrastructure/repositories/index.js';
 import * as certificationCandidatesOdsService from '../services/certification-candidates-ods-service.js';
@@ -82,6 +83,7 @@ import * as temporarySessionsStorageForMassImportService from '../services/tempo
  * @typedef {organizationLearnerRepository} OrganizationLearnerRepository
  * @typedef {certificationCandidateRepository} CertificationCandidateRepository
  * @typedef {divisionRepository} DivisionRepository
+ * @typedef {certificationCourseRepository} CertificationCourseRepository
  *
  **/
 const dependencies = {
@@ -101,6 +103,7 @@ const dependencies = {
   organizationRepository,
   organizationLearnerRepository,
   certificationCandidateRepository,
+  certificationCourseRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));
