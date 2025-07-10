@@ -37,11 +37,9 @@ describe('Unit | Domain | Models | PrivateCertificate', function () {
 
     it('builds a cancelled PrivateCertificate', async function () {
       // when
-      // isCancelled will be removed
       const privateCertificate = PrivateCertificate.buildFrom({
         ...commonData,
         assessmentResultStatus: AssessmentResult.status.CANCELLED,
-        isCancelled: true,
       });
 
       // then
@@ -54,7 +52,6 @@ describe('Unit | Domain | Models | PrivateCertificate', function () {
       // when
       const privateCertificate = PrivateCertificate.buildFrom({
         ...commonData,
-        isCancelled: false,
         assessmentResultStatus: assessmentResultStatuses.VALIDATED,
       });
 
@@ -68,7 +65,6 @@ describe('Unit | Domain | Models | PrivateCertificate', function () {
       // when
       const privateCertificate = PrivateCertificate.buildFrom({
         ...commonData,
-        isCancelled: false,
         assessmentResultStatus: assessmentResultStatuses.REJECTED,
       });
 
@@ -82,7 +78,6 @@ describe('Unit | Domain | Models | PrivateCertificate', function () {
       // when
       const privateCertificate = PrivateCertificate.buildFrom({
         ...commonData,
-        isCancelled: false,
         assessmentResultStatus: assessmentResultStatuses.ERROR,
       });
 
@@ -96,7 +91,6 @@ describe('Unit | Domain | Models | PrivateCertificate', function () {
       // when
       const privateCertificate = PrivateCertificate.buildFrom({
         ...commonData,
-        isCancelled: false,
         assessmentResultStatus: null,
       });
 

@@ -377,7 +377,6 @@ describe('Certification | Results | Acceptance | Application | Routes | certific
           userId: candidate.userId,
           sessionId: candidate.sessionId,
           isPublished: true,
-          isCancelled: false,
         });
 
         databaseBuilder.factory.buildBadge({ key: 'a badge' });
@@ -457,7 +456,6 @@ describe('Certification | Results | Acceptance | Application | Routes | certific
           userId: candidate.userId,
           sessionId: session.id,
           isPublished: true,
-          isCancelled: false,
         });
 
         const assessment = databaseBuilder.factory.buildAssessment({

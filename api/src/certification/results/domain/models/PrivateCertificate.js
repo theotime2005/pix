@@ -79,7 +79,6 @@ class PrivateCertificate {
 
   /**
    * @param {Object} props
-   * @param {boolean} props.isCancelled - will be removed
    */
   static buildFrom({
     id,
@@ -100,11 +99,10 @@ class PrivateCertificate {
     verificationCode,
     maxReachableLevelOnCertificationDate,
     assessmentResultStatus,
-    isCancelled,
     version,
     algorithmEngineVersion,
   }) {
-    const status = _computeStatus(assessmentResultStatus, isCancelled);
+    const status = _computeStatus(assessmentResultStatus);
     const juryComment = new JuryComment({
       commentByAutoJury,
       fallbackComment: commentForCandidate,
@@ -138,9 +136,8 @@ class PrivateCertificate {
   }
 }
 
-function _computeStatus(assessmentResultStatus, isCancelled) {
-  // isCancelled will be removed
-  if (isCancelled || assessmentResultStatus === AssessmentResult.status.CANCELLED) return status.CANCELLED;
+function _computeStatus(assessmentResultStatus) {
+  if (assessmentResultStatus === AssessmentResult.status.CANCELLED) return status.CANCELLED;
   if (assessmentResultStatus === AssessmentResult.status.VALIDATED) return status.VALIDATED;
   if (assessmentResultStatus === AssessmentResult.status.REJECTED) return status.REJECTED;
   if (assessmentResultStatus === AssessmentResult.status.ERROR) return status.ERROR;

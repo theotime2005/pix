@@ -85,12 +85,10 @@ const findPrivateCertificatesByUserId = async function ({ userId }) {
 };
 
 const getPrivateCertificate = async function (id, { locale } = {}) {
-  // isCancelled will be removed
   const certificationCourseDTO = await _selectPrivateCertificates()
     .where('certification-courses.id', '=', id)
     .groupBy('certification-courses.id', 'sessions.id', 'assessment-results.id')
     .where('certification-courses.isPublished', true)
-    .where('certification-courses.isCancelled', false)
     .where('assessment-results.status', AssessmentResult.status.VALIDATED)
     .first();
 
@@ -135,7 +133,6 @@ export {
 };
 
 function _selectCertificationCourseDTOs() {
-  // isCancelled will be removed
   return _getCertificateQuery()
     .select({
       id: 'certification-courses.id',
@@ -161,12 +158,10 @@ function _selectCertificationCourseDTOs() {
         )`),
     })
     .where('assessment-results.status', AssessmentResult.status.VALIDATED)
-    .where('certification-courses.isPublished', true)
-    .where('certification-courses.isCancelled', false);
+    .where('certification-courses.isPublished', true);
 }
 
 function _selectPrivateCertificates() {
-  // isCancelled will be removed
   return _getCertificateQuery().select({
     id: 'certification-courses.id',
     firstName: 'certification-courses.firstName',
@@ -174,7 +169,6 @@ function _selectPrivateCertificates() {
     birthdate: 'certification-courses.birthdate',
     birthplace: 'certification-courses.birthplace',
     isPublished: 'certification-courses.isPublished',
-    isCancelled: 'certification-courses.isCancelled',
     userId: 'certification-courses.userId',
     date: 'certification-courses.createdAt',
     verificationCode: 'certification-courses.verificationCode',
@@ -197,7 +191,6 @@ function _selectPrivateCertificates() {
 }
 
 function _selectShareableCertificates() {
-  // isCancelled will be removed
   return _getCertificateQuery()
     .select({
       id: 'certification-courses.id',
@@ -221,8 +214,7 @@ function _selectShareableCertificates() {
         )`),
     })
     .where('assessment-results.status', AssessmentResult.status.VALIDATED)
-    .where('certification-courses.isPublished', true)
-    .where('certification-courses.isCancelled', false);
+    .where('certification-courses.isPublished', true);
 }
 
 function _getCertificateQuery() {

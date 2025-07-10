@@ -46,11 +46,10 @@ describe('Certification | Results | Acceptance | Application | Routes | organiza
         userId: candidate.userId,
         sessionId: candidate.sessionId,
         isPublished: true,
-        isCancelled: true,
       });
       databaseBuilder.factory.buildAssessmentResult.last({
         pixScore: 0,
-        status: AssessmentResult.status.REJECTED,
+        status: AssessmentResult.status.CANCELLED,
         certificationCourseId: certificationCourse.id,
         commentByAutoJury: AutoJuryCommentKeys.CANCELLED_DUE_TO_NEUTRALIZATION,
       });
