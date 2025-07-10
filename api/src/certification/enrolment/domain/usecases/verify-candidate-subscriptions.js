@@ -124,24 +124,17 @@ function _doesNeedEligibilityCheck(session, candidate) {
 }
 
 function _hasValidCoreCertification(userPixCertifications) {
-  // isCancelled will be removed
   return _.some(
     userPixCertifications,
-    (certification) =>
-      certification.status === AssessmentResult.status.VALIDATED &&
-      !certification.isCancelled &&
-      !certification.isRejectedForFraud,
+    (certification) => certification.status === AssessmentResult.status.VALIDATED && !certification.isRejectedForFraud,
   );
 }
 
 function _getHighestUserValidPixScore(userPixCertifications) {
-  // isCancelled will be removed
   const validPixCertifications = _.chain(userPixCertifications)
     .filter(
       (pixCertification) =>
-        pixCertification.status === AssessmentResult.status.VALIDATED &&
-        !pixCertification.isCancelled &&
-        !pixCertification.isRejectedForFraud,
+        pixCertification.status === AssessmentResult.status.VALIDATED && !pixCertification.isRejectedForFraud,
     )
     .sortBy('pixScore')
     .value();

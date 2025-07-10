@@ -157,19 +157,16 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
         domainBuilder.certification.enrolment.buildPixCertification({
           pixScore: 123,
           status: AssessmentResult.status.CANCELLED,
-          isCancelled: true,
           isRejectedForFraud: false,
         }),
         domainBuilder.certification.enrolment.buildPixCertification({
           pixScore: 123,
           status: AssessmentResult.status.VALIDATED,
-          isCancelled: false,
           isRejectedForFraud: true,
         }),
         domainBuilder.certification.enrolment.buildPixCertification({
           pixScore: 123,
           status: AssessmentResult.status.REJECTED,
-          isCancelled: false,
           isRejectedForFraud: false,
         }),
       ].forEach((pixCertification) => {
@@ -227,7 +224,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
             domainBuilder.certification.enrolment.buildPixCertification({
               pixScore: 250,
               status: AssessmentResult.status.VALIDATED,
-              isCancelled: false,
               isRejectedForFraud: false,
             }),
           ]);
@@ -274,7 +270,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
             domainBuilder.certification.enrolment.buildPixCertification({
               pixScore: 250,
               status: AssessmentResult.status.VALIDATED,
-              isCancelled: false,
               isRejectedForFraud: false,
             }),
           ]);
@@ -338,7 +333,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
             domainBuilder.certification.enrolment.buildPixCertification({
               pixScore: 250,
               status: AssessmentResult.status.VALIDATED,
-              isCancelled: false,
               isRejectedForFraud: false,
             }),
           ]);
@@ -404,7 +398,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
             domainBuilder.certification.enrolment.buildPixCertification({
               pixScore: 100,
               status: AssessmentResult.status.VALIDATED,
-              isCancelled: false,
               isRejectedForFraud: false,
             }),
           ]);
@@ -471,7 +464,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: 300,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);
@@ -538,7 +530,6 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | verify-candidate
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: 300,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);

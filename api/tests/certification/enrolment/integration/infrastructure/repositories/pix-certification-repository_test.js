@@ -39,13 +39,11 @@ describe('Certification | Enrolment | Integration | Repository | PixCertificatio
           domainBuilder.certification.enrolment.buildPixCertification({
             pixScore: 400,
             status: 'validated',
-            isCancelled: false,
             isRejectedForFraud: false,
           }),
           domainBuilder.certification.enrolment.buildPixCertification({
             pixScore: 500,
             status: 'validated',
-            isCancelled: false,
             isRejectedForFraud: false,
           }),
         ];
