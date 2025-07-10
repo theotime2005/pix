@@ -118,7 +118,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: pixCertificationRequiredScore,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);
@@ -186,7 +185,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: pixCertificationRequiredScore - 1,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);
@@ -248,7 +246,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: pixCertificationRequiredScore / 2 - 1,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -324,7 +321,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: pixCertificationRequiredScore / 2 + 1,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -408,7 +404,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: requiredPixScore,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);
@@ -737,7 +732,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: requiredPixScore,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -855,7 +849,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: requiredPixScore,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -1024,7 +1017,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: requiredPixScore - 1,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -1070,7 +1062,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: requiredPixScore,
                   status: AssessmentResult.status.CANCELLED,
-                  isCancelled: true,
                   isRejectedForFraud: false,
                 }),
               ]);
@@ -1116,7 +1107,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
                 domainBuilder.certification.enrolment.buildPixCertification({
                   pixScore: requiredPixScore,
                   status: AssessmentResult.status.VALIDATED,
-                  isCancelled: false,
                   isRejectedForFraud: true,
                 }),
               ]);
@@ -1160,7 +1150,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: requiredPixScore,
                 status: AssessmentResult.status.REJECTED,
-                isCancelled: true,
                 isRejectedForFraud: false,
               }),
             ]);
@@ -1201,7 +1190,6 @@ describe('Certification | Enrolment | Unit | Usecases | get-user-certification-e
               domainBuilder.certification.enrolment.buildPixCertification({
                 pixScore: requiredPixScore,
                 status: AssessmentResult.status.VALIDATED,
-                isCancelled: false,
                 isRejectedForFraud: false,
               }),
             ]);
