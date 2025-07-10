@@ -1,15 +1,25 @@
 import { CandidateCreatedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateCreatedEvent.js';
 import { CandidateReconciledEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
 import { CandidateTimeline } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateTimeline.js';
+import { CertificationStartedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationStartedEvent.js';
 import { getCandidateTimeline } from '../../../../../../src/certification/enrolment/domain/usecases/get-candidate-timeline.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-timeline', function () {
-  let candidateRepository;
+  let candidateRepository, certificationCourseRepository, deps;
 
   beforeEach(function () {
     candidateRepository = {
       get: sinon.stub(),
+    };
+
+    certificationCourseRepository = {
+      findOneCertificationCourseByUserIdAndSessionId: sinon.stub(),
+    };
+
+    deps = {
+      candidateRepository,
+      certificationCourseRepository,
     };
   });
 
@@ -25,7 +35,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
       const candidateTimeline = await getCandidateTimeline({
         sessionId,
         certificationCandidateId,
-        candidateRepository,
+        ...deps,
       });
 
       // then
@@ -48,11 +58,34 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
       const candidateTimeline = await getCandidateTimeline({
         sessionId,
         certificationCandidateId,
-        candidateRepository,
+        ...deps,
       });
 
       // then
       expect(candidateTimeline.events).to.deep.includes(new CandidateReconciledEvent({ when: candidate.reconciledAt }));
+    });
+  });
+
+  context('certification startup', function () {
+    it('should add a certification started event', async function () {
+      // given
+      const sessionId = 1234;
+      const certificationCandidateId = 4567;
+      candidateRepository.get.resolves(domainBuilder.certification.enrolment.buildCandidate());
+      const certifCourse = domainBuilder.buildCertificationCourse();
+      certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+
+      // when
+      const candidateTimeline = await getCandidateTimeline({
+        sessionId,
+        certificationCandidateId,
+        ...deps,
+      });
+
+      // then
+      expect(candidateTimeline.events).to.deep.includes(
+        new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+      );
     });
   });
 });
