@@ -19,7 +19,6 @@ export default class JuryCertificationSummary extends Model {
   @attr() createdAt;
   @attr() completedAt;
   @attr() isPublished;
-  @attr() isCancelled;
   @attr() examinerComment;
   @attr() complementaryCertificationTakenLabel;
   @attr() numberOfCertificationIssueReports;
@@ -43,10 +42,8 @@ export default class JuryCertificationSummary extends Model {
       : '';
   }
 
-  @computed('status', 'isCancelled')
+  @computed('status')
   get statusLabel() {
-    // isCancelled will be removed
-    if (this.isCancelled) return 'Annulée';
     const statusWithLabel = find(statuses, { value: this.status });
     return statusWithLabel?.label;
   }

@@ -13,7 +13,6 @@ class JuryCertificationSummary {
     completedAt,
     abortReason,
     isPublished,
-    isCancelled,
     isEndedBySupervisor,
     complementaryCertificationTakenLabel,
     certificationIssueReports,
@@ -22,7 +21,6 @@ class JuryCertificationSummary {
     this.firstName = firstName;
     this.lastName = lastName;
     this.status = _getStatus({ status, isEndedBySupervisor });
-    this.isCancelled = isCancelled;
     this.pixScore = pixScore;
     this.isFlaggedAborted = Boolean(abortReason) && !completedAt;
     this.complementaryCertificationTakenLabel = complementaryCertificationTakenLabel;

@@ -26,7 +26,6 @@ const serialize = function (juryCertificationSummary, meta) {
       'createdAt',
       'completedAt',
       'isPublished',
-      'isCancelled',
       'examinerComment',
       'numberOfCertificationIssueReports',
       'numberOfCertificationIssueReportsWithRequiredAction',

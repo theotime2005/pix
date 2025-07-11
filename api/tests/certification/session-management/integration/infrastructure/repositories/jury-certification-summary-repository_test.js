@@ -5,8 +5,8 @@ import {
   CertificationIssueReportSubcategories,
   ImpactfulSubcategories,
 } from '../../../../../../src/certification/shared/domain/models/CertificationIssueReportCategory.js';
-import { Assessment } from '../../../../../../src/shared/domain/models/Assessment.js';
 import { status as assessmentResultStatuses } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
+import { Assessment } from '../../../../../../src/shared/domain/models/index.js';
 import { databaseBuilder, domainBuilder, expect } from '../../../../../test-helper.js';
 
 describe('Integration | Repository | JuryCertificationSummary', function () {
@@ -84,7 +84,6 @@ describe('Integration | Repository | JuryCertificationSummary', function () {
           firstName: manyAsrCertification.firstName,
           id: manyAsrCertification.id,
           isPublished: manyAsrCertification.isPublished,
-          isCancelled: false,
           lastName: 'AAA',
           pixScore: latestAssessmentResult.pixScore,
           status: latestAssessmentResult.status,
@@ -142,14 +141,13 @@ describe('Integration | Repository | JuryCertificationSummary', function () {
         // given
         const dbf = databaseBuilder.factory;
         const sessionId = dbf.buildSession().id;
-        const cancelledCertification = dbf.buildCertificationCourse({
+        const certificationCourse = dbf.buildCertificationCourse({
           sessionId,
           lastName: 'DDD',
-          isCancelled: false,
         });
 
         const assessmentId = dbf.buildAssessment({
-          certificationCourseId: cancelledCertification.id,
+          certificationCourseId: certificationCourse.id,
           state: Assessment.states.ENDED_BY_SUPERVISOR,
         }).id;
 

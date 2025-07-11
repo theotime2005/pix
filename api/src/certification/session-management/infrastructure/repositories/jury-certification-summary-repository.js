@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
-import { Assessment } from '../../../../shared/domain/models/Assessment.js';
+import { Assessment } from '../../../../shared/domain/models/index.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { CertificationIssueReport } from '../../../shared/domain/models/CertificationIssueReport.js';
 import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';

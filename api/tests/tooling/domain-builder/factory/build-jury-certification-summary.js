@@ -1,5 +1,5 @@
 import { JuryCertificationSummary } from '../../../../src/certification/session-management/domain/read-models/JuryCertificationSummary.js';
-import { AssessmentResult } from '../../../../src/shared/domain/models/AssessmentResult.js';
+import { AssessmentResult } from '../../../../src/shared/domain/models/index.js';
 
 const buildJuryCertificationSummary = function ({
   id = 123,
@@ -11,7 +11,6 @@ const buildJuryCertificationSummary = function ({
   completedAt = new Date('2020-01-02'),
   abortReason = null,
   isPublished = true,
-  isCancelled = false,
   isEndedBySupervisor = false,
   complementaryCertificationTakenLabel,
   certificationIssueReports = [],
@@ -26,7 +25,6 @@ const buildJuryCertificationSummary = function ({
     completedAt,
     abortReason,
     isPublished,
-    isCancelled,
     isEndedBySupervisor,
     complementaryCertificationTakenLabel,
     certificationIssueReports,

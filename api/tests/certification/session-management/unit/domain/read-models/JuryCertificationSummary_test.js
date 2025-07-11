@@ -20,7 +20,6 @@ describe('Unit | Domain | Models | JuryCertificationSummary', function () {
         id: 100001,
         isFlaggedAborted: false,
         isPublished: false,
-        isCancelled: false,
         pixScore: 751,
         status: 'started',
       };
@@ -38,7 +37,6 @@ describe('Unit | Domain | Models | JuryCertificationSummary', function () {
         lastName: 'Martigan',
         id: 100001,
         isFlaggedAborted: false,
-        isCancelled: false,
         isPublished: false,
         pixScore: 751,
         status: 'started',

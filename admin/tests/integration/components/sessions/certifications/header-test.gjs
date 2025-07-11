@@ -162,7 +162,7 @@ module('Integration | Component | certifications/header', function (hooks) {
             const session = store.createRecord('session', { publishedAt: null });
 
             const juryCertificationSummaries = [
-              store.createRecord('jury-certification-summary', { isCancelled: true }),
+              store.createRecord('jury-certification-summary', { status: 'cancelled' }),
             ];
 
             // when
@@ -202,7 +202,9 @@ module('Integration | Component | certifications/header', function (hooks) {
           // given
           const session = store.createRecord('session', { publishedAt: null, status: 'finalized' });
 
-          const juryCertificationSummaries = [store.createRecord('jury-certification-summary', { isCancelled: false })];
+          const juryCertificationSummaries = [
+            store.createRecord('jury-certification-summary', { status: 'validated' }),
+          ];
 
           // when
           const screen = await render(
@@ -222,7 +224,7 @@ module('Integration | Component | certifications/header', function (hooks) {
             const session = store.createRecord('session', { publishedAt: null, status: 'finalized' });
 
             const juryCertificationSummaries = [
-              store.createRecord('jury-certification-summary', { isCancelled: false }),
+              store.createRecord('jury-certification-summary', { status: 'validated' }),
             ];
 
             // when
@@ -251,7 +253,7 @@ module('Integration | Component | certifications/header', function (hooks) {
             const session = store.createRecord('session', { publishedAt: null, status: 'finalized' });
 
             const juryCertificationSummaries = [
-              store.createRecord('jury-certification-summary', { isCancelled: false }),
+              store.createRecord('jury-certification-summary', { status: 'validated' }),
             ];
 
             // when

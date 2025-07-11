@@ -8,6 +8,7 @@ import { tracked } from '@glimmer/tracking';
 import { t } from 'ember-intl';
 import { not } from 'ember-truth-helpers';
 
+import { assessmentResultStatus } from '../../../models/certification';
 import ConfirmPopup from '../../confirm-popup';
 
 export default class CertificationsHeader extends Component {
@@ -18,10 +19,9 @@ export default class CertificationsHeader extends Component {
   @tracked confirmMessage = null;
 
   get canPublish() {
-    // isCancelled will be removed
     return (
       !this.args.juryCertificationSummaries.some(
-        (certification) => certification.status === 'error' && !certification.isCancelled,
+        (certification) => certification.status === assessmentResultStatus.ERROR,
       ) && this.args.session.isFinalized
     );
   }
