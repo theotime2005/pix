@@ -141,7 +141,6 @@ describe('Certification | Session Management | Acceptance | Application | Routes
           'birth-postal-code': null,
           'birth-country': 'France',
           status: 'rejected',
-          'is-cancelled': false,
           'is-published': true,
           'is-rejected-for-fraud': false,
           'created-at': new Date('2020-01-01'),

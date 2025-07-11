@@ -32,7 +32,6 @@ describe('Certification | Session-management | Unit | Application | jury-certifi
         birthCountry: 'France',
         sex: 'F',
         status: 'rejected',
-        isCancelled: false,
         isPublished: true,
         createdAt: new Date('2020-01-01'),
         completedAt: new Date('2020-02-01'),

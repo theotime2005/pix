@@ -3,7 +3,6 @@ import jsonapiSerializer from 'jsonapi-serializer';
 const { Serializer } = jsonapiSerializer;
 
 const serialize = function (juryCertification, { translate }) {
-  // isCancelled will be removed
   return new Serializer('certifications', {
     transform(juryCertification) {
       return {
@@ -29,7 +28,6 @@ const serialize = function (juryCertification, { translate }) {
       'createdAt',
       'completedAt',
       'status',
-      'isCancelled',
       'isPublished',
       'isRejectedForFraud',
       'juryId',

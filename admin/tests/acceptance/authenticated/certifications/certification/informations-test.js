@@ -39,7 +39,6 @@ module('Acceptance | Route | routes/authenticated/certifications/certification |
       birthplace: 'Sorpen',
       userId: 888,
       sex: 'M',
-      isCancelled: false,
       isPublished: false,
       isRejectedForFraud: false,
       birthCountry: 'JAPON',

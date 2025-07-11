@@ -58,7 +58,6 @@ describe('Certification | Session-management | Integration | Infrastructure | Re
           createdAt: new Date('2020-01-01'),
           completedAt: new Date('2020-02-01'),
           isPublished: false,
-          isCancelled: false,
         });
 
         databaseBuilder.factory.buildComplementaryCertificationCourse({
