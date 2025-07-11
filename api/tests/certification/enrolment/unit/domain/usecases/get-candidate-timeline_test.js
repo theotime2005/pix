@@ -2,14 +2,21 @@ import { CandidateCreatedEvent } from '../../../../../../src/certification/enrol
 import { CandidateEndScreenEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateEndScreenEvent.js';
 import { CertificationNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
 import { CandidateReconciledEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
+import { CertificationEndedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationEndedEvent.js';
 import { CertificationStartedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationStartedEvent.js';
 import { ComplementaryCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/ComplementaryCertifiableEvent.js';
 import { ComplementaryNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/ComplementaryNotCertifiableEvent.js';
 import { getCandidateTimeline } from '../../../../../../src/certification/enrolment/domain/usecases/get-candidate-timeline.js';
+import { CertificationAssessment } from '../../../../../../src/certification/session-management/domain/models/CertificationAssessment.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-timeline', function () {
-  let candidateRepository, certificationCourseRepository, placementProfileService, certificationBadgesService, deps;
+  let candidateRepository,
+    certificationCourseRepository,
+    placementProfileService,
+    certificationBadgesService,
+    certificationAssessmentRepository,
+    deps;
 
   beforeEach(function () {
     candidateRepository = {
@@ -28,11 +35,16 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
       findStillValidBadgeAcquisitions: sinon.stub(),
     };
 
+    certificationAssessmentRepository = {
+      getByCertificationCandidateId: sinon.stub(),
+    };
+
     deps = {
       candidateRepository,
       certificationCourseRepository,
       certificationBadgesService,
       placementProfileService,
+      certificationAssessmentRepository,
     };
   });
 
@@ -248,6 +260,78 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
           // then
           expect(candidateTimeline.events).to.deep.includes(
             new CandidateEndScreenEvent({ when: certifCourse._completedAt }),
+          );
+        });
+      });
+
+      context('when supervisor stops the test', function () {
+        it('should add an ended by supervisor event', async function () {
+          // given
+          const sessionId = 1234;
+          const certificationCandidateId = 4567;
+          candidateRepository.get.resolves(
+            domainBuilder.certification.enrolment.buildCandidate({
+              userId: 222,
+              reconciledAt: new Date(),
+              subscriptions: [domainBuilder.certification.enrolment.buildCoreSubscription()],
+            }),
+          );
+          const certifCourse = domainBuilder.buildCertificationCourse({ completedAt: null });
+          certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+          certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
+          const assessment = domainBuilder.buildCertificationAssessment();
+          assessment.endBySupervisor({ now: new Date() });
+          certificationAssessmentRepository.getByCertificationCandidateId.resolves(assessment);
+
+          // when
+          const candidateTimeline = await getCandidateTimeline({
+            sessionId,
+            certificationCandidateId,
+            ...deps,
+          });
+
+          // then
+          expect(candidateTimeline.events).to.deep.includes(
+            new CertificationEndedEvent({
+              when: assessment.endedAt,
+              assessmentState: CertificationAssessment.states.ENDED_BY_SUPERVISOR,
+            }),
+          );
+        });
+      });
+
+      context('when finalization stops the test', function () {
+        it('should add an ended due to finalization event', async function () {
+          // given
+          const sessionId = 1234;
+          const certificationCandidateId = 4567;
+          candidateRepository.get.resolves(
+            domainBuilder.certification.enrolment.buildCandidate({
+              userId: 222,
+              reconciledAt: new Date(),
+              subscriptions: [domainBuilder.certification.enrolment.buildCoreSubscription()],
+            }),
+          );
+          const certifCourse = domainBuilder.buildCertificationCourse({ completedAt: null });
+          certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+          certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
+          const assessment = domainBuilder.buildCertificationAssessment();
+          assessment.endDueToFinalization();
+          certificationAssessmentRepository.getByCertificationCandidateId.resolves(assessment);
+
+          // when
+          const candidateTimeline = await getCandidateTimeline({
+            sessionId,
+            certificationCandidateId,
+            ...deps,
+          });
+
+          // then
+          expect(candidateTimeline.events).to.deep.includes(
+            new CertificationEndedEvent({
+              when: assessment.endedAt,
+              assessmentState: CertificationAssessment.states.ENDED_DUE_TO_FINALIZATION,
+            }),
           );
         });
       });
