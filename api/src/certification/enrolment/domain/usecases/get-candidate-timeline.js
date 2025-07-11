@@ -11,6 +11,7 @@
 
 import { LOCALE } from '../../../../shared/domain/constants.js';
 import { CandidateCreatedEvent } from '../models/timeline/CandidateCreatedEvent.js';
+import { CandidateEndScreenEvent } from '../models/timeline/CandidateEndScreenEvent.js';
 import { CertificationNotCertifiableEvent } from '../models/timeline/CandidateNotCertifiableEvent.js';
 import { CandidateReconciledEvent } from '../models/timeline/CandidateReconciledEvent.js';
 import { CandidateTimeline } from '../models/timeline/CandidateTimeline.js';
@@ -59,6 +60,10 @@ export const getCandidateTimeline = async ({
 
   const events = await _whenCandidateHasStartedTheTest({ candidate, certificationCourse, certificationBadgesService });
   events.forEach((event) => timeline.addEvent(event));
+
+  if (certificationCourse.isCompleted()) {
+    timeline.addEvent(new CandidateEndScreenEvent({ when: certificationCourse._completedAt }));
+  }
 
   return timeline;
 };
