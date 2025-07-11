@@ -1,6 +1,6 @@
 import { CpfImportStatus } from '../../../../../../src/certification/session-management/domain/models/CpfImportStatus.js';
 import * as cpfCertificationResultRepository from '../../../../../../src/certification/session-management/infrastructure/repositories/cpf-certification-result-repository.js';
-import { AssessmentResult } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
+import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
 import { databaseBuilder, domainBuilder, expect, knex } from '../../../../../test-helper.js';
 
 describe('Integration | Repository | CpfCertificationResult', function () {
@@ -59,7 +59,7 @@ describe('Integration | Repository | CpfCertificationResult', function () {
         }).id;
         createCertificationCourseWithCompetenceMarks({
           sessionId: publishedSessionId,
-          certificationCourseCancelled: true,
+          assessmentResultStatus: AssessmentResult.status.CANCELLED,
         });
         await databaseBuilder.commit();
 
@@ -405,7 +405,6 @@ function createCertificationCourseWithCompetenceMarks({
   certificationCourseId = 145,
   sex = 'M',
   assessmentResultStatus = AssessmentResult.status.VALIDATED,
-  certificationCourseCancelled = false,
   isPublished = true,
   sessionId,
   firstName = 'Barack',
@@ -434,7 +433,6 @@ function createCertificationCourseWithCompetenceMarks({
     birthCountry,
     isPublished: isPublished,
     sessionId,
-    isCancelled: certificationCourseCancelled,
   });
 
   if (cpfFilename || cpfImportStatus) {
