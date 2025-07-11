@@ -5,19 +5,19 @@ import { catchErrSync, expect } from '../../../../../../test-helper.js';
 describe('Unit | Certification | Enrolment | Domain | Models | TimelineEvent', function () {
   it('should create a timeline event', function () {
     // given
-    const data = { when: new Date() };
+    const data = { code: 'test', when: new Date(), metadata: { meta: 'data' } };
 
     // when
     const timeline = new TimelineEvent(data);
 
     // then
     expect(timeline).to.be.instanceOf(TimelineEvent);
-    expect(timeline).to.deep.equal({ when: data.when });
+    expect(timeline).to.deep.equal({ code: data.code, when: data.when, metadata: data.metadata });
   });
 
   it('should throw an error when trying to construct an invalid timeline event', function () {
     // given
-    const notAnEvent = { when: 'a bad date' };
+    const notAnEvent = { code: 'test', when: 'a bad date' };
 
     // when
     const error = catchErrSync((badData) => new TimelineEvent(badData))(notAnEvent);

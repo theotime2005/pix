@@ -8,16 +8,19 @@ export class TimelineEvent {
   static #schema = Joi.object({
     code: Joi.string().required(),
     when: Joi.date().required(),
+    metadata: Joi.object().allow(null).optional(),
   });
 
   /**
    * @param {Object} props
    * @param {string} props.code
    * @param {Date} [props.when]
+   * @param {Object} [props.metadata]
    */
-  constructor({ code, when = new Date() }) {
+  constructor({ code, when, metadata = null }) {
     this.code = code;
     this.when = when;
+    this.metadata = metadata;
     this.#validate();
   }
 

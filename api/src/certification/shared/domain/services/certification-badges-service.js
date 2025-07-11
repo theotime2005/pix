@@ -8,6 +8,9 @@ import * as badgeForCalculationRepository from '../../../../shared/infrastructur
 import * as knowledgeElementRepository from '../../../../shared/infrastructure/repositories/knowledge-element-repository.js';
 import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
 
+/**
+ * @returns {Promise<Array<CertifiableBadgeAcquisition>>}
+ */
 const findStillValidBadgeAcquisitions = async function ({
   userId,
   limitDate = new Date(),

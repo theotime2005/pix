@@ -1,3 +1,6 @@
+/**
+ * @typedef {import ('./Subscription.js').Subscription} Subscription
+ */
 import _ from 'lodash';
 
 import { CertificationCandidatesError } from '../../../../shared/domain/errors.js';
@@ -5,6 +8,10 @@ import { BILLING_MODES } from '../../../shared/domain/constants.js';
 import { validate } from '../validators/candidate-validator.js';
 
 export class Candidate {
+  /**
+   * @param {Object} params
+   * @param {Array<Subscription>} [params.subscriptions=[]]
+   */
   constructor({
     id,
     firstName,

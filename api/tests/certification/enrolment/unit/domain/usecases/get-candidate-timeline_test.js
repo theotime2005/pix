@@ -2,11 +2,13 @@ import { CandidateCreatedEvent } from '../../../../../../src/certification/enrol
 import { CertificationNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
 import { CandidateReconciledEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
 import { CertificationStartedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationStartedEvent.js';
+import {ComplementaryCertifiableEvent} from '../../../../../../src/certification/enrolment/domain/models/timeline/ComplementaryCertifiableEvent.js';
+import { ComplementaryNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/ComplementaryNotCertifiableEvent.js';
 import { getCandidateTimeline } from '../../../../../../src/certification/enrolment/domain/usecases/get-candidate-timeline.js';
 import { domainBuilder, expect, sinon } from '../../../../../test-helper.js';
 
 describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-timeline', function () {
-  let candidateRepository, certificationCourseRepository, placementProfileService, deps;
+  let candidateRepository, certificationCourseRepository, placementProfileService, certificationBadgesService, deps;
 
   beforeEach(function () {
     candidateRepository = {
@@ -21,9 +23,14 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
       getPlacementProfile: sinon.stub(),
     };
 
+    certificationBadgesService = {
+      findStillValidBadgeAcquisitions: sinon.stub(),
+    };
+
     deps = {
       candidateRepository,
       certificationCourseRepository,
+      certificationBadgesService,
       placementProfileService,
     };
   });
@@ -101,30 +108,114 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
   });
 
   context('certification startup', function () {
-    it('should add a certification started event', async function () {
-      // given
-      const sessionId = 1234;
-      const certificationCandidateId = 4567;
-      candidateRepository.get.resolves(
-        domainBuilder.certification.enrolment.buildCandidate({
-          userId: 222,
-          reconciledAt: new Date(),
-        }),
-      );
-      const certifCourse = domainBuilder.buildCertificationCourse();
-      certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+    context('when has a CORE subscription', function () {
+      it('should only add a certification started event', async function () {
+        // given
+        const sessionId = 1234;
+        const certificationCandidateId = 4567;
+        candidateRepository.get.resolves(
+          domainBuilder.certification.enrolment.buildCandidate({
+            userId: 222,
+            reconciledAt: new Date(),
+          }),
+        );
+        const certifCourse = domainBuilder.buildCertificationCourse();
+        certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+        certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
 
-      // when
-      const candidateTimeline = await getCandidateTimeline({
-        sessionId,
-        certificationCandidateId,
-        ...deps,
+        // when
+        const candidateTimeline = await getCandidateTimeline({
+          sessionId,
+          certificationCandidateId,
+          ...deps,
+        });
+
+        // then
+        expect(candidateTimeline.events).to.deep.includes(
+          new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+        );
+      });
+    });
+
+    context('when has a complementary subscription', function () {
+      context('when badge is not acquired', function () {
+        it('should indicate the candidate is not eligible to subscribed complementary ', async function () {
+          // given
+          const sessionId = 1234;
+          const certificationCandidateId = 4567;
+          const complementarySubscription = domainBuilder.certification.enrolment.buildComplementarySubscription({
+            complementaryCertificationId: 1,
+          });
+          candidateRepository.get.resolves(
+            domainBuilder.certification.enrolment.buildCandidate({
+              userId: 222,
+              reconciledAt: new Date(),
+              subscriptions: [domainBuilder.certification.enrolment.buildCoreSubscription(), complementarySubscription],
+            }),
+          );
+          const certifCourse = domainBuilder.buildCertificationCourse({});
+          certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+          certificationBadgesService.findStillValidBadgeAcquisitions.resolves([
+            domainBuilder.buildCertifiableBadgeAcquisition({ complementaryCertificationId: 2 }),
+          ]);
+
+          // when
+          const candidateTimeline = await getCandidateTimeline({
+            sessionId,
+            certificationCandidateId,
+            ...deps,
+          });
+
+          // then
+          expect(candidateTimeline.events).to.deep.includes(
+            new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+            new ComplementaryNotCertifiableEvent({
+              when: certifCourse.getStartDate(),
+              complementaryCertificationId: complementarySubscription.complementaryCertificationId,
+            }),
+          );
+        });
       });
 
-      // then
-      expect(candidateTimeline.events).to.deep.includes(
-        new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
-      );
+      context('when badge is acquired', function () {
+        it('should indicate the candidate is eligible to subscribed complementary ', async function () {
+          // given
+          const sessionId = 1234;
+          const certificationCandidateId = 4567;
+          const complementarySubscription = domainBuilder.certification.enrolment.buildComplementarySubscription({
+            complementaryCertificationId: 1,
+          });
+          candidateRepository.get.resolves(
+            domainBuilder.certification.enrolment.buildCandidate({
+              userId: 222,
+              reconciledAt: new Date(),
+              subscriptions: [domainBuilder.certification.enrolment.buildCoreSubscription(), complementarySubscription],
+            }),
+          );
+          const certifCourse = domainBuilder.buildCertificationCourse({});
+          certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
+          const badge = domainBuilder.buildCertifiableBadgeAcquisition({
+            complementaryCertificationId: complementarySubscription.complementaryCertificationId,
+          });
+          certificationBadgesService.findStillValidBadgeAcquisitions.resolves([badge]);
+
+          // when
+          const candidateTimeline = await getCandidateTimeline({
+            sessionId,
+            certificationCandidateId,
+            ...deps,
+          });
+
+          // then
+          expect(candidateTimeline.events).to.deep.includes(
+            new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+            new ComplementaryCertifiableEvent({
+              when: certifCourse.getStartDate(),
+              complementaryCertificationKey: badge.badgeKey,
+            }),
+          );
+        });
+      });
     });
   });
 });
