@@ -328,6 +328,31 @@ describe('Unit | Application | Sessions | Routes', function () {
     });
   });
 
+  describe('GET /api/admin/certification-candidates/{certificationCandidateId}/timeline', function () {
+    describe('when the user is not authorized', function () {
+      it('should return 403', async function () {
+        // given
+        sinon
+          .stub(securityPreHandlers, 'hasAtLeastOneAccessOf')
+          .withArgs([
+            securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
+            securityPreHandlers.checkAdminMemberHasRoleCertif,
+            securityPreHandlers.checkAdminMemberHasRoleSupport,
+            securityPreHandlers.checkAdminMemberHasRoleMetier,
+          ])
+          .returns((request, h) => h.response().code(403).takeover());
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        // when
+        const response = await httpTestServer.request('GET', '/api/admin/certification-candidates/3/timeline');
+
+        // then
+        expect(response.statusCode).to.equal(403);
+      });
+    });
+  });
+
   describe('id validation', function () {
     [
       {

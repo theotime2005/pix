@@ -34,7 +34,6 @@ import { ComplementaryNotCertifiableEvent } from '../models/timeline/Complementa
  * @returns {Promise<CandidateTimeline>}
  */
 export const getCandidateTimeline = async ({
-  sessionId,
   certificationCandidateId,
   candidateRepository,
   certificationCourseRepository,
@@ -42,7 +41,7 @@ export const getCandidateTimeline = async ({
   certificationBadgesService,
   placementProfileService,
 }) => {
-  const timeline = new CandidateTimeline({ sessionId, certificationCandidateId });
+  const timeline = new CandidateTimeline({ certificationCandidateId });
 
   const candidate = await candidateRepository.get({ certificationCandidateId });
   timeline.addEvent(new CandidateCreatedEvent({ when: candidate.createdAt }));
@@ -54,7 +53,7 @@ export const getCandidateTimeline = async ({
 
   const certificationCourse = await certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId({
     userId: candidate.userId,
-    sessionId,
+    sessionId: candidate.sessionId,
   });
 
   if (!certificationCourse) {

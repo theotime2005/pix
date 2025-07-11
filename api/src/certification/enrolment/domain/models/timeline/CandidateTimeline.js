@@ -10,18 +10,15 @@ import { EntityValidationError } from '../../../../../shared/domain/errors.js';
 
 export class CandidateTimeline {
   static #schema = Joi.object({
-    sessionId: Joi.number().integer().required(),
     certificationCandidateId: Joi.number().integer().required(),
     events: Joi.array().required(),
   });
 
   /**
    * @param {Object} props
-   * @param {number} props.sessionId
    * @param {number} props.certificationCandidateId
    */
-  constructor({ sessionId, certificationCandidateId }) {
-    this.sessionId = sessionId;
+  constructor({ certificationCandidateId }) {
     this.certificationCandidateId = certificationCandidateId;
     this.events = [];
     this.#validate();

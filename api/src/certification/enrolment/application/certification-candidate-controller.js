@@ -3,6 +3,7 @@ import * as certificationCandidateSerializer from '../../shared/infrastructure/s
 import { usecases } from '../domain/usecases/index.js';
 import * as candidateSerializer from '../infrastructure/serializers/candidate-serializer.js';
 import * as enrolledCandidateSerializer from '../infrastructure/serializers/enrolled-candidate-serializer.js';
+import * as timelineSerializer from '../infrastructure/serializers/timeline-serializer.js';
 
 const addCandidate = async function (request, h, dependencies = { candidateSerializer }) {
   const sessionId = request.params.sessionId;
@@ -70,10 +71,21 @@ const getCandidate = async function (request, h, dependencies = { candidateSeria
   return dependencies.candidateSerializer.serializeForParticipation(candidate);
 };
 
+const getTimeline = async function (request, h, dependencies = { timelineSerializer }) {
+  const certificationCandidateId = request.params.certificationCandidateId;
+
+  const timeline = await usecases.getCandidateTimeline({
+    certificationCandidateId,
+  });
+
+  return dependencies.timelineSerializer.serialize(timeline);
+};
+
 const certificationCandidateController = {
   addCandidate,
   getEnrolledCandidates,
   getCandidate,
+  getTimeline,
   deleteCandidate,
   validateCertificationInstructions,
   updateEnrolledCandidate,

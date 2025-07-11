@@ -1,4 +1,9 @@
+import dayjs from 'dayjs';
+
 import { PIX_ADMIN } from '../../../../../src/authorization/domain/constants.js';
+import { CandidateCreatedEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateCreatedEvent.js';
+import { CertificationNotCertifiableEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
+import { CandidateReconciledEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
 import { SUBSCRIPTION_TYPES } from '../../../../../src/certification/shared/domain/constants.js';
 import { ComplementaryCertificationKeys } from '../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
 import { CertificationCandidate } from '../../../../../src/shared/domain/models/index.js';
@@ -7,6 +12,7 @@ import {
   databaseBuilder,
   expect,
   generateAuthenticatedUserRequestHeaders,
+  insertUserWithRoleSuperAdmin,
   knex,
 } from '../../../../test-helper.js';
 
@@ -386,6 +392,66 @@ describe('Certification | Enrolment | Acceptance | Application | Routes | certif
       expect(response.statusCode).to.equal(204);
       expect(candidate).to.be.undefined;
       expect(candidateSubscription).to.be.undefined;
+    });
+  });
+
+  describe('GET /api/admin/certification-candidates/{certificationCandidateId}/timeline', function () {
+    it('should respond with a 200 and timeline', async function () {
+      // given
+      const superAdmin = await insertUserWithRoleSuperAdmin();
+      const sessionId = databaseBuilder.factory.buildSession().id;
+      const candidateUserId = databaseBuilder.factory.buildUser().id;
+      const createdAt = dayjs().toDate();
+      const reconciledAt = dayjs().add('1', 'hour').toDate();
+      const candidateId = databaseBuilder.factory.buildCertificationCandidate({
+        sessionId,
+        userId: candidateUserId,
+        createdAt,
+        reconciledAt,
+      }).id;
+      databaseBuilder.factory.buildCoreSubscription({
+        certificationCandidateId: candidateId,
+      });
+
+      await databaseBuilder.commit();
+
+      // when
+      const options = {
+        method: 'GET',
+        url: `/api/admin/certification-candidates/${candidateId}/timeline`,
+        payload: {},
+        headers: generateAuthenticatedUserRequestHeaders({ userId: superAdmin.id }),
+      };
+
+      // when
+      const response = await server.inject(options);
+
+      // then
+      expect(response.statusCode).to.equal(200);
+      expect(response.result).to.deep.equal({
+        data: {
+          attributes: {
+            events: [
+              {
+                code: CandidateCreatedEvent.name,
+                when: createdAt,
+                metadata: null,
+              },
+              {
+                code: CandidateReconciledEvent.name,
+                when: reconciledAt,
+                metadata: null,
+              },
+              {
+                code: CertificationNotCertifiableEvent.name,
+                when: reconciledAt,
+                metadata: null,
+              },
+            ],
+          },
+          type: 'certification-candidate-timelines',
+        },
+      });
     });
   });
 });

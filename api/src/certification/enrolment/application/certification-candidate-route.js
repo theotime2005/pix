@@ -194,6 +194,35 @@ const register = async function (server) {
         ],
       },
     },
+    {
+      method: 'GET',
+      path: '/api/admin/certification-candidates/{certificationCandidateId}/timeline',
+      config: {
+        validate: {
+          params: Joi.object({
+            certificationCandidateId: identifiersType.certificationCandidateId,
+          }),
+        },
+        pre: [
+          {
+            method: (request, h) =>
+              securityPreHandlers.hasAtLeastOneAccessOf([
+                securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
+                securityPreHandlers.checkAdminMemberHasRoleCertif,
+                securityPreHandlers.checkAdminMemberHasRoleSupport,
+                securityPreHandlers.checkAdminMemberHasRoleMetier,
+              ])(request, h),
+            assign: 'hasAuthorizationToAccessAdminScope',
+          },
+        ],
+        handler: certificationCandidateController.getTimeline,
+        tags: ['api', 'certification-candidates'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          "Elle permet de voir la liste des évènement durant la certification d'un candidat",
+        ],
+      },
+    },
   ]);
 };
 
