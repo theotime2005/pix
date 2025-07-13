@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 
+import { services as enrolmentServices } from '../../../../../src/certification/enrolment/application/services/index.js';
 import { Candidate } from '../../../../../src/certification/enrolment/domain/models/Candidate.js';
 import { SessionEnrolment } from '../../../../../src/certification/enrolment/domain/models/SessionEnrolment.js';
 import { Subscription } from '../../../../../src/certification/enrolment/domain/models/Subscription.js';
@@ -156,12 +157,14 @@ export class CleaV3Seed {
   }
 
   async #addCandidateToSession({ pixAppUser, session }) {
+    const candidateBirthdate = '2000-10-30';
+
     const candidate = new Candidate({
       authorizedToStart: true,
       firstName: pixAppUser.firstName,
       lastName: pixAppUser.lastName,
       sex: 'F',
-      birthdate: new Date('2000-10-30'),
+      birthdate: new Date(candidateBirthdate),
       birthCountry: 'France',
       birthINSEECode: '75115',
       email: pixAppUser.email,
@@ -182,6 +185,15 @@ export class CleaV3Seed {
     const candidateId = await enrolmentUseCases.addCandidateToSession({
       sessionId: session.id,
       candidate: new Candidate(candidate), // Warning: usecase modifies the entry model...
+      normalizeStringFnc: normalize,
+    });
+
+    await enrolmentServices.registerCandidateParticipation({
+      userId: pixAppUser.id,
+      sessionId: session.id,
+      firstName: candidate.firstName,
+      lastName: candidate.lastName,
+      birthdate: candidateBirthdate,
       normalizeStringFnc: normalize,
     });
 

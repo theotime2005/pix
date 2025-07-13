@@ -37,14 +37,6 @@ export default async function publishSessionWithValidatedCertification({
     locale: LANGUAGES_CODE.FRENCH,
   });
 
-  // Change certification-course creation date to show better counters on UI
-  await databaseBuilder
-    .knex('certification-courses')
-    .where('id', certificationCourse._id)
-    .update({
-      createdAt: dayjs().subtract(1, 'hour'),
-    });
-
   const assessment = certificationCourse._assessment;
 
   // We simulate a certification in order to get the right capacity for a specific pix score
