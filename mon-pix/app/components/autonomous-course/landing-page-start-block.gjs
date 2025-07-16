@@ -7,8 +7,9 @@ import t from 'ember-intl/helpers/t';
 import MarkdownToHtml from 'mon-pix/components/markdown-to-html';
 
 export default class LandingPageStartBlock extends Component {
-  @service session;
+  @service metrics;
   @service router;
+  @service session;
 
   get isUserConnected() {
     return this.session.isAuthenticated;
@@ -18,6 +19,22 @@ export default class LandingPageStartBlock extends Component {
   async redirectToSignin() {
     const transition = this.args.startCampaignParticipation();
     this.session.requireAuthenticationAndApprovedTermsOfService(transition);
+  }
+
+  @action
+  async startCampaignParticipationAsAnonymous() {
+    this.sendMetrics();
+    this.args.startCampaignParticipation();
+    //startCampaignParticipation();
+  }
+
+  sendMetrics() {
+    this.metrics.trackEvent({
+      event: 'custom-event',
+      'pix-event-category': 'Inscription post parcours anonyme',
+      'pix-event-action': 'Commencer un parcours autonome anonyme',
+      'pix-event-name': 'Clic sur le bouton Commencer sans compte',
+    });
   }
 
   <template>
@@ -48,7 +65,7 @@ export default class LandingPageStartBlock extends Component {
           <PixButton
             id="autonomous-course-start-anonymously-button"
             class="start-anonymously-button"
-            @triggerAction={{@startCampaignParticipation}}
+            @triggerAction={{this.startCampaignParticipationAsAnonymous}}
           >
             {{t "pages.autonomous-course.landing-page.actions.start-anonymously"}}
           </PixButton>
