@@ -204,7 +204,7 @@
                       "content": "<p>L'ordinateur d’Irène n'est pas assez puissant, il a provoqué un bug.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": ""
+                        "diagnosis": "Et non,..."
                       }
                     },
                     {
@@ -212,7 +212,7 @@
                       "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": ""
+                        "diagnosis": "Effectivement,..."
                       }
                     },
                     {
@@ -220,7 +220,7 @@
                       "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": ""
+                        "diagnosis": "Et non,..."
                       }
                     }
                   ],
