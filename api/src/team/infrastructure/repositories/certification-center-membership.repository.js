@@ -164,15 +164,16 @@ const findActiveByCertificationCenterIdSortedByRole = async function ({ certific
  * @deprecated use create method if you don't need the model in return with its relations (User & CertificationCenter)
  */
 const save = async function ({ userId, certificationCenterId }) {
+  const trx = DomainTransaction.getConnection();
   try {
-    const [{ id: newCertificationMembershipId }] = await knex('certification-center-memberships')
+    const [{ id: newCertificationMembershipId }] = await trx('certification-center-memberships')
       .insert({
         userId,
         certificationCenterId,
       })
       .returning('id');
 
-    const data = await knex('certification-center-memberships')
+    const data = await trx('certification-center-memberships')
       .select(
         'certification-center-memberships.*',
         'users.lastName',
@@ -208,7 +209,8 @@ const save = async function ({ userId, certificationCenterId }) {
 };
 
 const isAdminOfCertificationCenter = async function ({ userId, certificationCenterId }) {
-  const certificationCenterMembershipId = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const certificationCenterMembershipId = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select('id')
     .where({
       userId,
@@ -222,7 +224,8 @@ const isAdminOfCertificationCenter = async function ({ userId, certificationCent
 };
 
 const isMemberOfCertificationCenter = async function ({ userId, certificationCenterId }) {
-  const certificationCenterMembershipId = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const certificationCenterMembershipId = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select('id')
     .where({
       userId,
@@ -235,9 +238,10 @@ const isMemberOfCertificationCenter = async function ({ userId, certificationCen
 };
 
 const disableById = async function ({ certificationCenterMembershipId, updatedByUserId }) {
+  const trx = DomainTransaction.getConnection();
   try {
     const now = new Date();
-    const result = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+    const result = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
       .where({ id: certificationCenterMembershipId })
       .update({ disabledAt: now, updatedByUserId })
       .returning('*');
@@ -259,7 +263,8 @@ const updateRefererStatusByUserIdAndCertificationCenterId = async function ({
 };
 
 const getCertificationCenterId = async function (certificationCenterMembershipId) {
-  const result = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const result = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select('certification-center-memberships.certificationCenterId')
     .where({ 'certification-center-memberships.id': certificationCenterMembershipId })
     .first();
@@ -274,7 +279,8 @@ const getCertificationCenterId = async function (certificationCenterMembershipId
 };
 
 const getRefererByCertificationCenterId = async function ({ certificationCenterId }) {
-  const refererCertificationCenterMembership = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const refererCertificationCenterMembership = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select('certification-center-memberships.*', 'users.lastName', 'users.firstName', 'users.email')
     .join('users', 'users.id', 'certification-center-memberships.userId')
     .where({ certificationCenterId, isReferer: true })
@@ -316,7 +322,8 @@ const updateLastAccessedAt = async function ({ lastAccessedAt, certificationCent
 };
 
 const findById = async function (certificationCenterMembershipId) {
-  const certificationCenterMembership = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const certificationCenterMembership = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select(
       'certification-center-memberships.*',
       'users.lastName',
@@ -341,7 +348,8 @@ const findById = async function (certificationCenterMembershipId) {
 };
 
 const findOneWithCertificationCenterIdAndUserId = async function ({ certificationCenterId, userId }) {
-  const certificationCenterMembership = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const certificationCenterMembership = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .where({ certificationCenterId, userId })
     .first();
 
@@ -351,7 +359,8 @@ const findOneWithCertificationCenterIdAndUserId = async function ({ certificatio
 };
 
 async function findActiveAdminsByCertificationCenterId(certificationCenterId) {
-  const certificationCenterMemberships = await knex(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
+  const trx = DomainTransaction.getConnection();
+  const certificationCenterMemberships = await trx(CERTIFICATION_CENTER_MEMBERSHIP_TABLE_NAME)
     .select(
       'certification-center-memberships.*',
       'users.lastName',

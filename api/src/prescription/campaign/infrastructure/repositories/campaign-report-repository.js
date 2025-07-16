@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { knex } from '../../../../../db/knex-database-connection.js';
 import { CAMPAIGN_FEATURES } from '../../../../shared/domain/constants.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { CampaignParticipationStatuses } from '../../../../shared/domain/models/index.js';
 import { CampaignReport } from '../../../../shared/domain/read-models/CampaignReport.js';
@@ -14,7 +15,8 @@ import { getLatestParticipationSharedForOneLearner } from './helpers/get-latest-
 const { SHARED } = CampaignParticipationStatuses;
 
 const get = async function (id) {
-  const result = await knex('campaigns')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('campaigns')
     .select({
       id: 'campaigns.id',
       name: 'campaigns.name',
@@ -54,7 +56,7 @@ const get = async function (id) {
     throw new NotFoundError(`La campagne d'id ${id} n'existe pas ou son accès est restreint`);
   }
 
-  const externalIdFeature = await knex('campaign-features')
+  const externalIdFeature = await trx('campaign-features')
     .select('params')
     .join('features', 'features.id', 'featureId')
     .where({ campaignId: id, 'features.key': CAMPAIGN_FEATURES.EXTERNAL_ID.key })
@@ -67,7 +69,8 @@ const get = async function (id) {
   });
 
   if (campaignReport.isAssessment || campaignReport.isExam) {
-    const skillIds = await knex('campaign_skills').where({ campaignId: id }).pluck('skillId');
+    const trx = DomainTransaction.getConnection();
+    const skillIds = await trx('campaign_skills').where({ campaignId: id }).pluck('skillId');
     const skills = await skillRepository.findByRecordIds(skillIds);
 
     const targetProfile = new TargetProfileForSpecifier({
@@ -86,19 +89,22 @@ const get = async function (id) {
   return campaignReport;
 };
 
-const findMasteryRates = async (campaignId) =>
+const findMasteryRates = async (campaignId) => {
+  const trx = DomainTransaction.getConnection();
   (
-    await knex
+    await trx
       .from('campaign-participations as cp')
-      .select(['organizationLearnerId', getLatestParticipationSharedForOneLearner(knex, 'masteryRate', campaignId)])
+      .select(['organizationLearnerId', getLatestParticipationSharedForOneLearner(trx, 'masteryRate', campaignId)])
       .groupBy('organizationLearnerId')
       .where('status', SHARED)
       .where('deletedAt', null)
       .where({ campaignId })
   ).map(({ masteryRate }) => Number(masteryRate));
+};
 
 const findPaginatedFilteredByOrganizationId = async function ({ organizationId, filter = {}, page, userId }) {
-  const query = knex('campaigns')
+  const trx = DomainTransaction.getConnection();
+  const query = trx('campaigns')
     .distinct('campaigns.id')
     .select(
       'campaigns.id',
@@ -127,7 +133,7 @@ const findPaginatedFilteredByOrganizationId = async function ({ organizationId, 
     .orderBy('campaigns.createdAt', 'DESC');
 
   const { results, pagination } = await fetchPage(query, page);
-  const atLeastOneCampaign = await knex('campaigns')
+  const atLeastOneCampaign = await trx('campaigns')
     .select('id')
     .where({ organizationId })
     .whereNull('deletedAt')

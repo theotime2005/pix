@@ -1,7 +1,8 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 
 const findFileNamesByStatus = async function ({ cpfImportStatus }) {
-  return knex('certification-courses-cpf-infos').where({ importStatus: cpfImportStatus }).pluck('filename').distinct();
+  const trx = DomainTransaction.getConnection();
+  return trx('certification-courses-cpf-infos').where({ importStatus: cpfImportStatus }).pluck('filename').distinct();
 };
 
 export { findFileNamesByStatus };

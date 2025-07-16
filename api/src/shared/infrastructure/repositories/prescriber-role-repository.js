@@ -1,4 +1,5 @@
 import { knex } from '../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { prescriberRoles } from '../../application/pre-handlers/CampaignAuthorization.js';
 
 const getForCampaign = async function ({ userId, campaignId }) {
@@ -16,7 +17,8 @@ const getForCampaign = async function ({ userId, campaignId }) {
 export { getForCampaign };
 
 function _getCampaignAccess({ campaignId, userId }) {
-  return knex('campaigns')
+  const trx = DomainTransaction.getConnection();
+  return trx('campaigns')
     .select('ownerId', 'memberships.organizationRole')
     .join('memberships', function () {
       this.on('memberships.organizationId', 'campaigns.organizationId')

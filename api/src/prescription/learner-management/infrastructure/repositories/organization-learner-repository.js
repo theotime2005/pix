@@ -163,11 +163,11 @@ function _shouldStudentToImportBeReconciled(
 }
 
 const saveCommonOrganizationLearners = function (learners) {
-  const knex = DomainTransaction.getConnection();
+  const trx = DomainTransaction.getConnection();
 
   return Promise.all(
     learners.map((learner) => {
-      return knex('organization-learners').insert(learner).onConflict('id').merge({
+      return trx('organization-learners').insert(learner).onConflict('id').merge({
         firstName: learner.firstName,
         lastName: learner.lastName,
         attributes: learner.attributes,
@@ -182,8 +182,8 @@ const disableCommonOrganizationLearnersFromOrganizationId = function ({
   organizationId,
   excludeOrganizationLearnerIds = [],
 }) {
-  const knex = DomainTransaction.getConnection();
-  return knex('organization-learners')
+  const trx = DomainTransaction.getConnection();
+  return trx('organization-learners')
     .where({ organizationId, isDisabled: false })
     .whereNull('deletedAt')
     .update({ isDisabled: true, updatedAt: new Date() })
@@ -191,9 +191,9 @@ const disableCommonOrganizationLearnersFromOrganizationId = function ({
 };
 
 const findAllCommonLearnersFromOrganizationId = async function ({ organizationId }) {
-  const knex = DomainTransaction.getConnection();
+  const trx = DomainTransaction.getConnection();
 
-  const existingLearners = await knex('view-active-organization-learners')
+  const existingLearners = await trx('view-active-organization-learners')
     .select(['firstName', 'id', 'lastName', 'userId', 'organizationId', 'attributes'])
     .where({ organizationId });
 
@@ -215,9 +215,9 @@ const findAllCommonOrganizationLearnerByReconciliationInfos = async function ({
   organizationId,
   reconciliationInformations,
 }) {
-  const knex = DomainTransaction.getConnection();
+  const trx = DomainTransaction.getConnection();
 
-  const query = knex('view-active-organization-learners')
+  const query = trx('view-active-organization-learners')
     .select('firstName', 'lastName', 'id', 'attributes', 'userId')
     .where({ organizationId, isDisabled: false });
 
@@ -234,10 +234,10 @@ const findAllCommonOrganizationLearnerByReconciliationInfos = async function ({
 };
 
 const update = async function (organizationLearner) {
-  const knex = DomainTransaction.getConnection();
+  const trx = DomainTransaction.getConnection();
 
   const { id, ...attributes } = organizationLearner;
-  const updatedRows = await knex('organization-learners').update(attributes).where({ id });
+  const updatedRows = await trx('organization-learners').update(attributes).where({ id });
   return updatedRows === 1;
 };
 

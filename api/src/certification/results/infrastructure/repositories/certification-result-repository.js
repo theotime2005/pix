@@ -1,4 +1,5 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { CertificationResult } from '../../../../shared/domain/models/index.js';
 import { ComplementaryCertificationCourseResult } from '../../../shared/domain/models/ComplementaryCertificationCourseResult.js';
 
@@ -84,7 +85,8 @@ function _selectCertificationResults() {
 }
 
 function _selectComplementaryCertificationCourseResultsBySessionId({ sessionId }) {
-  return knex('complementary-certification-course-results')
+  const trx = DomainTransaction.getConnection();
+  return trx('complementary-certification-course-results')
     .select({
       certificationCourseId: 'certification-courses.id',
       complementaryCertificationCourseId:

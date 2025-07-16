@@ -1,4 +1,5 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { AssessmentResult } from '../../../../shared/domain/models/AssessmentResult.js';
 import { CpfImportStatus } from '../../domain/models/CpfImportStatus.js';
 import { CpfCertificationResult } from '../../domain/read-models/CpfCertificationResult.js';
@@ -21,7 +22,9 @@ const findByBatchId = async function (batchId) {
 };
 
 const markCertificationCoursesAsExported = async function ({ certificationCourseIds, filename }) {
-  return knex('certification-courses-cpf-infos')
+  const trx = DomainTransaction.getConnection();
+
+  return trx('certification-courses-cpf-infos')
     .update({ filename, importStatus: CpfImportStatus.READY_TO_SEND, updatedAt: knex.fn.now() })
     .whereIn('certificationCourseId', certificationCourseIds);
 };
@@ -61,13 +64,15 @@ const markCertificationToExport = async function ({ startDate, endDate, limit, o
 };
 
 const updateCertificationImportStatus = async function ({ certificationCourseIds, cpfImportStatus }) {
-  return knex('certification-courses-cpf-infos')
+  const trx = DomainTransaction.getConnection();
+  return trx('certification-courses-cpf-infos')
     .update({ importStatus: cpfImportStatus, updatedAt: knex.fn.now() })
     .whereIn('certificationCourseId', certificationCourseIds);
 };
 
 const updateCpfInfos = async function ({ cpfInfos }) {
-  return knex('certification-courses-cpf-infos')
+  const trx = DomainTransaction.getConnection();
+  return trx('certification-courses-cpf-infos')
     .update({ importStatus: cpfInfos.importStatus, updatedAt: knex.fn.now() })
     .where({
       certificationCourseId: cpfInfos.certificationCourseId,

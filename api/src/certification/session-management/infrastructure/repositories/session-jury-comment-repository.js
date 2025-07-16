@@ -1,4 +1,5 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { SessionJuryComment } from '../../domain/models/SessionJuryComment.js';
 
@@ -42,7 +43,8 @@ const remove = async function ({ id }) {
 export { get, remove, save };
 
 async function _persist(sessionId, columnsToSave) {
-  const updatedSessionIds = await knex('sessions').update(columnsToSave).where({ id: sessionId }).returning('id');
+  const trx = DomainTransaction.getConnection();
+  const updatedSessionIds = await trx('sessions').update(columnsToSave).where({ id: sessionId }).returning('id');
 
   if (updatedSessionIds.length === 0) {
     throw new NotFoundError(`La session ${sessionId} n'existe pas ou son accès est restreint.`);

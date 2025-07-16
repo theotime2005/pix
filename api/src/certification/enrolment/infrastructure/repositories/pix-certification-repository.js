@@ -1,9 +1,11 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { PixCertification } from '../../domain/models/PixCertification.js';
 
 export async function findByUserId({ userId }) {
   // isCancelled will be removed
-  const results = await knex('certification-courses')
+  const transaction = DomainTransaction.getConnection();
+  const results = await transaction('certification-courses')
     .select(
       'certification-courses.isRejectedForFraud',
       'certification-courses.isCancelled',

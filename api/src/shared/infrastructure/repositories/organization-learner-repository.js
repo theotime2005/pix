@@ -28,7 +28,8 @@ const findByOrganizationId = function ({ organizationId }) {
 
 const findByOrganizationIdAndUpdatedAtOrderByDivision = async function ({ organizationId, page, filter }) {
   const BEGINNING_OF_THE_2020_SCHOOL_YEAR = '2020-08-15';
-  const query = knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const query = trx('view-active-organization-learners')
     .where({
       organizationId,
       isDisabled: false,
@@ -75,7 +76,7 @@ const dissociateAllStudentsByUserId = async function ({ userId }) {
     .where({ userId })
     .whereIn(
       'organization-learners.organizationId',
-      knex.select('id').from('organizations').where({ isManagingStudents: true }),
+      knexConn.select('id').from('organizations').where({ isManagingStudents: true }),
     );
 };
 
@@ -89,7 +90,8 @@ function _queryBuilderDissociation(knexConn) {
 }
 
 const getLatestOrganizationLearner = async function ({ nationalStudentId, birthdate }) {
-  const organizationLearner = await knex
+  const trx = DomainTransaction.getConnection();
+  const organizationLearner = await trx
     .where({ nationalStudentId, birthdate })
     .whereNotNull('userId')
     .select()
@@ -120,7 +122,8 @@ const updateUserIdWhereNull = async function ({ organizationLearnerId, userId })
 };
 
 const isActive = async function ({ userId, campaignId }) {
-  const learner = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const learner = await trx('view-active-organization-learners')
     .select('view-active-organization-learners.isDisabled')
     .join('organizations', 'organizations.id', 'view-active-organization-learners.organizationId')
     .join('campaigns', 'campaigns.organizationId', 'organizations.id')

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { knex } from '../../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { SessionEnrolment } from '../../domain/models/SessionEnrolment.js';
@@ -28,7 +27,9 @@ export async function save({ session }) {
 }
 
 export async function get({ id }) {
-  const foundSession = await knex
+  const trx = DomainTransaction.getConnection();
+
+  const foundSession = await trx
     .select('sessions.*')
     .select({ certificationCenterType: 'certification-centers.type' })
     .from('sessions')
@@ -42,16 +43,20 @@ export async function get({ id }) {
 }
 
 export async function isSessionExistingByCertificationCenterId({ address, room, date, time, certificationCenterId }) {
-  const sessions = await knex('sessions').where({ address, room, date, time }).andWhere({ certificationCenterId });
+  const trx = DomainTransaction.getConnection();
+
+  const sessions = await trx('sessions').where({ address, room, date, time }).andWhere({ certificationCenterId });
   return sessions.length > 0;
 }
 
 export async function isSessionExistingBySessionAndCertificationCenterIds({ sessionId, certificationCenterId }) {
-  const [session] = await knex('sessions').where({ id: sessionId, certificationCenterId });
+  const trx = DomainTransaction.getConnection();
+  const [session] = await trx('sessions').where({ id: sessionId, certificationCenterId });
   return Boolean(session);
 }
 
 export async function update(session) {
+  const trx = DomainTransaction.getConnection();
   const sessionDataToUpdate = _.pick(session, [
     'address',
     'room',
@@ -62,15 +67,15 @@ export async function update(session) {
     'description',
   ]);
 
-  await knex('sessions').where({ id: session.id }).update(sessionDataToUpdate).returning('*');
+  await trx('sessions').where({ id: session.id }).update(sessionDataToUpdate).returning('*');
 }
 
 export async function remove({ id }) {
-  await knex.transaction(async (trx) => {
-    const certificationCandidateIdsInSession = await knex('certification-candidates')
+  await DomainTransaction.execute(async (trx) => {
+    const certificationCandidateIdsInSession = await trx('certification-candidates')
       .where({ sessionId: id })
       .pluck('id');
-    const supervisorAccessIds = await knex('supervisor-accesses').where({ sessionId: id }).pluck('id');
+    const supervisorAccessIds = await trx('supervisor-accesses').where({ sessionId: id }).pluck('id');
 
     if (supervisorAccessIds) {
       await trx('supervisor-accesses').whereIn('id', supervisorAccessIds).del();

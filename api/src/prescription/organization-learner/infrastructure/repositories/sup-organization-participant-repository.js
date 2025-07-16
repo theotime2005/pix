@@ -3,6 +3,7 @@ import {
   CampaignParticipationStatuses,
   CampaignTypes,
 } from '../../../../../src/prescription/shared/domain/constants.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { filterByFullName } from '../../../../shared/infrastructure/utils/filter-utils.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { SupOrganizationParticipant } from '../../domain/read-models/SupOrganizationParticipant.js';
@@ -31,7 +32,8 @@ function _setFilters(qb, { search, studentNumber, groups, certificability } = {}
 }
 
 const findPaginatedFilteredSupParticipants = async function ({ organizationId, filter, page = {}, sort = {} }) {
-  const { totalSupParticipants } = await knex
+  const trx = DomainTransaction.getConnection();
+  const { totalSupParticipants } = await trx
     .count('id', { as: 'totalSupParticipants' })
     .from('view-active-organization-learners')
     .where({ organizationId: organizationId, isDisabled: false })
@@ -51,10 +53,10 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
     });
   }
 
-  const query = knex
+  const query = trx
     .with(
       'participants',
-      knex
+      trx
         .select([
           'view-active-organization-learners.id',
           'view-active-organization-learners.lastName',
@@ -66,7 +68,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
           'view-active-organization-learners.studentNumber',
           'view-active-organization-learners.organizationId',
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('isCertifiable')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -77,7 +79,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
             .limit(1)
             .as('isCertifiable'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('sharedAt')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -88,7 +90,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
             .limit(1)
             .as('certifiableAt'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaigns.name')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -98,7 +100,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
             .limit(1)
             .as('campaignName'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaign-participations.status')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -108,7 +110,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
             .limit(1)
             .as('participationStatus'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaigns.type')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -118,7 +120,7 @@ const findPaginatedFilteredSupParticipants = async function ({ organizationId, f
             .limit(1)
             .as('campaignType'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaign-participations.createdAt')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')

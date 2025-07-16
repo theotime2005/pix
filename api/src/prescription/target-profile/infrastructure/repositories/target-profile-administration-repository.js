@@ -59,9 +59,10 @@ const update = async function (targetProfile) {
     'comment',
     'isSimplifiedAccess',
   ]);
+  const trx = DomainTransaction.getConnection();
 
   try {
-    results = await knex('target-profiles')
+    results = await trx('target-profiles')
       .where({ id: targetProfile.id })
       .update(editedAttributes)
       .returning(['id', 'isSimplifiedAccess']);
@@ -106,7 +107,9 @@ const getTubesByTargetProfileId = async (targetProfileId) => {
 };
 
 const findByOrganization = async function ({ organizationId }) {
-  const results = await knex('target-profiles')
+  const trx = DomainTransaction.getConnection();
+
+  const results = await trx('target-profiles')
     .select({
       id: 'target-profiles.id',
       internalName: 'target-profiles.internalName',
@@ -196,10 +199,12 @@ async function _getLearningContent(targetProfileId, tubesData, locale) {
 }
 
 async function _findBadges(targetProfileId) {
-  const badgeDTOs = await knex('badges').select('*').where({ targetProfileId }).orderBy('id');
+  const trx = DomainTransaction.getConnection();
+
+  const badgeDTOs = await trx('badges').select('*').where({ targetProfileId }).orderBy('id');
   const badges = [];
   for (const badgeDTO of badgeDTOs) {
-    const badgeCriteriaDTO = await knex('badge-criteria').select('*').where({ badgeId: badgeDTO.id }).orderBy('id');
+    const badgeCriteriaDTO = await trx('badge-criteria').select('*').where({ badgeId: badgeDTO.id }).orderBy('id');
     const criteria = [];
     for (const badgeCriterionDTO of badgeCriteriaDTO) {
       if (badgeCriterionDTO.scope === SCOPES.CAMPAIGN_PARTICIPATION) {
@@ -239,8 +244,9 @@ async function _findBadges(targetProfileId) {
 }
 
 async function _getStageCollection(targetProfileId) {
-  const stages = await knex('stages').where({ targetProfileId }).orderBy('id', 'asc');
-  const { max: maxLevel } = await knex('target-profile_tubes')
+  const trx = DomainTransaction.getConnection();
+  const stages = await trx('stages').where({ targetProfileId }).orderBy('id', 'asc');
+  const { max: maxLevel } = await trx('target-profile_tubes')
     .max('level')
     .where('targetProfileId', targetProfileId)
     .first();
@@ -249,13 +255,15 @@ async function _getStageCollection(targetProfileId) {
 }
 
 async function _hasLinkedCampaign(targetProfileId) {
-  const campaigns = await knex('campaigns').where({ targetProfileId }).first();
+  const trx = DomainTransaction.getConnection();
+  const campaigns = await trx('campaigns').where({ targetProfileId }).first();
 
   return Boolean(campaigns);
 }
 
 async function _hasLinkedAutonomousCourse(targetProfile, hasLinkedCampaign) {
-  const targetProfileSharesLinkedWithAutonomousCourseOrganization = await knex('target-profile-shares')
+  const trx = DomainTransaction.getConnection();
+  const targetProfileSharesLinkedWithAutonomousCourseOrganization = await trx('target-profile-shares')
     .where({
       targetProfileId: targetProfile.id,
       organizationId: constants.AUTONOMOUS_COURSES_ORGANIZATION_ID,

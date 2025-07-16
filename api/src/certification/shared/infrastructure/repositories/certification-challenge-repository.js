@@ -29,9 +29,11 @@ const save = async function ({ certificationChallenge }) {
 };
 
 const getNextNonAnsweredChallengeByCourseId = async function (assessmentId, courseId) {
-  const answeredChallengeIds = knex('answers').select('challengeId').where({ assessmentId });
+  const trx = DomainTransaction.getConnection();
 
-  const certificationChallenge = await knex('certification-challenges')
+  const answeredChallengeIds = trx('answers').select('challengeId').where({ assessmentId });
+
+  const certificationChallenge = await trx('certification-challenges')
     .where({ courseId })
     .whereNotIn('challengeId', answeredChallengeIds)
     .orderBy('id', 'asc')
@@ -48,7 +50,9 @@ const getNextNonAnsweredChallengeByCourseId = async function (assessmentId, cour
 };
 
 const getNextChallengeByCourseIdForV3 = async function (courseId, ignoredChallengeIds) {
-  const certificationChallenge = await knex('certification-challenges')
+  const trx = DomainTransaction.getConnection();
+
+  const certificationChallenge = await trx('certification-challenges')
     .where({ courseId })
     .whereNotIn('challengeId', ignoredChallengeIds)
     .orderBy('id', 'asc')

@@ -1,8 +1,10 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { Division } from '../../domain/models/Division.js';
 
 async function findByCampaignId(campaignId) {
-  const divisions = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const divisions = await trx('view-active-organization-learners')
     .where({ campaignId })
     .whereNotNull('division')
     .where({ 'campaign-participations.deletedAt': null })
@@ -18,7 +20,8 @@ async function findByCampaignId(campaignId) {
 }
 
 async function findByOrganizationIdForCurrentSchoolYear({ organizationId }) {
-  const divisionRows = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const divisionRows = await trx('view-active-organization-learners')
     .distinct('division')
     .where({ organizationId, isDisabled: false })
     .whereNotNull('division')

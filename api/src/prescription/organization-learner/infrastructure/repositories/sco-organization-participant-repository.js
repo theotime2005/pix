@@ -6,6 +6,7 @@ import {
   CampaignTypes,
 } from '../../../../../src/prescription/shared/domain/constants.js';
 import { NON_OIDC_IDENTITY_PROVIDERS } from '../../../../identity-access-management/domain/constants/identity-providers.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { filterByFullName } from '../../../../shared/infrastructure/utils/filter-utils.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { ScoOrganizationParticipant } from '../../domain/read-models/ScoOrganizationParticipant.js';
@@ -60,7 +61,8 @@ function _setFilters(qb, { search, divisions, connectionTypes, certificability }
 }
 
 const findPaginatedFilteredScoParticipants = async function ({ organizationId, filter, page = {}, sort = {} }) {
-  const { totalScoParticipants } = await knex
+  const trx = DomainTransaction.getConnection();
+  const { totalScoParticipants } = await trx
     .count('id', { as: 'totalScoParticipants' })
     .from('view-active-organization-learners')
     .where({ organizationId: organizationId, isDisabled: false })
@@ -87,10 +89,10 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
     });
   }
 
-  const query = knex
+  const query = trx
     .with(
       'participants',
-      knex
+      trx
         .select([
           'view-active-organization-learners.id',
           'view-active-organization-learners.lastName',
@@ -108,7 +110,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
           'view-active-organization-learners.organizationId',
           'view-active-organization-learners.isCertifiable as isCertifiableFromLearner',
           'view-active-organization-learners.certifiableAt as certifiableAtFromLearner',
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('isCertifiable')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -119,7 +121,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
             .limit(1)
             .as('isCertifiableFromCampaign'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('sharedAt')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -130,7 +132,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
             .limit(1)
             .as('certifiableAtFromCampaign'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaigns.name')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -140,7 +142,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
             .limit(1)
             .as('campaignName'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .select('campaign-participations.status')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
             .and.whereNull('campaign-participations.deletedAt')
@@ -149,7 +151,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
             .limit(1)
             .as('participationStatus'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .join('campaigns', 'campaigns.id', 'campaignId')
             .select('campaigns.type')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -159,7 +161,7 @@ const findPaginatedFilteredScoParticipants = async function ({ organizationId, f
             .limit(1)
             .as('campaignType'),
 
-          knex('campaign-participations')
+          trx('campaign-participations')
             .select('campaign-participations.createdAt')
             .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
             .and.whereNull('campaign-participations.deletedAt')

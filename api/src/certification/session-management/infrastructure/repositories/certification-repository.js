@@ -41,7 +41,8 @@ const publishCertificationCourses = async function (certificationStatuses) {
 };
 
 const unpublishCertificationCoursesBySessionId = async function ({ sessionId }) {
-  await knex('certification-courses').where({ sessionId }).update({ isPublished: false, updatedAt: new Date() });
+  const trx = DomainTransaction.getConnection();
+  await trx('certification-courses').where({ sessionId }).update({ isPublished: false, updatedAt: new Date() });
 };
 
 export { getStatusesBySessionId, publishCertificationCourses, unpublishCertificationCoursesBySessionId };

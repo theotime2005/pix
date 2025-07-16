@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { knex } from '../../../../../db/knex-database-connection.js';
 import * as learningContentConversionService from '../../../../../lib/domain/services/learning-content/learning-content-conversion-service.js';
 import * as campaignRepository from '../../../../prescription/campaign/infrastructure/repositories/campaign-repository.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NoSkillsInCampaignError, NotFoundError } from '../../../../shared/domain/errors.js';
 import { CampaignLearningContent } from '../../../../shared/domain/models/CampaignLearningContent.js';
 import { LearningContent } from '../../../../shared/domain/models/LearningContent.js';
@@ -22,7 +22,9 @@ async function findByCampaignId(campaignId, locale) {
 }
 
 async function findByTargetProfileId(targetProfileId, locale) {
-  const cappedTubesDTO = await knex('target-profile_tubes')
+  const trx = DomainTransaction.getConnection();
+
+  const cappedTubesDTO = await trx('target-profile_tubes')
     .select({
       id: 'tubeId',
       level: 'level',

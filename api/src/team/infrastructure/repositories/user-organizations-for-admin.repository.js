@@ -1,8 +1,10 @@
-import { knex } from '../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { UserOrganizationForAdmin } from '../../domain/read-models/UserOrganizationForAdmin.js';
 
 const findByUserId = async function (userId) {
-  const organizations = await knex('memberships')
+  const trx = DomainTransaction.getConnection();
+
+  const organizations = await trx('memberships')
     .select({
       id: 'memberships.id',
       organizationRole: 'memberships.organizationRole',

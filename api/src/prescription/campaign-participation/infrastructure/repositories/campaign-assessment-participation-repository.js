@@ -20,7 +20,8 @@ const getByCampaignIdAndCampaignParticipationId = async function ({
 };
 
 const getDetachedByUserId = async ({ userId }) => {
-  const result = await knex('assessments')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('assessments')
     .select(['id', 'state', 'updatedAt'])
     .whereNull('campaignParticipationId')
     .where({ userId, type: Assessment.types.CAMPAIGN })

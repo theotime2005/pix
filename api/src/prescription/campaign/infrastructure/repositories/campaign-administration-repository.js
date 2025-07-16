@@ -48,11 +48,12 @@ const getByCode = async function (code) {
 };
 
 const get = async function (id) {
-  const campaign = await knex('campaigns').where({ id }).first();
+  const trx = DomainTransaction.getConnection();
+  const campaign = await trx('campaigns').where({ id }).first();
 
   if (!campaign) return null;
 
-  const { count: participationCount } = await knex('campaign-participations')
+  const { count: participationCount } = await trx('campaign-participations')
     .count('id')
     .where({ campaignId: id })
     .first();
@@ -95,7 +96,7 @@ const _update = async function (campaign, attributes) {
 };
 
 const save = async function (campaigns, dependencies = { skillRepository }) {
-  const trx = await knex.transaction();
+  const trx = DomainTransaction.getConnection();
   const campaignsToCreate = _.isArray(campaigns) ? campaigns : [campaigns];
 
   try {
@@ -136,17 +137,19 @@ const save = async function (campaigns, dependencies = { skillRepository }) {
     await trx.commit();
     return latestCreatedCampaign;
   } catch (err) {
+    console.error(err);
     await trx.rollback();
     throw err;
   }
 };
 
 const isCodeAvailable = async function ({ code }) {
-  return !(await knex('campaigns').first('id').where({ code }));
+  const trx = DomainTransaction.getConnection();
+  return !(await trx('campaigns').first('id').where({ code }));
 };
 
 const swapCampaignCodes = async function ({ firstCampaignId, secondCampaignId }) {
-  const trx = await knex.transaction();
+  const trx = await DomainTransaction.getConnection();
   const randomBytesBuffer = await cryptoService.randomBytes(16);
   const temporaryCode = randomBytesBuffer.toString('base64');
 
@@ -169,9 +172,10 @@ const swapCampaignCodes = async function ({ firstCampaignId, secondCampaignId })
 };
 
 const isFromSameOrganization = async function ({ firstCampaignId, secondCampaignId }) {
+  const trx = DomainTransaction.getConnection();
   const [firstCampaign, secondCampaign] = await Promise.all([
-    knex('campaigns').select('organizationId').where({ id: firstCampaignId }).first(),
-    knex('campaigns').select('organizationId').where({ id: secondCampaignId }).first(),
+    trx('campaigns').select('organizationId').where({ id: firstCampaignId }).first(),
+    trx('campaigns').select('organizationId').where({ id: secondCampaignId }).first(),
   ]);
 
   if (!firstCampaign || !secondCampaign) {
@@ -182,7 +186,8 @@ const isFromSameOrganization = async function ({ firstCampaignId, secondCampaign
 };
 
 const archiveCampaigns = function (campaignIds, userId) {
-  return knex('campaigns').whereNull('archivedAt').whereInArray('id', campaignIds).update({
+  const trx = DomainTransaction.getConnection();
+  return trx('campaigns').whereNull('archivedAt').whereInArray('id', campaignIds).update({
     archivedBy: userId,
     archivedAt: new Date(),
   });

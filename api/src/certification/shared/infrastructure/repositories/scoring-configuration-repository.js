@@ -1,4 +1,3 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import * as areaRepository from '../../../../shared/infrastructure/repositories/area-repository.js';
@@ -44,7 +43,9 @@ export const saveCompetenceForScoringConfiguration = async ({ configuration, use
     configuration: JSON.stringify(configuration),
     createdByUserId: userId,
   };
-  await knex('competence-scoring-configurations').insert(data);
+  const trx = DomainTransaction.getConnection();
+
+  await trx('competence-scoring-configurations').insert(data);
 };
 
 export const saveCertificationScoringConfiguration = async ({ configuration, userId }) => {
@@ -52,5 +53,6 @@ export const saveCertificationScoringConfiguration = async ({ configuration, use
     configuration: JSON.stringify(configuration),
     createdByUserId: userId,
   };
-  await knex('certification-scoring-configurations').insert(data);
+  const trx = DomainTransaction.getConnection();
+  await trx('certification-scoring-configurations').insert(data);
 };

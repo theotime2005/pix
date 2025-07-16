@@ -1,9 +1,11 @@
-import { knex } from '../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { LtiPlatformRegistration } from '../../domain/models/LtiPlatformRegistration.js';
 
 export const ltiPlatformRegistrationRepository = {
   async findByClientId(clientId) {
-    const ltiPlatformRegistrationDTO = await knex
+    const trx = DomainTransaction.getConnection();
+
+    const ltiPlatformRegistrationDTO = await trx
       .select('*')
       .from('lti_platform_registrations')
       .where('clientId', clientId)
@@ -17,7 +19,9 @@ export const ltiPlatformRegistrationRepository = {
   },
 
   async listActivePublicKeys() {
-    return knex.select('publicKey').from('lti_platform_registrations').where('status', 'active').pluck('publicKey');
+    const trx = DomainTransaction.getConnection();
+
+    return trx.select('publicKey').from('lti_platform_registrations').where('status', 'active').pluck('publicKey');
   },
 
   async save({
@@ -29,7 +33,9 @@ export const ltiPlatformRegistrationRepository = {
     publicKey,
     platformOpenIdConfigUrl,
   }) {
-    return knex('lti_platform_registrations').insert({
+    const trx = DomainTransaction.getConnection();
+
+    return trx('lti_platform_registrations').insert({
       clientId,
       platformOrigin,
       status,

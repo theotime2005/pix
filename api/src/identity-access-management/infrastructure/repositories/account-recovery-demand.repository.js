@@ -37,7 +37,9 @@ const findByUserId = async function (userId) {
 };
 
 const save = async function (accountRecoveryDemand) {
-  const result = await knex('account-recovery-demands').insert(accountRecoveryDemand).returning('*');
+  const trx = DomainTransaction.getConnection();
+
+  const result = await trx('account-recovery-demands').insert(accountRecoveryDemand).returning('*');
 
   return _toDomain(result[0]);
 };

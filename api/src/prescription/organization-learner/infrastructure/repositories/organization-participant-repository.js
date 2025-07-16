@@ -3,6 +3,7 @@ import {
   CampaignParticipationStatuses,
   CampaignTypes,
 } from '../../../../../src/prescription/shared/domain/constants.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { filterByFullName } from '../../../../shared/infrastructure/utils/filter-utils.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { OrganizationParticipant } from '../../domain/read-models/OrganizationParticipant.js';
@@ -53,11 +54,12 @@ function _organizationLearnerParticipantsQuery({
   sort,
   withImport = true,
 }) {
+  const trx = DomainTransaction.getConnection();
   const orderByClause = _getOrderClause(sort);
 
   const withQuery = _buildWithQuery({ organizationId, extraColumns, withImport });
 
-  const query = knex.with('participants', withQuery).select('*').from('participants');
+  const query = trx.with('participants', withQuery).select('*').from('participants');
 
   if (!withImport) {
     query.where('participationCount', '>', 0);
@@ -98,9 +100,10 @@ function _getOrderClause(sort) {
 }
 
 function _buildWithQuery({ organizationId, extraColumns, withImport }) {
+  const trx = DomainTransaction.getConnection();
   const selectElement = _getSelectElement(extraColumns);
 
-  const withQuery = knex.select(selectElement).from('view-active-organization-learners');
+  const withQuery = trx.select(selectElement).from('view-active-organization-learners');
 
   if (!withImport) {
     withQuery.join('users', function () {
@@ -114,7 +117,9 @@ function _buildWithQuery({ organizationId, extraColumns, withImport }) {
 }
 
 async function _countOrganizationParticipant({ organizationId, withImport = true }) {
-  const countParticipationQuery = knex
+  const trx = DomainTransaction.getConnection();
+
+  const countParticipationQuery = trx
     .select(knex.raw('COUNT(DISTINCT "view-active-organization-learners"."id")'))
     .from('view-active-organization-learners');
 
@@ -176,8 +181,9 @@ function _filterByCertificability(queryBuilder, filters) {
 }
 
 function _getSelectElement(extraColumns) {
+  const trx = DomainTransaction.getConnection();
   const extraSubQueries = extraColumns.map(({ key, name }) => {
-    return knex('organization-learners')
+    return trx('organization-learners')
       .select(knex.raw(`"organization-learners"."attributes" ->> ?`, key))
       .whereRaw('"id" = "view-active-organization-learners"."id"')
       .as(name);
@@ -190,7 +196,7 @@ function _getSelectElement(extraColumns) {
     'view-active-organization-learners.isCertifiable as isCertifiableFromLearner',
     'view-active-organization-learners.certifiableAt as certifiableAtFromLearner',
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('isCertifiable')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -201,7 +207,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('isCertifiableFromCampaign'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('sharedAt')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -212,7 +218,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('certifiableAtFromCampaign'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('campaigns.name')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -222,7 +228,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('campaignName'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('campaign-participations.status')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -232,7 +238,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('participationStatus'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('campaigns.type')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -242,7 +248,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('campaignType'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .join('campaigns', 'campaigns.id', 'campaignId')
       .select('campaign-participations.createdAt')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
@@ -252,7 +258,7 @@ function _getSelectElement(extraColumns) {
       .limit(1)
       .as('lastParticipationDate'),
 
-    knex('campaign-participations')
+    trx('campaign-participations')
       .whereRaw('"organizationLearnerId" = "view-active-organization-learners"."id"')
       .and.whereNull('campaign-participations.deletedAt')
       .and.where('isImproved', false)

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { knex } from '../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { Assessment } from '../../../shared/domain/models/Assessment.js';
 import { MissionLearner } from '../../domain/models/MissionLearner.js';
@@ -27,7 +26,8 @@ const getByAssessmentId = async function (assessmentId) {
 };
 
 const getCurrent = async function (missionId, organizationLearnerId) {
-  const rawAssessmentMission = await knex('mission-assessments')
+  const trx = DomainTransaction.getConnection();
+  const rawAssessmentMission = await trx('mission-assessments')
     .join('assessments', 'assessments.id', 'mission-assessments.assessmentId')
     .where({ missionId, organizationLearnerId, state: Assessment.states.STARTED })
     .first();
@@ -40,7 +40,8 @@ const getCurrent = async function (missionId, organizationLearnerId) {
 };
 
 async function _getMissionAssessmentsByLearnerId(missionId, organizationLearnerIds) {
-  const organizationLearnerAssessments = await knex
+  const trx = DomainTransaction.getConnection();
+  const organizationLearnerAssessments = await trx
     .select(
       'mission-assessments.organizationLearnerId',
       'assessments.state as status',
@@ -85,11 +86,12 @@ const getStatusesForLearners = async function (missionId, organizationLearners) 
 };
 
 const getMissionIdsByState = async function (organizationLearnerId) {
-  const missionAssessments = await knex('mission-assessments')
+  const trx = DomainTransaction.getConnection();
+  const missionAssessments = await trx('mission-assessments')
     .select('mission-assessments.missionId', 'assessments.state', 'mission-assessments.createdAt')
     .join('assessments', 'assessments.id', 'mission-assessments.assessmentId')
     .join(
-      knex
+      trx
         .select('organizationLearnerId as learnerId', 'missionId')
         .max('createdAt', { as: 'date' })
         .from('mission-assessments')

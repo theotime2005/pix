@@ -62,7 +62,9 @@ const orderByAndRemoveDeleted = (query) => {
 };
 
 const get = async function (id) {
-  const result = await knex('organization-places')
+  const trx = DomainTransaction.getConnection();
+
+  const result = await trx('organization-places')
     .select(
       'organization-places.id AS id',
       'count',
@@ -85,12 +87,15 @@ const get = async function (id) {
 };
 
 const create = async function (places) {
-  const [{ id }] = await knex('organization-places').insert(places).returning('id');
+  const trx = DomainTransaction.getConnection();
+
+  const [{ id }] = await trx('organization-places').insert(places).returning('id');
   return id;
 };
 
 const remove = async function ({ id, deletedBy }) {
-  const result = await knex('organization-places')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('organization-places')
     .update({ deletedAt: new Date(), deletedBy })
     .where({ id, deletedBy: null });
 

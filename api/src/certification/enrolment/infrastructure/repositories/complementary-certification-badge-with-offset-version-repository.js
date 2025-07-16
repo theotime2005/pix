@@ -1,8 +1,10 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { ComplementaryCertificationBadgeWithOffsetVersion } from '../../domain/models/ComplementaryCertificationBadge.js';
 
 export async function getAllWithSameTargetProfile({ complementaryCertificationBadgeId }) {
-  const results = await knex('complementary-certification-badges')
+  const transaction = DomainTransaction.getConnection();
+  const results = await transaction('complementary-certification-badges')
     .select(
       'complementary-certification-badges.id',
       'complementary-certification-badges.minimumEarnedPix',
@@ -18,7 +20,7 @@ export async function getAllWithSameTargetProfile({ complementaryCertificationBa
     .where(
       'badges.targetProfileId',
       '=',
-      knex('complementary-certification-badges')
+      transaction('complementary-certification-badges')
         .select('target-profiles.id')
         .join('badges', 'badges.id', '=', 'complementary-certification-badges.badgeId')
         .join('target-profiles', 'target-profiles.id', '=', 'badges.targetProfileId')

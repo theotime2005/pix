@@ -7,8 +7,8 @@ function _toDomain(data) {
 }
 
 const get = async function (organizationId) {
-  const knex = DomainTransaction.getConnection();
-  const configResult = await knex('organization-features')
+  const trx = DomainTransaction.getConnection();
+  const configResult = await trx('organization-features')
     .select('params')
     .join('features', function () {
       this.on('features.id', 'organization-features.featureId').onVal(
@@ -21,7 +21,7 @@ const get = async function (organizationId) {
 
   if (!configResult) return null;
 
-  const result = await knex('organization-learner-import-formats')
+  const result = await trx('organization-learner-import-formats')
     .where('id', configResult.params.organizationLearnerImportFormatId)
     .first();
 

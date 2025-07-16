@@ -1,13 +1,15 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { Assessment } from '../../../../shared/domain/models/Assessment.js';
 import { CampaignTypes } from '../../../shared/domain/constants.js';
 import { CampaignParticipationForUserManagement } from '../../domain/models/CampaignParticipationForUserManagement.js';
 
 const findByUserId = async function (userId) {
-  const campaignParticipations = await knex
+  const trx = DomainTransaction.getConnection();
+  const campaignParticipations = await trx
     .with(
       'participations',
-      knex('assessments')
+      trx('assessments')
         .select({
           campaignParticipationId: 'campaign-participations.id',
           participantExternalId: 'campaign-participations.participantExternalId',

@@ -1,9 +1,10 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { CertificationCandidateNotFoundError } from '../../../../shared/domain/errors.js';
 import { Candidate } from '../../domain/models/Candidate.js';
 
 export const findByAssessmentId = async function ({ assessmentId }) {
-  const result = await knex('certification-candidates')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('certification-candidates')
     .select('certification-candidates.accessibilityAdjustmentNeeded', 'certification-candidates.reconciledAt')
     .join('certification-courses', function () {
       this.on('certification-courses.userId', '=', 'certification-candidates.userId').andOn(

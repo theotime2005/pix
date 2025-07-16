@@ -1,9 +1,12 @@
 import { knex } from '../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { StageCollection } from '../../../shared/domain/models/target-profile-management/StageCollection.js';
 
 const getByTargetProfileId = async function (targetProfileId) {
-  const stages = await knex('stages').where({ targetProfileId }).orderBy('id', 'asc');
-  const { max: maxLevel } = await knex('target-profile_tubes')
+  const trx = DomainTransaction.getConnection();
+
+  const stages = await trx('stages').where({ targetProfileId }).orderBy('id', 'asc');
+  const { max: maxLevel } = await trx('target-profile_tubes')
     .max('level')
     .where('targetProfileId', targetProfileId)
     .first();

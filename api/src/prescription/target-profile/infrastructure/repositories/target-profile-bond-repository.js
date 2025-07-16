@@ -1,7 +1,8 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 
 const update = async function (targetProfile) {
-  const results = await knex('target-profile-shares')
+  const trx = DomainTransaction.getConnection();
+  const results = await trx('target-profile-shares')
     .where('targetProfileId', targetProfile.id)
     .whereIn('organizationId', targetProfile.organizationIdsToDetach)
     .del()

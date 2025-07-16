@@ -1,4 +1,4 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
 import { TargetProfileForSpecifier } from '../../domain/read-models/TargetProfileForSpecifier.js';
 
@@ -9,11 +9,12 @@ async function availableForOrganization(organizationId) {
 }
 
 function _fetchTargetProfiles(organizationId) {
-  const selectTargetProfileSharesIdsBelongToOrganization = knex
+  const trx = DomainTransaction.getConnection();
+  const selectTargetProfileSharesIdsBelongToOrganization = trx
     .select('targetProfileId')
     .from('target-profile-shares')
     .where({ organizationId });
-  return knex('target-profiles')
+  return trx('target-profiles')
     .select([
       'target-profiles.id',
       'target-profiles.name',
@@ -21,9 +22,9 @@ function _fetchTargetProfiles(organizationId) {
       'target-profiles.category',
       'target-profiles.areKnowledgeElementsResettable',
       'target-profiles.isSimplifiedAccess',
-      knex.count('id').from('badges').whereRaw('badges."targetProfileId"="target-profiles".id').as('countBadges'),
-      knex.count('id').from('stages').whereRaw('stages."targetProfileId"="target-profiles".id').as('countStages'),
-      knex
+      trx.count('id').from('badges').whereRaw('badges."targetProfileId"="target-profiles".id').as('countBadges'),
+      trx.count('id').from('stages').whereRaw('stages."targetProfileId"="target-profiles".id').as('countStages'),
+      trx
         .count('tubeId')
         .from('target-profile_tubes')
         .whereRaw('"target-profile_tubes"."targetProfileId"="target-profiles".id')

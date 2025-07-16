@@ -11,9 +11,10 @@ import { OrganizationTag } from '../../../shared/domain/models/index.js';
 import { Tag } from '../../domain/models/Tag.js';
 
 const create = async function (organizationTag) {
+  const trx = DomainTransaction.getConnection();
   try {
     const organizationTagToCreate = omit(organizationTag, 'id');
-    const [organizationTagCreated] = await knex('organization-tags').insert(organizationTagToCreate).returning('*');
+    const [organizationTagCreated] = await trx('organization-tags').insert(organizationTagToCreate).returning('*');
     return new OrganizationTag(organizationTagCreated);
   } catch (err) {
     if (knexUtils.isUniqConstraintViolated(err)) {
@@ -32,14 +33,16 @@ const batchCreate = async function (organizationsTags) {
 };
 
 const isExistingByOrganizationIdAndTagId = async function ({ organizationId, tagId }) {
-  const organizationTag = await knex('organization-tags').where({ organizationId, tagId }).first();
+  const trx = DomainTransaction.getConnection();
+  const organizationTag = await trx('organization-tags').where({ organizationId, tagId }).first();
   return Boolean(organizationTag);
 };
 
 const getRecentlyUsedTags = async function ({ tagId, numberOfRecentTags }) {
-  const organizationIds = (
-    await knex.select('organizationId').from('organization-tags').where('tagId', '=', tagId)
-  ).map(({ organizationId }) => organizationId);
+  const trx = DomainTransaction.getConnection();
+  const organizationIds = (await trx.select('organizationId').from('organization-tags').where('tagId', '=', tagId)).map(
+    ({ organizationId }) => organizationId,
+  );
   const tags = await knex
     .select(knex.raw('"organization-tags"."tagId", "tags"."name", COUNT("organization-tags"."tagId") AS "usedCount"'))
     .from('organization-tags')

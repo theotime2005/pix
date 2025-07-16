@@ -1,6 +1,5 @@
 import lodash from 'lodash';
 
-import { knex } from '../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../shared/domain/DomainTransaction.js';
 import { AlreadyExistingEntityError } from '../../../shared/domain/errors.js';
 import * as knexUtils from '../../../shared/infrastructure/utils/knex-utils.js';
@@ -9,9 +8,10 @@ import { Tag } from '../../domain/models/Tag.js';
 const { omit } = lodash;
 
 const create = async function (tag) {
+  const trx = DomainTransaction.getConnection();
   try {
     const tagToCreate = omit(tag, 'id');
-    const [row] = await knex('tags').insert(tagToCreate).returning('*');
+    const [row] = await trx('tags').insert(tagToCreate).returning('*');
     return new Tag(row);
   } catch (error) {
     if (knexUtils.isUniqConstraintViolated(error)) {
@@ -22,7 +22,8 @@ const create = async function (tag) {
 };
 
 const findByName = async function ({ name }) {
-  const row = await knex('tags').where({ name }).first();
+  const trx = DomainTransaction.getConnection();
+  const row = await trx('tags').where({ name }).first();
   if (!row) {
     return null;
   }
@@ -30,7 +31,8 @@ const findByName = async function ({ name }) {
 };
 
 const findAll = async function () {
-  const rows = await knex('tags');
+  const trx = DomainTransaction.getConnection();
+  const rows = await trx('tags');
   return rows.map((row) => new Tag(row));
 };
 

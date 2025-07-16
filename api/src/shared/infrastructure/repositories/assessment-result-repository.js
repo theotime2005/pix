@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { knex } from '../../../../db/knex-database-connection.js';
 import { CompetenceMark } from '../../../certification/shared/domain/models/CompetenceMark.js';
 import {
   AutoJuryCommentKeys,
@@ -72,7 +71,8 @@ const save = async function ({ certificationCourseId, assessmentResult }) {
 };
 
 const findLatestLevelAndPixScoreByAssessmentId = async function ({ assessmentId, limitDate }) {
-  const result = await knex('assessment-results')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('assessment-results')
     .select('level', 'pixScore')
     .where((qb) => {
       qb.where({ assessmentId });
@@ -122,7 +122,8 @@ const getByCertificationCourseId = async function ({ certificationCourseId }) {
 };
 
 const updateToAcquiredLowerLevelComplementaryCertification = async function ({ id }) {
-  const updatedAssessmentResult = await knex('assessment-results')
+  const trx = DomainTransaction.getConnection();
+  const updatedAssessmentResult = await trx('assessment-results')
     .where({ id })
     .update({ commentByAutoJury: AutoJuryCommentKeys.LOWER_LEVEL_COMPLEMENTARY_CERTIFICATION_ACQUIRED });
 

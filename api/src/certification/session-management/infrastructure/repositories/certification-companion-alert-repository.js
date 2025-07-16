@@ -12,8 +12,8 @@ import {
  * @param {object} options
  * @param {import('knex').Knex} options.knex
  */
-export async function getOngoingAlert({ sessionId, userId }, { knex = DomainTransaction.getConnection() } = {}) {
-  const alert = await knex('certification-companion-live-alerts')
+export async function getOngoingAlert({ sessionId, userId }, { knex: trx = DomainTransaction.getConnection() } = {}) {
+  const alert = await trx('certification-companion-live-alerts')
     .select('certification-companion-live-alerts.*')
     .join('assessments', function () {
       this.on('assessments.id', 'certification-companion-live-alerts.assessmentId').andOnVal(
@@ -42,7 +42,9 @@ export async function getOngoingAlert({ sessionId, userId }, { knex = DomainTran
  * @param {import('knex').Knex} options.knex
  */
 export async function update({ id, status }, { knex = DomainTransaction.getConnection() } = {}) {
-  await knex('certification-companion-live-alerts')
+  const trx = DomainTransaction.getConnection();
+
+  await trx('certification-companion-live-alerts')
     .update({
       status,
       updatedAt: knex.fn.now(),

@@ -1,4 +1,5 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { CertificationCandidate } from '../../../../shared/domain/models/index.js';
 import { ComplementaryCertification } from '../../../enrolment/domain/models/ComplementaryCertification.js';
@@ -29,7 +30,8 @@ const findBySessionId = async function (sessionId) {
 };
 
 const update = async function (certificationCandidate) {
-  const result = await knex('certification-candidates')
+  const trx = DomainTransaction.getConnection();
+  const result = await trx('certification-candidates')
     .where({ id: certificationCandidate.id })
     .update({ authorizedToStart: certificationCandidate.authorizedToStart });
 

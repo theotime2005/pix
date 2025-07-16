@@ -17,14 +17,16 @@ const getPixSourceResultByComplementaryCertificationCourseId = async function ({
 const getAllowedJuryLevelIdsByComplementaryCertificationBadgeId = async function ({
   complementaryCertificationBadgeId,
 }) {
-  return knex
+  const trx = DomainTransaction.getConnection();
+
+  return trx
     .pluck('complementary-certification-badges.id')
     .from('badges')
     .innerJoin('complementary-certification-badges', 'badges.id', 'complementary-certification-badges.badgeId')
     .where(
       'targetProfileId',
       '=',
-      knex('badges')
+      trx('badges')
         .select('targetProfileId')
         .innerJoin('complementary-certification-badges', 'badges.id', 'complementary-certification-badges.badgeId')
         .where({ 'complementary-certification-badges.id': complementaryCertificationBadgeId })
@@ -34,7 +36,9 @@ const getAllowedJuryLevelIdsByComplementaryCertificationBadgeId = async function
 };
 
 const removeExternalJuryResult = async function ({ complementaryCertificationCourseId }) {
-  await knex('complementary-certification-course-results')
+  const trx = DomainTransaction.getConnection();
+
+  await trx('complementary-certification-course-results')
     .where({ complementaryCertificationCourseId, source: ComplementaryCertificationCourseResult.sources.EXTERNAL })
     .delete();
 };

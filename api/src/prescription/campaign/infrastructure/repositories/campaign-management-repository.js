@@ -1,5 +1,6 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
 import { CAMPAIGN_FEATURES } from '../../../../shared/domain/constants.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { CampaignParticipationStatuses, CampaignTypes } from '../../../shared/domain/constants.js';
 import { CampaignManagement } from '../../domain/models/CampaignManagement.js';
@@ -7,7 +8,8 @@ import { CampaignManagement } from '../../domain/models/CampaignManagement.js';
 const { SHARED, TO_SHARE, STARTED } = CampaignParticipationStatuses;
 
 const get = async function (campaignId) {
-  let campaign = await knex('campaigns')
+  const trx = DomainTransaction.getConnection();
+  let campaign = await trx('campaigns')
     .select({
       id: 'campaigns.id',
       code: 'campaigns.code',
@@ -44,7 +46,7 @@ const get = async function (campaignId) {
     return null;
   }
 
-  const externalIdFeature = await knex('campaign-features')
+  const externalIdFeature = await trx('campaign-features')
     .select('params')
     .join('features', 'features.id', 'featureId')
     .where({ campaignId: campaign.id, 'features.key': CAMPAIGN_FEATURES.EXTERNAL_ID.key })
@@ -62,7 +64,8 @@ const get = async function (campaignId) {
 };
 
 const findPaginatedCampaignManagements = async function ({ organizationId, page }) {
-  const query = knex('campaigns')
+  const trx = DomainTransaction.getConnection();
+  const query = trx('campaigns')
     .select({
       id: 'campaigns.id',
       code: 'campaigns.code',
@@ -93,7 +96,8 @@ const findPaginatedCampaignManagements = async function ({ organizationId, page 
 };
 
 async function _countParticipationsByStatus(campaignId, campaignType) {
-  const row = await knex('campaign-participations')
+  const trx = DomainTransaction.getConnection();
+  const row = await trx('campaign-participations')
     .select([
       knex.raw(`sum(case when status = ? then 1 else 0 end) as shared`, SHARED),
       knex.raw(`sum(case when status = ? then 1 else 0 end) as completed`, TO_SHARE),

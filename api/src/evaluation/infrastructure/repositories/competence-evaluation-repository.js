@@ -27,7 +27,9 @@ const save = async function ({ competenceEvaluation }) {
 };
 
 const updateStatusByUserIdAndCompetenceId = async function ({ userId, competenceId, status }) {
-  const [competenceEvaluation] = await knex('competence-evaluations')
+  const trx = DomainTransaction.getConnection();
+
+  const [competenceEvaluation] = await trx('competence-evaluations')
     .where({ userId, competenceId })
     .update({ status })
     .returning('*');
@@ -46,12 +48,14 @@ const updateAssessmentId = async function ({ currentAssessmentId, newAssessmentI
 };
 
 const getByAssessmentId = async function (assessmentId) {
-  const competenceEvaluation = await knex('competence-evaluations').where({ assessmentId }).first();
+  const trx = DomainTransaction.getConnection();
+
+  const competenceEvaluation = await trx('competence-evaluations').where({ assessmentId }).first();
   if (!competenceEvaluation) {
     throw new NotFoundError();
   }
 
-  const assessment = await knex('assessments').where({ id: competenceEvaluation.assessmentId }).first();
+  const assessment = await trx('assessments').where({ id: competenceEvaluation.assessmentId }).first();
 
   return _toDomain({ competenceEvaluation, assessment });
 };
@@ -76,8 +80,10 @@ const getByCompetenceIdAndUserId = async function ({
 };
 
 const findByUserId = async function (userId) {
-  const competenceEvaluations = await knex('competence-evaluations').where({ userId }).orderBy('createdAt', 'asc');
-  const assessments = await knex('assessments').whereIn(
+  const trx = DomainTransaction.getConnection();
+
+  const competenceEvaluations = await trx('competence-evaluations').where({ userId }).orderBy('createdAt', 'asc');
+  const assessments = await trx('assessments').whereIn(
     'id',
     competenceEvaluations.map((competenceEvaluation) => competenceEvaluation.assessmentId),
   );
@@ -93,9 +99,9 @@ const findByUserId = async function (userId) {
 };
 
 const findByAssessmentId = async function (assessmentId) {
-  const competenceEvaluations = await knex('competence-evaluations')
-    .where({ assessmentId })
-    .orderBy('createdAt', 'asc');
+  const trx = DomainTransaction.getConnection();
+
+  const competenceEvaluations = await trx('competence-evaluations').where({ assessmentId }).orderBy('createdAt', 'asc');
 
   return competenceEvaluations.map((competenceEvaluation) => _toDomain({ competenceEvaluation, assessment: null }));
 };

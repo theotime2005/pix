@@ -1,8 +1,10 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { CampaignCreator } from '../../domain/models/CampaignCreator.js';
 
 async function get(organizationId) {
-  const availableTargetProfileIds = await knex('target-profiles')
+  const trx = DomainTransaction.getConnection();
+  const availableTargetProfileIds = await trx('target-profiles')
     .leftJoin('target-profile-shares', 'targetProfileId', 'target-profiles.id')
     .where({ outdated: false })
     .andWhere((queryBuilder) => {
@@ -10,7 +12,7 @@ async function get(organizationId) {
     })
     .pluck('target-profiles.id');
 
-  const availableFeatures = await knex('features')
+  const availableFeatures = await trx('features')
     .select('key', knex.raw('"organization-features"."organizationId" IS NOT NULL as enabled'))
     .leftJoin('organization-features', function () {
       this.on('features.id', 'organization-features.featureId').andOn(

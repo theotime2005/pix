@@ -96,11 +96,12 @@ const findOnePendingByEmailAndCertificationCenterId = async function ({ email, c
  * @returns {Promise<CertificationCenterInvitation>}
  */
 const create = async function (invitation) {
+  const trx = DomainTransaction.getConnection();
   const [newInvitation] = await knex(CERTIFICATION_CENTER_INVITATIONS)
     .insert(invitation)
     .returning(['id', 'email', 'code', 'certificationCenterId', 'updatedAt', 'role', 'locale']);
 
-  const { name: certificationCenterName } = await knex('certification-centers')
+  const { name: certificationCenterName } = await trx('certification-centers')
     .select('name')
     .where({ id: newInvitation.certificationCenterId })
     .first();
@@ -114,7 +115,8 @@ const create = async function (invitation) {
  * @returns {Promise<CertificationCenterInvitation>}
  */
 const update = async function (certificationCenterInvitation) {
-  const [updatedCertificationCenterInvitation] = await knex('certification-center-invitations')
+  const trx = DomainTransaction.getConnection();
+  const [updatedCertificationCenterInvitation] = await trx('certification-center-invitations')
     .update({
       ...certificationCenterInvitation,
       updatedAt: new Date(),
@@ -122,7 +124,7 @@ const update = async function (certificationCenterInvitation) {
     .where({ id: certificationCenterInvitation.id })
     .returning(['id', 'email', 'code', 'certificationCenterId', 'updatedAt', 'role', 'locale']);
 
-  const { name: certificationCenterName } = await knex('certification-centers')
+  const { name: certificationCenterName } = await trx('certification-centers')
     .select('name')
     .where({ id: updatedCertificationCenterInvitation.certificationCenterId })
     .first();
@@ -136,7 +138,8 @@ const update = async function (certificationCenterInvitation) {
  * @returns {Promise<CertificationCenterInvitation>}
  */
 const markAsCancelled = async function ({ id }) {
-  const [certificationCenterInvitation] = await knex('certification-center-invitations')
+  const trx = DomainTransaction.getConnection();
+  const [certificationCenterInvitation] = await trx('certification-center-invitations')
     .where({ id })
     .update({
       status: CertificationCenterInvitation.StatusType.CANCELLED,

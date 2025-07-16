@@ -1,4 +1,5 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { CampaignParticipationStatuses, CampaignTypes } from '../../../shared/domain/constants.js';
 import { getLatestParticipationSharedForOneLearner } from './helpers/get-latest-participation-shared-for-one-learner.js';
 
@@ -13,13 +14,14 @@ const getParticipationsActivityByDate = async function (campaignId) {
 };
 
 const countParticipationsByMasteryRate = async function ({ campaignId }) {
-  const results = await knex
+  const trx = DomainTransaction.getConnection();
+  const results = await trx
     .select('masteryRate')
     .count('masteryRate')
     .from(
-      knex
+      trx
         .from('campaign-participations as cp')
-        .select(['organizationLearnerId', getLatestParticipationSharedForOneLearner(knex, 'masteryRate', campaignId)])
+        .select(['organizationLearnerId', getLatestParticipationSharedForOneLearner(trx, 'masteryRate', campaignId)])
         .groupBy('organizationLearnerId')
         .where('status', SHARED)
         .where('deletedAt', null)
@@ -46,17 +48,20 @@ async function _getCumulativeParticipationCountsByDay(campaignId, column) {
   return data.map(({ day, count }) => ({ day, count: Number(count) }));
 }
 
-const getAllParticipationsByCampaignId = (campaignId) =>
-  knex
+const getAllParticipationsByCampaignId = (campaignId) => {
+  const trx = DomainTransaction.getConnection();
+  trx
     .select('id', 'masteryRate', 'validatedSkillsCount')
     .from('campaign-participations')
     .where('campaign-participations.campaignId', '=', campaignId)
     .where('campaign-participations.isImproved', '=', false)
     .where('campaign-participations.deletedAt', 'is', null)
     .where('campaign-participations.status', 'SHARED');
+};
 
 const countParticipationsByStatus = async function (campaignId, campaignType) {
-  const row = await knex('campaign-participations')
+  const trx = DomainTransaction.getConnection();
+  const row = await trx('campaign-participations')
     .select([
       knex.raw(`sum(case when status = ? then 1 else 0 end) as shared`, SHARED),
       knex.raw(`sum(case when status = ? then 1 else 0 end) as completed`, TO_SHARE),

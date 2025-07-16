@@ -1,7 +1,9 @@
 import { knex } from '../../../../../datamart/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 
 async function findByTubes({ organizationId }) {
-  return knex('organizations_cover_rates')
+  const trx = DomainTransaction.getConnection();
+  return trx('organizations_cover_rates')
     .select(
       'extraction_date',
       'domain_name as domaine',

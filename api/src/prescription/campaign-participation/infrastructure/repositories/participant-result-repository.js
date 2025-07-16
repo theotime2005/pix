@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 import { knex } from '../../../../../db/knex-database-connection.js';
 import { convertLevelStagesIntoThresholds } from '../../../../evaluation/domain/services/stages/convert-level-stages-into-thresholds-service.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { Assessment } from '../../../../shared/domain/models/index.js';
 import { AssessmentResult } from '../../../../shared/domain/read-models/participant-results/AssessmentResult.js';
@@ -98,7 +99,8 @@ async function _getParticipationResults(userId, campaignId) {
 }
 
 async function _getParticipationAttributes(userId, campaignId) {
-  const participationAttributes = await knex('campaign-participations')
+  const trx = DomainTransaction.getConnection();
+  const participationAttributes = await trx('campaign-participations')
     .select([
       'state',
       'campaignParticipationId',
@@ -158,11 +160,13 @@ async function _findTargetedKnowledgeElements(campaignId, userId, campaignPartic
 }
 
 async function _getAcquiredBadgeIds(userId, campaignParticipationId) {
-  return knex('badge-acquisitions').select('badgeId').where({ userId, campaignParticipationId });
+  const trx = DomainTransaction.getConnection();
+  return trx('badge-acquisitions').select('badgeId').where({ userId, campaignParticipationId });
 }
 
 async function _getTargetProfileResetAllowed(campaignId) {
-  const targetProfile = await knex('target-profiles')
+  const trx = DomainTransaction.getConnection();
+  const targetProfile = await trx('target-profiles')
     .join('campaigns', 'campaigns.targetProfileId', 'target-profiles.id')
     .where('campaigns.id', campaignId)
     .first('areKnowledgeElementsResettable');
@@ -191,7 +195,8 @@ async function _findTargetedCompetences(campaignId, locale) {
 }
 
 function _getCampaignDTO(campaignId) {
-  return knex('campaigns').select('*').where({ 'campaigns.id': campaignId }).first();
+  const trx = DomainTransaction.getConnection();
+  return trx('campaigns').select('*').where({ 'campaigns.id': campaignId }).first();
 }
 
 function _isCampaignMultipleSendings(campaignDTO) {
@@ -207,7 +212,8 @@ function _isCampaignDeleted(campaignDTO) {
 }
 
 async function _isOrganizationLearnerActive(userId, campaignId) {
-  const organizationLearner = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const organizationLearner = await trx('view-active-organization-learners')
     .select('view-active-organization-learners.isDisabled')
     .join('organizations', 'organizations.id', 'view-active-organization-learners.organizationId')
     .join('campaigns', 'campaigns.organizationId', 'organizations.id')
@@ -218,7 +224,8 @@ async function _isOrganizationLearnerActive(userId, campaignId) {
 }
 
 async function getCampaignParticipationStatus({ userId, campaignId }) {
-  const participationStatus = await knex('campaign-participations')
+  const trx = DomainTransaction.getConnection();
+  const participationStatus = await trx('campaign-participations')
     .select('status')
     .where({ campaignId, userId, isImproved: false })
     .first();

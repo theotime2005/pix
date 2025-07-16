@@ -1,9 +1,11 @@
 import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { _ } from '../../../../shared/infrastructure/utils/lodash-utils.js';
 import { AttachableTargetProfile } from '../../domain/models/AttachableTargetProfile.js';
 
 const find = async function ({ searchTerm } = {}) {
-  const targetProfiles = await knex('target-profiles')
+  const transaction = DomainTransaction.getConnection();
+  const targetProfiles = await transaction('target-profiles')
     .select('target-profiles.id', 'target-profiles.name')
     .distinct()
     .leftJoin('badges', 'target-profiles.id', 'badges.targetProfileId')

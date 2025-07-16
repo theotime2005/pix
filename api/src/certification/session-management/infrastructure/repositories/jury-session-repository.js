@@ -113,8 +113,9 @@ const _toJurySessionCountersDomainModel = ({ startedCertifications, certificatio
 };
 
 const assignCertificationOfficer = async function ({ id, assignedCertificationOfficerId }) {
+  const trx = DomainTransaction.getConnection();
   try {
-    const updatedLines = await knex('sessions').where({ id }).update({ assignedCertificationOfficerId });
+    const updatedLines = await trx('sessions').where({ id }).update({ assignedCertificationOfficerId });
     if (updatedLines === 0) {
       throw new NotFoundError(`La session d'id ${id} n'existe pas.`);
     }

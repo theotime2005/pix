@@ -1,4 +1,4 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
+import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { ComplementaryCertificationBadgeForAdmin } from '../../../../shared/domain/models/ComplementaryCertificationBadgeForAdmin.js';
 import { TargetProfileHistoryForAdmin } from '../../../../shared/domain/models/TargetProfileHistoryForAdmin.js';
 import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-utils.js';
@@ -6,7 +6,8 @@ import { PromiseUtils } from '../../../../shared/infrastructure/utils/promise-ut
 const getCurrentTargetProfilesHistoryWithBadgesByComplementaryCertificationId = async function ({
   complementaryCertificationId,
 }) {
-  const currentTargetProfiles = await knex('complementary-certification-badges')
+  const trx = DomainTransaction.getConnection();
+  const currentTargetProfiles = await trx('complementary-certification-badges')
     .select({
       id: 'target-profiles.id',
       name: 'target-profiles.name',
@@ -29,7 +30,9 @@ const getCurrentTargetProfilesHistoryWithBadgesByComplementaryCertificationId = 
 const getDetachedTargetProfilesHistoryByComplementaryCertificationId = async function ({
   complementaryCertificationId,
 }) {
-  const detachedTargetProfiles = await knex('complementary-certification-badges')
+  const trx = DomainTransaction.getConnection();
+
+  const detachedTargetProfiles = await trx('complementary-certification-badges')
     .select({
       id: 'target-profiles.id',
       name: 'target-profiles.name',
@@ -60,7 +63,9 @@ export {
 };
 
 async function _getTargetProfileComplementaryCertificationBadges({ targetProfile }) {
-  const badgesDTO = await knex('badges')
+  const trx = DomainTransaction.getConnection();
+
+  const badgesDTO = await trx('badges')
     .select({
       id: 'badges.id',
       complementaryCertificationBadgeId: 'complementary-certification-badges.id',

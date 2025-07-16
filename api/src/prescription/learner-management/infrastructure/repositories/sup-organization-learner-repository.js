@@ -23,11 +23,13 @@ const ATTRIBUTES_TO_SAVE = [
 ];
 
 const updateStudentNumber = async function (studentId, studentNumber) {
-  await knex('organization-learners').where('id', studentId).update({ studentNumber });
+  const trx = DomainTransaction.getConnection();
+  await trx('organization-learners').where('id', studentId).update({ studentNumber });
 };
 
 const findOneByStudentNumberAndBirthdate = async function ({ organizationId, studentNumber, birthdate }) {
-  const organizationLearner = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const organizationLearner = await trx('view-active-organization-learners')
     .where('organizationId', organizationId)
     .where('birthdate', birthdate)
     .where('isDisabled', false)
@@ -38,7 +40,8 @@ const findOneByStudentNumberAndBirthdate = async function ({ organizationId, stu
 };
 
 const findOneByStudentNumber = async function ({ organizationId, studentNumber }) {
-  const organizationLearner = await knex('view-active-organization-learners')
+  const trx = DomainTransaction.getConnection();
+  const organizationLearner = await trx('view-active-organization-learners')
     .where('organizationId', organizationId)
     .where('isDisabled', false)
     .whereRaw('LOWER(?)=LOWER(??)', [studentNumber, 'studentNumber'])

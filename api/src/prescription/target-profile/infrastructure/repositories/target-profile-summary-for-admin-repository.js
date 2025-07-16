@@ -1,10 +1,10 @@
-import { knex } from '../../../../../db/knex-database-connection.js';
 import { DomainTransaction } from '../../../../shared/domain/DomainTransaction.js';
 import { fetchPage } from '../../../../shared/infrastructure/utils/knex-utils.js';
 import { TargetProfileSummaryForAdmin } from '../../domain/models/TargetProfileSummaryForAdmin.js';
 
 const findPaginatedFiltered = async function ({ filter, page }) {
-  const query = knex('target-profiles')
+  const trx = DomainTransaction.getConnection();
+  const query = trx('target-profiles')
     .select('id', 'internalName', 'outdated', 'category', 'createdAt')
     .orderBy('outdated', 'ASC')
     .orderBy('internalName', 'ASC')
