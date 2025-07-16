@@ -132,6 +132,31 @@ describe('Unit | Application | Sessions | Routes', function () {
     });
   });
 
+  describe('GET /api/admin/sessions/{sessionId}/certification-candidates', function () {
+    describe('when the user is not authorized', function () {
+      it('should return 403', async function () {
+        // given
+        sinon
+          .stub(securityPreHandlers, 'hasAtLeastOneAccessOf')
+          .withArgs([
+            securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
+            securityPreHandlers.checkAdminMemberHasRoleCertif,
+            securityPreHandlers.checkAdminMemberHasRoleSupport,
+            securityPreHandlers.checkAdminMemberHasRoleMetier,
+          ])
+          .returns((request, h) => h.response().code(403).takeover());
+        const httpTestServer = new HttpTestServer();
+        await httpTestServer.register(moduleUnderTest);
+
+        // when
+        const response = await httpTestServer.request('GET', '/api/admin/sessions/3/certification-candidates');
+
+        // then
+        expect(response.statusCode).to.equal(403);
+      });
+    });
+  });
+
   describe('DELETE /api/sessions/{sessionId}/certification-candidates/{certificationCandidateId}', function () {
     it('should return 404 if the user is not authorized on the session', async function () {
       // given

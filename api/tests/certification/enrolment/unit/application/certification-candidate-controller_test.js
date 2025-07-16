@@ -103,6 +103,36 @@ describe('Unit | Controller | certification-candidate-controller', function () {
     });
   });
 
+  describe('#getSessionCandidates', function () {
+    it('should return session candidates', async function () {
+      // given
+      const sessionId = 1;
+      const sessionCandidates = ['sessionCandidates'];
+      const sessionCandidatesJsonAPI = ['sessionCandidatesJsonAPI'];
+      const request = {
+        params: { sessionId },
+      };
+      sinon.stub(usecases, 'getEnrolledCandidatesInSession');
+      usecases.getEnrolledCandidatesInSession
+        .withArgs({
+          sessionId,
+        })
+        .resolves(sessionCandidates);
+      const enrolledCandidateSerializer = {
+        serialize: sinon.stub(),
+      };
+      enrolledCandidateSerializer.serialize.resolves(sessionCandidatesJsonAPI);
+
+      // when
+      const response = await certificationCandidateController.getEnrolledCandidates(request, hFake, {
+        enrolledCandidateSerializer,
+      });
+
+      // then
+      expect(response).to.deep.equal(sessionCandidatesJsonAPI);
+    });
+  });
+
   describe('#updateEnrolledCandidate', function () {
     it('should call the usecase with correct data and return 204 NoContent', async function () {
       // given

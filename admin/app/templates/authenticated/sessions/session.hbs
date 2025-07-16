@@ -28,6 +28,13 @@
     >
       Certifications
     </LinkTo>
+    <LinkTo
+      @route="authenticated.sessions.session.candidates"
+      @model={{@model.id}}
+      aria-label="Liste des inscrits en certif"
+    >
+      Candidats
+    </LinkTo>
   </PixTabs>
   {{outlet}}
 </main>

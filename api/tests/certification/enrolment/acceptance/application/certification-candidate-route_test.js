@@ -171,6 +171,65 @@ describe('Certification | Enrolment | Acceptance | Application | Routes | certif
     });
   });
 
+  describe('GET /api/admin/sessions/{sessionId}/certification-candidates', function () {
+    it('should respond with a 200', async function () {
+      // given
+      const certificationCenterId = databaseBuilder.factory.buildCertificationCenter().id;
+      const certificationCenterUserId = databaseBuilder.factory.buildUser.withRole({
+        id: 1234,
+        firstName: 'Super',
+        lastName: 'Papa',
+        email: 'super.papa@example.net',
+        password: 'Password123',
+        role: ROLES.CERTIF,
+      }).id;
+      databaseBuilder.factory.buildCertificationCenterMembership({
+        userId: certificationCenterUserId,
+        certificationCenterId,
+      });
+      const sessionId = databaseBuilder.factory.buildSession({ certificationCenterId }).id;
+      const candidateUserId = databaseBuilder.factory.buildUser({}).id;
+      const candidateId = databaseBuilder.factory.buildCertificationCandidate({
+        id: 1001,
+        sessionId,
+        userId: candidateUserId,
+        billingMode: CertificationCandidate.BILLING_MODES.PREPAID,
+      }).id;
+      databaseBuilder.factory.buildCoreSubscription({ certificationCandidateId: candidateId });
+      const cleaComplementaryCertification = databaseBuilder.factory.buildComplementaryCertification({
+        id: 10000006,
+        key: ComplementaryCertificationKeys.CLEA,
+        label: 'CléA Numérique',
+      });
+      databaseBuilder.factory.buildComplementaryCertificationHabilitation({
+        certificationCenterId,
+        complementaryCertificationId: cleaComplementaryCertification.id,
+      });
+      databaseBuilder.factory.buildComplementaryCertificationSubscription({
+        certificationCandidateId: candidateId,
+        complementaryCertificationId: cleaComplementaryCertification.id,
+      });
+      await databaseBuilder.commit();
+
+      // when
+      const options = {
+        method: 'GET',
+        url: `/api/admin/sessions/${sessionId}/certification-candidates`,
+        payload: {},
+        headers: generateAuthenticatedUserRequestHeaders({ userId: certificationCenterUserId, source: 'pix-admin' }),
+      };
+
+      // when
+      const response = await server.inject(options);
+
+      // then
+      expect(response.statusCode).to.equal(200);
+      expect(response.payload).to.equal(
+        '{"data":[{"type":"certification-candidates","id":"1001","attributes":{"first-name":"first-name","last-name":"last-name","birthdate":"2000-01-04"},"relationships":{"subscriptions":{"data":[{"type":"subscriptions","id":"1001-CORE"},{"type":"subscriptions","id":"1001-10000006"}]}}}],"included":[{"type":"subscriptions","id":"1001-CORE","attributes":{"complementary-certification-id":null,"type":"CORE"}},{"type":"subscriptions","id":"1001-10000006","attributes":{"complementary-certification-id":10000006,"type":"COMPLEMENTARY"}}]}',
+      );
+    });
+  });
+
   describe('PATCH /api/certification-candidates/{certificationCandidateId}/validate-certification-instructions', function () {
     it('should respond with a 200', async function () {
       // given

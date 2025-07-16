@@ -965,6 +965,22 @@
       }
     },
     "sessions": {
+      "candidates": {
+        "candidate": {
+          "birth-date": "Date de naissance",
+          "birth-date-example": "jj/mm/aaaa",
+          "firstname": "Prénom",
+          "id": "ID",
+          "lastname": "Nom",
+          "selected-subscriptions": "Certification sélectionnée"
+        },
+        "caption": "Candidates",
+        "empty-result": "Aucun résultat",
+        "subscriptions": {
+          "complementary": "Complémentaire",
+          "core": "Certification Pix"
+        }
+      },
       "informations": {
         "actions": {
           "download-certificates": "Télécharger les certificats"

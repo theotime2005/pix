@@ -95,6 +95,7 @@ Router.map(function () {
       this.route('session', { path: '/:session_id' }, function () {
         this.route('informations', { path: '/' });
         this.route('certifications');
+        this.route('candidates');
       });
     });
 

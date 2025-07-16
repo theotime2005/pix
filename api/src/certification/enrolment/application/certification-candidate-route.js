@@ -95,6 +95,35 @@ const register = async function (server) {
     },
     {
       method: 'GET',
+      path: '/api/admin/sessions/{sessionId}/certification-candidates',
+      config: {
+        validate: {
+          params: Joi.object({
+            sessionId: identifiersType.sessionId,
+          }),
+        },
+        pre: [
+          {
+            method: (request, h) =>
+              securityPreHandlers.hasAtLeastOneAccessOf([
+                securityPreHandlers.checkAdminMemberHasRoleSuperAdmin,
+                securityPreHandlers.checkAdminMemberHasRoleCertif,
+                securityPreHandlers.checkAdminMemberHasRoleSupport,
+                securityPreHandlers.checkAdminMemberHasRoleMetier,
+              ])(request, h),
+            assign: 'hasAuthorizationToAccessAdminScope',
+          },
+        ],
+        handler: certificationCandidateController.getSessionCandidates,
+        tags: ['api', 'sessions', 'certification-candidates'],
+        notes: [
+          'Cette route est restreinte aux utilisateurs authentifiés',
+          'Elle retourne les candidats de certification inscrits à la session.',
+        ],
+      },
+    },
+    {
+      method: 'GET',
       path: '/api/certification-candidates/{certificationCandidateId}',
       config: {
         validate: {

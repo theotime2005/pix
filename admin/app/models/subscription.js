@@ -1,0 +1,19 @@
+import Model, { attr } from '@ember-data/model';
+
+export const SUBSCRIPTION_TYPES = Object.freeze({
+  CORE: 'CORE',
+  COMPLEMENTARY: 'COMPLEMENTARY',
+});
+
+export default class SubscriptionModel extends Model {
+  @attr('number') complementaryCertificationId;
+  @attr('string') type;
+
+  get isCore() {
+    return this.type === SUBSCRIPTION_TYPES.CORE;
+  }
+
+  get isComplementary() {
+    return this.type === SUBSCRIPTION_TYPES.COMPLEMENTARY;
+  }
+}

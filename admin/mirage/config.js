@@ -130,6 +130,11 @@ function routes() {
     return new Response(204);
   });
   this.get('/admin/sessions/:id');
+  this.get('/admin/sessions/:id/certification-candidates', function (schema, request) {
+    const sessionId = request.params.id;
+
+    return schema.certificationCandidates.where({ sessionId });
+  });
   this.get('/admin/sessions/:id/jury-certification-summaries', getPaginatedJuryCertificationSummariesBySessionId);
   this.post('/admin/sessions/publish-in-batch', () => {
     return new Response(200);
