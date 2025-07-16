@@ -212,15 +212,15 @@
                       "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": ""
+                        "diagnosis": "<p><br></p>"
                       }
                     },
                     {
                       "id": "3",
                       "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
                       "feedback": {
-                        "state": "",
-                        "diagnosis": ""
+                        "state": "<p><br></p>",
+                        "diagnosis": "<p><br></p>"
                       }
                     }
                   ],
@@ -229,6 +229,76 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "id": "c3e770fb-f410-4b3a-9be6-465e0bba410a",
+      "type": "lesson",
+      "title": "Leçon - 2",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "f4ed67e2-662f-4f88-8730-d6e3669c6f0a",
+            "type": "text",
+            "content": "<p>Une IA générative a été conçue pour <strong>répondre aux demandes des utilisateurs</strong>, pas pour dire la vérité !<br><br></p>"
+          }
+        },
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "52714cef-23e1-49d0-99ed-19880ba569ca",
+                  "type": "text",
+                  "content": "<p>Certaines erreurs dans les réponses des IA génératives viennent des données qu’on leur a transmises pour s’entraîner :</p><ul><li>Les <strong>données d'entraînement </strong>peuvent contenir <strong>des erreurs</strong>. L’IA générative peut reproduire ces erreurs.</li><li>Les données d’entraînement peuvent être <strong>anciennes </strong>et ne <strong>plus être d’actualité</strong>.</li></ul>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "a2f3a3ca-b439-472e-86bb-69af0c01f178",
+                  "type": "text",
+                  "content": "<p>D’autres erreurs sont inventées par l’IA. L’IA générative répond souvent “sans savoir”, par prédiction. Elle génère la réponse qui lui paraît la plus probable. On les appelle ces erreurs des hallucinations.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "7c22a815-14fb-4bba-aa7f-d292f9708aaf",
+                  "type": "text",
+                  "content": "<p>Certaines demandes d’utilisateurs peuvent contenir des erreurs ou être farfelues.</p>"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "d51d8f1e-64cb-40bb-b061-0371c2491945",
+            "type": "text",
+            "content": "<p>🤔 <strong>Bon à savoir</strong> <br>Les IA génératives sont capables d’inventer des choses, à la demande des utilisateurs (écrire un poème, dessiner une vache rose). Dans ce cas, ce ne sont pas des erreurs !</p>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "7702cae5-8666-4e9c-800d-bba765aac882",
+      "type": "lesson",
+      "title": "Transition 3",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "8456e440-7043-4a73-aac3-bd7de3f44dcc",
+            "type": "text",
+            "content": "<p>Les IA génératives font des erreurs. Que font les développeurs d’IA génératives pour empêcher ça ? 😱</p>"
+          }
         }
       ]
     }
