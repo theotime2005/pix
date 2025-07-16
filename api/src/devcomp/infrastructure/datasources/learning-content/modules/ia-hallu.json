@@ -272,24 +272,21 @@
                   "id": "7c22a815-14fb-4bba-aa7f-d292f9708aaf",
                   "type": "text",
                   "content": "<p>Certaines demandes d’utilisateurs peuvent contenir des erreurs ou être farfelues.</p>"
+                },
+                {
+                  "id": "dfbbd712-d034-4c91-819a-4431aec8beb2",
+                  "type": "text",
+                  "content": "<p>🤔<strong> Bon à savoir</strong> <br>Les IA génératives sont capables d’inventer des choses, à la demande des utilisateurs (écrire un poème, dessiner une vache rose). Dans ce cas, ce ne sont pas des erreurs !</p>"
                 }
               ]
             }
           ]
-        },
-        {
-          "type": "element",
-          "element": {
-            "id": "d51d8f1e-64cb-40bb-b061-0371c2491945",
-            "type": "text",
-            "content": "<p>🤔 <strong>Bon à savoir</strong> <br>Les IA génératives sont capables d’inventer des choses, à la demande des utilisateurs (écrire un poème, dessiner une vache rose). Dans ce cas, ce ne sont pas des erreurs !</p>"
-          }
         }
       ]
     },
     {
       "id": "7702cae5-8666-4e9c-800d-bba765aac882",
-      "type": "lesson",
+      "type": "transition",
       "title": "Transition 3",
       "components": [
         {
