@@ -41,4 +41,17 @@ describe('Integration | Tooling | DatabaseBuilder | database-builder', function 
       });
     });
   });
+
+  describe('#beginTransaction', function () {
+    it('should start a transaction', async function () {
+      await databaseBuilder.beginTransaction();
+
+      databaseBuilder.factory.buildCampaign();
+      await databaseBuilder.commit();
+
+      await databaseBuilder.rollbackTransaction();
+      const results = await knex('campaigns');
+      expect(results).lengthOf(0);
+    });
+  });
 });

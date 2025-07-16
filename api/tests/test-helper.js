@@ -28,6 +28,7 @@ import * as tutorialRepository from '../src/devcomp/infrastructure/repositories/
 import * as missionRepository from '../src/school/infrastructure/repositories/mission-repository.js';
 import { config } from '../src/shared/config.js';
 import { ORGANIZATION_FEATURE } from '../src/shared/domain/constants.js';
+import { DomainTransaction } from '../src/shared/domain/DomainTransaction.js';
 import { Membership } from '../src/shared/domain/models/index.js';
 import * as tokenService from '../src/shared/domain/services/token-service.js';
 import { featureToggles } from '../src/shared/infrastructure/feature-toggles/index.js';
@@ -83,6 +84,10 @@ const EMPTY_BLANK_AND_NULL = ['', '\t \n', null];
 const { ROLES } = PIX_ADMIN;
 
 /* eslint-disable mocha/no-top-level-hooks */
+beforeEach(async function () {
+  await databaseBuilder.beginTransaction();
+  sinon.stub(DomainTransaction, 'getConnection').returns(databaseBuilder.transaction);
+});
 
 afterEach(async function () {
   restore();
@@ -99,7 +104,8 @@ afterEach(async function () {
   missionRepository.clearCache();
   await featureToggles.resetDefaults();
   await datamartBuilder.clean();
-  return databaseBuilder.clean();
+  // return databaseBuilder.clean();
+  await databaseBuilder.rollbackTransaction();
 });
 
 after(async function () {

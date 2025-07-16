@@ -51,6 +51,14 @@ export class DatabaseBuilder {
     return databaseBuilder;
   }
 
+  async beginTransaction() {
+    this.transaction = await this.knex.transaction();
+  }
+
+  async rollbackTransaction() {
+    return this.transaction.rollback();
+  }
+
   async commit() {
     await this.#init();
 
@@ -59,14 +67,14 @@ export class DatabaseBuilder {
     );
 
     try {
-      await this.knex.transaction(async (trx) => {
-        for (const [tableName, objectsToInsert] of orderedObjectsToInsert) {
-          for (const chunk of _.chunk(objectsToInsert, CHUNK_SIZE)) {
-            await trx.insert(chunk).into(tableName);
-          }
-          this.#dirtyTables.add(tableName);
+      // await this.knex.transaction(async (trx) => {
+      for (const [tableName, objectsToInsert] of orderedObjectsToInsert) {
+        for (const chunk of _.chunk(objectsToInsert, CHUNK_SIZE)) {
+          await this.transaction.insert(chunk).into(tableName);
         }
-      });
+        this.#dirtyTables.add(tableName);
+      }
+      // });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(`Erreur dans databaseBuilder.commit() : ${err}`);
