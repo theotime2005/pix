@@ -1,0 +1,236 @@
+{
+  "id": "c8607621-09ab-4601-be7d-68ed9c914c30",
+  "slug": "tmp-ia-hallu",
+  "title": "Elle hallucinent, ces IA ! ",
+  "isBeta": true,
+  "details": {
+    "image": "https://images.pix.fr/modulix/placeholder-details.svg",
+    "description": "<p>Les logiciels d'IA génératives sont de plus en plus utilisées au quotidien. Mais leurs réponses sont-elles toujours justes ? Et si il y a des erreurs à quoi sont-elles dues ?&nbsp;<br>C'est ce que vous allez découvrir dans ce module. <br><br></p>",
+    "duration": 10,
+    "level": "Débutant",
+    "objectives": [
+      "<p>Savoir que les IA génératives peuvent faire des erreurs</p>",
+      "<p>Connaître les causes principales des erreurs des IA génératives</p>",
+      "<p>Réagir face aux erreurs des IA génératives</p>"
+    ],
+    "tabletSupport": "inconvenient"
+  },
+  "grains": [
+    {
+      "id": "545e7548-7ab7-4cfa-924e-2c683ee69c2a",
+      "type": "discovery",
+      "title": "Accroche",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "3253ef34-0f94-4d65-aa02-a710b0969020",
+            "type": "text",
+            "content": "<p>Nathan a utilisé un logiciel d’IA générative pour préparer l’un de ses devoirs. Il n’est pas content du résultat. Voici sa discussion avec son amie, Asma :</p>"
+          }
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "35c7d03b-8c62-40e6-a31d-5111e8dcc46a",
+            "type": "custom",
+            "tagName": "message-conversation",
+            "props": {
+              "title": "Nathan et Asma",
+              "messages": [
+                {
+                  "userName": "Nathan",
+                  "direction": "outgoing",
+                  "content": "Olala je suis dégoûté… 😩"
+                },
+                {
+                  "userName": "Asma",
+                  "direction": "incoming",
+                  "content": "Bah pourquoi ? Qu’est ce qui t’arrive ? 😟"
+                },
+                {
+                  "userName": "Nathan",
+                  "direction": "outgoing",
+                  "content": "J’ai perdu des points en Histoire à cause de ChatGPT ! "
+                },
+                {
+                  "userName": "Asma",
+                  "direction": "incoming",
+                  "content": "À cause de ChatGPT ? 🙁"
+                },
+                {
+                  "userName": "Nathan",
+                  "direction": "outgoing",
+                  "content": " Oui ! J’avais un devoir maison à faire, j’étais pas sûr d’une date. Alors j’ai demandé à ChatGPT, j’ai mis la réponse qu’il m’a donné. Mais j’ai eu faux ! 😤"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "275886f3-8af7-48b1-bf0d-01a5dd8c1619",
+      "type": "transition",
+      "title": "Transition - 1",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "659f8b1c-5e64-44f3-ae18-0fc89e093fa1",
+            "type": "text",
+            "content": "<p>Nathan n’est pas le premier à recevoir une réponse fausse de la part d’une IA générative… Les IA génératives font-elles vraiment des erreurs ? 🤨</p>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "1c338346-67e9-48b3-a9c1-f704ba38389b",
+      "type": "discovery",
+      "title": "Activité découverte - 1",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "3147aedb-8fc2-4510-aad8-fa7f35e77dd7",
+            "type": "text",
+            "content": "<p>Ci-dessous, pour chacune des réponses fournies par un logiciel d'IA génératives, indiquer votre niveau de confiance.</p>"
+          }
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "44ab1d9c-5cad-4bec-81ea-416dfd913635",
+            "type": "text",
+            "content": "<iframe title=\"dnd\" src=\"https://1024pix.github.io/atelier-contenus/LSI/ia-hallu-carousel.html \" height=\"600\"></iframe>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "be1e7402-03dc-41d4-b688-f14631793661",
+      "type": "lesson",
+      "title": "Leçon - 1 ",
+      "components": [
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "0e9f94cd-7236-4f68-a50e-b079cc0f9c9d",
+                  "type": "text",
+                  "content": "<p>Une IA générative peut faire des erreurs. Elle peut <strong>générer des affirmations fausses ou erronées et les présenter comme des faits</strong>.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "f51cf525-1be0-4a0b-8a88-13e7d5af0f9d",
+                  "type": "text",
+                  "content": "<p>L’IA générative peut, par exemple, donner une mauvaise date, inventer des événements, faire une erreur mathématique ou indiquer une information scientifique fausse.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "03c80544-03eb-4d77-a592-f91c68ecb91a",
+                  "type": "text",
+                  "content": "<p><strong>Les réponses des IA génératives</strong> sont souvent bien écrites et vraisemblables, présentées avec assurance : elles<strong> inspirent confiance</strong>.&nbsp; C’est pourquoi il n'est<strong> pas facile de repérer les erreurs</strong> des IA génératives. 🔎</p>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9533c53b-ac7a-41f5-819b-b36890024108",
+      "type": "transition",
+      "title": "Transition - 2",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "dfbdf13e-7d02-464b-a8b7-29fa03a35c51",
+            "type": "text",
+            "content": "<p>Vous savez à présent que les IA génératives font des erreurs. Mais pourquoi ces erreurs existent ?</p>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "eaa1a776-2d39-460c-8642-5a43ab6093e1",
+      "type": "discovery",
+      "title": "Découverte - 2",
+      "components": [
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "8a46c2ba-91ac-4e36-9007-094a7ef6a871",
+                  "type": "text",
+                  "content": "<p>Irène sait que l’équipe de France masculine de foot a gagné deux fois la coupe du monde. Mais elle a un doute sur les années de victoire.<br>Voici sa conversation avec un logiciel d’IA générative :</p>"
+                },
+                {
+                  "id": "f4df02e1-bebf-4557-9226-18e38cfbb6b2",
+                  "type": "image",
+                  "url": "https://assets.pix.org/draft/modules/hallucinations/CaptureFoot.png",
+                  "alt": "Capture d'écran d'une conversation avec un logiciel d'IA générative décrit dans l'alternative textuelle",
+                  "alternativeText": "",
+                  "legend": "",
+                  "licence": ""
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "21e1f6a8-8ea2-4b0c-8a6c-e68a1f875920",
+                  "type": "text",
+                  "content": "<p>Ici le logiciel d’IA générative a fait une erreur. L’équipe de France masculine de foot a remporté la Coupe du monde deux fois. Une fois en 1998 et une fois en 2018.</p>"
+                },
+                {
+                  "id": "ceed2a7c-76f9-44f1-be34-a2285cd1aa4d",
+                  "type": "qcu",
+                  "instruction": "<p>A votre avis, qu’est ce qui peut expliquer l’erreur du logiciel d’IA générative ?</p>",
+                  "proposals": [
+                    {
+                      "id": "1",
+                      "content": "<p>L'ordinateur d’Irène n'est pas assez puissant, il a provoqué un bug.</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p><br></p>"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": ""
+                      }
+                    },
+                    {
+                      "id": "3",
+                      "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": ""
+                      }
+                    }
+                  ],
+                  "solution": "2"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
