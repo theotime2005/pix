@@ -177,6 +177,16 @@ export default class EvaluationResultsHero extends Component {
     });
   }
 
+  @action
+  handleSignUpClick() {
+    this.metrics.trackEvent({
+      event: 'custom-event',
+      'pix-event-category': 'Inscription post parcours anonyme',
+      'pix-event-action': 'Inscription en fin de parcours',
+      'pix-event-name': "Clic sur le bouton S'inscrire sur Pix",
+    });
+  }
+
   <template>
     <div class="evaluation-results-hero">
       <div class="evaluation-results-hero__results">
@@ -254,7 +264,7 @@ export default class EvaluationResultsHero extends Component {
             {{#if @campaignParticipationResult.isShared}}
               {{#if this.isUserAnonymousAndUpgradeToRealUserEnabled}}
                 <p>{{t "pages.sign-up.save-progress-message"}}</p>
-                <PixButtonLink @route="inscription" @size="large">
+                <PixButtonLink @route="inscription" @size="large" onclick={{this.handleSignUpClick}}>
                   {{t "pages.sign-up.actions.sign-up-on-pix"}}
                 </PixButtonLink>
               {{/if}}
