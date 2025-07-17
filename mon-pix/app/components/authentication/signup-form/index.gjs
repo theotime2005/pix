@@ -92,6 +92,7 @@ export default class SignupForm extends Component {
       await user.save({ adapterOptions: { redirectionUrl: this.session.redirectionUrl } });
       if (this.featureToggles.featureToggles?.upgradeToRealUserEnabled && wasAnonymousBeforeSaving) {
         this.session.set('skipRedirectAfterSessionInvalidation', true);
+        this.sendMetrics();
         await this.session.invalidate();
       }
       await this.session.authenticateUser(user.email, user.password);
@@ -104,6 +105,15 @@ export default class SignupForm extends Component {
     } finally {
       this.isLoading = false;
     }
+  }
+
+  sendMetrics() {
+    this.metrics.trackEvent({
+      event: 'custom-event',
+      'pix-event-category': 'Inscription post parcours anonyme',
+      'pix-event-action': 'Inscription utilisateur anonyme',
+      'pix-event-name': 'Clic sur le bouton Commencer sans compte',
+    });
   }
 
   _manageApiErrors(error) {
