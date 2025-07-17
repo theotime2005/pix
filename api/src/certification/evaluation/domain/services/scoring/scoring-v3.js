@@ -102,11 +102,6 @@ export const handleV3CertificationScoring = withTransaction(
       juryId: event?.juryId,
     });
 
-    // isCancelled will be removed
-    if (_hasV3CertificationLacksOfAnswersForTechnicalReason({ allAnswers: candidateAnswers, certificationCourse })) {
-      certificationCourse.cancel();
-    }
-
     const certificationAssessmentHistory = CertificationAssessmentHistory.fromChallengesAndAnswers({
       algorithm,
       challenges: challengeCalibrationsWithoutLiveAlerts,

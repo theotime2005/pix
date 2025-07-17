@@ -104,7 +104,6 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
             const certificationCourse = domainBuilder.buildCertificationCourse({
               id: certificationCourseId,
               createdAt: certificationCourseStartDate,
-              isCancelled: false,
               completedAt: null,
             });
 
@@ -140,7 +139,6 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
               const certificationCourse = domainBuilder.buildCertificationCourse({
                 id: certificationCourseId,
                 createdAt: certificationCourseStartDate,
-                isCancelled: false,
                 completedAt: null,
                 abortReason,
               });
@@ -177,7 +175,6 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV3Certifi
               const certificationCourse = domainBuilder.buildCertificationCourse({
                 id: certificationCourseId,
                 createdAt: certificationCourseStartDate,
-                isCancelled: false,
                 completedAt: null,
                 abortReason,
               });

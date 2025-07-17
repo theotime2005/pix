@@ -66,7 +66,6 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v3-certificatio
 
   describe('when handling a v3 certification', function () {
     let assessmentResultRepository,
-      certificationCourseRepository,
       certificationAssessmentRepository,
       complementaryCertificationScoringCriteriaRepository,
       evaluationSessionRepository,
@@ -76,7 +75,6 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v3-certificatio
 
     beforeEach(function () {
       certificationAssessmentRepository = { getByCertificationCourseId: sinon.stub() };
-      certificationCourseRepository = { update: sinon.stub() };
       const session = domainBuilder.certification.evaluation.buildResultsSession.finalized();
       evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(session) };
       services = { handleV3CertificationScoring: sinon.stub(), scoreDoubleCertificationV3: sinon.stub() };
@@ -84,7 +82,6 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v3-certificatio
       dependencies = {
         assessmentResultRepository,
         certificationAssessmentRepository,
-        certificationCourseRepository,
         complementaryCertificationScoringCriteriaRepository,
         evaluationSessionRepository,
         scoringCertificationService,
@@ -120,48 +117,6 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v3-certificatio
           });
 
           // then
-          expect(services.handleV3CertificationScoring).to.have.been.calledOnce;
-        });
-      });
-
-      describe('when the certification was not finished due to technical difficulties', function () {
-        it('should save the score with a rejected status and cancel the certification course', async function () {
-          // given
-          const certificationAssessment = domainBuilder.buildCertificationAssessment({
-            version: AlgorithmEngineVersion.V3,
-          });
-
-          const abortedCertificationCourse = domainBuilder.buildCertificationCourse({
-            abortReason: ABORT_REASONS.TECHNICAL,
-            isCancelled: true,
-            completedAt: null,
-          });
-          const { certificationCourseId } = certificationAssessment;
-
-          certificationAssessmentRepository.getByCertificationCourseId
-            .withArgs({ certificationCourseId })
-            .resolves(certificationAssessment);
-          services.handleV3CertificationScoring.resolves(abortedCertificationCourse);
-
-          const event = new CertificationJuryDone({
-            certificationCourseId,
-          });
-
-          // when
-          await rescoreV3Certification({
-            ...dependencies,
-            event,
-          });
-
-          // then
-          const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-            abortReason: ABORT_REASONS.TECHNICAL,
-            isCancelled: true,
-            completedAt: null,
-          });
-          expect(certificationCourseRepository.update).to.have.been.calledOnceWithExactly({
-            certificationCourse: expectedCertificationCourse,
-          });
           expect(services.handleV3CertificationScoring).to.have.been.calledOnce;
         });
       });

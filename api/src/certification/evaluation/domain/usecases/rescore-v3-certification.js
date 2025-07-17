@@ -1,7 +1,6 @@
 /**
  * @typedef {import('./index.js').CertificationAssessmentRepository} CertificationAssessmentRepository
  * @typedef {import('./index.js').ScoringV2Service} ScoringV2Service
- * @typedef {import('./index.js').CertificationCourseRepository} CertificationCourseRepository
  * @typedef {import('./index.js').EvaluationSessionRepository} EvaluationSessionRepository
  * @typedef {import('./index.js').Services} Services
  */
@@ -29,7 +28,6 @@ export const rescoreV3Certification = withTransaction(
   /**
    * @param {Object} params
    * @param {CertificationAssessmentRepository} params.certificationAssessmentRepository
-   * @param {CertificationCourseRepository} params.certificationCourseRepository
    * @param {EvaluationSessionRepository} params.evaluationSessionRepository
    * @param {Services} services
    *
@@ -38,13 +36,7 @@ export const rescoreV3Certification = withTransaction(
    * @throws {NotFinalizedSessionError}
    * @throws {SessionAlreadyPublishedError}
    */
-  async ({
-    event,
-    certificationAssessmentRepository,
-    certificationCourseRepository,
-    evaluationSessionRepository,
-    services,
-  }) => {
+  async ({ event, certificationAssessmentRepository, evaluationSessionRepository, services }) => {
     checkEventTypes(event, eventTypes);
 
     const certificationCourseId = event.certificationCourseId;
@@ -63,7 +55,6 @@ export const rescoreV3Certification = withTransaction(
       certificationAssessment,
       event,
       locale: event.locale,
-      certificationCourseRepository,
       services,
     });
   },
@@ -92,26 +83,14 @@ const _verifySessionIsPublishable = async ({ certificationCourseId, evaluationSe
 
 /**
  * @param {Object} params
- * @param {CertificationCourseRepository} params.certificationCourseRepository
  */
-async function _handleV3CertificationScoring({
-  certificationAssessment,
-  event,
-  locale,
-  certificationCourseRepository,
-  services,
-}) {
+async function _handleV3CertificationScoring({ certificationAssessment, event, locale, services }) {
   const certificationCourse = await services.handleV3CertificationScoring({
     event,
     certificationAssessment,
     locale,
     dependencies: { findByCertificationCourseIdAndAssessmentId: services.findByCertificationCourseIdAndAssessmentId },
   });
-
-  // isCancelled will be removed
-  if (certificationCourse.isCancelled()) {
-    await certificationCourseRepository.update({ certificationCourse });
-  }
 
   return services.scoreDoubleCertificationV3({ certificationCourseId: certificationCourse.getId() });
 }
