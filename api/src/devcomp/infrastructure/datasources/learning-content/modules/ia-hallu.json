@@ -377,7 +377,7 @@
           "element": {
             "id": "ecffdbbe-78c7-4da7-9b7d-2426eb9daf3c",
             "type": "text",
-            "content": "<p>Alors que Nathan ne veut plus du tout utiliser l'IA pour ses devoirs, Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br><br>Pour la préparation d'un exposé, Asma interroge un logiciel d'IA générative sur le sujet de son exposé. Elle obtient une réponse que la fait douter.</p>"
+            "content": "<p>Depuis sa dernière utilisation, Nathan n'utilise plus l'IA générative pour ses devoirs. Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br>Pour la préparation d'un exposé, elle interroge un logiciel d'IA générative.</p>"
           }
         },
         {
@@ -551,7 +551,7 @@
                 {
                   "id": "eba1acf6-d04c-4d74-85a0-05b4a9dc488f",
                   "type": "text",
-                  "content": "<p>💬 <strong>Poursuivre la discussion</strong>. Si vous détectez une erreur dans la réponse d’une IA, vous pouvez lui signaler et lui demander de se corriger.</p>"
+                  "content": "<p>💬 <strong>Poursuivre la discussion</strong>. Si vous détectez une erreur dans la réponse d’une IA générative, vous pouvez lui signaler et lui demander de se corriger.</p>"
                 }
               ]
             }
