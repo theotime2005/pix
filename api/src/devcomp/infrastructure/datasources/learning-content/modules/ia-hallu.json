@@ -220,7 +220,7 @@
                       "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Et non, pas de partie pris du logiciel d'IA générative pour une équipe plutôt qu'une autre. <br>Par contre, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
+                        "diagnosis": "<p>Et non, le logiciel d'IA générative n'a pas de préférence pour une équipe plutôt qu'une autre. <br>Par contre, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
                       }
                     }
                   ],
