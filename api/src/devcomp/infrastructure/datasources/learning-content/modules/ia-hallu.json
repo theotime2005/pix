@@ -573,6 +573,131 @@
           }
         }
       ]
+    },
+    {
+      "id": "32646287-4172-4919-b6d5-c1813adb13e3",
+      "type": "activity",
+      "title": "Activité d'application - 1",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "0310e535-bf5e-497c-9015-84f397f83f97",
+            "type": "text",
+            "content": "<p>à venir&nbsp;:</p><p>Divers exemple d’erreurs à associer avec différentes causes&nbsp;: Hallucination, Contenu obsolète ou erroné, Erreur de compréhension de la demande...</p><ul><li>un carousel</li><li>une succession de QROCM</li><br></ul>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "a5db0e26-49fc-457c-943a-cc24d3aa1551",
+      "type": "activity",
+      "title": "Activité d'application - 2 ",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "1700c207-060a-416d-9f0d-033518299509",
+            "type": "qab",
+            "instruction": "<p>Pour chacune des affirmations suivantes, indiquez si elles sont vraies ou fausses.</p>",
+            "cards": [
+              {
+                "id": "59dcf865-08c0-4110-90bf-99c3acff78b7",
+                "text": "Un logiciel d’IA générative peut faire des erreurs.",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "vrai",
+                "proposalB": "faux",
+                "solution": "A"
+              },
+              {
+                "id": "1e2967ec-943a-4687-b2c7-a6056004452c",
+                "text": "Si un logiciel d’IA générative fait une erreur, il suffit de continuer la conversation pour qu’elle se corrige automatiquement.",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "vrai",
+                "proposalB": "faux",
+                "solution": "B"
+              },
+              {
+                "id": "eeea3baf-f5fb-4ed1-8831-52a2f1f0323f",
+                "text": "Quand un logiciel d’IA générative de texte est sûr de sa réponse, il le précise dans sa réponse.",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "vrai",
+                "proposalB": "faux",
+                "solution": "B"
+              },
+              {
+                "id": "72527d55-9757-4b17-b2b3-c47e27873893",
+                "text": "Si un logiciel d’IA générative affirme quelque chose, il vaut mieux le vérifier avec d’autres sources.",
+                "image": {
+                  "url": "",
+                  "altText": ""
+                },
+                "proposalA": "vrai",
+                "proposalB": "faux",
+                "solution": "A"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "76a59954-f4c5-49af-8236-2424e33b67ea",
+      "type": "activity",
+      "title": "Transfert",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "ffd4ab68-15fb-497d-bf67-9820d17feee3",
+            "type": "qcu-declarative",
+            "instruction": "<p>Et vous, avez-vous déjà rencontré une erreur ou une hallucination de l’IA ?</p>",
+            "proposals": [
+              {
+                "id": "1",
+                "content": "<p>oui</p>",
+                "feedback": {
+                  "state": "",
+                  "diagnosis": "<p>à rédiger</p>"
+                }
+              },
+              {
+                "id": "2",
+                "content": "<p>non</p>",
+                "feedback": {
+                  "state": "",
+                  "diagnosis": "<p>à rédiger</p>"
+                }
+              },
+              {
+                "id": "3",
+                "content": "<p>Je ne sais pas.</p>",
+                "feedback": {
+                  "state": "",
+                  "diagnosis": "<p>à rédiger</p>"
+                }
+              },
+              {
+                "id": "4",
+                "content": "<p>Pas concerné.</p>",
+                "feedback": {
+                  "state": "",
+                  "diagnosis": "<p>à rédiger</p>"
+                }
+              }
+            ]
+          }
+        }
+      ]
     }
   ]
 }
