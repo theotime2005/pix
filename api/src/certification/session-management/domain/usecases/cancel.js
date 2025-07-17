@@ -40,8 +40,4 @@ export const cancel = async function ({
   if (AlgorithmEngineVersion.isV2(certificationCourse.getVersion())) {
     await certificationRescoringRepository.rescoreV2Certification({ event });
   }
-
-  // Note: update after event to ensure we doing it well, even when rescoring. Needeed this only for v2 certification
-  certificationCourse.cancel();
-  await certificationCourseRepository.update({ certificationCourse });
 };
