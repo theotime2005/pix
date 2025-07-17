@@ -24,18 +24,15 @@ describe('Certification | Session-management | Integration | Infrastructure | Re
       expect(statuses).to.have.deep.members([
         {
           certificationCourseId: 1,
-          isCancelled: false,
           pixCertificationStatus: AssessmentResult.status.VALIDATED,
         },
         {
           certificationCourseId: 3,
-          isCancelled: false,
           pixCertificationStatus: AssessmentResult.status.REJECTED,
         },
         {
           certificationCourseId: 4,
-          isCancelled: true,
-          pixCertificationStatus: null,
+          pixCertificationStatus: AssessmentResult.status.CANCELLED,
         },
       ]);
     });
@@ -148,11 +145,11 @@ function _buildRejectedCertification({ id, sessionId, isPublished }) {
 }
 
 function _buildCancelledCertification({ id, sessionId, isPublished }) {
-  _buildCertification({ id, sessionId, isPublished, isCancelled: true, status: null });
+  _buildCertification({ id, sessionId, isPublished, status: status.CANCELLED });
 }
 
-function _buildCertification({ id, sessionId, status, isPublished, isCancelled = false }) {
-  databaseBuilder.factory.buildCertificationCourse({ id, sessionId, isPublished, isCancelled });
+function _buildCertification({ id, sessionId, status, isPublished }) {
+  databaseBuilder.factory.buildCertificationCourse({ id, sessionId, isPublished });
   databaseBuilder.factory.buildAssessment({ id, certificationCourseId: id });
   if (status) {
     // not the latest

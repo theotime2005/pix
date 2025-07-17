@@ -9,7 +9,7 @@ import {
   manageEmails,
   publishSession,
 } from '../../../../../../src/certification/session-management/domain/services/session-publication-service.js';
-import { AssessmentResult } from '../../../../../../src/shared/domain/models/AssessmentResult.js';
+import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
 import { EmailingAttempt } from '../../../../../../src/shared/domain/models/index.js';
 import { getI18n } from '../../../../../../src/shared/infrastructure/i18n/i18n.js';
 import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-helper.js';
@@ -153,133 +153,58 @@ describe('Certification | Session Management | Unit | Domain | Services | sessio
       });
 
       context('when some certifications are in error', function () {
-        context('when the certification is not cancelled', function () {
-          it('should throw a CertificationCourseNotPublishableError', async function () {
-            // given
-            const session = domainBuilder.certification.sessionManagement.buildSession({
-              id: 'sessionId',
-              publishedAt: null,
-            });
-            const sharedSessionRepository = { getWithCertificationCandidates: sinon.stub() };
-            sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
-            certificationRepository.getStatusesBySessionId
-              .withArgs('sessionId')
-              .resolves([{ pixCertificationStatus: AssessmentResult.status.ERROR }]);
-
-            // when
-            const error = await catchErr(publishSession)({
-              sessionId: 'sessionId',
-              publishedAt: now,
-              certificationRepository,
-              finalizedSessionRepository: undefined,
-              sessionRepository,
-              sharedSessionRepository,
-            });
-
-            // then
-            expect(error).to.be.instanceOf(CertificationCourseNotPublishableError);
+        it('should throw a CertificationCourseNotPublishableError', async function () {
+          // given
+          const session = domainBuilder.certification.sessionManagement.buildSession({
+            id: 'sessionId',
+            publishedAt: null,
           });
-        });
+          const sharedSessionRepository = { getWithCertificationCandidates: sinon.stub() };
+          sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
+          certificationRepository.getStatusesBySessionId
+            .withArgs('sessionId')
+            .resolves([{ pixCertificationStatus: AssessmentResult.status.ERROR }]);
 
-        context('when the certification is cancelled', function () {
-          // DEPRECATED : will be remove when isCancelled will be remove
-          it('should not throw', async function () {
-            // given
-            const session = domainBuilder.certification.sessionManagement.buildSession({
-              id: 'sessionId',
-              publishedAt: null,
-            });
-            const sessionRepository = { updatePublishedAt: sinon.stub() };
-            const sharedSessionRepository = {
-              getWithCertificationCandidates: sinon.stub(),
-            };
-            const finalizedSessionRepository = {
-              get: sinon.stub(),
-              save: sinon.stub(),
-            };
-            sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
-            certificationRepository.getStatusesBySessionId
-              .withArgs('sessionId')
-              .resolves([{ pixCertificationStatus: AssessmentResult.status.ERROR, isCancelled: true }]);
-            finalizedSessionRepository.get.resolves(domainBuilder.buildFinalizedSession());
-
-            // when/then
-            expect(
-              await publishSession({
-                sessionId: 'sessionId',
-                publishedAt: now,
-                certificationRepository,
-                finalizedSessionRepository,
-                sessionRepository,
-                sharedSessionRepository,
-              }),
-            ).not.to.be.undefined;
+          // when
+          const error = await catchErr(publishSession)({
+            sessionId: 'sessionId',
+            publishedAt: now,
+            certificationRepository,
+            finalizedSessionRepository: undefined,
+            sessionRepository,
+            sharedSessionRepository,
           });
+
+          // then
+          expect(error).to.be.instanceOf(CertificationCourseNotPublishableError);
         });
       });
 
       context('when some certification are still started', function () {
-        context('when the certification is not cancelled', function () {
-          it('should throw a CertificationCourseNotPublishableError without publishing any certification nor setting pixCertificationStatus', async function () {
-            // given
-            const session = domainBuilder.certification.sessionManagement.buildSession({
-              id: 'sessionId',
-              publishedAt: null,
-            });
-            const sharedSessionRepository = { getWithCertificationCandidates: sinon.stub() };
-            sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
-            certificationRepository.getStatusesBySessionId
-              .withArgs('sessionId')
-              .resolves([{ pixCertificationStatus: null }]);
-
-            // when
-            const error = await catchErr(publishSession)({
-              sessionId: 'sessionId',
-              publishedAt: now,
-              certificationRepository,
-              finalizedSessionRepository: undefined,
-              sessionRepository,
-              sharedSessionRepository,
-            });
-
-            // then
-            expect(error).to.be.instanceOf(CertificationCourseNotPublishableError);
+        it('should throw a CertificationCourseNotPublishableError without publishing any certification nor setting pixCertificationStatus', async function () {
+          // given
+          const session = domainBuilder.certification.sessionManagement.buildSession({
+            id: 'sessionId',
+            publishedAt: null,
           });
-        });
+          const sharedSessionRepository = { getWithCertificationCandidates: sinon.stub() };
+          sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
+          certificationRepository.getStatusesBySessionId
+            .withArgs('sessionId')
+            .resolves([{ pixCertificationStatus: null }]);
 
-        context('when the certification is cancelled', function () {
-          // DEPRECATED : will be remove when isCancelled will be remove
-          it('should not throw', async function () {
-            // given
-            const session = domainBuilder.certification.sessionManagement.buildSession({
-              id: 'sessionId',
-              publishedAt: null,
-            });
-            const sharedSessionRepository = { getWithCertificationCandidates: sinon.stub() };
-            const sessionRepository = { updatePublishedAt: sinon.stub() };
-            sharedSessionRepository.getWithCertificationCandidates.withArgs({ id: 'sessionId' }).resolves(session);
-            certificationRepository.getStatusesBySessionId
-              .withArgs('sessionId')
-              .resolves([{ pixCertificationStatus: null, isCancelled: true }]);
-            sessionRepository.updatePublishedAt.resolves();
-            finalizedSessionRepository.get.resolves(domainBuilder.buildFinalizedSession());
-
-            // when/then
-            expect(async () => {
-              await publishSession({
-                sessionId: 'sessionId',
-                publishedAt: now,
-                certificationRepository,
-                finalizedSessionRepository,
-                sessionRepository,
-                sharedSessionRepository,
-              });
-
-              expect(certificationRepository.publishCertificationCourses).to.have.been.calledOnceWithExactly([
-                { pixCertificationStatus: null, isCancelled: true },
-              ]);
-            }).to.not.throw();
+          // when
+          const error = await catchErr(publishSession)({
+            sessionId: 'sessionId',
+            publishedAt: now,
+            certificationRepository,
+            finalizedSessionRepository: undefined,
+            sessionRepository,
+            sharedSessionRepository,
           });
+
+          // then
+          expect(error).to.be.instanceOf(CertificationCourseNotPublishableError);
         });
       });
     });

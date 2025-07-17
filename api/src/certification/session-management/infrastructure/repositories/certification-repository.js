@@ -6,8 +6,6 @@ const getStatusesBySessionId = async function (sessionId) {
   return knexConn('certification-courses')
     .select({
       certificationCourseId: 'certification-courses.id',
-      // isCancelled will be removed
-      isCancelled: 'certification-courses.isCancelled',
       pixCertificationStatus: 'assessment-results.status',
     })
     .where('certification-courses.sessionId', sessionId)

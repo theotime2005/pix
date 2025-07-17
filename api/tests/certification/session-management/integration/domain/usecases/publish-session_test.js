@@ -34,7 +34,6 @@ describe('Certification | Session Management | Integration | Domain | UseCase | 
 
       const certificationCourse = databaseBuilder.factory.buildCertificationCourse({
         sessionId: session.id,
-        isCancelled: false,
       });
 
       const assessment = databaseBuilder.factory.buildAssessment({
