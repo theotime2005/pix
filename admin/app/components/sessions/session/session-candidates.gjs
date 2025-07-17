@@ -1,5 +1,6 @@
 import PixTable from '@1024pix/pix-ui/components/pix-table';
 import PixTableColumn from '@1024pix/pix-ui/components/pix-table-column';
+import { LinkTo } from '@ember/routing';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import dayjsFormat from 'ember-dayjs/helpers/dayjs-format';
@@ -39,7 +40,9 @@ export default class SessionCandidates extends Component {
               {{t "pages.sessions.candidates.candidate.id"}}
             </:header>
             <:cell>
-              {{candidate.id}}
+              <LinkTo @route="authenticated.candidates.timeline" @model={{candidate.id}}>
+                {{candidate.id}}
+              </LinkTo>
             </:cell>
           </PixTableColumn>
           <PixTableColumn @context={{context}} class="table__column--small">

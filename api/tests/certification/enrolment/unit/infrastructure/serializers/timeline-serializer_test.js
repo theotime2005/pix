@@ -20,6 +20,7 @@ describe('Certification | Enrolment | Unit | Serializer | timeline-serializer', 
       // then
       expect(json).to.deep.equal({
         data: {
+          id: '2',
           type: 'certification-candidate-timelines',
           attributes: {
             events: [

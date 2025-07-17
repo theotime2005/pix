@@ -750,6 +750,22 @@
         }
       }
     },
+    "candidate": {
+      "code": "Evenement",
+      "events": {
+        "CandidateCreatedEvent": "Candidat inscrit en session",
+        "CandidateEndScreenEvent": "Ecran de fin de certification",
+        "CandidateReconciledEvent": "Candidat réconcilié à un compte utilisateur",
+        "CertificationEndedEvent": "Fin de la certification",
+        "CertificationNotCertifiableEvent": "Candidat non certifiable (Pix Coeur)",
+        "CertificationStartedEvent": "Entrée en certification",
+        "ComplementaryCertifiableEvent": "Candidat éligible a sa complementaire",
+        "ComplementaryNotCertifiableEvent": "Candidat non éligible à sa complémentaire"
+      },
+      "metadata": "Metadata",
+      "title": "Journal d'évènements",
+      "when": "Date"
+    },
     "certification-centers": {
       "archive-confirmation-modal": {
         "attachment": "Le rattachement et l'invitation de nouvelles personnes seront bloqués",
@@ -972,7 +988,7 @@
           "firstname": "Prénom",
           "id": "ID",
           "lastname": "Nom",
-          "selected-subscriptions": "Certification sélectionnée"
+          "selected-subscriptions": "Inscrit à"
         },
         "caption": "Candidates",
         "empty-result": "Aucun résultat",

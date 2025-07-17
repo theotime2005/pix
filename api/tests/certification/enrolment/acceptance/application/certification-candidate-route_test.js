@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 
 import { PIX_ADMIN } from '../../../../../src/authorization/domain/constants.js';
 import { CandidateCreatedEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateCreatedEvent.js';
-import { CertificationNotCertifiableEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
+import { CandidateNotCertifiableEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
 import { CandidateReconciledEvent } from '../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
 import { SUBSCRIPTION_TYPES } from '../../../../../src/certification/shared/domain/constants.js';
 import { ComplementaryCertificationKeys } from '../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
@@ -502,12 +502,13 @@ describe('Certification | Enrolment | Acceptance | Application | Routes | certif
                 metadata: null,
               },
               {
-                code: CertificationNotCertifiableEvent.name,
+                code: CandidateNotCertifiableEvent.name,
                 when: reconciledAt,
                 metadata: null,
               },
             ],
           },
+          id: `${candidateId}`,
           type: 'certification-candidate-timelines',
         },
       });

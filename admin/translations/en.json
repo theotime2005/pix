@@ -964,6 +964,22 @@
         }
       }
     },
+    "candidate": {
+      "title": "Candidate's timeline",
+      "code": "Event",
+      "when": "Date",
+      "metadata": "Metadata",
+      "events" : {
+        "ComplementaryNotCertifiableEvent": "Candidat not eligible to complementary",
+        "ComplementaryCertifiableEvent": "Candidat eligible to complementary",
+        "CertificationStartedEvent" : "Certification started",
+        "CertificationEndedEvent" : "Certification ended",
+        "CandidateReconciledEvent" : "Candidat reconciled to a user",
+        "CertificationNotCertifiableEvent" : "Candidat not certifiable (Pix Core)",
+        "CandidateEndScreenEvent" : "Certification completed (end screen test)",
+        "CandidateCreatedEvent" : "Candidat added to the session"
+      }
+    },
     "sessions": {
       "candidates": {
         "candidate": {
@@ -972,7 +988,7 @@
           "firstname": "First name",
           "id": "ID",
           "lastname": "Last name",
-          "selected-subscriptions": "Selected certification"
+          "selected-subscriptions": "Subscriptions"
         },
         "caption": "Candidats",
         "empty-result": "No result",
