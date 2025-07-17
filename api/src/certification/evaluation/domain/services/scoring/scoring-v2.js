@@ -83,7 +83,7 @@ export const handleV2CertificationScoring = async ({
     competenceMarkRepository,
   });
 
-  return { certificationCourse, certificationAssessmentScore };
+  return certificationCourse;
 };
 
 /**

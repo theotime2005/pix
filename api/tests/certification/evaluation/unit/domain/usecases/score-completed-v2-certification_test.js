@@ -132,12 +132,11 @@ describe('Unit | Certification | Evaluation | UseCases | scoreCompletedV2Certifi
           const certificationCourse = domainBuilder.buildCertificationCourse({
             id: certificationCourseId,
             completedAt: null,
-            isCancelled: false,
             abortReason: null,
           });
 
           certificationCourseRepository.update.resolves(certificationCourse);
-          services.handleV2CertificationScoring.resolves({ certificationCourse });
+          services.handleV2CertificationScoring.resolves(certificationCourse);
 
           const complementaryCertificationScoringCriteria =
             domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({

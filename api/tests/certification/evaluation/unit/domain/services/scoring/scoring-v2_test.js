@@ -397,7 +397,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring V2', f
           const certificationCourse = domainBuilder.buildCertificationCourse({
             id: certificationCourseId,
             abortReason: null,
-            isCancelled: true,
           });
           const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
             competenceMarks: [],
@@ -450,10 +449,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring V2', f
     context('for rescoring certification', function () {
       it('computes and persists the assessment result and competence marks', async function () {
         // given
-        const certificationCourse = domainBuilder.buildCertificationCourse({
-          isCancelled: false,
-        });
-
+        const certificationCourse = domainBuilder.buildCertificationCourse();
         const event = new ChallengeNeutralized({ certificationCourseId: certificationCourse.getId(), juryId: 7 });
         const certificationAssessment = new CertificationAssessment({
           id: 123,
@@ -647,7 +643,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | Scoring V2', f
       context('when the certification has enough non neutralized challenges to be trusted', function () {
         it('build and save a standard assessment result', async function () {
           // given
-          const certificationCourse = domainBuilder.buildCertificationCourse({ id: 789, isCancelled: true });
+          const certificationCourse = domainBuilder.buildCertificationCourse({ id: 789 });
 
           const event = new ChallengeNeutralized({ certificationCourseId: 789, juryId: 7 });
           const certificationAssessment = new CertificationAssessment({

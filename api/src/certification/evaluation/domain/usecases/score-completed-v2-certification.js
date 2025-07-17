@@ -30,7 +30,7 @@ export const scoreCompletedV2Certification = async ({
   }
 
   try {
-    const { certificationCourse } = await services.handleV2CertificationScoring({
+    const certificationCourse = await services.handleV2CertificationScoring({
       certificationAssessment,
     });
 

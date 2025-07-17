@@ -1,9 +1,7 @@
 /**
  * @typedef {import('./index.js').CertificationAssessmentRepository} CertificationAssessmentRepository
  * @typedef {import('./index.js').AssessmentResultRepository} AssessmentResultRepository
- * @typedef {import('../services/index.js').ScoringCertificationService} ScoringCertificationService
  * @typedef {import('./index.js').ScoringV2Service} ScoringV2Service
- * @typedef {import('./index.js').CertificationCourseRepository} CertificationCourseRepository
  * @typedef {import('./index.js').ComplementaryCertificationScoringCriteriaRepository} ComplementaryCertificationScoringCriteriaRepository
  * @typedef {import('./index.js').EvaluationSessionRepository} EvaluationSessionRepository
  * @typedef {import('./index.js').Services} Services
@@ -36,10 +34,7 @@ const eventTypes = [
  * @param {Object} params
  * @param {AssessmentResultRepository} params.assessmentResultRepository
  * @param {CertificationAssessmentRepository} params.certificationAssessmentRepository
- * @param {ScoringCertificationService} params.scoringCertificationService
- * @param {CertificationCourseRepository} params.certificationCourseRepository
  * @param {ComplementaryCertificationScoringCriteriaRepository} params.complementaryCertificationScoringCriteriaRepository
- * @param {CertificationCourseRepository} params.certificationCourseRepository
  * @param {EvaluationSessionRepository} params.evaluationSessionRepository
  * @param {Services} services
  *
@@ -52,10 +47,8 @@ export const rescoreV2Certification = async ({
   event,
   assessmentResultRepository,
   certificationAssessmentRepository,
-  certificationCourseRepository,
   complementaryCertificationScoringCriteriaRepository,
   evaluationSessionRepository,
-  scoringCertificationService,
   services,
 }) => {
   checkEventTypes(event, eventTypes);
@@ -73,11 +66,9 @@ export const rescoreV2Certification = async ({
   }
 
   return _handleV2CertificationScoring({
-    scoringCertificationService,
     certificationAssessment,
     event,
     assessmentResultRepository,
-    certificationCourseRepository,
     complementaryCertificationScoringCriteriaRepository,
     services,
   });
@@ -108,26 +99,13 @@ async function _handleV2CertificationScoring({
   event,
   certificationAssessment,
   assessmentResultRepository,
-  certificationCourseRepository,
   complementaryCertificationScoringCriteriaRepository,
-  scoringCertificationService,
   services,
 }) {
   try {
-    const { certificationCourse, certificationAssessmentScore } = await services.handleV2CertificationScoring({
+    const certificationCourse = await services.handleV2CertificationScoring({
       event,
       certificationAssessment,
-    });
-
-    // isCancelled will be removed
-    // this block will be removed
-    await _toggleCertificationCourseCancellationIfNotTrustableOrLackOfAnswersForTechnicalReason({
-      certificationCourse,
-      hasEnoughNonNeutralizedChallengesToBeTrusted:
-        certificationAssessmentScore.hasEnoughNonNeutralizedChallengesToBeTrusted,
-      certificationCourseRepository,
-      certificationAssessmentScore,
-      scoringCertificationService,
     });
 
     const complementaryCertificationScoringCriteria =
@@ -152,27 +130,6 @@ async function _handleV2CertificationScoring({
       juryId: event.juryId,
     });
   }
-}
-
-async function _toggleCertificationCourseCancellationIfNotTrustableOrLackOfAnswersForTechnicalReason({
-  certificationCourse,
-  hasEnoughNonNeutralizedChallengesToBeTrusted,
-  certificationCourseRepository,
-  certificationAssessmentScore,
-  scoringCertificationService,
-}) {
-  const lackOfAnswersForTechnicalReason = await scoringCertificationService.isLackOfAnswersForTechnicalReason({
-    certificationCourse,
-    certificationAssessmentScore,
-  });
-
-  if (!hasEnoughNonNeutralizedChallengesToBeTrusted || lackOfAnswersForTechnicalReason) {
-    certificationCourse.cancel();
-  } else {
-    certificationCourse.uncancel();
-  }
-
-  return certificationCourseRepository.update({ certificationCourse });
 }
 
 async function _saveResultAfterCertificationComputeError({

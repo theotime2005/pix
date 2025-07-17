@@ -1,11 +1,9 @@
-import { ChallengeDeneutralized } from '../../../../../../src/certification/evaluation/domain/events/ChallengeDeneutralized.js';
 import { ChallengeNeutralized } from '../../../../../../src/certification/evaluation/domain/events/ChallengeNeutralized.js';
 import { rescoreV2Certification } from '../../../../../../src/certification/evaluation/domain/usecases/rescore-v2-certification.js';
 import { SessionAlreadyPublishedError } from '../../../../../../src/certification/session-management/domain/errors.js';
 import { CertificationCourseRejected } from '../../../../../../src/certification/session-management/domain/events/CertificationCourseRejected.js';
 import { CertificationAssessment } from '../../../../../../src/certification/session-management/domain/models/CertificationAssessment.js';
 import { AlgorithmEngineVersion } from '../../../../../../src/certification/shared/domain/models/AlgorithmEngineVersion.js';
-import { ABORT_REASONS } from '../../../../../../src/certification/shared/domain/models/CertificationCourse.js';
 import { ComplementaryCertificationKeys } from '../../../../../../src/certification/shared/domain/models/ComplementaryCertificationKeys.js';
 import { CertificationComputeError, NotFinalizedSessionError } from '../../../../../../src/shared/domain/errors.js';
 import { AssessmentResult } from '../../../../../../src/shared/domain/models/index.js';
@@ -15,7 +13,6 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v2-certificatio
   describe('session is not in a publishable state', function () {
     it('should reject to do a rescoring is session is still in progress', async function () {
       // given
-
       const certificationCourseId = 123;
       const sessionNotFinalized = domainBuilder.certification.evaluation.buildResultsSession();
       const evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(sessionNotFinalized) };
@@ -64,26 +61,17 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v2-certificatio
 
   describe('when handling a v2 certification', function () {
     let assessmentResultRepository,
-      certificationCourseRepository,
       certificationAssessmentRepository,
       complementaryCertificationScoringCriteriaRepository,
       evaluationSessionRepository,
-      scoringCertificationService,
       services,
       dependencies;
 
     beforeEach(function () {
-      certificationCourseRepository = {
-        get: sinon.stub(),
-        update: sinon.stub(),
-      };
       const session = domainBuilder.certification.evaluation.buildResultsSession.finalized();
       evaluationSessionRepository = { getByCertificationCourseId: sinon.stub().resolves(session) };
       assessmentResultRepository = { save: sinon.stub() };
       certificationAssessmentRepository = { getByCertificationCourseId: sinon.stub() };
-      scoringCertificationService = {
-        isLackOfAnswersForTechnicalReason: sinon.stub(),
-      };
       services = {
         handleV2CertificationScoring: sinon.stub(),
         scoreComplementaryCertificationV2: sinon.stub(),
@@ -96,377 +84,10 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v2-certificatio
       dependencies = {
         assessmentResultRepository,
         certificationAssessmentRepository,
-        certificationCourseRepository,
         complementaryCertificationScoringCriteriaRepository,
         evaluationSessionRepository,
-        scoringCertificationService,
         services,
       };
-    });
-
-    context('when the certification has not enough non neutralized challenges to be trusted', function () {
-      it('cancels the certification', async function () {
-        // given
-        const certificationCourse = domainBuilder.buildCertificationCourse({ id: 789 });
-
-        const event = new ChallengeNeutralized({ certificationCourseId: 789, juryId: 7 });
-        const certificationAssessment = new CertificationAssessment({
-          id: 123,
-          userId: 123,
-          certificationCourseId: 789,
-          createdAt: new Date('2020-01-01'),
-          completedAt: new Date('2020-01-01'),
-          state: CertificationAssessment.states.STARTED,
-          version: 2,
-          certificationChallenges: [
-            domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-            domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-          ],
-          certificationAnswersByDate: ['answer'],
-        });
-        const competenceMark2 = domainBuilder.buildCompetenceMark({ score: 12 });
-        const competenceMark1 = domainBuilder.buildCompetenceMark({ score: 18 });
-        const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-          status: AssessmentResult.status.VALIDATED,
-          competenceMarks: [competenceMark1, competenceMark2],
-          percentageCorrectAnswers: 80,
-          hasEnoughNonNeutralizedChallengesToBeTrusted: false,
-        });
-
-        certificationAssessmentRepository.getByCertificationCourseId
-          .withArgs({ certificationCourseId: 789 })
-          .resolves(certificationAssessment);
-
-        complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-          .withArgs({ certificationCourseId: 789 })
-          .resolves([]);
-
-        services.handleV2CertificationScoring.resolves({
-          certificationCourse,
-          certificationAssessmentScore,
-        });
-        scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(true);
-        certificationCourseRepository.update.resolves(certificationCourse);
-
-        // when
-        await rescoreV2Certification({
-          event,
-          ...dependencies,
-        });
-
-        // then
-        const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-          id: certificationCourse.getId(),
-          isCancelled: true,
-        });
-        expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-          certificationCourse: expectedCertificationCourse,
-        });
-      });
-
-      context('when it has insufficient correct answers', function () {
-        it('cancels the certification', async function () {
-          // given
-          const certificationCourse = domainBuilder.buildCertificationCourse({ id: 789 });
-
-          const event = new ChallengeNeutralized({ certificationCourseId: 789, juryId: 7 });
-          const certificationAssessment = new CertificationAssessment({
-            id: 123,
-            userId: 123,
-            certificationCourseId: 789,
-            createdAt: new Date('2020-01-01'),
-            completedAt: new Date('2020-01-01'),
-            state: CertificationAssessment.states.STARTED,
-            version: 2,
-            certificationChallenges: [
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-            ],
-            certificationAnswersByDate: ['answer'],
-          });
-          const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-            status: AssessmentResult.status.REJECTED,
-            percentageCorrectAnswers: 45,
-            hasEnoughNonNeutralizedChallengesToBeTrusted: false,
-          });
-
-          certificationAssessmentRepository.getByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves(certificationAssessment);
-
-          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves([]);
-
-          services.handleV2CertificationScoring.resolves({
-            certificationCourse,
-            certificationAssessmentScore,
-          });
-          scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(true);
-          certificationCourseRepository.update.resolves(certificationCourse);
-
-          // when
-          await rescoreV2Certification({
-            event,
-            ...dependencies,
-          });
-
-          // then
-          const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-            id: certificationCourse.getId(),
-            isCancelled: true,
-          });
-          expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-            certificationCourse: expectedCertificationCourse,
-          });
-        });
-      });
-    });
-
-    context('when the certification has enough non neutralized challenges to be trusted', function () {
-      it('uncancels the certification', async function () {
-        // given
-        const certificationCourse = domainBuilder.buildCertificationCourse({ id: 789, isCancelled: true });
-        const event = new ChallengeNeutralized({ certificationCourseId: 789, juryId: 7 });
-        const certificationAssessment = new CertificationAssessment({
-          id: 123,
-          userId: 123,
-          certificationCourseId: 789,
-          createdAt: new Date('2020-01-01'),
-          completedAt: new Date('2020-01-01'),
-          state: CertificationAssessment.states.STARTED,
-          version: 2,
-          certificationChallenges: [
-            domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-            domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-          ],
-          certificationAnswersByDate: ['answer'],
-        });
-        const competenceMark2 = domainBuilder.buildCompetenceMark({ score: 12 });
-        const competenceMark1 = domainBuilder.buildCompetenceMark({ score: 18 });
-        const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-          status: AssessmentResult.status.VALIDATED,
-          competenceMarks: [competenceMark1, competenceMark2],
-          percentageCorrectAnswers: 80,
-          hasEnoughNonNeutralizedChallengesToBeTrusted: true,
-        });
-
-        certificationAssessmentRepository.getByCertificationCourseId
-          .withArgs({ certificationCourseId: 789 })
-          .resolves(certificationAssessment);
-
-        complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-          .withArgs({ certificationCourseId: 789 })
-          .resolves([]);
-
-        services.handleV2CertificationScoring.resolves({
-          certificationCourse,
-          certificationAssessmentScore,
-        });
-        scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
-        certificationCourseRepository.update.resolves(certificationCourse);
-
-        // when
-        await rescoreV2Certification({
-          event,
-          ...dependencies,
-        });
-
-        // then
-        const expectedCertificationCourse = domainBuilder.buildCertificationCourse({ id: 789, isCancelled: false });
-        expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-          certificationCourse: expectedCertificationCourse,
-        });
-      });
-    });
-
-    context('when the certification course is rejected', function () {
-      context('when it is rejected for fraud', function () {
-        it('rejects the certification', async function () {
-          // given
-          const certificationCourse = domainBuilder.buildCertificationCourse({
-            id: 789,
-            isRejectedForFraud: true,
-          });
-
-          const event = new ChallengeNeutralized({ certificationCourseId: 789, juryId: 7 });
-          const certificationAssessment = new CertificationAssessment({
-            id: 123,
-            userId: 123,
-            certificationCourseId: 789,
-            createdAt: new Date('2020-01-01'),
-            completedAt: new Date('2020-01-01'),
-            state: CertificationAssessment.states.STARTED,
-            version: 2,
-            certificationChallenges: [
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-            ],
-            certificationAnswersByDate: ['answer'],
-          });
-          const competenceMark2 = domainBuilder.buildCompetenceMark({ score: 12 });
-          const competenceMark1 = domainBuilder.buildCompetenceMark({ score: 18 });
-          const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-            status: AssessmentResult.status.VALIDATED,
-            competenceMarks: [competenceMark1, competenceMark2],
-            percentageCorrectAnswers: 80,
-            hasEnoughNonNeutralizedChallengesToBeTrusted: true,
-          });
-
-          certificationAssessmentRepository.getByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves(certificationAssessment);
-
-          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves([]);
-
-          services.handleV2CertificationScoring.resolves({
-            certificationCourse,
-            certificationAssessmentScore,
-          });
-          scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
-          certificationCourseRepository.update.resolves(certificationCourse);
-
-          // when
-          await rescoreV2Certification({
-            event,
-            ...dependencies,
-          });
-
-          // then
-          const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-            id: 789,
-            isRejectedForFraud: true,
-          });
-          expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-            certificationCourse: expectedCertificationCourse,
-          });
-        });
-      });
-
-      context('when it is rejected for insufficient correct answers', function () {
-        it('should create and save an insufficient correct answers assessment result', async function () {
-          // given
-          const certificationCourse = domainBuilder.buildCertificationCourse({
-            id: 789,
-          });
-
-          const event = new ChallengeDeneutralized({ certificationCourseId: 789, juryId: 7 });
-          const certificationAssessment = new CertificationAssessment({
-            id: 123,
-            userId: 123,
-            certificationCourseId: 789,
-            createdAt: new Date('2020-01-01'),
-            completedAt: new Date('2020-01-01'),
-            state: CertificationAssessment.states.ENDED_BY_SUPERVISOR,
-            version: 2,
-            certificationChallenges: [
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-              domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false }),
-            ],
-            certificationAnswersByDate: ['answer'],
-          });
-          const competenceMark1 = domainBuilder.buildCompetenceMark({ score: 0 });
-          const competenceMark2 = domainBuilder.buildCompetenceMark({ score: 0 });
-          const competenceMark3 = domainBuilder.buildCompetenceMark({ score: 0 });
-          const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-            competenceMarks: [competenceMark1, competenceMark2, competenceMark3],
-            percentageCorrectAnswers: 33,
-            hasEnoughNonNeutralizedChallengesToBeTrusted: true,
-          });
-
-          certificationAssessmentRepository.getByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves(certificationAssessment);
-
-          complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-            .withArgs({ certificationCourseId: 789 })
-            .resolves([]);
-
-          services.handleV2CertificationScoring.resolves({
-            certificationCourse,
-            certificationAssessmentScore,
-          });
-          scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
-          certificationCourseRepository.update.resolves(certificationCourse);
-
-          // when
-          await rescoreV2Certification({
-            event,
-            ...dependencies,
-          });
-
-          // then
-          const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-            id: 789,
-            isRejectedForFraud: false,
-          });
-          expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-            certificationCourse: expectedCertificationCourse,
-          });
-        });
-
-        context('when the candidate encountered a technical issue during certification', function () {
-          it('cancels the certification', async function () {
-            // given
-            const certificationCourse = domainBuilder.buildCertificationCourse({
-              id: 789,
-              abortReason: ABORT_REASONS.TECHNICAL,
-            });
-
-            const event = new ChallengeDeneutralized({ certificationCourseId: 789, juryId: 7 });
-            const certificationAssessment = new CertificationAssessment({
-              id: 123,
-              userId: 123,
-              certificationCourseId: 789,
-              createdAt: new Date('2020-01-01'),
-              completedAt: new Date('2020-01-01'),
-              state: CertificationAssessment.states.ENDED_BY_SUPERVISOR,
-              version: 2,
-              certificationChallenges: [domainBuilder.buildCertificationChallengeWithType({ isNeutralized: false })],
-              certificationAnswersByDate: ['answer'],
-            });
-            const certificationAssessmentScore = domainBuilder.buildCertificationAssessmentScore({
-              percentageCorrectAnswers: 33,
-              hasEnoughNonNeutralizedChallengesToBeTrusted: true,
-            });
-
-            certificationAssessmentRepository.getByCertificationCourseId
-              .withArgs({ certificationCourseId: 789 })
-              .resolves(certificationAssessment);
-
-            complementaryCertificationScoringCriteriaRepository.findByCertificationCourseId
-              .withArgs({ certificationCourseId: 789 })
-              .resolves([]);
-
-            services.handleV2CertificationScoring.resolves({
-              certificationCourse,
-              certificationAssessmentScore,
-            });
-            scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(true);
-            certificationCourseRepository.update.resolves(certificationCourse);
-
-            // when
-            await rescoreV2Certification({
-              event,
-              ...dependencies,
-            });
-
-            // then
-            const expectedCertificationCourse = domainBuilder.buildCertificationCourse({
-              id: 789,
-              isRejectedForFraud: false,
-              abortReason: ABORT_REASONS.TECHNICAL,
-              isCancelled: true,
-            });
-            expect(certificationCourseRepository.update).to.have.been.calledWithExactly({
-              certificationCourse: expectedCertificationCourse,
-            });
-          });
-        });
-      });
     });
 
     context('when computation fails', function () {
@@ -583,12 +204,7 @@ describe('Unit | Certification | Evaluation | UseCases | rescore-v2-certificatio
           id: certificationCourseId,
           isRejectedForFraud: true,
         });
-        services.handleV2CertificationScoring.resolves({
-          certificationCourse,
-          certificationAssessmentScore: {},
-        });
-        scoringCertificationService.isLackOfAnswersForTechnicalReason.resolves(false);
-        certificationCourseRepository.update.resolves(certificationCourse);
+        services.handleV2CertificationScoring.resolves(certificationCourse);
         const complementaryCertificationScoringCriteria =
           domainBuilder.certification.evaluation.buildComplementaryCertificationScoringCriteria({
             complementaryCertificationCourseId: 999,
