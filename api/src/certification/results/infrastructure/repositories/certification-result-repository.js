@@ -46,7 +46,6 @@ const findByCertificationCandidateIds = async function ({ certificationCandidate
 export { findByCertificationCandidateIds, findBySessionId };
 
 function _selectCertificationResults() {
-  // isCancelled will be removed
   return knex
     .select({
       id: 'certification-courses.id',
@@ -54,7 +53,6 @@ function _selectCertificationResults() {
       lastName: 'certification-courses.lastName',
       birthdate: 'certification-courses.birthdate',
       birthplace: 'certification-courses.birthplace',
-      isCancelled: 'certification-courses.isCancelled',
       externalId: 'certification-courses.externalId',
       createdAt: 'certification-courses.createdAt',
       sessionId: 'certification-courses.sessionId',

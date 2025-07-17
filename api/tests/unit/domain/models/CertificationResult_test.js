@@ -49,7 +49,6 @@ describe('Unit | Domain | Models | CertificationResult', function () {
       // given
       const certificationResultDTO = {
         ...certificationResultData,
-        isCancelled: false,
         assessmentResultStatus: CERTIFICATION_RESULT_STATUS_VALIDATED,
       };
 
@@ -121,45 +120,35 @@ describe('Unit | Domain | Models | CertificationResult', function () {
       });
     });
 
-    // isCancelled will be removed
     context('status', function () {
       [
         {
           statusName: 'cancelled',
-          isCancelled: true,
-
           assessmentResultStatus: CERTIFICATION_RESULT_STATUS_CANCELLED,
           validationFunction: 'isCancelled',
         },
         {
           statusName: 'validated',
-          isCancelled: false,
-
           assessmentResultStatus: CERTIFICATION_RESULT_STATUS_VALIDATED,
           validationFunction: 'isValidated',
         },
         {
           statusName: 'rejected',
-          isCancelled: false,
-
           assessmentResultStatus: CERTIFICATION_RESULT_STATUS_REJECTED,
           validationFunction: 'isRejected',
         },
         {
           statusName: 'error',
-          isCancelled: false,
-
           assessmentResultStatus: CERTIFICATION_RESULT_STATUS_ERROR,
           validationFunction: 'isInError',
         },
 
-        { statusName: 'started', isCancelled: false, assessmentResultStatus: null, validationFunction: 'isStarted' },
+        { statusName: 'started', assessmentResultStatus: null, validationFunction: 'isStarted' },
       ].forEach(function (testCase) {
         it(`should build a ${testCase.statusName} CertificationResult`, async function () {
           // given
           const certificationResultDTO = {
             ...certificationResultData,
-            isCancelled: testCase.isCancelled,
             assessmentResultStatus: testCase.assessmentResultStatus,
           };
           // when

@@ -65,11 +65,7 @@ class CertificationResult {
 
   static from({ certificationResultDTO }) {
     let certificationStatus;
-    // isCancelled will be removed
-    if (
-      certificationResultDTO.isCancelled ||
-      certificationResultDTO.assessmentResultStatus === AssessmentResult.status.CANCELLED
-    ) {
+    if (certificationResultDTO.assessmentResultStatus === AssessmentResult.status.CANCELLED) {
       certificationStatus = status.CANCELLED;
     } else {
       certificationStatus = certificationResultDTO?.assessmentResultStatus ?? status.STARTED;
