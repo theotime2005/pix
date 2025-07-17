@@ -401,6 +401,11 @@
             "success-notification": "Le nouveau référentiel cadre a été créé avec succès",
             "title": "Créer un nouveau référentiel cadre pour {complementaryCertificationLabel}"
           },
+          "details": {
+            "empty-current-framework": "Le référentiel cadre actuel est vide.",
+            "title": "Détails du référentiel cadre actuel"
+          },
+          "no-current-framework": "Aucun référentiel cadre n'est utilisé actuellement.",
           "tab": "Référentiel cadre"
         },
         "navigation": {

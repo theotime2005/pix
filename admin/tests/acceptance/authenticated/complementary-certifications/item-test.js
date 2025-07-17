@@ -20,6 +20,8 @@ module('Acceptance | Complementary certifications | Complementary certification 
       label: 'Pix+Droit',
     });
 
+    server.create('certification-consolidated-framework', { id: 'KEY' });
+
     // when
     const screen = await visit('/complementary-certifications/1/framework');
 

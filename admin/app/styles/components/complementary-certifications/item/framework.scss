@@ -4,6 +4,13 @@
   display: inline-flex;
 }
 
+.framework__no-current {
+  display: inline-flex;
+  margin-bottom: var(--pix-spacing-6x);
+}
+
+
+/* Creation form */
 .framework-creation-form__title {
   @extend %pix-title-s;
 
@@ -14,4 +21,21 @@
 .framework-creation-form__buttons {
   display: flex;
   gap: var(--pix-spacing-2x);
+}
+
+/* Framework details */
+.framework-details {
+  margin-top: var(--pix-spacing-6x);
+  padding-top: var(--pix-spacing-6x);
+  border-top: 1px solid var(--pix-neutral-100);
+}
+
+.framework-details__title {
+  @extend %pix-title-xs;
+
+  margin-bottom: var(--pix-spacing-4x);
+}
+
+.framework__table-empty {
+  margin-top: var(--pix-spacing-6x);
 }

@@ -69,6 +69,9 @@ module('Acceptance | Complementary certifications | list ', function (hooks) {
           },
         ],
       });
+
+      server.create('certification-consolidated-framework', { id: 'AN' });
+
       const screen = await visit('/complementary-certifications/list');
 
       // when

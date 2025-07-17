@@ -401,6 +401,10 @@
             "success-notification": "The new framework has been successfully created.",
             "title": "Creating a new consolidated framework for {complementaryCertificationLabel}"
           },
+          "details": {
+            "title": "Current consolidated framework details"
+          },
+          "no-current-framework": "No consolidated framework is currently used.",
           "tab": "Consolidated framework"
         },
         "navigation": {

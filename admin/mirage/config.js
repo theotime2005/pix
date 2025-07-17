@@ -567,6 +567,10 @@ function routes() {
     return new Response(204);
   });
 
+  this.get('admin/complementary-certifications/:key/current-consolidated-framework', (schema, request) => {
+    return schema.certificationConsolidatedFrameworks.find(request.params.key);
+  });
+
   this.put('/admin/sessions/:id/comment', (schema, request) => {
     const sessionToUpdate = schema.sessions.find(request.params.id);
     const params = JSON.parse(request.requestBody);
