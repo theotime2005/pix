@@ -164,7 +164,7 @@
     {
       "id": "eaa1a776-2d39-460c-8642-5a43ab6093e1",
       "type": "discovery",
-      "title": "Découverte - 2",
+      "title": "Activité découverte - 2",
       "components": [
         {
           "type": "stepper",
@@ -204,7 +204,7 @@
                       "content": "<p>L'ordinateur d’Irène n'est pas assez puissant, il a provoqué un bug.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "Et non,..."
+                        "diagnosis": "<p>Et non,...</p>"
                       }
                     },
                     {
@@ -212,7 +212,7 @@
                       "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "Effectivement,..."
+                        "diagnosis": "<p>Effectivement,...</p>"
                       }
                     },
                     {
@@ -220,7 +220,7 @@
                       "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "Et non,..."
+                        "diagnosis": "<p>Et non,...</p>"
                       }
                     }
                   ],
@@ -295,6 +295,281 @@
             "id": "8456e440-7043-4a73-aac3-bd7de3f44dcc",
             "type": "text",
             "content": "<p>Les IA génératives font des erreurs. Que font les développeurs d’IA génératives pour empêcher ça ? 😱</p>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "586a05db-64a4-447b-861e-344d4fe87863",
+      "type": "discovery",
+      "title": "Activité découverte - 3",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "337317e2-a1cf-471b-8182-4914fa6b7360",
+            "type": "text",
+            "content": "<p>Au fil du temps, la réponse d'un logiciel d'IA générative à une même question évolue.<br>Explorez la frise ci-dessous.<br></p>"
+          }
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "0de86cf0-d43a-4287-b717-383236ac6408",
+            "type": "text",
+            "content": "<iframe title=\"dnd\" src=\"https://1024pix.github.io/atelier-contenus/LSI/ia-hallu-frise.html \" height=\"600\"></iframe>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "6ad583ab-11b2-4530-a663-75544292108a",
+      "type": "lesson",
+      "title": "Leçon - 3",
+      "components": [
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "36e95488-a2db-4463-9b0f-5d5252cb38b2",
+                  "type": "text",
+                  "content": "<p>Les ingénieurs d’IA génératives essayent en continu de <strong>réduire les erreurs</strong> qu’elles produisent. Et les IA génératives <strong>s’améliorent d’années en années</strong> !</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "5360a6aa-999e-4d02-b3cb-20421fae3ab2",
+                  "type": "text",
+                  "content": "<p>Mais, c’est une <strong>tâche difficile</strong>&nbsp;:&nbsp; il n'y a pas de différence de forme entre une réponse contenant une erreur et une qui n'en contient pas. <br>Il n’existe donc <strong>pas de méthode technique pour les détecter</strong> et les éviter complètement.</p>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "99d91ba2-5d1e-4a2d-92ef-4e61219a903e",
+      "type": "transition",
+      "title": "Transition - 4",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "af12a991-ef36-4557-bd5b-d9f668bdcf33",
+            "type": "text",
+            "content": "<p>Mais alors, si les IA génératives font des erreurs que les développeurs ne peuvent pas corriger, qu’est ce que peut faire un simple utilisateur ?</p>"
+          }
+        }
+      ]
+    },
+    {
+      "id": "eff7343b-ae10-44d7-9113-710a43ece810",
+      "type": "discovery",
+      "title": "Activité découverte - 4",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "ecffdbbe-78c7-4da7-9b7d-2426eb9daf3c",
+            "type": "text",
+            "content": "<p>Alors que Nathan ne veut plus du tout utiliser l'IA pour ses devoirs, Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br><br>Pour la préparation d'un exposé, Asma interroge un logiciel d'IA générative sur le sujet de son exposé. Elle obtient une réponse que la fait douter.</p>"
+          }
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "0b9a3ac4-f723-45ea-bfcd-c31200474bee",
+            "type": "text",
+            "content": "<p><strong>Parmi les réactions suivantes, sélectionnez s’il s’agit d’un bon réflexe ou d’un mauvais réflexe pour Asma.</strong></p>"
+          }
+        },
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "81eb63dc-b909-461d-bea3-e32cf2637240",
+                  "type": "qcu-declarative",
+                  "instruction": "<p>Réflexe 1&nbsp;: Asma copie et colle la réponse du logiciel d'IA générative dans son exposé, sans la lire.</p>",
+                  "proposals": [
+                    {
+                      "id": "1",
+                      "content": "<p>bon réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et non c'est un mauvais réflexe ! Il faut toujours lire l’ensemble des réponses données par un logiciel d’IA générative.</p>"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "content": "<p>mauvais réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et oui, c'est un mauvais réflexe ! Il faut toujours lire l’ensemble des réponses données par un logiciel d’IA générative.</p>"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "079936fa-826a-46da-903c-32dfd0089327",
+                  "type": "qcu-declarative",
+                  "instruction": "<p>Réflexe 2&nbsp;:&nbsp;Asma lit toute la réponse, et s’interroge sur un point précis. Elle demande au logiciel d'IA générative de préciser sa réponse en donnant sa source.</p>",
+                  "proposals": [
+                    {
+                      "id": "1",
+                      "content": "<p>bon réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et oui, c'est un bon réflexe ! Poursuivre la discussion avec l’IA permet parfois d’avoir une réponse plus claire ou même une correction.</p>"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "content": "<p>mauvais réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et non, c'est un bon réflexe ! Poursuivre la discussion avec l’IA permet parfois d’avoir une réponse plus claire ou même une correction.</p>"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "ff81face-e51c-4bf6-8b49-50c9abd5cfdd",
+                  "type": "qcu-declarative",
+                  "instruction": "<p>Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
+                  "proposals": [
+                    {
+                      "id": "1",
+                      "content": "<p>bon réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et oui, c'est un bon réflexe ! Dans tous les cas, vérifier et croiser les sources permet d’éviter de relayer une erreur ou une fausse information.</p>"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "content": "<p>mauvais réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et non, c'est bon réflexe ! Dans tous les cas, vérifier et croiser les sources permet d’éviter de relayer une erreur ou une fausse information.</p>"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "0aa2dee4-60a8-4ab7-8390-0ca87779414c",
+                  "type": "qcu-declarative",
+                  "instruction": "<p>Réflexe 4&nbsp;:&nbsp;Asma lit en entier la réponse donnée par le logiciel d'IA générative. Elle la trouve très bien écrite et l’utilise dans son exposé.</p>",
+                  "proposals": [
+                    {
+                      "id": "1",
+                      "content": "<p>bon réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et non, c'est un mauvais réflexe ! Une réponse bien écrite n’est pas forcément correcte. Il faut garder un regard critique, même quand le ton est convaincant.</p>"
+                      }
+                    },
+                    {
+                      "id": "2",
+                      "content": "<p>mauvais réflexe</p>",
+                      "feedback": {
+                        "state": "",
+                        "diagnosis": "<p>Et oui, c'est un mauvais réflexe ! Une réponse bien écrite n’est pas forcément correcte. Il faut garder un regard critique, même quand le ton est convaincant.</p>"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "25aa32f6-954f-4032-98db-6659ac47a66e",
+      "type": "lesson",
+      "title": "Leçon - 4",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "3a72064b-2d02-47ef-b524-18d51dcc6be8",
+            "type": "text",
+            "content": "<p>Face aux réponses d’une IA générative, il faut toujours garder en tête qu’elle peut faire une erreur ou halluciner. Mais vous pouvez apprendre à les repérer… à condition d’adopter les bons réflexes&nbsp;:</p>"
+          }
+        },
+        {
+          "type": "stepper",
+          "steps": [
+            {
+              "elements": [
+                {
+                  "id": "491608fe-ec87-4e10-b98a-c1c6f67a500c",
+                  "type": "text",
+                  "content": "<p>🔍 Avoir un <strong>regard critique</strong> sur les réponses de l’IA générative et se poser des questions sur ce qu'on lit.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "910d0bec-69e4-4a7f-818c-eab90643959b",
+                  "type": "text",
+                  "content": "<p>📖 Prendre le temps de <strong>lire les réponses en entier</strong>. Parfois, l’erreur ne saute pas aux yeux. Elle peut se cacher dans un détail&nbsp;: une date, un chiffre, un exemple, etc.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "495a2819-756c-415c-993d-ad37eaa4fecf",
+                  "type": "text",
+                  "content": "<p>🧭&nbsp;<strong>Vérifier les informations </strong>avec d’autres sources.</p>"
+                }
+              ]
+            },
+            {
+              "elements": [
+                {
+                  "id": "eba1acf6-d04c-4d74-85a0-05b4a9dc488f",
+                  "type": "text",
+                  "content": "<p>💬 <strong>Poursuivre la discussion</strong>. Si vous détectez une erreur dans la réponse d’une IA, vous pouvez lui signaler et lui demander de se corriger.</p>"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "987668e7-59a9-438d-ad54-4723abc701d8",
+      "type": "summary",
+      "title": "Récapitulatif",
+      "components": [
+        {
+          "type": "element",
+          "element": {
+            "id": "d889292f-a892-4ad8-b7e8-0ef529fe13cf",
+            "type": "text",
+            "content": "<ul><li>L'objectif d’une IA générative est de répondre aux demandes d’un utilisateur. Son objectif n’est pas de dire la vérité. 🤥</li><li>Une IA générative peut faire des erreurs, par exemple présenter des affirmations fausses comme des faits. ❌</li><li>Les développeurs d’IA génératives essayent de réduire les erreurs. Mais il n’existe pas de moyen technique pour empêcher complètement ces erreurs. 🔧</li><li>Face à ces erreurs, difficiles à détecter, c’est à l’utilisateur de faire preuve d’esprit critique et de croiser les sources d’informations. 🔎</li><br></ul>"
           }
         }
       ]
