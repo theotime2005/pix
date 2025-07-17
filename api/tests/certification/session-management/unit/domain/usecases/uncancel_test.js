@@ -6,7 +6,7 @@ import { catchErr, domainBuilder, expect, sinon } from '../../../../../test-help
 
 describe('Certification | Session-management | Unit | Domain | UseCases | uncancel', function () {
   describe('when certification is a V2', function () {
-    it('should uncancel the certification course', async function () {
+    it('should uncancel the certification', async function () {
       // given
       const juryId = 123;
       const session = domainBuilder.certification.sessionManagement.buildSession({
@@ -18,9 +18,7 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         sessionId: session.id,
         version: AlgorithmEngineVersion.V2,
       });
-      sinon.spy(certificationCourse, 'uncancel');
       const certificationCourseRepository = {
-        update: sinon.stub(),
         get: sinon.stub(),
       };
       const certificationRescoringRepository = {
@@ -30,7 +28,6 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         get: sinon.stub(),
       };
       certificationCourseRepository.get.withArgs({ id: 123 }).resolves(certificationCourse);
-      certificationCourseRepository.update.resolves();
       certificationRescoringRepository.rescoreV2Certification.resolves();
       sessionRepository.get.withArgs({ id: certificationCourse.getSessionId() }).resolves(session);
 
@@ -44,8 +41,6 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
       });
 
       // then
-      expect(certificationCourse.uncancel).to.have.been.calledOnce;
-      expect(certificationCourseRepository.update).to.have.been.calledWithExactly({ certificationCourse });
       expect(certificationRescoringRepository.rescoreV2Certification).to.have.been.calledWithExactly({
         event: new CertificationUncancelled({
           certificationCourseId: certificationCourse.getId(),
@@ -55,7 +50,7 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
     });
 
     describe('when session is not finalized', function () {
-      it('should not uncancel the certification course', async function () {
+      it('should not uncancel the certification', async function () {
         // given
         const juryId = 123;
         const session = domainBuilder.certification.sessionManagement.buildSession({
@@ -67,16 +62,13 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
           sessionId: session.id,
           version: AlgorithmEngineVersion.V2,
         });
-        sinon.spy(certificationCourse, 'uncancel');
         const certificationCourseRepository = {
-          update: sinon.stub(),
           get: sinon.stub(),
         };
         const sessionRepository = {
           get: sinon.stub(),
         };
         certificationCourseRepository.get.withArgs({ id: 123 }).resolves(certificationCourse);
-        certificationCourseRepository.update.resolves();
         sessionRepository.get.withArgs({ id: certificationCourse.getSessionId() }).resolves(session);
 
         // when
@@ -88,15 +80,13 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         });
 
         // then
-        expect(certificationCourse.uncancel).to.not.have.been.called;
-        expect(certificationCourseRepository.update).to.not.have.been.called;
         expect(error).to.be.instanceOf(NotFinalizedSessionError);
       });
     });
   });
 
   describe('when certification is a V3', function () {
-    it('should uncancel the certification course', async function () {
+    it('should uncancel the certification', async function () {
       // given
       const juryId = 123;
       const session = domainBuilder.certification.sessionManagement.buildSession({
@@ -108,9 +98,7 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         sessionId: session.id,
         version: AlgorithmEngineVersion.V3,
       });
-      sinon.spy(certificationCourse, 'uncancel');
       const certificationCourseRepository = {
-        update: sinon.stub(),
         get: sinon.stub(),
       };
       const certificationRescoringRepository = {
@@ -120,7 +108,6 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         get: sinon.stub(),
       };
       certificationCourseRepository.get.withArgs({ id: 123 }).resolves(certificationCourse);
-      certificationCourseRepository.update.resolves();
       certificationRescoringRepository.rescoreV3Certification.resolves();
       sessionRepository.get.withArgs({ id: certificationCourse.getSessionId() }).resolves(session);
 
@@ -134,8 +121,6 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
       });
 
       // then
-      expect(certificationCourse.uncancel).to.have.been.calledOnce;
-      expect(certificationCourseRepository.update).to.have.been.calledWithExactly({ certificationCourse });
       expect(certificationRescoringRepository.rescoreV3Certification).to.have.been.calledWithExactly({
         event: new CertificationUncancelled({
           certificationCourseId: certificationCourse.getId(),
@@ -145,7 +130,7 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
     });
 
     describe('when session is not finalized', function () {
-      it('should not uncancel the certification course', async function () {
+      it('should not uncancel the certification', async function () {
         // given
         const juryId = 123;
         const session = domainBuilder.certification.sessionManagement.buildSession({
@@ -157,16 +142,13 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
           sessionId: session.id,
           version: AlgorithmEngineVersion.V3,
         });
-        sinon.spy(certificationCourse, 'uncancel');
         const certificationCourseRepository = {
-          update: sinon.stub(),
           get: sinon.stub(),
         };
         const sessionRepository = {
           get: sinon.stub(),
         };
         certificationCourseRepository.get.withArgs({ id: 123 }).resolves(certificationCourse);
-        certificationCourseRepository.update.resolves();
         sessionRepository.get.withArgs({ id: certificationCourse.getSessionId() }).resolves(session);
 
         // when
@@ -178,8 +160,6 @@ describe('Certification | Session-management | Unit | Domain | UseCases | uncanc
         });
 
         // then
-        expect(certificationCourse.uncancel).to.not.have.been.called;
-        expect(certificationCourseRepository.update).to.not.have.been.called;
         expect(error).to.be.instanceOf(NotFinalizedSessionError);
       });
     });

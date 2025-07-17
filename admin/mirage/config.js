@@ -590,7 +590,7 @@ function routes() {
   this.patch('/admin/certification-courses/:id/uncancel', (schema, request) => {
     const certificationId = request.params.id;
     const certificationToUpdate = schema.certifications.find(certificationId);
-    certificationToUpdate.update({ isCancelled: false, status: assessmentResultStatus.REJECTED });
+    certificationToUpdate.update({ status: assessmentResultStatus.REJECTED });
 
     return new Response(204);
   });

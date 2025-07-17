@@ -296,7 +296,6 @@ describe('Certification | Session-management | Acceptance | Application | Routes
         sessionId: session.id,
         createdAt: new Date('2024-01-15'),
         abortReason: 'candidate',
-        isCancelled: true,
       });
       databaseBuilder.factory.buildCertificationCandidate({
         userId: certificationCourse.userId,
@@ -396,15 +395,8 @@ describe('Certification | Session-management | Acceptance | Application | Routes
           juryId: juryMember.id,
         })
         .first();
-      const certificationCourseUncancelled = await knex('certification-courses')
-        .where({
-          id: certificationCourse.id,
-        })
-        .first();
 
       expect(response.statusCode).to.equal(204);
-
-      expect(certificationCourseUncancelled.isCancelled).to.equal(false);
       expect(rejectedAssessmentResult).not.to.be.undefined;
       expect(
         await knex('certification-courses-last-assessment-results').where({

@@ -29,9 +29,6 @@ export const uncancel = async function ({
     throw new NotFinalizedSessionError();
   }
 
-  certificationCourse.uncancel();
-  await certificationCourseRepository.update({ certificationCourse });
-
   const event = new CertificationUncancelled({
     certificationCourseId: certificationCourse.getId(),
     juryId,
