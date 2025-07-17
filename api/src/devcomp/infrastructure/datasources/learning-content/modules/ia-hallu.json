@@ -569,7 +569,7 @@
           "element": {
             "id": "d889292f-a892-4ad8-b7e8-0ef529fe13cf",
             "type": "text",
-            "content": "<ul><li>L'objectif d’une IA générative est de répondre aux demandes d’un utilisateur. Son objectif n’est pas de dire la vérité. 🤥</li><li>Une IA générative peut faire des erreurs, par exemple présenter des affirmations fausses comme des faits. ❌</li><li>Les développeurs d’IA génératives essayent de réduire les erreurs. Mais il n’existe pas de moyen technique pour empêcher complètement ces erreurs. 🔧</li><li>Face à ces erreurs, difficiles à détecter, c’est à l’utilisateur de faire preuve d’esprit critique et de croiser les sources d’informations. 🔎</li><br></ul>"
+            "content": "<ul><li>L'objectif d’une IA générative est de répondre aux demandes d’un utilisateur. Son objectif n’est pas de dire la vérité. 🤥</li><br><li>Une IA générative peut faire des erreurs, par exemple présenter des affirmations fausses comme des faits. ❌</li><br><li>Les développeurs d’IA génératives essayent de réduire les erreurs. Mais il n’existe pas de moyen technique pour empêcher complètement ces erreurs. 🔧</li><br><li>Face à ces erreurs, difficiles à détecter, c’est à l’utilisateur de faire preuve d’esprit critique et de croiser les sources d’informations. 🔎</li><br></ul>"
           }
         }
       ]
@@ -654,7 +654,7 @@
               },
               {
                 "type": "text",
-                "content": "<span>Exemple 2</span>"
+                "content": "<br><span>Exemple 2</span>"
               },
               {
                 "input": "2",
@@ -684,7 +684,7 @@
               },
               {
                 "type": "text",
-                "content": "<span>Exemple 3</span>"
+                "content": "<br><span>Exemple 3</span>"
               },
               {
                 "input": "3",
