@@ -242,7 +242,7 @@
           "element": {
             "id": "f4ed67e2-662f-4f88-8730-d6e3669c6f0a",
             "type": "text",
-            "content": "<p>Une IA générative a été conçue pour <strong>répondre aux demandes des utilisateurs</strong>, pas pour dire la vérité !<br><br></p>"
+            "content": "<p>Une IA générative a été conçue pour <strong>répondre aux demandes des utilisateurs</strong>, pas pour dire la vérité !</p>"
           }
         },
         {
@@ -309,7 +309,7 @@
           "element": {
             "id": "337317e2-a1cf-471b-8182-4914fa6b7360",
             "type": "text",
-            "content": "<p>Au fil du temps, la réponse d'un logiciel d'IA générative à une même question évolue.<br>Explorez la frise ci-dessous.<br></p>"
+            "content": "<p>Au fil du temps, la réponse d'un logiciel d'IA générative à une même question évolue.<br>Explorez la frise ci-dessous.</p>"
           }
         },
         {
@@ -450,7 +450,7 @@
                 {
                   "id": "ff81face-e51c-4bf6-8b49-50c9abd5cfdd",
                   "type": "qcu-declarative",
-                  "instruction": "<p>Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
+                  "instruction": "<p>Réflexe 3&nbsp;:Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
                   "proposals": [
                     {
                       "id": "1",
