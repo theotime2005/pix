@@ -42,7 +42,6 @@ class CertificationCourse {
    * @param {number} props.userId
    * @param {number} props.sessionId
    * @param {Date} props.maxReachableLevelOnCertificationDate
-   * @param {boolean} props.isCancelled - will be removed
    * @param {string} props.abortReason
    * @param {Array<ComplementaryCertificationCourse>} props.complementaryCertificationCourses
    * @param {number} props.numberOfChallenges
@@ -72,7 +71,6 @@ class CertificationCourse {
     userId,
     sessionId,
     maxReachableLevelOnCertificationDate,
-    isCancelled = false,
     abortReason,
     complementaryCertificationCourses = [],
     numberOfChallenges,
@@ -102,7 +100,6 @@ class CertificationCourse {
     this._userId = userId;
     this._sessionId = sessionId;
     this._maxReachableLevelOnCertificationDate = maxReachableLevelOnCertificationDate;
-    this._isCancelled = isCancelled;
     this._abortReason = abortReason;
     this._complementaryCertificationCourses = complementaryCertificationCourses;
     this._isRejectedForFraud = isRejectedForFraud;
@@ -153,21 +150,6 @@ class CertificationCourse {
 
   reportIssue(issueReport) {
     this._certificationIssueReports.push(issueReport);
-  }
-
-  // isCancelled will be removed
-  isCancelled() {
-    return this._isCancelled;
-  }
-
-  // isCancelled will be removed
-  cancel() {
-    this._isCancelled = true;
-  }
-
-  // isCancelled will be removed
-  uncancel() {
-    this._isCancelled = false;
   }
 
   complete({ now }) {
@@ -364,7 +346,6 @@ class CertificationCourse {
       userId: this._userId,
       sessionId: this._sessionId,
       maxReachableLevelOnCertificationDate: this._maxReachableLevelOnCertificationDate,
-      isCancelled: this._isCancelled,
       abortReason: this._abortReason,
       complementaryCertificationCourses: this._complementaryCertificationCourses,
       numberOfChallenges: this._numberOfChallenges,

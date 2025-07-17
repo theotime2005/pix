@@ -40,7 +40,6 @@ export default class Certification extends Model {
   @attr() birthPostalCode;
   @attr() createdAt;
   @attr() completedAt;
-  @attr() isCancelled;
   @attr() isRejectedForFraud;
   @attr() status;
   @attr() juryId;
@@ -80,9 +79,8 @@ export default class Certification extends Model {
     return value ? 'Oui' : 'Non';
   }
 
-  // isCancelled will be removed
   get isCertificationCancelled() {
-    return this.isCancelled || this.status === assessmentResultStatus.CANCELLED;
+    return this.status === assessmentResultStatus.CANCELLED;
   }
 
   get hasComplementaryCertifications() {

@@ -6,68 +6,6 @@ import { domainBuilder, expect } from '../../../../../test-helper.js';
 import { generateChallengeList } from '../../../fixtures/challenges.js';
 
 describe('Unit | Domain | Models | CertificationCourse', function () {
-  describe('#cancel #isCancelled', function () {
-    it('should cancel a certification course', function () {
-      // given
-      const certificationCourse = domainBuilder.buildCertificationCourse({
-        isCancelled: false,
-      });
-
-      // when
-      certificationCourse.cancel();
-
-      // then
-      expect(certificationCourse.toDTO().isCancelled).to.be.true;
-    });
-
-    describe('when certification course is already cancelled', function () {
-      it('should not change isCancelled value', function () {
-        // given
-        const certificationCourse = domainBuilder.buildCertificationCourse({
-          isCancelled: false,
-        });
-
-        // when
-        certificationCourse.cancel();
-        certificationCourse.cancel();
-
-        // then
-        expect(certificationCourse.toDTO().isCancelled).to.be.true;
-      });
-    });
-  });
-
-  describe('#cancel #uncancelled', function () {
-    it('should uncancel a certification course', function () {
-      // given
-      const certificationCourse = domainBuilder.buildCertificationCourse({
-        isCancelled: true,
-      });
-
-      // when
-      certificationCourse.uncancel();
-
-      // then
-      expect(certificationCourse.toDTO().isCancelled).to.be.false;
-    });
-
-    describe('when certification course is not cancelled', function () {
-      it('should not change isCancelled value', function () {
-        // given
-        const certificationCourse = domainBuilder.buildCertificationCourse({
-          isCancelled: true,
-        });
-
-        // when
-        certificationCourse.uncancel();
-        certificationCourse.uncancel();
-
-        // then
-        expect(certificationCourse.toDTO().isCancelled).to.be.false;
-      });
-    });
-  });
-
   describe('#abort', function () {
     it('should abort a certification course', function () {
       // given

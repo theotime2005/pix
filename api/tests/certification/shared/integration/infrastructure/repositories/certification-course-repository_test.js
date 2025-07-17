@@ -373,7 +373,6 @@ describe('Integration | Repository | Certification Course', function () {
       const userId = databaseBuilder.factory.buildUser({}).id;
       certificationCourseData = databaseBuilder.factory.buildCertificationCourse({
         userId,
-        isCancelled: false,
         updatedAt: new Date('2020-12-01'),
       });
       certificationCourse = domainBuilder.buildCertificationCourse(certificationCourseData);
@@ -400,7 +399,6 @@ describe('Integration | Repository | Certification Course', function () {
         lastName: 'Compétan',
         birthdate: '2000-01-01',
         birthplace: 'Paris',
-        isCancelled: true,
         completedAt: new Date('1999-12-31'),
         birthINSEECode: '01091',
         birthPostalCode: '01200',
@@ -430,7 +428,6 @@ describe('Integration | Repository | Certification Course', function () {
       );
       expect(updatedCertificationCourse.birthCountry).to.equal(unpersistedUpdatedCertificationCourseDTO.birthCountry);
       expect(updatedCertificationCourse.sex).to.equal(unpersistedUpdatedCertificationCourseDTO.sex);
-      expect(updatedCertificationCourse.isCancelled).to.be.true;
       expect(updatedCertificationCourse.completedAt).to.deep.equal(new Date('1999-12-31'));
       expect(updatedCertificationCourse.isRejectedForFraud).to.be.true;
       expect(updatedCertificationCourse.updatedAt).to.be.greaterThan(certificationCourseData.updatedAt);
