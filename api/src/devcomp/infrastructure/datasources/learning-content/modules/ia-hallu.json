@@ -94,7 +94,7 @@
           "element": {
             "id": "3147aedb-8fc2-4510-aad8-fa7f35e77dd7",
             "type": "text",
-            "content": "<p>Ci-dessous, pour chacun des exemples, indiquer votre niveau de confiance en la réponse donnée par le logiciel d'IA générative.</p>"
+            "content": "<p>Pour chacun des exemples ci-dessous, indiquez votre niveau de confiance en la réponse donnée par un logiciel d'IA générative.</p>"
           }
         },
         {
@@ -120,7 +120,7 @@
                 {
                   "id": "0e9f94cd-7236-4f68-a50e-b079cc0f9c9d",
                   "type": "text",
-                  "content": "<p>Une IA générative peut faire des erreurs. Elle peut <strong>générer des affirmations fausses ou erronées et les présenter comme des faits</strong>.</p>"
+                  "content": "<p>L'IA générative peut faire des erreurs. Elle peut <strong>générer des affirmations fausses ou erronées et les présenter comme des faits</strong>.</p>"
                 }
               ]
             },
@@ -192,7 +192,7 @@
                 {
                   "id": "21e1f6a8-8ea2-4b0c-8a6c-e68a1f875920",
                   "type": "text",
-                  "content": "<p>Ici le logiciel d’IA générative a fait une erreur. L’équipe de France masculine de foot a remporté la Coupe du monde deux fois. Une fois en 1998 et une fois en 2018.</p>"
+                  "content": "<p>Ici le logiciel d’IA générative a fait une erreur. L’équipe de France masculine de foot a bien remporté la Coupe du monde deux fois. Une fois en 1998 et une fois en 2018.</p>"
                 },
                 {
                   "id": "ceed2a7c-76f9-44f1-be34-a2285cd1aa4d",
@@ -204,7 +204,7 @@
                       "content": "<p>L'ordinateur d’Irène n'est pas assez puissant, il a provoqué un bug.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Et non,...</p>"
+                        "diagnosis": "<p>Et non, la réponse donnée par le logiciel d'IA générative ne dépend pas de la puissance de l'ordinateur d'Irène. <br>Par contre l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
                       }
                     },
                     {
@@ -212,7 +212,7 @@
                       "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Effectivement,...</p>"
+                        "diagnosis": "<p>Effectivement, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
                       }
                     },
                     {
@@ -220,7 +220,7 @@
                       "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Et non,...</p>"
+                        "diagnosis": "<p>Et non, pas de partie pris du logiciel d'IA générative pour une équipe plutôt qu'une autre. <br>Par contre, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
                       }
                     }
                   ],
@@ -377,7 +377,7 @@
           "element": {
             "id": "ecffdbbe-78c7-4da7-9b7d-2426eb9daf3c",
             "type": "text",
-            "content": "<p>Depuis sa dernière utilisation, Nathan n'utilise plus l'IA générative pour ses devoirs. Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br>Pour la préparation d'un exposé, elle interroge un logiciel d'IA générative.</p>"
+            "content": "<p>Depuis sa dernière utilisation de l'IA, Nathan n'utilise plus l'IA générative pour ses devoirs. Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br>Pour la préparation d'un exposé, elle interroge un logiciel d'IA générative.</p>"
           }
         },
         {
@@ -385,7 +385,7 @@
           "element": {
             "id": "0b9a3ac4-f723-45ea-bfcd-c31200474bee",
             "type": "text",
-            "content": "<p><strong>Parmi les réactions suivantes, sélectionnez s’il s’agit d’un bon réflexe ou d’un mauvais réflexe pour Asma.</strong></p>"
+            "content": "<p><strong>Parmi les réactions suivantes, sélectionnez s’il s’agit d’un bon réflexe ou d’un mauvais réflexe pour Asma face à la réponse du logiciel d'IA générative.</strong></p>"
           }
         },
         {
