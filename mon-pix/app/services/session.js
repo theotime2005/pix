@@ -8,9 +8,6 @@ const userIdForLearnerAssociationStorage = new SessionStorageEntry('userIdForLea
 
 export default class CurrentSessionService extends SessionService {
   @service currentUser;
-  @service currentDomain;
-  @service intl;
-  @service dayjs;
   @service url;
   @service router;
   @service oidcIdentityProviders;
@@ -121,7 +118,6 @@ export default class CurrentSessionService extends SessionService {
 
   async _loadCurrentUserAndLocale(language = null) {
     await this.currentUser.load();
-
     this.locale.setUserLocale(this.currentUser.user, language);
   }
 

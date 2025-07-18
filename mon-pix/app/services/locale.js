@@ -2,11 +2,10 @@ import Service, { service } from '@ember/service';
 import ENV from 'mon-pix/config/environment';
 import languages from 'mon-pix/languages';
 
-const { COOKIE_LOCALE_LIFESPAN_IN_SECONDS } = ENV.APP;
+const { DEFAULT_LOCALE, COOKIE_LOCALE_LIFESPAN_IN_SECONDS } = ENV.APP;
 export const FRENCH_INTERNATIONAL_LOCALE = 'fr';
 export const ENGLISH_INTERNATIONAL_LOCALE = 'en';
 export const FRENCH_FRANCE_LOCALE = 'fr-FR';
-export const { DEFAULT_LOCALE } = ENV.APP;
 
 const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'fr-BE', 'fr-FR', 'nl-BE', 'nl'];
 
@@ -28,36 +27,20 @@ export default class LocaleService extends Service {
     }
   }
 
-  #findSupportedLanguage(language) {
-    if (!language) return;
-    return supportedLanguages.includes(language) ? language : DEFAULT_LOCALE;
-  }
-
-  #setLocaleCookie(locale) {
-    const cookie = this.cookies.exists('locale');
-    if (cookie) return;
-    this.cookies.write('locale', locale, {
-      domain: `pix.${this.currentDomain.getExtension()}`,
-      maxAge: COOKIE_LOCALE_LIFESPAN_IN_SECONDS,
-      path: '/',
-      sameSite: 'Strict',
-    });
-  }
-
   setLocale(locale) {
     this.metrics.context.locale = locale;
     this.intl.setLocale(locale);
     this.dayjs.setLocale(locale);
   }
 
-  setUserLocale(currentUser = null, language = null) {
+  setUserLocale(currentUser = null, overridingLanguage = null) {
     if (this.currentDomain.isFranceDomain) {
       this.setLocale(FRENCH_INTERNATIONAL_LOCALE);
       this.#setLocaleCookie(FRENCH_FRANCE_LOCALE);
       return;
     }
 
-    const supportedLanguage = this.#findSupportedLanguage(language);
+    const supportedLanguage = this.#findSupportedLanguage(overridingLanguage);
     if (supportedLanguage) {
       this.setLocale(supportedLanguage);
       return;
@@ -69,5 +52,22 @@ export default class LocaleService extends Service {
     }
 
     this.setLocale(DEFAULT_LOCALE);
+  }
+
+  #findSupportedLanguage(language) {
+    if (!language) return;
+    return supportedLanguages.includes(language) ? language : DEFAULT_LOCALE;
+  }
+
+  #setLocaleCookie(locale) {
+    const cookie = this.cookies.exists('locale');
+    if (cookie) return;
+
+    this.cookies.write('locale', locale, {
+      domain: `pix.${this.currentDomain.getExtension()}`,
+      maxAge: COOKIE_LOCALE_LIFESPAN_IN_SECONDS,
+      path: '/',
+      sameSite: 'Strict',
+    });
   }
 }
