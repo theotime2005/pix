@@ -970,14 +970,15 @@
       "when": "Date",
       "metadata": "Metadata",
       "events" : {
-        "ComplementaryNotCertifiableEvent": "Candidat not eligible to complementary",
-        "ComplementaryCertifiableEvent": "Candidat eligible to complementary",
+        "ComplementaryNotCertifiableEvent": "Candidate not eligible to complementary",
+        "ComplementaryCertifiableEvent": "Candidate eligible to complementary",
         "CertificationStartedEvent" : "Certification started",
         "CertificationEndedEvent" : "Certification ended",
-        "CandidateReconciledEvent" : "Candidat reconciled to a user",
-        "CertificationNotCertifiableEvent" : "Candidat not certifiable (Pix Core)",
+        "CandidateReconciledEvent" : "Candidate reconciled to a user",
+        "CandidateCertifiableEvent" : "Candidate is certifiable",
+        "CandidateNotCertifiableEvent" : "Candidate not certifiable (Pix Core)",
         "CandidateEndScreenEvent" : "Certification completed (end screen test)",
-        "CandidateCreatedEvent" : "Candidat added to the session"
+        "CandidateCreatedEvent" : "Candidate added to the session"
       }
     },
     "sessions": {

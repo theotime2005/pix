@@ -1,6 +1,7 @@
+import { CandidateCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateCertifiableEvent.js';
 import { CandidateCreatedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateCreatedEvent.js';
 import { CandidateEndScreenEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateEndScreenEvent.js';
-import { CertificationNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
+import { CandidateNotCertifiableEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateNotCertifiableEvent.js';
 import { CandidateReconciledEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CandidateReconciledEvent.js';
 import { CertificationEndedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationEndedEvent.js';
 import { CertificationStartedEvent } from '../../../../../../src/certification/enrolment/domain/models/timeline/CertificationStartedEvent.js';
@@ -114,7 +115,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
 
         // then
         expect(candidateTimeline.events).to.deep.includes(
-          new CertificationNotCertifiableEvent({ when: candidate.reconciledAt }),
+          new CandidateNotCertifiableEvent({ when: candidate.reconciledAt }),
         );
       });
     });
@@ -122,7 +123,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
 
   context('certification startup', function () {
     context('when has a CORE subscription', function () {
-      it('should only add a certification started event', async function () {
+      it('should add a certification started event + certifiable event', async function () {
         // given
         const sessionId = 1234;
         const certificationCandidateId = 4567;
@@ -133,6 +134,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
           }),
         );
         const certifCourse = domainBuilder.buildCertificationCourse();
+        const placementProfile = domainBuilder.buildPlacementProfile();
+        placementProfileService.getPlacementProfile.resolves(placementProfile);
         certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
         certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
 
@@ -146,6 +149,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
         // then
         expect(candidateTimeline.events).to.deep.includes(
           new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+          new CandidateCertifiableEvent({ when: certifCourse.getStartDate() }),
         );
       });
     });
@@ -167,6 +171,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
             }),
           );
           const certifCourse = domainBuilder.buildCertificationCourse({});
+          const placementProfile = domainBuilder.buildPlacementProfile();
+          placementProfileService.getPlacementProfile.resolves(placementProfile);
           certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
           certificationBadgesService.findStillValidBadgeAcquisitions.resolves([
             domainBuilder.buildCertifiableBadgeAcquisition({ complementaryCertificationId: 2 }),
@@ -182,6 +188,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
           // then
           expect(candidateTimeline.events).to.deep.includes(
             new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+            new CandidateCertifiableEvent({ when: certifCourse.getStartDate() }),
             new ComplementaryNotCertifiableEvent({
               when: certifCourse.getStartDate(),
               complementaryCertificationId: complementarySubscription.complementaryCertificationId,
@@ -206,6 +213,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
             }),
           );
           const certifCourse = domainBuilder.buildCertificationCourse({});
+          const placementProfile = domainBuilder.buildPlacementProfile();
+          placementProfileService.getPlacementProfile.resolves(placementProfile);
           certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
           const badge = domainBuilder.buildCertifiableBadgeAcquisition({
             complementaryCertificationId: complementarySubscription.complementaryCertificationId,
@@ -222,6 +231,7 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
           // then
           expect(candidateTimeline.events).to.deep.includes(
             new CertificationStartedEvent({ when: certifCourse.getStartDate() }),
+            new CandidateCertifiableEvent({ when: certifCourse.getStartDate() }),
             new ComplementaryCertifiableEvent({
               when: certifCourse.getStartDate(),
               complementaryCertificationKey: badge.badgeKey,
@@ -247,6 +257,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
           const certifCourse = domainBuilder.buildCertificationCourse({
             completedAt: new Date(),
           });
+          const placementProfile = domainBuilder.buildPlacementProfile();
+          placementProfileService.getPlacementProfile.resolves(placementProfile);
           certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
           certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
 
@@ -277,6 +289,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
             }),
           );
           const certifCourse = domainBuilder.buildCertificationCourse({ completedAt: null });
+          const placementProfile = domainBuilder.buildPlacementProfile();
+          placementProfileService.getPlacementProfile.resolves(placementProfile);
           certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
           certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
           const assessment = domainBuilder.buildCertificationAssessment();
@@ -313,6 +327,8 @@ describe('Certification | Enrolment | Unit | Domain | UseCase | get-candidate-ti
             }),
           );
           const certifCourse = domainBuilder.buildCertificationCourse({ completedAt: null });
+          const placementProfile = domainBuilder.buildPlacementProfile();
+          placementProfileService.getPlacementProfile.resolves(placementProfile);
           certificationCourseRepository.findOneCertificationCourseByUserIdAndSessionId.resolves(certifCourse);
           certificationBadgesService.findStillValidBadgeAcquisitions.resolves([]);
           const assessment = domainBuilder.buildCertificationAssessment();

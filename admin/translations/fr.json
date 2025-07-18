@@ -757,7 +757,8 @@
         "CandidateEndScreenEvent": "Ecran de fin de certification",
         "CandidateReconciledEvent": "Candidat réconcilié à un compte utilisateur",
         "CertificationEndedEvent": "Fin de la certification",
-        "CertificationNotCertifiableEvent": "Candidat non certifiable (Pix Coeur)",
+        "CandidateNotCertifiableEvent": "Candidat non certifiable (Pix Coeur)",
+        "CandidateCertifiableEvent": "Candidat est certifiable",
         "CertificationStartedEvent": "Entrée en certification",
         "ComplementaryCertifiableEvent": "Candidat éligible a sa complementaire",
         "ComplementaryNotCertifiableEvent": "Candidat non éligible à sa complémentaire"
