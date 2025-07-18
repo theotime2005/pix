@@ -1,10 +1,7 @@
 import { service } from '@ember/service';
 import SessionService from 'ember-simple-auth/services/session';
 import get from 'lodash/get';
-import { DEFAULT_LOCALE, FRENCH_FRANCE_LOCALE, FRENCH_INTERNATIONAL_LOCALE } from 'mon-pix/services/locale';
 import { SessionStorageEntry } from 'mon-pix/utils/session-storage-entry.js';
-
-const FRANCE_TLD = 'fr';
 
 const externalUserTokenFromGarStorage = new SessionStorageEntry('externalUserTokenFromGar');
 const userIdForLearnerAssociationStorage = new SessionStorageEntry('userIdForLearnerAssociation');
@@ -29,7 +26,7 @@ export default class CurrentSessionService extends SessionService {
   }
 
   async handleAuthentication() {
-    await this._loadCurrentUserAndSetLocale();
+    await this._loadCurrentUserAndLocale();
 
     const nextURL = this.data.nextURL;
     const isFromIdentityProviderLoginPage = this.oidcIdentityProviders.list.some((identityProvider) => {
@@ -60,8 +57,8 @@ export default class CurrentSessionService extends SessionService {
   }
 
   async handleUserLanguageAndLocale(transition = null) {
-    const language = this.locale.handleUnsupportedLanguage(transition?.to?.queryParams?.lang);
-    await this._loadCurrentUserAndSetLocale(language);
+    const queryParamLanguage = transition?.to?.queryParams?.lang;
+    await this._loadCurrentUserAndLocale(queryParamLanguage);
   }
 
   get redirectionUrl() {
@@ -122,35 +119,10 @@ export default class CurrentSessionService extends SessionService {
     userIdForLearnerAssociationStorage.remove();
   }
 
-  async _loadCurrentUserAndSetLocale(locale = null) {
+  async _loadCurrentUserAndLocale(language = null) {
     await this.currentUser.load();
-    await this._handleLocale(locale);
-  }
 
-  async _handleLocale(localeFromQueryParam = null) {
-    const isUserLoaded = !!this.currentUser.user;
-    const domain = this.currentDomain.getExtension();
-
-    if (domain === FRANCE_TLD) {
-      this.locale.setLocale(FRENCH_INTERNATIONAL_LOCALE);
-
-      if (!this.locale.hasLocaleCookie()) {
-        this.locale.setLocaleCookie(FRENCH_FRANCE_LOCALE);
-      }
-      return;
-    }
-
-    if (localeFromQueryParam) {
-      this.locale.setLocale(localeFromQueryParam);
-      return;
-    }
-
-    if (isUserLoaded) {
-      this.locale.setLocale(this.currentUser.user.lang);
-      return;
-    }
-
-    this.locale.setLocale(DEFAULT_LOCALE);
+    this.locale.setUserLocale(this.currentUser.user, language);
   }
 
   _getRouteAfterInvalidation() {

@@ -51,4 +51,28 @@ export default class LocaleService extends Service {
     this.intl.setLocale(locale);
     this.dayjs.setLocale(locale);
   }
+
+  setUserLocale(currentUser = null, language = null) {
+    if (this.currentDomain.isFranceDomain) {
+      this.setLocale(FRENCH_INTERNATIONAL_LOCALE);
+
+      if (!this.hasLocaleCookie()) {
+        this.setLocaleCookie(FRENCH_FRANCE_LOCALE);
+      }
+      return;
+    }
+
+    const supportedLanguage = this.handleUnsupportedLanguage(language);
+    if (supportedLanguage) {
+      this.setLocale(supportedLanguage);
+      return;
+    }
+
+    if (currentUser) {
+      this.setLocale(currentUser.lang);
+      return;
+    }
+
+    this.setLocale(DEFAULT_LOCALE);
+  }
 }
