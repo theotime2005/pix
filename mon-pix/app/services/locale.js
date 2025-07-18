@@ -28,7 +28,7 @@ export default class LocaleService extends Service {
     }
   }
 
-  handleUnsupportedLanguage(language) {
+  #findSupportedLanguage(language) {
     if (!language) return;
     return supportedLanguages.includes(language) ? language : DEFAULT_LOCALE;
   }
@@ -62,7 +62,7 @@ export default class LocaleService extends Service {
       return;
     }
 
-    const supportedLanguage = this.handleUnsupportedLanguage(language);
+    const supportedLanguage = this.#findSupportedLanguage(language);
     if (supportedLanguage) {
       this.setLocale(supportedLanguage);
       return;
