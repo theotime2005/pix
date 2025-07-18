@@ -9,10 +9,9 @@ import { acceptPixOrgaTermsOfService } from '../../common/tooling/legal-document
 import { SHARED_ORGANIZATION_EXTERNAL_ID, SHARED_ORGANIZATION_USER_ID } from './constants.js';
 
 /**
- * Default Certification organization
- *    - Pix Orga user   : certif-prescriptor@example.net
+ * Default Certification organizations
  */
-export class CommonPixCertifOrganization {
+export class CommonOrganizations {
   organization;
   organizationMember;
   organizationMembership;
@@ -21,9 +20,9 @@ export class CommonPixCertifOrganization {
     this.databaseBuilder = databaseBuilder;
   }
 
-  static async getInstance({ databaseBuilder }) {
+  static async getPro({ databaseBuilder }) {
     if (!this.instance) {
-      this.instance = await new CommonPixCertifOrganization({ databaseBuilder }).#init();
+      this.instance = await new CommonOrganizations({ databaseBuilder }).#init();
     }
 
     return this.instance;

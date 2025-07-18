@@ -19,7 +19,7 @@ import {
   CLEA_V2_TARGET_PROFILE_ID,
 } from '../../common/complementary-certification-builder.js';
 import { CommonCertifiableUser } from '../shared/common-certifiable-user.js';
-import { CommonPixCertifOrganization } from '../shared/common-organisation.js';
+import { CommonOrganizations } from '../shared/common-organisations.js';
 import {
   DOUBLE_CERTIFICATION_CLEA_CERTIFICATION_CENTER_EXTERNAL_ID,
   PUBLISHED_DOUBLE_CERTIFICATION_CLEA_SESSION,
@@ -79,7 +79,7 @@ export class CleaV3Seed {
   }
 
   async #addOrganization() {
-    const { organization, organizationMember } = await CommonPixCertifOrganization.getInstance({
+    const { organization, organizationMember } = await CommonOrganizations.getPro({
       databaseBuilder: this.databaseBuilder,
     });
 

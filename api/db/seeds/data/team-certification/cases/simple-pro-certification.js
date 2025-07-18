@@ -13,7 +13,7 @@ import {
 import { normalize } from '../../../../../src/shared/infrastructure/utils/string-utils.js';
 import { usecases as teamUsecases } from '../../../../../src/team/domain/usecases/index.js';
 import { CommonCertifiableUser } from '../shared/common-certifiable-user.js';
-import { CommonPixCertifOrganization } from '../shared/common-organisation.js';
+import { CommonOrganizations } from '../shared/common-organisations.js';
 import {
   PRO_CERTIFICATION_CENTER_EXTERNAL_ID,
   PRO_CERTIFICATION_CENTER_ID,
@@ -66,7 +66,7 @@ export class ProSeed {
   }
 
   async #addOrganization() {
-    const commonOrgaService = await CommonPixCertifOrganization.getInstance({ databaseBuilder: this.databaseBuilder });
+    const commonOrgaService = await CommonOrganizations.getPro({ databaseBuilder: this.databaseBuilder });
     return commonOrgaService.organizationMember;
   }
 
