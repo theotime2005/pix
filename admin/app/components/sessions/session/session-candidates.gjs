@@ -10,25 +10,17 @@ export default class SessionCandidates extends Component {
   @service intl;
 
   computeSubscriptionsText = (candidate) => {
-    const complementaryCertificationList = this.args.complementaryCertifications ?? [];
-    const subscriptionLabels = [];
-
-    if (candidate.hasDualCertificationSubscriptionCoreClea(complementaryCertificationList)) {
-      subscriptionLabels.push(this.intl.t('pages.sessions.candidates.subscriptions.dual-core-clea'));
-    } else {
-      for (const subscription of candidate.subscriptions) {
-        if (subscription.isCore)
-          subscriptionLabels.unshift(this.intl.t('pages.sessions.candidates.subscriptions.core'));
-        else {
-          const candidateComplementaryCertification = complementaryCertificationList.find(
-            (complementaryCertification) => complementaryCertification.id === subscription.complementaryCertificationId,
-          );
-          subscriptionLabels.push(candidateComplementaryCertification?.label || '-');
-        }
-      }
+    if (candidate.subscriptions.length === 2) {
+      return this.intl.t('pages.sessions.candidates.subscriptions.dual-core-clea');
+    }
+    const subscription = candidate.subscriptions[0];
+    if (subscription.isCore) {
+      return this.intl.t('pages.sessions.candidates.subscriptions.core');
     }
 
-    return subscriptionLabels.join(', ');
+    return this.intl.t('pages.sessions.candidates.subscriptions.complementary', {
+      complementaryCertificationId: subscription.complementaryCertificationId,
+    });
   };
 
   <template>
@@ -76,14 +68,7 @@ export default class SessionCandidates extends Component {
               </span>
             </:header>
             <:cell>
-              {{#each candidate.subscriptions as |subscription|}}
-                {{#if subscription.isCore}}
-                  <span>{{t "pages.sessions.candidates.subscriptions.core"}}</span>
-                {{/if}}
-                {{#if subscription.isComplementary}}
-                  <span>, {{t "pages.sessions.candidates.subscriptions.complementary"}}</span>
-                {{/if}}
-              {{/each}}
+              {{this.computeSubscriptionsText candidate}}
             </:cell>
           </PixTableColumn>
         </:columns>

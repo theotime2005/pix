@@ -753,12 +753,12 @@
     "candidate": {
       "code": "Evenement",
       "events": {
+        "CandidateCertifiableEvent": "Candidate is certifiable",
         "CandidateCreatedEvent": "Candidat inscrit en session",
         "CandidateEndScreenEvent": "Ecran de fin de certification",
+        "CandidateNotCertifiableEvent": "Candidate not certifiable (Pix Core)",
         "CandidateReconciledEvent": "Candidat réconcilié à un compte utilisateur",
         "CertificationEndedEvent": "Fin de la certification",
-        "CandidateNotCertifiableEvent": "Candidat non certifiable (Pix Coeur)",
-        "CandidateCertifiableEvent": "Candidat est certifiable",
         "CertificationStartedEvent": "Entrée en certification",
         "ComplementaryCertifiableEvent": "Candidat éligible a sa complementaire",
         "ComplementaryNotCertifiableEvent": "Candidat non éligible à sa complémentaire"
@@ -987,15 +987,16 @@
           "birth-date": "Date de naissance",
           "birth-date-example": "jj/mm/aaaa",
           "firstname": "Prénom",
-          "id": "ID",
+          "id": "ID candidat",
           "lastname": "Nom",
           "selected-subscriptions": "Inscrit à"
         },
-        "caption": "Candidates",
+        "caption": "Candidats",
         "empty-result": "Aucun résultat",
         "subscriptions": {
-          "complementary": "Complémentaire",
-          "core": "Certification Pix"
+          "complementary": "Complémentaire {complementaryCertificationId}",
+          "core": "Certification Pix",
+          "dual-core-clea": "Double Certification CLEA Numerique"
         }
       },
       "informations": {

@@ -750,6 +750,23 @@
         }
       }
     },
+    "candidate": {
+      "code": "Event",
+      "events": {
+        "CandidateCertifiableEvent": "Candidate is certifiable",
+        "CandidateCreatedEvent": "Candidate added to the session",
+        "CandidateEndScreenEvent": "Certification completed (end screen test)",
+        "CandidateNotCertifiableEvent": "Candidate not certifiable (Pix Core)",
+        "CandidateReconciledEvent": "Candidate reconciled to a user",
+        "CertificationEndedEvent": "Certification ended",
+        "CertificationStartedEvent": "Certification started",
+        "ComplementaryCertifiableEvent": "Candidate eligible to complementary",
+        "ComplementaryNotCertifiableEvent": "Candidate not eligible to complementary"
+      },
+      "metadata": "Metadata",
+      "title": "Candidate's timeline",
+      "when": "Date"
+    },
     "certification-centers": {
       "archive-confirmation-modal": {
         "attachment": "Le rattachement et l'invitation de nouvelles personnes seront bloqués",
@@ -964,38 +981,22 @@
         }
       }
     },
-    "candidate": {
-      "title": "Candidate's timeline",
-      "code": "Event",
-      "when": "Date",
-      "metadata": "Metadata",
-      "events" : {
-        "ComplementaryNotCertifiableEvent": "Candidate not eligible to complementary",
-        "ComplementaryCertifiableEvent": "Candidate eligible to complementary",
-        "CertificationStartedEvent" : "Certification started",
-        "CertificationEndedEvent" : "Certification ended",
-        "CandidateReconciledEvent" : "Candidate reconciled to a user",
-        "CandidateCertifiableEvent" : "Candidate is certifiable",
-        "CandidateNotCertifiableEvent" : "Candidate not certifiable (Pix Core)",
-        "CandidateEndScreenEvent" : "Certification completed (end screen test)",
-        "CandidateCreatedEvent" : "Candidate added to the session"
-      }
-    },
     "sessions": {
       "candidates": {
         "candidate": {
           "birth-date": "Date of birth",
           "birth-date-example": "dd/mm/yyyy",
           "firstname": "First name",
-          "id": "ID",
+          "id": "ID candidat",
           "lastname": "Last name",
           "selected-subscriptions": "Subscriptions"
         },
         "caption": "Candidats",
         "empty-result": "No result",
         "subscriptions": {
-          "complementary": "Complémentary",
-          "core": "Pix Certification"
+          "complementary": "Complémentaire {complementaryCertificationId}",
+          "core": "Certification Pix",
+          "dual-core-clea": "Double Certification CLEA Numerique"
         }
       },
       "informations": {
