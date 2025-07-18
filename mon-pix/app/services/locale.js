@@ -33,11 +33,9 @@ export default class LocaleService extends Service {
     return supportedLanguages.includes(language) ? language : DEFAULT_LOCALE;
   }
 
-  hasLocaleCookie() {
-    return this.cookies.exists('locale');
-  }
-
-  setLocaleCookie(locale) {
+  #setLocaleCookie(locale) {
+    const cookie = this.cookies.exists('locale');
+    if (cookie) return;
     this.cookies.write('locale', locale, {
       domain: `pix.${this.currentDomain.getExtension()}`,
       maxAge: COOKIE_LOCALE_LIFESPAN_IN_SECONDS,
@@ -55,10 +53,7 @@ export default class LocaleService extends Service {
   setUserLocale(currentUser = null, language = null) {
     if (this.currentDomain.isFranceDomain) {
       this.setLocale(FRENCH_INTERNATIONAL_LOCALE);
-
-      if (!this.hasLocaleCookie()) {
-        this.setLocaleCookie(FRENCH_FRANCE_LOCALE);
-      }
+      this.#setLocaleCookie(FRENCH_FRANCE_LOCALE);
       return;
     }
 
