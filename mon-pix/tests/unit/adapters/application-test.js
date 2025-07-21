@@ -5,9 +5,6 @@ import sinon from 'sinon';
 
 import { stubSessionService } from '../../helpers/service-stubs.js';
 
-const FRENCH_INTERNATIONAL_LOCALE = 'fr';
-const FRANCE_TLD = 'fr';
-const ENGLISH_INTERNATIONAL_LOCALE = 'en';
 const FRENCH_FRANCE_LOCALE = 'fr-fr';
 
 module('Unit | Adapters | ApplicationAdapter', function (hooks) {
@@ -48,47 +45,13 @@ module('Unit | Adapters | ApplicationAdapter', function (hooks) {
     });
 
     module('Accept-Language headers', function () {
-      test('should add Accept-Language header set to fr-fr when the current domain contains pix.fr and locale is "fr"', function (assert) {
-        // Given
+      test('should add Accept-Language header from the locale service', function (assert) {
+        // Given // When
         const applicationAdapter = this.owner.lookup('adapter:application');
-        applicationAdapter.intl = { primaryLocale: FRENCH_INTERNATIONAL_LOCALE };
-
-        // When
-        applicationAdapter.set('currentDomain', {
-          getExtension() {
-            return FRANCE_TLD;
-          },
-        });
+        applicationAdapter.locale = { acceptLanguageHeader: FRENCH_FRANCE_LOCALE };
 
         // Then
         assert.strictEqual(applicationAdapter.headers['Accept-Language'], FRENCH_FRANCE_LOCALE);
-      });
-
-      test('should add Accept-Language header set to fr when the current domain contains pix.digital and locale is "fr"', function (assert) {
-        // Given
-        const applicationAdapter = this.owner.lookup('adapter:application');
-        applicationAdapter.intl = { primaryLocale: FRENCH_INTERNATIONAL_LOCALE };
-
-        // When
-        applicationAdapter.set('currentDomain', {
-          getExtension() {
-            return 'digital';
-          },
-        });
-
-        // Then
-        assert.strictEqual(applicationAdapter.headers['Accept-Language'], FRENCH_INTERNATIONAL_LOCALE);
-      });
-
-      test('should add Accept-Language header set to en when locale is "en"', function (assert) {
-        // Given
-        const applicationAdapter = this.owner.lookup('adapter:application');
-
-        // When
-        applicationAdapter.intl = { primaryLocale: ENGLISH_INTERNATIONAL_LOCALE };
-
-        // Then
-        assert.strictEqual(applicationAdapter.headers['Accept-Language'], ENGLISH_INTERNATIONAL_LOCALE);
       });
     });
   });

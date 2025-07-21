@@ -7,7 +7,7 @@ module('Unit | Service | request-manager', function (hooks) {
   let requestManagerService;
   let sessionService;
   let currentDomainService;
-  let intlService;
+  let localeService;
 
   hooks.beforeEach(function () {
     sinon.stub(window, 'fetch');
@@ -21,8 +21,8 @@ module('Unit | Service | request-manager', function (hooks) {
     currentDomainService = this.owner.lookup('service:currentDomain');
     sinon.stub(currentDomainService, 'isFranceDomain').value(false);
 
-    intlService = this.owner.lookup('service:intl');
-    sinon.stub(intlService, 'primaryLocale').value('fr');
+    localeService = this.owner.lookup('service:locale');
+    sinon.stub(localeService, 'acceptLanguageHeader').value('fr');
   });
 
   hooks.afterEach(function () {
@@ -63,22 +63,6 @@ module('Unit | Service | request-manager', function (hooks) {
         const [url, { headers }] = window.fetch.getCall(0).args;
         assert.strictEqual(url, '/test');
         assert.strictEqual(headers.get('Authorization'), 'Bearer baz');
-      });
-    });
-
-    module('when it is on France domain', function () {
-      test('it sets the header Accept-Language to fr-fr', async function (assert) {
-        // given
-        window.fetch.resolves(responseMock({ status: 200, data: { foo: 'bar' } }));
-        sinon.stub(currentDomainService, 'isFranceDomain').value(true);
-
-        // when
-        await requestManagerService.request({ url: '/test', method: 'GET' });
-
-        // then
-        const [url, { headers }] = window.fetch.getCall(0).args;
-        assert.strictEqual(url, '/test');
-        assert.strictEqual(headers.get('Accept-Language'), 'fr-fr');
       });
     });
 

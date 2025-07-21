@@ -2,10 +2,6 @@ import { service } from '@ember/service';
 import JSONAPIAdapter from '@ember-data/adapter/json-api';
 import ENV from 'mon-pix/config/environment';
 
-const FRANCE_TLD = 'fr';
-const FRENCH_FRANCE_LOCALE = 'fr-fr';
-const FRENCH_INTERNATIONAL_LOCALE = 'fr';
-
 export default class Application extends JSONAPIAdapter {
   @service currentDomain;
   @service ajaxQueue;
@@ -20,21 +16,13 @@ export default class Application extends JSONAPIAdapter {
     if (this.session.isAuthenticated) {
       headers['Authorization'] = `Bearer ${this.session.data.authenticated.access_token}`;
     }
-    headers['Accept-Language'] = this._locale;
+    headers['Accept-Language'] = this.locale.acceptLanguageHeader;
     headers['X-App-Version'] = ENV.APP.APP_VERSION;
     return headers;
   }
 
   ajax() {
     return this.ajaxQueue.add(() => super.ajax(...arguments));
-  }
-
-  get _locale() {
-    const currentLocale = this.locale.currentLocale;
-    if (currentLocale === FRENCH_INTERNATIONAL_LOCALE) {
-      return this.currentDomain.getExtension() === FRANCE_TLD ? FRENCH_FRANCE_LOCALE : FRENCH_INTERNATIONAL_LOCALE;
-    }
-    return currentLocale;
   }
 
   handleResponse(status, headers, errors) {

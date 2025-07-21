@@ -31,6 +31,11 @@ export default class LocaleService extends Service {
     return this.intl.primaryLocale;
   }
 
+  get acceptLanguageHeader() {
+    if (this.currentDomain.isFranceDomain) return FRENCH_FRANCE_LOCALE;
+    return this.currentLocale;
+  }
+
   isSupportedLocale(locale) {
     try {
       const localeCanonicalName = Intl.getCanonicalLocales(locale)?.[0];
