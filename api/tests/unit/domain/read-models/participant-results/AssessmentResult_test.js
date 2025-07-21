@@ -430,6 +430,7 @@ describe('Unit | Domain | Read-Models | ParticipantResult | AssessmentResult', f
       clock.restore();
       sinon.stub(constants, 'MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING').value(originalConstantValue);
     });
+
     context('when participation is not shared', function () {
       it('should return null', function () {
         const isCampaignMultipleSendings = true;
@@ -479,6 +480,58 @@ describe('Unit | Domain | Read-Models | ParticipantResult | AssessmentResult', f
         });
 
         expect(assessmentResult.remainingSecondsBeforeRetrying).to.equal(3600 * 24 * 1);
+      });
+    });
+    context('when MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING is past', function () {
+      it('should return null', function () {
+        const isCampaignMultipleSendings = true;
+        const isOrganizationLearnerActive = true;
+        const isCampaignArchived = false;
+        const participationResults = {
+          knowledgeElements: [],
+          acquiredBadgeIds: [],
+          masteryRate: '0.45',
+          sharedAt: dayjs(now).subtract(5, 'days'),
+          status: CampaignParticipationStatuses.SHARED,
+          isDeleted: false,
+        };
+        const assessmentResult = new AssessmentResult({
+          participationResults,
+          competences: [],
+          stages: [],
+          badgeResultsDTO: [],
+          isCampaignMultipleSendings,
+          isOrganizationLearnerActive,
+          isCampaignArchived,
+        });
+
+        expect(assessmentResult.remainingSecondsBeforeRetrying).to.equal(null);
+      });
+    });
+    context('when MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING is equal to now', function () {
+      it('should return null', function () {
+        const isCampaignMultipleSendings = true;
+        const isOrganizationLearnerActive = true;
+        const isCampaignArchived = false;
+        const participationResults = {
+          knowledgeElements: [],
+          acquiredBadgeIds: [],
+          masteryRate: '0.45',
+          sharedAt: dayjs(now).subtract(4, 'days'),
+          status: CampaignParticipationStatuses.SHARED,
+          isDeleted: false,
+        };
+        const assessmentResult = new AssessmentResult({
+          participationResults,
+          competences: [],
+          stages: [],
+          badgeResultsDTO: [],
+          isCampaignMultipleSendings,
+          isOrganizationLearnerActive,
+          isCampaignArchived,
+        });
+
+        expect(assessmentResult.remainingSecondsBeforeRetrying).to.equal(null);
       });
     });
   });

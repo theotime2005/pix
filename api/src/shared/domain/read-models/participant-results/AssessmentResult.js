@@ -87,9 +87,21 @@ class AssessmentResult {
       campaignType,
     });
     this.sharedAt = sharedAt;
-    this.remainingSecondsBeforeRetrying = sharedAt
-      ? dayjs(sharedAt).add(MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING, 'days').diff(Date.now(), 'seconds')
-      : null;
+    this.remainingSecondsBeforeRetrying = this._computeRemaingSecondsBeforeRetrying();
+  }
+
+  _computeRemaingSecondsBeforeRetrying() {
+    if (!this.sharedAt) {
+      return null;
+    }
+    const remainingSecondsBeforeRetrying = dayjs(this.sharedAt)
+      .add(MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING, 'days')
+      .diff(Date.now(), 'seconds');
+
+    if (remainingSecondsBeforeRetrying <= 0) {
+      return null;
+    }
+    return remainingSecondsBeforeRetrying;
   }
 
   _computeMasteryRate(masteryRate, isShared, totalSkillsCount, validatedSkillsCount) {
