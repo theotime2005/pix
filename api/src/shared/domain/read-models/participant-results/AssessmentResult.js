@@ -68,12 +68,6 @@ class AssessmentResult {
     this.isDisabled = this._computeIsDisabled(isCampaignArchived, isCampaignDeleted, participationResults.isDeleted);
     this.canRetry = this.#computeCanRetry({
       isCampaignMultipleSendings,
-      sharedAt,
-      isOrganizationLearnerActive,
-      campaignType,
-    });
-    this.canRetrySoon = this.#computeCanRetrySoon({
-      isCampaignMultipleSendings,
       isOrganizationLearnerActive,
       campaignType,
     });
@@ -129,20 +123,13 @@ class AssessmentResult {
     return isImprovementPossible && !isShared;
   }
 
-  #computeCanRetrySoon({ isCampaignMultipleSendings, isOrganizationLearnerActive, campaignType }) {
+  #computeCanRetry({ isCampaignMultipleSendings, isOrganizationLearnerActive, campaignType }) {
     return (
       isOrganizationLearnerActive &&
       !this.isDisabled &&
       isCampaignMultipleSendings &&
       this.isShared &&
       (this.masteryRate < MAX_MASTERY_RATE || campaignType === CampaignTypes.EXAM)
-    );
-  }
-
-  #computeCanRetry({ isCampaignMultipleSendings, sharedAt, isOrganizationLearnerActive, campaignType }) {
-    return (
-      this.#computeCanRetrySoon({ isCampaignMultipleSendings, isOrganizationLearnerActive, campaignType }) &&
-      this._timeBeforeRetryingPassed(sharedAt)
     );
   }
 

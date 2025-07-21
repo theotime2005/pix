@@ -122,8 +122,7 @@ describe('Unit | Serializer | JSON API | participant-result-serializer', functio
           attributes: {
             'can-improve': false,
             'can-reset': false,
-            'can-retry': false,
-            'can-retry-soon': true,
+            'can-retry': true,
             'remaining-seconds-before-retrying': 3600 * 24 * 1,
             'is-completed': true,
             'is-disabled': false,

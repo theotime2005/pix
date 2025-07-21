@@ -639,7 +639,6 @@ describe('Acceptance | API | Campaign Participations', function () {
             'is-completed': true,
             'is-shared': true,
             'can-retry': false,
-            'can-retry-soon': false,
             'can-reset': false,
             'can-improve': false,
             'is-disabled': false,
