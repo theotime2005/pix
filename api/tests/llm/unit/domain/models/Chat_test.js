@@ -390,4 +390,94 @@ describe('LLM | Unit | Domain | Models | Chat', function () {
       );
     });
   });
+
+  describe('#isAttachmentValid', function () {
+    context('when configuration has no attachment', function () {
+      it('returns false', function () {
+        // given
+        const chat = new Chat({
+          id: 'some-chat-id',
+          configuration: new Configuration({ id: 'some-config-id' }),
+          hasAttachmentContextBeenAdded: false,
+          messages: [],
+        });
+
+        // when
+        const isAttachmentValid = chat.isAttachmentValid('myAttachmentName.pdf');
+
+        // then
+        expect(isAttachmentValid).to.be.false;
+      });
+    });
+
+    context('when configuration has an attachment', function () {
+      let chat;
+      beforeEach(function () {
+        chat = new Chat({
+          id: 'some-chat-id',
+          configuration: new Configuration({ id: 'some-config-id', attachment: { name: 'Le plan de ma maison.txt' } }),
+          hasAttachmentContextBeenAdded: false,
+          messages: [],
+        });
+      });
+
+      context('success cases', function () {
+        it('returns true when attachment name and extension is strictly identical', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('Le plan de ma maison.txt');
+
+          // then
+          expect(isAttachmentValid).to.be.true;
+        });
+
+        it('returns true when attachment name has a prefix, but still contains the original expected name, and extension is identical', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('(1) Le plan de ma maison.txt');
+
+          // then
+          expect(isAttachmentValid).to.be.true;
+        });
+
+        it('returns true when attachment name has a suffix, but still contains the original expected name, and extension is identical', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('Le plan de ma maison COPIE(2).txt');
+
+          // then
+          expect(isAttachmentValid).to.be.true;
+        });
+
+        it('returns true when attachment name has both a suffix and a prefix, but still contains the original expected name, and extension is identical', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('1_ Le plan de ma maison COPIE(2).txt');
+
+          // then
+          expect(isAttachmentValid).to.be.true;
+        });
+      });
+
+      context('fail cases', function () {
+        it('returns false when attachment name is OK but extension is wrong', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('Le plan de ma maison.jpeg');
+
+          // then
+          expect(isAttachmentValid).to.be.false;
+        });
+        it('returns false when extension is ok but attachment name is wrong', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('Le plan de mon jardin.txt');
+
+          // then
+          expect(isAttachmentValid).to.be.false;
+        });
+        it('returns false when extension is ok but attachment name is wrong, even if it contains all of the original name', function () {
+          // when
+          const isAttachmentValid = chat.isAttachmentValid('Le plan (COPIE)1 de ma maison.txt');
+
+          // then
+          expect(isAttachmentValid).to.be.false;
+        });
+      });
+    });
+  });
 });

@@ -62,6 +62,20 @@ export class Chat {
     };
   }
 
+  isAttachmentValid(attachmentName) {
+    if (!this.configuration.hasAttachment) {
+      return false;
+    }
+    const fileExtension = attachmentName.split('.').at(-1);
+    const attachmentFilename = attachmentName.split('.').slice(0, -1).join('');
+    const fileExtensionFromConfig = this.configuration.attachmentName.split('.').at(-1);
+    const attachmentFilenameFromConfig = this.configuration.attachmentName.split('.').slice(0, -1).join('');
+    if (fileExtension !== fileExtensionFromConfig) {
+      return false;
+    }
+    return attachmentFilename.includes(attachmentFilenameFromConfig);
+  }
+
   static fromDTO(chatDTO) {
     return new Chat({
       ...chatDTO,
