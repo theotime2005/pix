@@ -76,7 +76,7 @@
           "element": {
             "id": "937b62e7-c4f5-479a-8e1f-afbe7881fa92",
             "type": "text",
-            "content": "<p>Et si on regardait plus précisément ce qu'est l'IA ? Pour cela, partons de l’ordinateur !<br>Selon vous, que peut faire un ordinateur ?</p>"
+            "content": "<p>Et si on regardait plus précisément ce qu'est l'IA ? Pour cela, partons de l’ordinateur !<br><strong>Selon vous, que peut faire un ordinateur ?</strong></p>"
           }
         },
         {
@@ -129,7 +129,7 @@
           "element": {
             "id": "8dba133c-906f-4793-939f-015df7d2acce",
             "type": "text",
-            "content": "<p>Mariam est équipée de nombreux appareils électroniques.<br> Survolez l'image pour explorer son salon pour trouver les appareils et les services qui utilisent des logiciels d'intelligence artificielle.</p>"
+            "content": "<p>Mariam est équipée de nombreux appareils électroniques.<br><strong>Survolez l'image pour explorer son salon pour trouver les appareils et les services qui utilisent des logiciels d'intelligence artificielle.</strong></p>"
           }
         },
         {
@@ -201,7 +201,7 @@
           "element": {
             "id": "a2b1291d-6043-4582-ac69-337835330c07",
             "type": "text",
-            "content": "<p>L’IA est aussi utilisée dans des secteurs d’activité professionnelle.<br>Voyons l'exemple de<strong> la reconnaissance d’image</strong>.&nbsp;🔎🖼️</p><p>Retournez les cartes ci-dessous pour des exemples d’utilisation de la reconnaissance d'image dans différents secteurs d'activité.</p>"
+            "content": "<p>L’IA est aussi utilisée dans des secteurs d’activité professionnelle.<br>Voyons l'exemple de<strong> la reconnaissance d’image</strong>.&nbsp;🔎🖼️</p><p<strong>Retournez les cartes ci-dessous pour des exemples d’utilisation de la reconnaissance d'image dans différents secteurs d'activité.</strong></p>"
           }
         },
         {
@@ -475,7 +475,7 @@
           "element": {
             "id": "7289c873-1f53-4e62-8ed0-5462618547dd",
             "type": "qcu-declarative",
-            "instruction": "<p>Maintenant, vous en savez plus sur ce qu'est l'intelligence artificielle.<br>Dans votre quotidien, utilisez-vous des appareils avec de l’intelligence artificielle ?&nbsp;<br><br></p>",
+            "instruction": "<p>Maintenant, vous en savez plus sur ce qu'est l'intelligence artificielle.<br>Dans votre quotidien, utilisez-vous des appareils avec de l’intelligence artificielle ?</p>",
             "proposals": [
               {
                 "id": "1",
