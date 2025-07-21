@@ -416,7 +416,7 @@ describe('Unit | Domain | Read-Models | ParticipantResult | AssessmentResult', f
     });
   });
 
-  describe('#remainingSecondBeforeRetrying', function () {
+  describe('#remainingSecondsBeforeRetrying', function () {
     let clock, originalConstantValue, now;
 
     beforeEach(function () {
@@ -452,11 +452,11 @@ describe('Unit | Domain | Read-Models | ParticipantResult | AssessmentResult', f
           isCampaignArchived,
         });
 
-        expect(assessmentResult.remainingSecondBeforeRetrying).null;
+        expect(assessmentResult.remainingSecondsBeforeRetrying).null;
       });
     });
     context('when participation is shared', function () {
-      it('should return remainingSecondBeforeRetrying', function () {
+      it('should return remainingSecondsBeforeRetrying', function () {
         const isCampaignMultipleSendings = true;
         const isOrganizationLearnerActive = true;
         const isCampaignArchived = false;
@@ -478,7 +478,7 @@ describe('Unit | Domain | Read-Models | ParticipantResult | AssessmentResult', f
           isCampaignArchived,
         });
 
-        expect(assessmentResult.remainingSecondBeforeRetrying).to.equal(3600 * 24 * 1);
+        expect(assessmentResult.remainingSecondsBeforeRetrying).to.equal(3600 * 24 * 1);
       });
     });
   });

@@ -8,7 +8,7 @@ export default class CampaignParticipationResult extends Model {
   @attr('number') validatedSkillsCount;
   @attr('boolean') canRetry;
   @attr('boolean') canRetrySoon;
-  @attr('number') remainingSecondBeforeRetrying;
+  @attr('number') remainingSecondsBeforeRetrying;
   @attr('boolean') canReset;
   @attr('boolean') canImprove;
   @attr('boolean') isDisabled;

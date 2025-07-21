@@ -22,7 +22,7 @@ const serialize = function (results) {
       'canImprove',
       'isDisabled',
       'sharedAt',
-      'remainingSecondBeforeRetrying',
+      'remainingSecondsBeforeRetrying',
     ],
     campaignParticipationBadges: {
       ref: 'id',

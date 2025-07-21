@@ -45,7 +45,7 @@ module(
           canRetry: false,
           canReset: false,
           canRetrySoon: true,
-          remainingSecondBeforeRetrying: null,
+          remainingSecondsBeforeRetrying: null,
         });
 
         // when
@@ -73,7 +73,7 @@ module(
           canRetry: false,
           canReset: false,
           canRetrySoon: true,
-          remainingSecondBeforeRetrying: '90',
+          remainingSecondsBeforeRetrying: '90',
         });
 
         // when

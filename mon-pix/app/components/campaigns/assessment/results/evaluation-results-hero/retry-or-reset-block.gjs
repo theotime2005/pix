@@ -113,7 +113,7 @@ export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
               {{t "pages.skill-review.hero.retry.actions.retry"}}
             </PixButtonLink>
           {{else}}
-            {{#if @campaignParticipationResult.canRetrySoon}}
+            {{#if @campaignParticipationResult.remainingSecondsBeforeRetrying}}
               <div>
                 <p class="evaluation-results-hero-retry__soon-title">
                   {{t

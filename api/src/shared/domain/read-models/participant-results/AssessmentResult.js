@@ -87,7 +87,7 @@ class AssessmentResult {
       campaignType,
     });
     this.sharedAt = sharedAt;
-    this.remainingSecondBeforeRetrying = sharedAt
+    this.remainingSecondsBeforeRetrying = sharedAt
       ? dayjs(sharedAt).add(MINIMUM_DELAY_IN_DAYS_BEFORE_RETRYING, 'days').diff(Date.now(), 'seconds')
       : null;
   }

@@ -124,7 +124,7 @@ describe('Unit | Serializer | JSON API | participant-result-serializer', functio
             'can-reset': false,
             'can-retry': false,
             'can-retry-soon': true,
-            'remaining-second-before-retrying': 3600 * 24 * 1,
+            'remaining-seconds-before-retrying': 3600 * 24 * 1,
             'is-completed': true,
             'is-disabled': false,
             'is-shared': true,
