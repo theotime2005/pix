@@ -33,7 +33,7 @@ const getByCode = async ({ code }) => {
     throw new NotFoundError(`La quête portant le code ${code} n'existe pas`);
   }
 
-  return new CombinedCourse({ id: quest.id, code: quest.code, organizationId: quest.organizationId, name: quest.name });
+  return new CombinedCourse(quest);
 };
 
 // envisager de mettre tableau vide en valeur par défaut des requirements si pas renseigné pour pas péter le code

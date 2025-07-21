@@ -121,10 +121,11 @@ describe('Quest | Integration | Repository | quest', function () {
   });
 
   describe('#getByCode', function () {
-    it('should return a quest if quest exist', async function () {
+    it('should return a combined course if code exists', async function () {
       // given
       const code = 'SOMETHING';
-      const questId = databaseBuilder.factory.buildQuest({ code }).id;
+      const { id: organizationId } = databaseBuilder.factory.buildOrganization();
+      const questId = databaseBuilder.factory.buildQuest({ code, organizationId }).id;
       await databaseBuilder.commit();
 
       // when
@@ -132,7 +133,7 @@ describe('Quest | Integration | Repository | quest', function () {
 
       // then
       expect(quest).to.be.an.instanceof(CombinedCourse);
-      expect(quest.id).to.equal(questId);
+      expect(quest).to.deep.equal(new CombinedCourse({ ...quest, id: questId }));
     });
 
     it('should throw NotFoundError if quest does not exist', async function () {
