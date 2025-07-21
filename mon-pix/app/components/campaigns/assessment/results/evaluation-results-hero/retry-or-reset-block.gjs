@@ -103,28 +103,30 @@ export default class EvaluationResultsHeroRetryOrResetBlock extends Component {
         </p>
         <div class="evaluation-results-hero-retry__actions">
           {{#if @campaignParticipationResult.canRetry}}
-            <PixButtonLink
-              @variant="secondary"
-              @route="campaigns.entry-point"
-              @model={{@campaign.code}}
-              @query={{this.retryQueryParams}}
-              onclick={{this.handleRetryClick}}
-            >
-              {{t "pages.skill-review.hero.retry.actions.retry"}}
-            </PixButtonLink>
-          {{else}}
             {{#if @campaignParticipationResult.remainingSecondsBeforeRetrying}}
               <div>
                 <p class="evaluation-results-hero-retry__soon-title">
                   {{t
                     "pages.skill-review.hero.retry.retryIn"
-                    duration=(dayjsDurationHumanize @campaignParticipationResult.remainingSecondBeforeRetrying "second")
+                    duration=(dayjsDurationHumanize
+                      @campaignParticipationResult.remainingSecondsBeforeRetrying "second"
+                    )
                   }}
                 </p>
                 <PixButton @variant="secondary" @isDisabled={{true}}>
                   {{t "pages.skill-review.hero.retry.actions.retry"}}
                 </PixButton>
               </div>
+            {{else}}
+              <PixButtonLink
+                @variant="secondary"
+                @route="campaigns.entry-point"
+                @model={{@campaign.code}}
+                @query={{this.retryQueryParams}}
+                onclick={{this.handleRetryClick}}
+              >
+                {{t "pages.skill-review.hero.retry.actions.retry"}}
+              </PixButtonLink>
             {{/if}}
           {{/if}}
 
