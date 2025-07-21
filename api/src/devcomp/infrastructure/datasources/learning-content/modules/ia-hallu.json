@@ -309,15 +309,77 @@
           "element": {
             "id": "337317e2-a1cf-471b-8182-4914fa6b7360",
             "type": "text",
-            "content": "<p>Au fil du temps, la réponse d'un logiciel d'IA générative à une même question évolue.<br>Explorez la frise ci-dessous.[EN COURS DE RETRAVAILLE]</p>"
+            "content": "<p>Au fil du temps, la réponse d'un logiciel d'IA générative à une même question peut évoluer.<br>Observez les deux discussions ci-dessous et répondez à la question.</p>"
           }
         },
         {
           "type": "element",
           "element": {
-            "id": "0de86cf0-d43a-4287-b717-383236ac6408",
-            "type": "text",
-            "content": "<iframe title=\"dnd\" src=\"https://1024pix.github.io/atelier-contenus/LSI/ia-hallu-frise.html \" height=\"600\"></iframe>"
+            "id": "4a6674be-8c5a-4c01-852e-ccc1c9c80138",
+            "type": "custom",
+            "tagName": "llm-compare-messages",
+            "props": {
+              "conversation1": {
+                "title": "ChatGPT 3 - Février 2023",
+                "llmName": "ChatGPT"
+              },
+              "conversation2": {
+                "title": "ChatGPT 4o - Juillet 2025",
+                "llmName": "Chat GPT"
+              },
+              "userName": "Utilisateur",
+              "messages": [
+                {
+                  "direction": "outbound",
+                  "content": "Combien il y a de pays qui commencent par la lettre \"V\" ?"
+                },
+                [
+                  {
+                    "direction": "inbound",
+                    "content": "Il n'y a aucun pays qui commence par la lettre \"V\". "
+                  },
+                  {
+                    "direction": "inbound",
+                    "content": "Il y a 4 pays dont le nom commence par la lettre \"V\" : <ul><li>Vanuatu</li><li>Vatican</li><li>Venezuela</li><li>Vietnam</li></ul> "
+                  }
+                ]
+              ]
+            }
+          }
+        },
+        {
+          "type": "element",
+          "element": {
+            "id": "c28617dd-2134-4551-8157-b7beef89ab35",
+            "type": "qcu",
+            "instruction": "<p>À votre avis, pourquoi Chat GPT 4 ne fait plus d'erreur ?</p>",
+            "proposals": [
+              {
+                "id": "1",
+                "content": "<p>Chat GPT 3 n’était pas encore disponible dans ces 4 pays</p>",
+                "feedback": {
+                  "state": "<p>Mauvaise réponse</p>",
+                  "diagnosis": "<p>Les logiciels d’IA générative sont fréquemment mis à jour par les ingénieurs. Ces mises à jour permettent de corriger des erreurs.</p>"
+                }
+              },
+              {
+                "id": "2",
+                "content": "<p>Ces pays n’existaient pas entre 2023 et 2024</p>",
+                "feedback": {
+                  "state": "<p>Mauvaise réponse</p>",
+                  "diagnosis": "<p>Les logiciels d’IA générative sont fréquemment mis à jour par les ingénieurs. Ces mises à jour permettent de corriger des erreurs.</p>"
+                }
+              },
+              {
+                "id": "3",
+                "content": "<p>L’erreur a été corrigée avec la mise à jour de Chat GPT 4</p>",
+                "feedback": {
+                  "state": "<p>Bonne réponse</p>",
+                  "diagnosis": "<p>Les logiciels d’IA générative sont fréquemment mis à jour par les ingénieurs. Ces mises à jour permettent de corriger des erreurs.</p>"
+                }
+              }
+            ],
+            "solution": "3"
           }
         }
       ]
