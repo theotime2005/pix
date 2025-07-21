@@ -4,4 +4,5 @@ export default class CombinedCourse extends Model {
   @attr('string') name;
   @attr('string') code;
   @attr() organizationId;
+  @attr('string') status;
 }

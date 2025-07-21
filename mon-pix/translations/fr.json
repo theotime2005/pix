@@ -1193,6 +1193,11 @@
         "end-of-assessment": "Fin de votre évaluation"
       }
     },
+    "combined-courses": {
+      "content": {
+        "start-button": "Commencer mon parcours"
+      }
+    },
     "comparison-window": {
       "results": {
         "a11y": {
