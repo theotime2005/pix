@@ -1188,6 +1188,11 @@
         "end-of-assessment": "Fin de la evaluación"
       }
     },
+    "combined-courses": {
+      "content": {
+        "start-button": "Iniciar el curso"
+      }
+    },
     "comparison-window": {
       "results": {
         "a11y": {

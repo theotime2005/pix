@@ -1191,6 +1191,11 @@
         "end-of-assessment": "Einde van je beoordeling"
       }
     },
+    "combined-courses": {
+      "content": {
+        "start-button": "Cursus starten"
+      }
+    },
     "comparison-window": {
       "results": {
         "a11y": {
