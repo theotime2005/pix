@@ -25,10 +25,16 @@ const OrganizationLearnerLoggerContext = {
   ANONYMIZATION: 'ORGANIZATION_LEARNER_ANONYMIZATION',
 };
 
+const CombinedCourseParticipationStatuses = {
+  STARTED: 'started',
+  COMPLETED: 'completed',
+};
+
 export {
   CampaignExternalIdTypes,
   CampaignParticipationLoggerContext,
   CampaignParticipationStatuses,
   CampaignTypes,
+  CombinedCourseParticipationStatuses,
   OrganizationLearnerLoggerContext,
 };
