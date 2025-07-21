@@ -1664,7 +1664,8 @@
         },
         "grain": {
           "continue": "Continue",
-          "skip": "Skip activity",
+          "skip": "Skip",
+          "skipActivity": "Skip activity",
           "terminate": "Terminate"
         },
         "stepper": {

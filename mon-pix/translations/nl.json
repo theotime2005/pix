@@ -1653,7 +1653,8 @@
         },
         "grain": {
           "continue": "Ga verder met",
-          "skip": "Overslaan activiteit",
+          "skip": "Overslaan",
+          "skipActivity": "Overslaan activiteit",
           "terminate": "Afwerking"
         },
         "stepper": {
