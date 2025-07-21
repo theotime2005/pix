@@ -12,7 +12,7 @@ export default class textWithMultipleLang extends Helper {
       text = text.toString();
     }
     const lang = this.locale.currentLocale;
-    const listOfLocales = this.intl.locales;
+    const listOfLocales = this.locale.supportedLocales;
     let outputText = _clean(text, listOfLocales);
     if (text && listOfLocales.includes(lang)) {
       const regex = new RegExp(`(\\[${lang}\\]){1}(.|\n)*?(\\[\\/${lang}\\]){1}`);

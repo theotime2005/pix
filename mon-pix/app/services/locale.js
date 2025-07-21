@@ -16,8 +16,6 @@ const VISIBLE_LANGUAGES = {
   nl: { value: 'Nederlands', languageSwitcherDisplayed: true },
 };
 
-const supportedLanguages = Object.keys(VISIBLE_LANGUAGES);
-
 export default class LocaleService extends Service {
   @service cookies;
   @service currentDomain;
@@ -25,17 +23,21 @@ export default class LocaleService extends Service {
   @service dayjs;
   @service metrics;
 
-  isSupportedLocale(locale) {
-    try {
-      const localeCanonicalName = Intl.getCanonicalLocales(locale)?.[0];
-      return SUPPORTED_LOCALES.some((supportedLocale) => localeCanonicalName == supportedLocale);
-    } catch {
-      return false;
-    }
+  get supportedLocales() {
+    return SUPPORTED_LOCALES;
   }
 
   get currentLocale() {
     return this.intl.primaryLocale;
+  }
+
+  isSupportedLocale(locale) {
+    try {
+      const localeCanonicalName = Intl.getCanonicalLocales(locale)?.[0];
+      return this.supportedLocales.some((supportedLocale) => localeCanonicalName == supportedLocale);
+    } catch {
+      return false;
+    }
   }
 
   setLocale(locale) {
@@ -85,6 +87,7 @@ export default class LocaleService extends Service {
 
   #findSupportedLanguage(language) {
     if (!language) return;
+    const supportedLanguages = Object.keys(VISIBLE_LANGUAGES);
     return supportedLanguages.includes(language) ? language : DEFAULT_LOCALE;
   }
 
