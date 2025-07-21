@@ -6,64 +6,108 @@ import { Membership } from '../../../../../src/shared/domain/models/Membership.j
 import { LANGUAGES_CODE } from '../../../../../src/shared/domain/services/language-service.js';
 import { usecases as teamUsecases } from '../../../../../src/team/domain/usecases/index.js';
 import { acceptPixOrgaTermsOfService } from '../../common/tooling/legal-documents.js';
-import { SHARED_ORGANIZATION_EXTERNAL_ID, SHARED_ORGANIZATION_USER_ID } from './constants.js';
+import {
+  SHARED_ORGANIZATION_USER_ID,
+  SHARED_PRO_ORGANIZATION_EXTERNAL_ID,
+  SHARED_SCO_ORGANIZATION_EXTERNAL_ID,
+} from './constants.js';
 
 /**
  * Default Certification organizations
  */
 export class CommonOrganizations {
-  organization;
-  organizationMember;
-  organizationMembership;
+  static #organizationMember;
 
   constructor({ databaseBuilder }) {
     this.databaseBuilder = databaseBuilder;
   }
 
-  static async getPro({ databaseBuilder }) {
-    if (!this.instance) {
-      this.instance = await new CommonOrganizations({ databaseBuilder }).#init();
+  static async getScoManagingStudents({ databaseBuilder }) {
+    if (!this.sco) {
+      this.sco = {};
+      const organizationMember = await new CommonOrganizations({ databaseBuilder }).#initOrgaMember();
+
+      // Organization
+      const organization = new OrganizationForAdmin({
+        name: 'Certification PRO organization',
+        type: CenterTypes.SCO,
+        isManagingStudents: true,
+        externalId: SHARED_SCO_ORGANIZATION_EXTERNAL_ID,
+      });
+
+      const scoOrganization = await organizationalEntitiesUsecases.createOrganization({
+        organization,
+        organizationCreationValidator,
+      });
+
+      const scoOrganizationMembership = await teamUsecases.createMembership({
+        organizationRole: Membership.roles.ADMIN,
+        userId: organizationMember.id,
+        organizationId: scoOrganization.id,
+      });
+
+      this.sco = {
+        organizationMember,
+        organization: scoOrganization,
+        organizationMembership: scoOrganizationMembership,
+      };
     }
 
-    return this.instance;
+    return this.sco;
   }
 
-  async #init() {
-    this.organizationMember = this.databaseBuilder.factory.buildUser.withRawPassword({
-      id: SHARED_ORGANIZATION_USER_ID,
-      firstName: 'Certif',
-      lastName: 'Pix Orga member',
-      email: 'certif-prescriptor@example.net',
-      cgu: true,
-      lang: LANGUAGES_CODE.FRENCH,
-      lastTermsOfServiceValidatedAt: new Date(),
-      mustValidateTermsOfService: false,
-      pixCertifTermsOfServiceAccepted: true,
-    });
+  static async getPro({ databaseBuilder }) {
+    if (!this.pro) {
+      this.pro = {};
+      const organizationMember = await new CommonOrganizations({ databaseBuilder }).#initOrgaMember();
 
-    acceptPixOrgaTermsOfService(this.databaseBuilder, this.organizationMember.id);
+      // Organization
+      const organization = new OrganizationForAdmin({
+        name: 'Certification PRO organization',
+        type: CenterTypes.PRO,
+        isManagingStudents: false,
+        externalId: SHARED_PRO_ORGANIZATION_EXTERNAL_ID,
+      });
 
-    await this.databaseBuilder.commit();
+      const proOrganization = await organizationalEntitiesUsecases.createOrganization({
+        organization,
+        organizationCreationValidator,
+      });
 
-    // Organization
-    const organization = new OrganizationForAdmin({
-      name: 'Certification PRO organization',
-      type: CenterTypes.PRO,
-      isManagingStudents: false,
-      externalId: SHARED_ORGANIZATION_EXTERNAL_ID,
-    });
+      const proOrganizationMembership = await teamUsecases.createMembership({
+        organizationRole: Membership.roles.ADMIN,
+        userId: organizationMember.id,
+        organizationId: proOrganization.id,
+      });
 
-    this.organization = await organizationalEntitiesUsecases.createOrganization({
-      organization,
-      organizationCreationValidator,
-    });
+      this.pro = {
+        organizationMember,
+        organization: proOrganization,
+        organizationMembership: proOrganizationMembership,
+      };
+    }
 
-    this.organizationMembership = await teamUsecases.createMembership({
-      organizationRole: Membership.roles.ADMIN,
-      userId: this.organizationMember.id,
-      organizationId: this.organization.id,
-    });
+    return this.pro;
+  }
 
-    return this;
+  async #initOrgaMember() {
+    if (!CommonOrganizations.#organizationMember) {
+      CommonOrganizations.#organizationMember = this.databaseBuilder.factory.buildUser.withRawPassword({
+        id: SHARED_ORGANIZATION_USER_ID,
+        firstName: 'Certif',
+        lastName: 'Pix Orga member',
+        email: 'certif-prescriptor@example.net',
+        cgu: true,
+        lang: LANGUAGES_CODE.FRENCH,
+        lastTermsOfServiceValidatedAt: new Date(),
+        mustValidateTermsOfService: false,
+        pixCertifTermsOfServiceAccepted: true,
+      });
+
+      acceptPixOrgaTermsOfService(this.databaseBuilder, CommonOrganizations.#organizationMember.id);
+
+      await this.databaseBuilder.commit();
+    }
+    return CommonOrganizations.#organizationMember;
   }
 }

@@ -66,8 +66,8 @@ export class ProSeed {
   }
 
   async #addOrganization() {
-    const commonOrgaService = await CommonOrganizations.getPro({ databaseBuilder: this.databaseBuilder });
-    return commonOrgaService.organizationMember;
+    const { organizationMember } = await CommonOrganizations.getPro({ databaseBuilder: this.databaseBuilder });
+    return organizationMember;
   }
 
   async #addCertifCenter({ organizationMember }) {

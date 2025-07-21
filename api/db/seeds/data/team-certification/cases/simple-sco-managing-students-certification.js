@@ -73,11 +73,10 @@ export class ScoManagingStudent {
   }
 
   async #addOrganization() {
-    const commonOrgaService = await CommonOrganizations.getPro({ databaseBuilder: this.databaseBuilder });
-    return {
-      organization: commonOrgaService.organization,
-      organizationMember: commonOrgaService.organizationMember,
-    };
+    const { organization, organizationMember } = await CommonOrganizations.getScoManagingStudents({
+      databaseBuilder: this.databaseBuilder,
+    });
+    return { organization, organizationMember };
   }
 
   async #addCertifCenter({ organizationMember }) {
