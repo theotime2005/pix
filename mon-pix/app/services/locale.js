@@ -36,6 +36,15 @@ export default class LocaleService extends Service {
     return this.currentLocale;
   }
 
+  get availableLanguagesForSwitcher() {
+    const FRENCH_LANGUAGE = 'fr';
+    const options = Object.entries(VISIBLE_LANGUAGES)
+      .filter(([_, config]) => config.languageSwitcherDisplayed)
+      .map(([key, config]) => ({ label: config.value, value: key }));
+
+    return options.sort((option) => (option.value === FRENCH_LANGUAGE ? -1 : 1));
+  }
+
   isSupportedLocale(locale) {
     try {
       const localeCanonicalName = Intl.getCanonicalLocales(locale)?.[0];
@@ -70,24 +79,6 @@ export default class LocaleService extends Service {
     }
 
     this.setLocale(DEFAULT_LOCALE);
-  }
-
-  get availableLanguagesForSwitcher() {
-    const FRENCH_LANGUAGE = 'fr';
-    const options = Object.entries(VISIBLE_LANGUAGES)
-      .filter(([_, config]) => config.languageSwitcherDisplayed)
-      .map(([key, config]) => ({
-        label: config.value,
-        value: key,
-      }));
-
-    const optionsWithoutFrSortedByLabel = options
-      .filter((option) => option.value !== FRENCH_LANGUAGE)
-      .sort((option) => option.label);
-
-    const frenchLanguageOption = options.find((option) => option.value === FRENCH_LANGUAGE);
-
-    return [frenchLanguageOption, ...optionsWithoutFrSortedByLabel];
   }
 
   #findSupportedLanguage(language) {

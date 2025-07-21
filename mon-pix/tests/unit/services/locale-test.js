@@ -29,10 +29,41 @@ module('Unit | Services | locale', function (hooks) {
     sinon.stub(dayjsService, 'setLocale');
 
     intlService = this.owner.lookup('service:intl');
+    sinon.stub(intlService, 'primaryLocale');
     sinon.stub(intlService, 'setLocale');
 
     metricsService = this.owner.lookup('service:metrics');
     sinon.stub(metricsService, 'context').value({});
+  });
+
+  module('acceptLanguageHeader', function () {
+    module('when the domain is pix.fr', function () {
+      test('always returns fr-FR', function (assert) {
+        // given
+        currentDomainService.getExtension.returns('fr');
+        sinon.stub(intlService, 'primaryLocale').value('en');
+
+        // when
+        const acceptLanguageHeader = localeService.acceptLanguageHeader;
+
+        // then
+        assert.strictEqual(acceptLanguageHeader, 'fr-FR');
+      });
+    });
+
+    module('when the domain is pix.org', function () {
+      test('always returns the current locale', function (assert) {
+        // given
+        currentDomainService.getExtension.returns('org');
+        sinon.stub(intlService, 'primaryLocale').value('nl-BE');
+
+        // when
+        const acceptLanguageHeader = localeService.acceptLanguageHeader;
+
+        // then
+        assert.strictEqual(acceptLanguageHeader, 'nl-BE');
+      });
+    });
   });
 
   module('isSupportedLocale', function () {
@@ -225,6 +256,20 @@ module('Unit | Services | locale', function (hooks) {
           });
         });
       });
+    });
+  });
+
+  module('availableLanguagesForSwitcher', function () {
+    test('returns available languages for switcher with french first', function (assert) {
+      // when
+      const availableLanguagesForSwitcher = localeService.availableLanguagesForSwitcher;
+
+      // then
+      assert.deepEqual(availableLanguagesForSwitcher, [
+        { label: 'Français', value: 'fr' },
+        { label: 'English', value: 'en' },
+        { label: 'Nederlands', value: 'nl' },
+      ]);
     });
   });
 });
