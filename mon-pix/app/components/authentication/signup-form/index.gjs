@@ -29,7 +29,7 @@ const EMAIL_API_ERRORS = {
 
 export default class SignupForm extends Component {
   @service session;
-  @service intl;
+  @service locale;
   @service url;
   @service errorMessages;
   @service featureToggles;
@@ -87,7 +87,7 @@ export default class SignupForm extends Component {
     this.isLoading = true;
 
     try {
-      user.lang = this.intl.primaryLocale;
+      user.lang = this.locale.currentLocale;
       const wasAnonymousBeforeSaving = user.isAnonymous;
       await user.save({ adapterOptions: { redirectionUrl: this.session.redirectionUrl } });
       if (this.featureToggles.featureToggles?.upgradeToRealUserEnabled && wasAnonymousBeforeSaving) {

@@ -14,6 +14,7 @@ export default class DownloadPdf extends Component {
   @service session;
   @service fileSaver;
   @service currentDomain;
+  @service locale;
 
   @tracked errorMessage = null;
 
@@ -21,7 +22,7 @@ export default class DownloadPdf extends Component {
   async downloadAttestation() {
     this.errorMessage = null;
     const certificationId = this.args.certificate.id;
-    const lang = this.intl.primaryLocale;
+    const lang = this.locale.currentLocale;
 
     const url = `/api/attestation/${certificationId}?isFrenchDomainExtension=${this.currentDomain.isFranceDomain}&lang=${lang}`;
 

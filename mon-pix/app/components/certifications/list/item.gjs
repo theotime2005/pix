@@ -16,6 +16,7 @@ export default class Item extends Component {
   @service session;
   @service fileSaver;
   @service currentDomain;
+  @service locale;
 
   @tracked errorMessage = null;
 
@@ -71,7 +72,7 @@ export default class Item extends Component {
   async downloadAttestation() {
     this.errorMessage = null;
     const certificationId = this.args.certification.id;
-    const lang = this.intl.primaryLocale;
+    const lang = this.locale.currentLocale;
 
     const url = `/api/attestation/${certificationId}?isFrenchDomainExtension=${this.currentDomain.isFranceDomain}&lang=${lang}`;
 

@@ -5,17 +5,17 @@ import ENV from 'mon-pix/config/environment';
 import { decodeToken } from 'mon-pix/helpers/jwt';
 
 export default class OidcAuthenticator extends BaseAuthenticator {
-  @service intl;
   @service location;
   @service oidcIdentityProviders;
   @service session;
+  @service locale;
 
   async authenticate({ code, state, iss, identityProviderSlug, authenticationKey, hostSlug }) {
     const request = {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Accept-Language': this.intl.primaryLocale,
+        'Accept-Language': this.locale.currentLocale,
         'Content-Type': 'application/json',
       },
     };

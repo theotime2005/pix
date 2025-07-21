@@ -5,12 +5,12 @@ import ENV from 'mon-pix/config/environment';
 import { decodeToken } from 'mon-pix/helpers/jwt';
 
 export default BaseAuthenticator.extend({
-  intl: service(),
+  locale: service(),
 
   serverTokenEndpoint: `${ENV.APP.API_HOST}/api/token/anonymous`,
 
   async authenticate({ campaignCode }) {
-    const bodyObject = { campaign_code: campaignCode, lang: this.intl.primaryLocale };
+    const bodyObject = { campaign_code: campaignCode, lang: this.locale.currentLocale };
 
     const body = Object.keys(bodyObject)
       .map((k) => `${k}=${encodeURIComponent(bodyObject[k])}`)

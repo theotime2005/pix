@@ -34,6 +34,10 @@ export default class LocaleService extends Service {
     }
   }
 
+  get currentLocale() {
+    return this.intl.primaryLocale;
+  }
+
   setLocale(locale) {
     this.metrics.context.locale = locale;
     this.intl.setLocale(locale);

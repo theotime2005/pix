@@ -17,12 +17,12 @@ export default class Url extends Service {
   }
 
   get homeUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
     return `${this.definedHomeUrl}?lang=${currentLanguage}`;
   }
 
   get cguUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
 
     if (this.currentDomain.isFranceDomain) {
       return `https://pix.fr/conditions-generales-d-utilisation`;
@@ -41,7 +41,7 @@ export default class Url extends Service {
   }
 
   get legalNoticeUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
 
     if (this.currentDomain.isFranceDomain) {
       return `https://pix.fr/mentions-legales`;
@@ -60,7 +60,7 @@ export default class Url extends Service {
   }
 
   get dataProtectionPolicyUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
 
     if (this.currentDomain.isFranceDomain) {
       return `https://pix.fr/politique-protection-donnees-personnelles-app`;
@@ -79,7 +79,7 @@ export default class Url extends Service {
   }
 
   get accessibilityUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
 
     if (this.currentDomain.isFranceDomain) {
       return `https://pix.fr/accessibilite`;
@@ -98,7 +98,7 @@ export default class Url extends Service {
   }
 
   get accessibilityHelpUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
     if (currentLanguage === ENGLISH_INTERNATIONAL_LOCALE) {
       return `https://pix.${this.currentDomain.getExtension()}/en/help-accessibility`;
     }
@@ -109,7 +109,7 @@ export default class Url extends Service {
   }
 
   get supportHomeUrl() {
-    const currentLocale = this.intl.primaryLocale;
+    const currentLocale = this.locale.currentLocale;
 
     if (this.currentDomain.isFranceDomain) {
       return 'https://pix.fr/support';
@@ -128,7 +128,7 @@ export default class Url extends Service {
   }
 
   get serverStatusUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
     return `https://status.pix.org/?locale=${currentLanguage}`;
   }
 
@@ -141,7 +141,7 @@ export default class Url extends Service {
   }
 
   get _showcaseWebsiteUrl() {
-    const currentLanguage = this.intl.primaryLocale;
+    const currentLanguage = this.locale.currentLocale;
 
     if (currentLanguage === ENGLISH_INTERNATIONAL_LOCALE) {
       return `https://pix.${this.currentDomain.getExtension()}/en`;

@@ -127,6 +127,7 @@ export default class LoginOrRegisterOidcComponent extends Component {
     </div>
   </template>
   @service intl;
+  @service locale;
   @service session;
   @service currentDomain;
   @service oidcIdentityProviders;
@@ -149,7 +150,7 @@ export default class LoginOrRegisterOidcComponent extends Component {
   }
 
   get currentLanguage() {
-    return this.intl.primaryLocale;
+    return this.locale.currentLocale;
   }
 
   get cguUrl() {

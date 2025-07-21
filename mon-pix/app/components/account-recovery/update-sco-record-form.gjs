@@ -99,6 +99,7 @@ export default class UpdateScoRecordFormComponent extends Component {
     </PixButtonLink>
   </template>
   @service intl;
+  @service locale;
   @service url;
   @tracked cguAndProtectionPoliciesAccepted = false;
   @tracked password = '';
@@ -134,7 +135,7 @@ export default class UpdateScoRecordFormComponent extends Component {
     if (scoConnectionsTextParts.length === 0) {
       return '';
     }
-    const listFormatter = new Intl.ListFormat(this.intl.primaryLocale, {
+    const listFormatter = new Intl.ListFormat(this.locale.currentLocale, {
       style: 'long',
       type: 'conjunction',
     });

@@ -8,7 +8,7 @@ const FRENCH_FRANCE_LOCALE = 'fr-fr';
  */
 export default class LocaleHandler {
   @service currentDomain;
-  @service intl;
+  @service locale;
 
   request(context, next) {
     const headers = new Headers(context.request.headers);
@@ -20,6 +20,6 @@ export default class LocaleHandler {
 
   get _locale() {
     if (this.currentDomain.isFranceDomain) return FRENCH_FRANCE_LOCALE;
-    return this.intl.primaryLocale;
+    return this.locale.currentLocale;
   }
 }

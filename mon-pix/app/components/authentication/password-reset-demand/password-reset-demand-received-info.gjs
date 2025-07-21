@@ -7,11 +7,7 @@ import { t } from 'ember-intl';
 import didInsert from 'mon-pix/modifiers/modifier-did-insert';
 
 export default class PasswordResetDemandReceivedInfo extends Component {
-  @service intl;
-
-  get locale() {
-    return this.intl.primaryLocale;
-  }
+  @service locale;
 
   @action
   setFocus(element) {
@@ -32,7 +28,7 @@ export default class PasswordResetDemandReceivedInfo extends Component {
         <PixButtonLink
           class="authentication-password-reset-demand-form__help-contact-us-link"
           target="_blank"
-          @query={{hash lang=this.locale}}
+          @query={{hash lang=this.locale.currentLocale}}
           @route="password-reset-demand"
           @variant="tertiary"
         >

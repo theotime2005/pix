@@ -5,7 +5,7 @@ import { tracked } from '@glimmer/tracking';
 
 export default class RecommendedController extends Controller {
   @service router;
-  @service intl;
+  @service locale;
 
   @tracked isSidebarVisible = false;
 

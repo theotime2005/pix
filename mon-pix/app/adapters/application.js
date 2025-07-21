@@ -9,8 +9,8 @@ const FRENCH_INTERNATIONAL_LOCALE = 'fr';
 export default class Application extends JSONAPIAdapter {
   @service currentDomain;
   @service ajaxQueue;
-  @service intl;
   @service session;
+  @service locale;
 
   host = ENV.APP.API_HOST;
   namespace = 'api';
@@ -30,7 +30,7 @@ export default class Application extends JSONAPIAdapter {
   }
 
   get _locale() {
-    const currentLocale = this.intl.primaryLocale;
+    const currentLocale = this.locale.currentLocale;
     if (currentLocale === FRENCH_INTERNATIONAL_LOCALE) {
       return this.currentDomain.getExtension() === FRANCE_TLD ? FRENCH_FRANCE_LOCALE : FRENCH_INTERNATIONAL_LOCALE;
     }

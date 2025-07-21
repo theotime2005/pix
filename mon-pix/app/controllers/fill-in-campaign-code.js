@@ -15,7 +15,7 @@ export default class FillInCampaignCodeController extends Controller {
   @tracked apiErrorMessage = null;
   @tracked showGARModal = false;
   @tracked campaign = null;
-  @tracked selectedLanguage = this.intl.primaryLocale;
+  @tracked selectedLanguage = this.locale.currentLocale;
   @tracked name = null;
   @tracked organizationName = null;
   @tracked code = null;

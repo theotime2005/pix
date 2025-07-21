@@ -21,7 +21,7 @@ import Header from 'mon-pix/components/training/header';
           <PixPagination
             @pagination={{@model.trainings.meta.pagination}}
             @pageOptions={{@controller.pageOptions}}
-            @locale={{@controller.intl.primaryLocale}}
+            @locale={{@controller.locale.currentLocale}}
             @isCondensed="true"
           />
         </div>

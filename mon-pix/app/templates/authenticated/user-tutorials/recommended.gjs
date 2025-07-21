@@ -18,7 +18,7 @@ import Sidebar from 'mon-pix/components/user-tutorials/filters/sidebar';
         <PixPagination
           @pagination={{@model.recommendedTutorials.meta.pagination}}
           @pageOptions={{@controller.pageOptions}}
-          @locale={{@controller.intl.primaryLocale}}
+          @locale={{@controller.locale.currentLocale}}
           @isCondensed="true"
         />
       {{else}}

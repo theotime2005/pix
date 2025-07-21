@@ -4,13 +4,14 @@ import { htmlSafe, isHTMLSafe } from '@ember/template';
 
 export default class textWithMultipleLang extends Helper {
   @service intl;
+  @service locale;
 
   compute(params) {
     let text = params[0];
     if (isHTMLSafe(text)) {
       text = text.toString();
     }
-    const lang = this.intl.primaryLocale;
+    const lang = this.locale.currentLocale;
     const listOfLocales = this.intl.locales;
     let outputText = _clean(text, listOfLocales);
     if (text && listOfLocales.includes(lang)) {
