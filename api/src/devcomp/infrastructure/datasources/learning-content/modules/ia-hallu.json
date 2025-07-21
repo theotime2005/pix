@@ -377,7 +377,7 @@
           "element": {
             "id": "ecffdbbe-78c7-4da7-9b7d-2426eb9daf3c",
             "type": "text",
-            "content": "<p>Depuis sa dernière utilisation de l'IA, Nathan n'utilise plus l'IA générative pour ses devoirs. Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br>Pour la préparation d'un exposé, elle interroge un logiciel d'IA générative.</p>"
+            "content": "<p>Depuis sa dernière utilisation de l'IA, Nathan n'utilise plus l'IA générative. Asma veut laisser encore une chance à l'IA, mais pour elle, pas question de se laisser avoir !&nbsp;<br>Pour la préparation d'un document important, elle interroge un logiciel d'IA générative.</p>"
           }
         },
         {
@@ -396,7 +396,7 @@
                 {
                   "id": "81eb63dc-b909-461d-bea3-e32cf2637240",
                   "type": "qcu-declarative",
-                  "instruction": "<p>Réflexe 1&nbsp;: Asma copie et colle la réponse du logiciel d'IA générative dans son exposé, sans la lire.</p>",
+                  "instruction": "<p>Réflexe 1&nbsp;: Asma copie et colle la réponse du logiciel d'IA générative dans son document, sans la lire.</p>",
                   "proposals": [
                     {
                       "id": "1",
@@ -450,7 +450,7 @@
                 {
                   "id": "ff81face-e51c-4bf6-8b49-50c9abd5cfdd",
                   "type": "qcu-declarative",
-                  "instruction": "<p>Réflexe 3&nbsp;:Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
+                  "instruction": "<p>Réflexe 3&nbsp;: Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
                   "proposals": [
                     {
                       "id": "1",
@@ -477,7 +477,7 @@
                 {
                   "id": "0aa2dee4-60a8-4ab7-8390-0ca87779414c",
                   "type": "qcu-declarative",
-                  "instruction": "<p>Réflexe 4&nbsp;:&nbsp;Asma lit en entier la réponse donnée par le logiciel d'IA générative. Elle la trouve très bien écrite et l’utilise dans son exposé.</p>",
+                  "instruction": "<p>Réflexe 4&nbsp;:&nbsp;Asma lit en entier la réponse donnée par le logiciel d'IA générative. Elle la trouve très bien écrite et l’utilise dans son document.</p>",
                   "proposals": [
                     {
                       "id": "1",
@@ -569,12 +569,12 @@
           "element": {
             "id": "d889292f-a892-4ad8-b7e8-0ef529fe13cf",
             "type": "text",
-            "content": "<ul><li>L'objectif d’une <strong>IA générative</strong> est de répondre aux demandes d’un utilisateur. <strong>Son objectif n’est pas de dire la vérité</strong>. 🤥</li><br><li>Une <strong>IA générative peut faire des erreurs</strong>, par exemple présenter des affirmations fausses comme des faits. ❌</li><br><li>Les développeurs d’IA génératives essayent de réduire les erreurs. Mais il n’existe <strong>pas de moyen technique pour empêcher complètement ces erreurs<strong>. 🔧</li><br><li>Face à ces erreurs, difficiles à détecter, c’est à l’utilisateur de <strong>faire preuve d’esprit critique</strong> et de <strong>croiser les sources</strong> d’informations. 🔎</li><br></ul>"
+            "content": "<ul><li>L'objectif d’une <strong>IA générative</strong> est de répondre aux demandes d’un utilisateur. <strong>Son objectif n’est pas de dire la vérité</strong>. 🤥</li><br><li>Une <strong>IA générative peut faire des erreurs</strong>, par exemple présenter des affirmations fausses comme des faits. ❌</li><br><li>Les développeurs d’IA génératives essayent de réduire les erreurs. Mais il n’existe <strong>pas de moyen technique pour empêcher complètement ces erreurs<strong>. 🔧</strong></strong></li><strong><strong><br><li>Face à ces erreurs, difficiles à détecter, c’est à l’utilisateur de <strong>faire preuve d’esprit critique</strong> et de <strong>croiser les sources</strong> d’informations. 🔎</li><br></strong></strong></ul>"
           }
         }
       ]
     },
-        {
+    {
       "id": "a5db0e26-49fc-457c-943a-cc24d3aa1551",
       "type": "activity",
       "title": "Activité d'application - 2 ",
