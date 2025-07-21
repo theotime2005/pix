@@ -431,7 +431,7 @@ describe('Acceptance | Route | llm-preview', function () {
       // then
       expect(response.statusCode).to.equal(201);
       expect(promptLlmScope.isDone()).to.be.true;
-      expect(response.result).to.deep.equal("event: attachment\ndata: \n\ndata: coucou c'est super\n\n");
+      expect(response.result).to.deep.equal("event: attachment-success\ndata: \n\ndata: coucou c'est super\n\n");
     });
   });
 });

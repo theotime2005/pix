@@ -21,6 +21,15 @@ import { catchErr, expect, nock } from '../../../../test-helper.js';
 const chatTemporaryStorage = temporaryStorage.withPrefix(chatRepository.CHAT_STORAGE_PREFIX);
 
 describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
+  let dependencies;
+
+  beforeEach(function () {
+    dependencies = {
+      promptRepository,
+      chatRepository,
+      toEventStream,
+    };
+  });
   afterEach(async function () {
     await chatTemporaryStorage.flushAll();
   });
@@ -31,7 +40,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
       const chatId = null;
 
       // when
-      const err = await catchErr(promptChat)({ chatId, message: 'un message', userId: 12345 });
+      const err = await catchErr(promptChat)({ chatId, message: 'un message', userId: 12345, ...dependencies });
 
       // then
       expect(err).to.be.instanceOf(ChatNotFoundError);
@@ -61,7 +70,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
         chatId: 'chatId',
         userId: 12345,
         message: 'un message',
-        chatRepository,
+        ...dependencies,
       });
 
       // then
@@ -93,7 +102,12 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
       });
 
       // when
-      const err = await catchErr(promptChat)({ chatId: 'chatId', userId: 123, message: 'un message', chatRepository });
+      const err = await catchErr(promptChat)({
+        chatId: 'chatId',
+        userId: 123,
+        message: 'un message',
+        ...dependencies,
+      });
 
       // then
       expect(err).to.be.instanceOf(TooLargeMessageInputError);
@@ -148,9 +162,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
         chatId: 'chatId',
         userId: 123,
         message: 'un message',
-        chatRepository,
-        promptRepository,
-        toEventStream,
+        ...dependencies,
       });
 
       // then
@@ -189,7 +201,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
       });
 
       // when
-      const err = await catchErr(promptChat)({ chatId: 'chatId', userId: 123, message: 'un message', chatRepository });
+      const err = await catchErr(promptChat)({ chatId: 'chatId', userId: 123, message: 'un message', ...dependencies });
 
       // then
       expect(err).to.be.instanceOf(MaxPromptsReachedError);
@@ -258,9 +270,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
             userId: 123,
             message: 'un message',
             attachmentName: null,
-            chatRepository,
-            promptRepository,
-            toEventStream,
+            ...dependencies,
           });
 
           // then
@@ -381,9 +391,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
               userId: 123,
               message: 'un message',
               attachmentName: null,
-              chatRepository,
-              promptRepository,
-              toEventStream,
+              ...dependencies,
             });
 
             // then
@@ -476,7 +484,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
               userId: 123,
               message: 'un message',
               attachmentName: 'un_attachment.pdf',
-              chatRepository,
+              ...dependencies,
             });
 
             // then
@@ -557,9 +565,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                 userId: 123,
                 message: 'un message',
                 attachmentName: 'invalid_file.txt',
-                chatRepository,
-                promptRepository,
-                toEventStream,
+                ...dependencies,
               });
 
               // then
@@ -569,7 +575,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                 parts.push(decoder.decode(chunk));
               }
               const llmResponse = parts.join('');
-              const attachmentMessage = 'event: attachment\ndata: \n\n';
+              const attachmentMessage = 'event: attachment-failure\ndata: \n\n';
               const llmMessage =
                 "data: coucou c'est super\n\ndata: \ndata: le couscous c plutot bon\n\ndata:  mais la paella c pas mal aussi\ndata: \n\n";
               expect(llmResponse).to.deep.equal(attachmentMessage + llmMessage);
@@ -700,9 +706,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   userId: 123,
                   message: 'un message',
                   attachmentName: 'expected_file.txt',
-                  chatRepository,
-                  promptRepository,
-                  toEventStream,
+                  ...dependencies,
                 });
 
                 // then
@@ -712,7 +716,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   parts.push(decoder.decode(chunk));
                 }
                 const llmResponse = parts.join('');
-                const attachmentMessage = 'event: attachment\ndata: \n\n';
+                const attachmentMessage = 'event: attachment-success\ndata: \n\n';
                 const llmMessage =
                   "data: coucou c'est super\n\ndata: \ndata: le couscous c plutot bon\n\ndata:  mais la paella c pas mal aussi\ndata: \n\n";
                 expect(llmResponse).to.deep.equal(attachmentMessage + llmMessage);
@@ -843,9 +847,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   userId: 123,
                   message: 'un message',
                   attachmentName: 'expected_file.txt',
-                  chatRepository,
-                  promptRepository,
-                  toEventStream,
+                  ...dependencies,
                 });
 
                 // then
@@ -855,7 +857,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   parts.push(decoder.decode(chunk));
                 }
                 const llmResponse = parts.join('');
-                const attachmentMessage = 'event: attachment\ndata: \n\n';
+                const attachmentMessage = 'event: attachment-success\ndata: \n\n';
                 const llmMessage =
                   "data: coucou c'est super\n\ndata: \ndata: le couscous c plutot bon\n\ndata:  mais la paella c pas mal aussi\ndata: \n\n";
                 expect(llmResponse).to.deep.equal(attachmentMessage + llmMessage);
@@ -934,6 +936,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
             userId: 123,
             message: null,
             attachmentName: null,
+            ...dependencies,
           });
 
           // then
@@ -978,7 +981,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
               userId: 123,
               message: null,
               attachmentName: 'un_attachment.pdf',
-              chatRepository,
+              ...dependencies,
             });
 
             // then
@@ -991,7 +994,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
 
         context('when attachmentName is not the expected one for the given configuration', function () {
           it(
-            'should return a stream which will contain the attachment event while ' +
+            'should return a stream which will contain the invalid attachment event while ' +
               'ignoring the invalid attachmentName by not adding anything to the context',
             async function () {
               // given
@@ -1030,9 +1033,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                 userId: 123,
                 message: null,
                 attachmentName: 'invalid_file.txt',
-                chatRepository,
-                promptRepository,
-                toEventStream,
+                ...dependencies,
               });
 
               // then
@@ -1042,7 +1043,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                 parts.push(decoder.decode(chunk));
               }
               const llmResponse = parts.join('');
-              expect(llmResponse).to.deep.equal('event: attachment\ndata: \n\n');
+              expect(llmResponse).to.deep.equal('event: attachment-failure\ndata: \n\n');
               expect(await chatTemporaryStorage.get('chatId')).to.deep.equal({
                 id: 'chatId',
                 userId: 123,
@@ -1123,9 +1124,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   userId: 123,
                   message: null,
                   attachmentName: 'expected_file.txt',
-                  chatRepository,
-                  promptRepository,
-                  toEventStream,
+                  ...dependencies,
                 });
 
                 // then
@@ -1135,7 +1134,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   parts.push(decoder.decode(chunk));
                 }
                 const llmResponse = parts.join('');
-                expect(llmResponse).to.deep.equal('event: attachment\ndata: \n\n');
+                expect(llmResponse).to.deep.equal('event: attachment-success\ndata: \n\n');
                 expect(await chatTemporaryStorage.get('chatId')).to.deep.equal({
                   id: 'chatId',
                   userId: 123,
@@ -1217,9 +1216,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   userId: 123,
                   message: null,
                   attachmentName: 'expected_file.txt',
-                  chatRepository,
-                  promptRepository,
-                  toEventStream,
+                  ...dependencies,
                 });
 
                 // then
@@ -1229,7 +1226,7 @@ describe('LLM | Integration | Domain | UseCases | prompt-chat', function () {
                   parts.push(decoder.decode(chunk));
                 }
                 const llmResponse = parts.join('');
-                expect(llmResponse).to.deep.equal('event: attachment\ndata: \n\n');
+                expect(llmResponse).to.deep.equal('event: attachment-success\ndata: \n\n');
                 expect(await chatTemporaryStorage.get('chatId')).to.deep.equal({
                   id: 'chatId',
                   userId: 123,

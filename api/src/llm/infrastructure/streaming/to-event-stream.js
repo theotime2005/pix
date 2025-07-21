@@ -6,6 +6,11 @@ import * as messageObjectToEventStreamTransform from './transforms/message-objec
 
 const logger = child('llm:api', { event: SCOPES.LLM });
 
+export const ATTACHMENT_MESSAGE_TYPES = {
+  NONE: 'NONE',
+  IS_VALID: 'IS_VALID',
+  IS_INVALID: 'IS_INVALID',
+};
 /**
  * @function
  * @name fromLLMResponse
@@ -13,16 +18,16 @@ const logger = child('llm:api', { event: SCOPES.LLM });
  * @param {Object} params
  * @param {ReadableStream|null} params.llmResponse
  * @param {Function} params.onLLMResponseReceived Callback called when LLM response has been completely retrieved. Will be called asynchronously with one parameter: the complete LLM message
- * @param {Boolean} params.shouldSendAttachmentEventMessage
+ * @param {string} params.attachmentMessageType
  * @returns {Promise<module:stream.internal.PassThrough>}
  */
-export async function fromLLMResponse({ llmResponse, onLLMResponseReceived, shouldSendAttachmentEventMessage }) {
+export async function fromLLMResponse({ llmResponse, onLLMResponseReceived, attachmentMessageType }) {
   const writableStream = new PassThrough();
   writableStream.on('error', (err) => {
     logger.error(`error while streaming response: ${err}`);
   });
-  if (shouldSendAttachmentEventMessage) {
-    writableStream.write(getAttachmentEventMessage());
+  if (attachmentMessageType !== ATTACHMENT_MESSAGE_TYPES.NONE) {
+    writableStream.write(getAttachmentEventMessage(attachmentMessageType === ATTACHMENT_MESSAGE_TYPES.IS_VALID));
   }
   const readableStream = llmResponse ?? emptyReadable();
   const completeLLMMessage = [];
@@ -45,8 +50,8 @@ export async function fromLLMResponse({ llmResponse, onLLMResponseReceived, shou
   return writableStream;
 }
 
-function getAttachmentEventMessage() {
-  return 'event: attachment\ndata: \n\n';
+function getAttachmentEventMessage(isValid) {
+  return 'event: attachment-' + (isValid ? 'success' : 'failure') + '\ndata: \n\n';
 }
 
 function emptyReadable() {

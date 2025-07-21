@@ -32,8 +32,16 @@ export async function promptChat({
   if (attachmentName && !configuration.hasAttachment) {
     throw new NoAttachmentNeededError();
   }
-  if (attachmentName && attachmentName === configuration.attachmentName) {
-    chat.addAttachmentContextMessages(configuration.attachmentName, configuration.attachmentContext, !!message);
+  let attachmentMessageType;
+  if (attachmentName) {
+    if (chat.isAttachmentValid(attachmentName)) {
+      chat.addAttachmentContextMessages(configuration.attachmentName, configuration.attachmentContext, !!message);
+      attachmentMessageType = toEventStream.ATTACHMENT_MESSAGE_TYPES.IS_VALID;
+    } else {
+      attachmentMessageType = toEventStream.ATTACHMENT_MESSAGE_TYPES.IS_INVALID;
+    }
+  } else {
+    attachmentMessageType = toEventStream.ATTACHMENT_MESSAGE_TYPES.NONE;
   }
   let readableStream = null;
   if (message) {
@@ -54,7 +62,7 @@ export async function promptChat({
   return toEventStream.fromLLMResponse({
     llmResponse: readableStream,
     onLLMResponseReceived: addMessagesToChat(chat, message, chatRepository),
-    shouldSendAttachmentEventMessage: Boolean(attachmentName),
+    attachmentMessageType,
   });
 }
 

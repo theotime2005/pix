@@ -432,7 +432,7 @@ describe('Acceptance | Controller | passage-controller', function () {
 
           // then
           expect(response.statusCode).to.equal(201);
-          expect(response.result).to.deep.equal("event: attachment\ndata: \n\ndata: coucou c'est super\n\n");
+          expect(response.result).to.deep.equal("event: attachment-success\ndata: \n\ndata: coucou c'est super\n\n");
           expect(promptLlmScope.isDone()).to.be.true;
         });
       });

@@ -31,7 +31,7 @@ import {
 
 const chatTemporaryStorage = temporaryStorage.withPrefix(CHAT_STORAGE_PREFIX);
 
-describe('Acceptance | Controller | assessment-controller-complete-assessment', function () {
+describe('Acceptance | Controller | assessment-controller', function () {
   let options;
   let server;
   let user, assessment;
@@ -958,7 +958,7 @@ describe('Acceptance | Controller | assessment-controller-complete-assessment', 
 
           // then
           expect(response.statusCode).to.equal(201);
-          expect(response.result).to.deep.equal("event: attachment\ndata: \n\ndata: coucou c'est super\n\n");
+          expect(response.result).to.deep.equal("event: attachment-success\ndata: \n\ndata: coucou c'est super\n\n");
           expect(promptLlmScope.isDone()).to.be.true;
         });
       });
