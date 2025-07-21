@@ -52,6 +52,12 @@ export default class ModuleGrain extends Component {
     }
   }
 
+  get skipButtonLabel() {
+    return this.args.grain.type === 'activity'
+      ? this.intl.t('pages.modulix.buttons.grain.skipActivity')
+      : this.intl.t('pages.modulix.buttons.grain.skip');
+  }
+
   @action
   getLastCorrectionForElement(element) {
     return this.args.passage.getLastCorrectionForElement(element);
@@ -268,7 +274,7 @@ export default class ModuleGrain extends Component {
         {{#if this.shouldDisplaySkipButton}}
           <footer class="grain-card__footer grain-card__footer__with-skip-button">
             <PixButton @variant="tertiary" @triggerAction={{@onGrainSkip}} @iconAfter="arrowBottom">
-              {{t "pages.modulix.buttons.grain.skip"}}
+              {{this.skipButtonLabel}}
             </PixButton>
           </footer>
         {{/if}}

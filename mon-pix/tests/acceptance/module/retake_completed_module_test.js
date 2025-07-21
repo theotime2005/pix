@@ -93,6 +93,6 @@ module('Acceptance | Module | Routes | retakeCompletedModule', function (hooks) 
     assert.dom(screen.queryByText("Bravo ! C'est la bonne réponse.")).doesNotExist();
 
     assert.dom(screen.queryByRole('button', { name: 'Continuer' })).doesNotExist();
-    assert.dom(screen.queryByRole('button', { name: 'Passer l‘activité' })).exists();
+    assert.dom(screen.queryByRole('button', { name: 'Passer' })).exists();
   });
 });

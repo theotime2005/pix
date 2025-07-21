@@ -597,7 +597,7 @@ module('Integration | Component | Module | Grain', function (hooks) {
       await render(
         hbs`
           <Module::Grain::Grain @grain={{this.grain}} @canMoveToNextGrain={{true}}
-                         @onGrainContinue={{this.onGrainContinue}} />`,
+                                @onGrainContinue={{this.onGrainContinue}} />`,
       );
       await clickByName('Continuer');
 
@@ -736,7 +736,8 @@ module('Integration | Component | Module | Grain', function (hooks) {
 
         // when
         await render(hbs`
-          <Module::Grain::Grain @grain={{this.grain}} @passage={{this.passage}} @onElementAnswer={{this.onElementAnswer}} />`);
+          <Module::Grain::Grain @grain={{this.grain}} @passage={{this.passage}}
+                                @onElementAnswer={{this.onElementAnswer}} />`);
 
         // then
         await clickByName('radio1');
@@ -1644,6 +1645,25 @@ module('Integration | Component | Module | Grain', function (hooks) {
 
       // then
       assert.dom(screen.getByText('Activité')).exists();
+    });
+
+    test('should display a button to skip the activity', async function (assert) {
+      // given
+      const store = this.owner.lookup('service:store');
+      const element = { id: 'qcu-id', type: 'qcu', isAnswerable: true };
+      const grain = store.createRecord('grain', {
+        type: 'activity',
+        components: [{ type: 'element', element }],
+      });
+      const passage = store.createRecord('passage');
+
+      // when
+      const screen = await render(
+        <template><ModuleGrain @grain={{grain}} @canMoveToNextGrain={{true}} @passage={{passage}} /></template>,
+      );
+
+      // then
+      assert.dom(screen.getByRole('button', { name: 'Passer l‘activité' })).exists();
     });
   });
 });
