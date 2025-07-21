@@ -14,10 +14,6 @@ export default class AppNavigation extends Component {
   @service media;
   @service url;
 
-  get isFrenchLocale() {
-    return this.currentDomain.isFranceDomain;
-  }
-
   get showAssessmentsNavItem() {
     return this.currentUser.user.hasAssessmentParticipations;
   }
@@ -38,7 +34,7 @@ export default class AppNavigation extends Component {
       @closeLabel={{t "navigation.nav-bar.close"}}
     >
       <:brand>
-        {{#if this.isFrenchLocale}}
+        {{#if this.currentDomain.isFranceDomain}}
           <img
             class="app-navigation__logo-republique-fr"
             src="/images/logo/logo-de-la-republique-francaise-blanc.svg"
