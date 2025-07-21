@@ -26,7 +26,7 @@
           "element": {
             "id": "3253ef34-0f94-4d65-aa02-a710b0969020",
             "type": "text",
-            "content": "<p>Nathan a utilisé un logiciel d’IA générative préparer une sortie pour l'anniversaire de sa sœur. Il n’est pas content du résultat. Voici sa discussion avec son amie, Asma&nbsp;:</p>"
+            "content": "<p>Nathan a utilisé un logiciel d’IA générative pour préparer une sortie pour l'anniversaire de sa sœur. Il n’est pas content du résultat. Voici sa discussion avec son amie, Asma&nbsp;:</p>"
           }
         },
         {
@@ -51,7 +51,7 @@
                 {
                   "userName": "Nathan",
                   "direction": "outgoing",
-                  "content": "Je me suis servi de ChatGPT pour organiser la soirée d'anniversaire de ma sœur, mais ça a été la catastrophe... Elle veut plus me parler ! "
+                  "content": "Je me suis servi de ChatGPT pour préparer la soirée d'anniversaire de ma sœur, mais ça a été la catastrophe... Elle veut plus me parler !"
                 },
                 {
                   "userName": "Asma",
