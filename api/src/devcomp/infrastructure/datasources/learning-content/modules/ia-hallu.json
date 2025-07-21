@@ -26,7 +26,7 @@
           "element": {
             "id": "3253ef34-0f94-4d65-aa02-a710b0969020",
             "type": "text",
-            "content": "<p>Nathan a utilisé un logiciel d’IA générative pour préparer l’un de ses devoirs. Il n’est pas content du résultat. Voici sa discussion avec son amie, Asma&nbsp;:</p>"
+            "content": "<p>Nathan a utilisé un logiciel d’IA générative préparer une sortie pour l'anniversaire de sa sœur. Il n’est pas content du résultat. Voici sa discussion avec son amie, Asma&nbsp;:</p>"
           }
         },
         {
@@ -51,7 +51,7 @@
                 {
                   "userName": "Nathan",
                   "direction": "outgoing",
-                  "content": "J’ai perdu des points en Histoire à cause de ChatGPT ! "
+                  "content": "Je me suis servi de ChatGPT pour organiser la soirée d'anniversaire de ma sœur, mais ça a été la catastrophe... Elle veut plus me parler ! "
                 },
                 {
                   "userName": "Asma",
@@ -61,7 +61,7 @@
                 {
                   "userName": "Nathan",
                   "direction": "outgoing",
-                  "content": " Oui ! J’avais un devoir maison à faire, j’étais pas sûr d’une date. Alors j’ai demandé à ChatGPT, j’ai mis la réponse qu’il m’a donné. Mais j’ai eu faux ! 😤"
+                  "content": " Oui ! J’ai demandé à ChatGPT de trouver une salle d'arcades pour se retrouver là-bas samedi soir... mais c’était fermé pour travaux ! On s'est retrouvé face à une porte close. 😤"
                 }
               ]
             }
@@ -79,7 +79,7 @@
           "element": {
             "id": "659f8b1c-5e64-44f3-ae18-0fc89e093fa1",
             "type": "text",
-            "content": "<p>Nathan n’est pas le premier à recevoir une réponse fausse de la part d’une IA générative…<br> Les IA génératives font-elles vraiment des erreurs ? 🤨</p>"
+            "content": "<p>Nathan n’est pas le premier à recevoir une information fausse de la part d’une IA générative…<br> Les IA génératives font-elles vraiment des erreurs ? 🤨</p>"
           }
         }
       ]
