@@ -395,7 +395,7 @@
               "elements": [
                 {
                   "id": "81eb63dc-b909-461d-bea3-e32cf2637240",
-                  "type": "qcu-declarative",
+                  "type": "qcu",
                   "instruction": "<p>Réflexe 1&nbsp;: Asma copie et colle la réponse du logiciel d'IA générative dans son document, sans la lire.</p>",
                   "proposals": [
                     {
@@ -414,7 +414,8 @@
                         "diagnosis": "<p>Et oui, c'est un mauvais réflexe ! Il faut toujours lire l’ensemble des réponses données par un logiciel d’IA générative.</p>"
                       }
                     }
-                  ]
+                  ],
+                  "solution": "2"
                 }
               ]
             },
@@ -422,7 +423,7 @@
               "elements": [
                 {
                   "id": "079936fa-826a-46da-903c-32dfd0089327",
-                  "type": "qcu-declarative",
+                  "type": "qcu",
                   "instruction": "<p>Réflexe 2&nbsp;:&nbsp;Asma lit toute la réponse, et s’interroge sur un point précis. Elle demande au logiciel d'IA générative de préciser sa réponse en donnant sa source.</p>",
                   "proposals": [
                     {
@@ -441,7 +442,8 @@
                         "diagnosis": "<p>Et non, c'est un bon réflexe ! Poursuivre la discussion avec l’IA permet parfois d’avoir une réponse plus claire ou même une correction.</p>"
                       }
                     }
-                  ]
+                  ],
+                  "solution": "1"
                 }
               ]
             },
@@ -449,7 +451,7 @@
               "elements": [
                 {
                   "id": "ff81face-e51c-4bf6-8b49-50c9abd5cfdd",
-                  "type": "qcu-declarative",
+                  "type": "qcu",
                   "instruction": "<p>Réflexe 3&nbsp;: Asma cherche la source de l’information sur internet pour comparer avec l’information donnée par le logiciel d'IA générative.</p>",
                   "proposals": [
                     {
@@ -468,7 +470,8 @@
                         "diagnosis": "<p>Et non, c'est bon réflexe ! Dans tous les cas, vérifier et croiser les sources permet d’éviter de relayer une erreur ou une fausse information.</p>"
                       }
                     }
-                  ]
+                  ],
+                  "solution": "1"
                 }
               ]
             },
@@ -476,7 +479,7 @@
               "elements": [
                 {
                   "id": "0aa2dee4-60a8-4ab7-8390-0ca87779414c",
-                  "type": "qcu-declarative",
+                  "type": "qcu",
                   "instruction": "<p>Réflexe 4&nbsp;:&nbsp;Asma lit en entier la réponse donnée par le logiciel d'IA générative. Elle la trouve très bien écrite et l’utilise dans son document.</p>",
                   "proposals": [
                     {
@@ -495,7 +498,8 @@
                         "diagnosis": "<p>Et oui, c'est un mauvais réflexe ! Une réponse bien écrite n’est pas forcément correcte. Il faut garder un regard critique, même quand le ton est convaincant.</p>"
                       }
                     }
-                  ]
+                  ],
+                  "solution": "2"
                 }
               ]
             }
