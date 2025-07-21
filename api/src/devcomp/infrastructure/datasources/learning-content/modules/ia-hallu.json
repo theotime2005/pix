@@ -174,12 +174,12 @@
                 {
                   "id": "8a46c2ba-91ac-4e36-9007-094a7ef6a871",
                   "type": "text",
-                  "content": "<p>Irène sait que l’équipe de France masculine de foot a gagné deux fois la coupe du monde. Mais elle a un doute sur les années de victoire.<br>Voici sa conversation avec un logiciel d’IA générative&nbsp;:</p>"
+                  "content": "<p>Irène sait que le joueur de tennis Carlos Alcatrz a gagné deux fois le tournoi de Rolland-Garros. Mais elle a un doute sur ses années de victoire.<br>Voici sa conversation avec un logiciel d’IA générative&nbsp;:</p>"
                 },
                 {
                   "id": "f4df02e1-bebf-4557-9226-18e38cfbb6b2",
                   "type": "image",
-                  "url": "https://assets.pix.org/draft/modules/hallucinations/CaptureFoot.png",
+                  "url": "https://assets.pix.org/draft/modules/hallucinations/capturetennis.png",
                   "alt": "Capture d'écran d'une conversation avec un logiciel d'IA générative décrit dans l'alternative textuelle",
                   "alternativeText": "",
                   "legend": "",
@@ -192,7 +192,7 @@
                 {
                   "id": "21e1f6a8-8ea2-4b0c-8a6c-e68a1f875920",
                   "type": "text",
-                  "content": "<p>Ici le logiciel d’IA générative a fait une erreur. L’équipe de France masculine de foot a bien remporté la Coupe du monde deux fois. Une fois en 1998 et une fois en 2018.</p>"
+                  "content": "<p>Ici le logiciel d’IA générative a fait une erreur. Carlos Alcatraz a bien remporté le tournoi de Rolland-Garros deux fois. Une fois en 2024 et une fois en 2025.</p>"
                 },
                 {
                   "id": "ceed2a7c-76f9-44f1-be34-a2285cd1aa4d",
@@ -204,7 +204,7 @@
                       "content": "<p>L'ordinateur d’Irène n'est pas assez puissant, il a provoqué un bug.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Et non, la réponse donnée par le logiciel d'IA générative ne dépend pas de la puissance de l'ordinateur d'Irène. <br>Par contre l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
+                        "diagnosis": "<p>Et non, la réponse donnée par le logiciel d'IA générative ne dépend pas de la puissance de l'ordinateur d'Irène. <br>Par contre l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2025, le logiciel ne connaît qu'une seule victoire de Carlos Alcatraz à Rolland-Garros.</p>"
                       }
                     },
                     {
@@ -212,15 +212,15 @@
                       "content": "<p>Les données avec lesquelles le logiciel a été entraîné datent d’avant 2018.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Effectivement, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
+                        "diagnosis": "<p>Effectivement, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2025, le logiciel ne connaît qu'une seule victoire de Carlos Alcatraz à Rolland-Garros</p>"
                       }
                     },
                     {
                       "id": "3",
-                      "content": "<p>Le logiciel ne compte pas la victoire de 2018 car il était pour l’autre finaliste, la Croatie.</p>",
+                      "content": "<p>Le logiciel ne compte pas la victoire de 2025 car il était pour l’autre finaliste, Jannik Sinner.</p>",
                       "feedback": {
                         "state": "",
-                        "diagnosis": "<p>Et non, le logiciel d'IA générative n'a pas de préférence pour une équipe plutôt qu'une autre. <br>Par contre, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2018, le logiciel ne connaît qu'une seule victoire de l'équipe de France masculine de foot à la Coupe du monde.</p>"
+                        "diagnosis": "<p>Et non, le logiciel d'IA générative n'a pas de préférence pour un joueur plutôt qu'un autre. <br>Par contre, l'erreur peut venir des données avec lesquelles le logiciel a été entraîné. Si ces données datent d'avant 2025, le logiciel ne connaît qu'une seule victoire de Carlos Alcatraz à Rolland-Garros</p>"
                       }
                     }
                   ],
