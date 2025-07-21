@@ -14,24 +14,6 @@ const register = async function (server) {
   server.route([
     {
       method: 'GET',
-      path: '/api/combined-courses',
-      config: {
-        handler: questController.getByCode,
-        validate: {
-          query: Joi.object({
-            filter: Joi.object({
-              code: Joi.string()
-                .regex(/^[a-zA-Z0-9]*$/)
-                .required(),
-            }).required(),
-          }),
-        },
-        notes: ['- Récupération du parcours combiné dont le code est spécifié dans les filtres de la requête'],
-        tags: ['api', 'quest'],
-      },
-    },
-    {
-      method: 'GET',
       path: '/api/campaign-participations/{campaignParticipationId}/quest-results',
       config: {
         pre: [
