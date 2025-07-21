@@ -4,8 +4,14 @@ import { module, test } from 'qunit';
 module('Unit | Service | Access Storage', function (hooks) {
   setupTest(hooks);
 
+  let service;
+
+  hooks.beforeEach(function () {
+    service = this.owner.lookup('service:access-storage');
+    service.clearAll();
+  });
+
   hooks.afterEach(function () {
-    const service = this.owner.lookup('service:access-storage');
     service.clearAll();
   });
 
