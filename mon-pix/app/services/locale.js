@@ -1,15 +1,22 @@
 import Service, { service } from '@ember/service';
 import ENV from 'mon-pix/config/environment';
-import languages from 'mon-pix/languages';
 
 const { DEFAULT_LOCALE, COOKIE_LOCALE_LIFESPAN_IN_SECONDS } = ENV.APP;
-export const FRENCH_INTERNATIONAL_LOCALE = 'fr';
-export const ENGLISH_INTERNATIONAL_LOCALE = 'en';
-export const FRENCH_FRANCE_LOCALE = 'fr-FR';
 
 const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'fr-BE', 'fr-FR', 'nl-BE', 'nl'];
 
-const supportedLanguages = Object.keys(languages);
+export const FRENCH_FRANCE_LOCALE = 'fr-FR';
+export const FRENCH_INTERNATIONAL_LOCALE = 'fr';
+export const ENGLISH_INTERNATIONAL_LOCALE = 'en';
+
+const VISIBLE_LANGUAGES = {
+  en: { value: 'English', languageSwitcherDisplayed: true },
+  es: { value: 'Español', languageSwitcherDisplayed: false },
+  fr: { value: 'Français', languageSwitcherDisplayed: true },
+  nl: { value: 'Nederlands', languageSwitcherDisplayed: true },
+};
+
+const supportedLanguages = Object.keys(VISIBLE_LANGUAGES);
 
 export default class LocaleService extends Service {
   @service cookies;
@@ -52,6 +59,24 @@ export default class LocaleService extends Service {
     }
 
     this.setLocale(DEFAULT_LOCALE);
+  }
+
+  get availableLanguagesForSwitcher() {
+    const FRENCH_LANGUAGE = 'fr';
+    const options = Object.entries(VISIBLE_LANGUAGES)
+      .filter(([_, config]) => config.languageSwitcherDisplayed)
+      .map(([key, config]) => ({
+        label: config.value,
+        value: key,
+      }));
+
+    const optionsWithoutFrSortedByLabel = options
+      .filter((option) => option.value !== FRENCH_LANGUAGE)
+      .sort((option) => option.label);
+
+    const frenchLanguageOption = options.find((option) => option.value === FRENCH_LANGUAGE);
+
+    return [frenchLanguageOption, ...optionsWithoutFrSortedByLabel];
   }
 
   #findSupportedLanguage(language) {
