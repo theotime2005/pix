@@ -31,9 +31,31 @@
         {
           "type": "element",
           "element": {
-            "id": "028bb087-c3b6-43a6-93b7-e6a36d332a78",
-            "type": "text",
-            "content": "<iframe title=\"llm\" src=\"https://1024pix.github.io/atelier-contenus/MGO/ia-int-accroche-lat.html\" height=\"800\"></iframe>"
+            "id": "55bb2043-0489-4faa-81cf-de3c39286c2d",
+            "type": "custom",
+            "tagName": "llm-prompt-select",
+            "props": {
+              "messages": [
+                {
+                  "direction": "inbound",
+                  "content": "<strong>Bonjour,</strong> je m’appelle ChatPix !<br>Comment puis-je vous aider aujourd’hui ?"
+                }
+              ],
+              "prompts": [
+                {
+                  "prompt": "Explique moi le cycle de l'eau comme si j'étais un enfant de 7 ans.",
+                  "response": "L'eau voyage tout le temps : elle s'évapore dans le ciel, forme des nuages, retombe en pluie, puis retourne dans les rivières et la mer pour recommencer !"
+                },
+                {
+                  "prompt": "Aide moi à rédiger une fiche de lecture pour le livre Des souris et des hommes.",
+                  "response": "Des souris et des hommes est un roman de John Steinbeck qui raconte l'histoire touchante de deux amis, George et Lennie, cherchant du travail pendant la Grande Dépression en Amérique. Leur rêve de posséder une ferme s'effondre tragiquement à cause de la naïveté de Lennie et de la dureté du monde qui les entoure."
+                },
+                {
+                  "prompt": "Pourquoi la natation est-elle une excellente activité de rééducation après une blessure ?",
+                  "response": "La natation est une excellente activité de rééducation après une blessure car elle permet de renforcer les muscles et d'améliorer la mobilité sans exercer de pression excessive sur les articulations."
+                }
+              ]
+            }
           }
         },
         {
@@ -120,7 +142,7 @@
                 "content": "<p>kangourou</p>",
                 "feedback": {
                   "state": "",
-                  "diagnosis": "<p>Observez attentivement la taille du cercle nommé \"koala\" par rapport à celui qui représente \"kangourou\".</p>"
+                  "diagnosis": "<p>Observez attentivement la taille du cercle nommé « koala » par rapport à celui qui représente « kangourou ».</p>"
                 }
               },
               {
@@ -128,7 +150,7 @@
                 "content": "<p>koala</p>",
                 "feedback": {
                   "state": "",
-                  "diagnosis": "<p>Pendant cette étape de l’entraînement, elle a bien remarqué que le mot “koala” apparaît souvent en même temps que “animaux”, “Océanie”, etc.</p>"
+                  "diagnosis": "<p>Pendant cette étape de l’entraînement, elle a bien remarqué que le mot « koala » apparaît souvent en même temps que « animaux », « Océanie », etc.</p>"
                 }
               },
               {
@@ -136,7 +158,7 @@
                 "content": "<p>wallaby</p>",
                 "feedback": {
                   "state": "",
-                  "diagnosis": "<p>Observez attentivement la taille du cercle nommé \"koala\" par rapport à celui qui représente \"wallaby\".</p>"
+                  "diagnosis": "<p>Observez attentivement la taille du cercle nommé « koala » par rapport à celui qui représente « wallaby ».</p>"
                 }
               }
             ]
@@ -157,7 +179,7 @@
                 {
                   "id": "4386b458-46cb-45e9-8d1b-1e840cb2f7c3",
                   "type": "text",
-                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui donne des <strong>milliards de textes</strong>.</p>"
+                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui donne des <strong>milliards de textes</strong> variés.</p>"
                 }
               ]
             },
@@ -175,7 +197,7 @@
                 {
                   "id": "3cdf627f-2ad0-42e8-a529-696936905830",
                   "type": "text",
-                  "content": "<p>Petit à petit elle s'améliore, elle mémorise quels mots apparaissent <strong>souvent</strong> ensemble. 🐈 🐁</p>"
+                  "content": "<p>Petit à petit elle s'améliore, elle apprend quels mots apparaissent <strong>souvent</strong> ensemble. 🐈 🐁</p>"
                 }
               ]
             },
@@ -184,7 +206,7 @@
                 {
                   "id": "94b60d31-b5dc-4621-a38f-de8eb5553813",
                   "type": "text",
-                  "content": "<p>Il faut l'entraîner sur beaucoup de <strong>textes variés</strong>, pour améliorer son vocabulaire, son style et sa capacité à discuter sur tous les sujets.</p>"
+                  "content": "<p>À la fin de cette étape, elle est capable de <strong>prolonger</strong> ou compléter des débuts de texte.</p>"
                 }
               ]
             }
