@@ -179,7 +179,7 @@
                 {
                   "id": "4386b458-46cb-45e9-8d1b-1e840cb2f7c3",
                   "type": "text",
-                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui fait étudier des <strong>milliards de textes</strong> variés.</p>"
+                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui fait étudier des <strong>milliards de textes</strong> variés. 📚 </p>"
                 }
               ]
             },
@@ -197,7 +197,7 @@
                 {
                   "id": "3cdf627f-2ad0-42e8-a529-696936905830",
                   "type": "text",
-                  "content": "<p>Elle peut ensuite deviner le mot suivant quand on lui donne le début d'une phrase.</p><p>Puis elle recommence avec la phrase initiale et le mot qu'elle vient de deviner. Et ... elle recommence encore et encore ! 🔁</p>"
+                  "content": "<p>Elle est donc capable de <strong>prédire le mot suivant</strong> quand on lui donne le début d'une phrase.</p><p>Puis elle recommence avec le début de phrase suivi du mot qu'elle vient de choisir. 📝 </p>Et ... elle recommence encore et encore ! 🔁</p>"
                 }
               ]
             },
@@ -206,7 +206,7 @@
                 {
                   "id": "94b60d31-b5dc-4621-a38f-de8eb5553813",
                   "type": "text",
-                  "content": "<p>À la fin de cette étape, elle est capable de <strong>prolonger</strong> ou compléter des débuts de texte.</p>"
+                  "content": "<p>À la fin de cette étape, l'IA est capable de <strong>prolonger</strong> ou compléter des débuts de texte. 😮</p>"
                 }
               ]
             }
