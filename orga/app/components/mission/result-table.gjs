@@ -5,8 +5,7 @@ import PixTableColumn from '@1024pix/pix-ui/components/pix-table-column';
 import PixTag from '@1024pix/pix-ui/components/pix-tag';
 import PixTooltip from '@1024pix/pix-ui/components/pix-tooltip';
 import { t } from 'ember-intl';
-
-import getService from '../../helpers/get-service.js';
+import getService from 'pix-orga/helpers/get-service';
 
 function indexNumber(index) {
   return { number: index + 1 };

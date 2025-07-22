@@ -3,8 +3,7 @@ import PixTable from '@1024pix/pix-ui/components/pix-table';
 import PixTableColumn from '@1024pix/pix-ui/components/pix-table-column';
 import PixTag from '@1024pix/pix-ui/components/pix-tag';
 import { t } from 'ember-intl';
-
-import getService from '../../helpers/get-service.js';
+import getService from 'pix-orga/helpers/get-service';
 
 function statusColor(status) {
   return {
