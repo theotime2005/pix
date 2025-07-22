@@ -1,6 +1,7 @@
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import * as organizationLearnerRepository from '../../../shared/infrastructure/repositories/organization-learner-repository.js';
 import { injectDependencies } from '../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
 import { logger } from '../../../shared/infrastructure/utils/logger.js';
@@ -17,10 +18,12 @@ const dependencies = {
   rewardRepository: repositories.rewardRepository,
   successRepository: repositories.successRepository,
   questRepository: repositories.questRepository,
+  combinedCourseParticipationRepository: repositories.combinedCourseParticipationRepository,
   combinedCourseParticipantRepository: repositories.combinedCourseParticipantRepository,
   combinedCourseRepository: repositories.combinedCourseRepository,
   campaignRepository: repositories.campaignRepository,
   userRepository: repositories.userRepository,
+  organizationLearnerRepository,
   logger,
 };
 

@@ -10,6 +10,7 @@ import { temporaryStorage } from '../../../shared/infrastructure/key-value-stora
 import { injectDependencies } from '../../../shared/infrastructure/utils/dependency-injection.js';
 import * as campaignRepository from './campaign-repository.js';
 import * as combinedCourseParticipantRepository from './combined-course-participant-repository.js';
+import * as combinedCourseParticipationRepository from './combined-course-participation-repository.js';
 import * as combinedCourseRepository from './combined-course-participation-repository.js';
 import * as eligibilityRepository from './eligibility-repository.js';
 import * as questRepository from './quest-repository.js';
@@ -27,6 +28,7 @@ const repositoriesWithoutInjectedDependencies = {
   campaignRepository,
   combinedCourseRepository,
   combinedCourseParticipantRepository,
+  combinedCourseParticipationRepository,
   userRepository,
 };
 

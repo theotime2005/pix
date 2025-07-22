@@ -6,8 +6,8 @@ export default class CombinedCourse extends ApplicationAdapter {
     return this.ajax(url, 'PUT');
   }
 
-  urlForFindRecord(id, modelName, snapshot) {
-    const code = snapshot.record.code;
-    return this.urlForQueryRecord({ filter: { code } }, modelName);
+  urlForFindRecord(_, modelName, snapshot) {
+    const { code } = snapshot.record;
+    return `${this.urlForQueryRecord({ filter: { code } }, modelName)}?filter[code]=${code}`;
   }
 }

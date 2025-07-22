@@ -2,10 +2,11 @@ import { requestResponseUtils } from '../../shared/infrastructure/utils/request-
 import { usecases } from '../domain/usecases/index.js';
 import * as combinedCourseSerializer from '../infrastructure/serializers/combined-course-serializer.js';
 
-const getByCode = async function (request, _) {
+const getByCode = async function (request, _, dependencies = { requestResponseUtils }) {
   const { code } = request.query.filter;
+  const userId = dependencies.requestResponseUtils.extractUserIdFromRequest(request);
 
-  const combinedCourse = await usecases.getCombinedCourseByCode({ code });
+  const combinedCourse = await usecases.getCombinedCourseByCode({ userId, code });
   return combinedCourseSerializer.serialize(combinedCourse);
 };
 
