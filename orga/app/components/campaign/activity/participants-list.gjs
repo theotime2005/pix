@@ -165,7 +165,7 @@ export default class ParticipantsList extends Component {
     {{/unless}}
 
     {{#if @participations}}
-      <PixPagination @pagination={{@participations.meta}} @locale={{this.getCurrentLocale}} />
+      <PixPagination @pagination={{@participations.meta}} @locale={{this.currentLocale}} />
     {{/if}}
 
     <DeleteParticipationModal

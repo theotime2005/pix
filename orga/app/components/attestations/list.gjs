@@ -16,6 +16,10 @@ export default class AttestationList extends Component {
 
   debounceTime = ENV.pagination.debounce;
 
+  get currentLocale() {
+    return this.intl.primaryLocale;
+  }
+
   get statusesOptions() {
     return [
       { value: 'OBTAINED', label: this.intl.t('pages.attestations.table.filter.status.obtained') },

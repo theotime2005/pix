@@ -50,6 +50,37 @@ module('Integration | Component | Campaign::Activity::ParticipantsList', functio
     assert.ok(screen.getAllByText("En attente d'envoi"));
   });
 
+  test('it should display pagination in correct language', async function (assert) {
+    class CurrentUserStub extends Service {
+      isAdminInOrganization = true;
+    }
+    const intl = this.owner.lookup('service:intl');
+    intl.setLocale(['en', 'en']);
+
+    this.owner.register('service:current-user', CurrentUserStub);
+
+    this.set('campaign', { externalIdLabel: 'id', type: 'ASSESSMENT' });
+
+    this.set('participations', [
+      {
+        firstName: 'Joe',
+        lastName: 'La frite',
+        status: 'TO_SHARE',
+        participantExternalId: 'patate',
+      },
+    ]);
+
+    const screen = await render(
+      hbs`<Campaign::Activity::ParticipantsList
+  @campaign={{this.campaign}}
+  @participations={{this.participations}}
+  @onClickParticipant={{this.noop}}
+  @onFilter={{this.noop}}
+/>`,
+    );
+    assert.ok(screen.getByLabelText('items', { exact: false }));
+  });
+
   test('it should link to the last shared or current campaign participation details', async function (assert) {
     class CurrentUserStub extends Service {
       isAdminInOrganization = true;

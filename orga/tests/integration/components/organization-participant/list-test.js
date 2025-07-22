@@ -146,7 +146,41 @@ module('Integration | Component | OrganizationParticipant | List', function (hoo
       });
     });
   });
+  module('pagination', function () {
+    test('it should display pagination in correct language', async function (assert) {
+      // given
+      const intl = this.owner.lookup('service:intl');
+      intl.setLocale(['en', 'en']);
+      const participants = [
+        {
+          lastName: 'La Terreur',
+          firstName: 'Gigi',
+          id: 34,
+        },
+        {
+          lastName: "L'asticot",
+          firstName: 'Gogo',
+          id: 56,
+        },
+      ];
+      this.set('participants', participants);
+      this.set('certificabilityFilter', []);
+      this.set('fullNameFilter', null);
+      // when
+      const screen = await render(
+        hbs`<OrganizationParticipant::List
+  @participants={{this.participants}}
+  @triggerFiltering={{this.noop}}
+  @onClickLearner={{this.noop}}
+  @fullName={{this.fullNameFilter}}
+  @certificabilityFilter={{this.certificabilityFilter}}
+/>`,
+      );
 
+      // then
+      assert.ok(screen.getByLabelText('items', { exact: false }));
+    });
+  });
   module('row', function () {
     test('it should display a list of participants', async function (assert) {
       // given

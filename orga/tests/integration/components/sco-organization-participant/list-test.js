@@ -126,6 +126,41 @@ module('Integration | Component | ScoOrganizationParticipant::List', function (h
     assert.strictEqual(screen.getAllByRole('row').length, 3);
   });
 
+  test('it should display pagination in correct language', async function (assert) {
+    // given
+    const intl = this.owner.lookup('service:intl');
+    intl.setLocale(['en', 'en']);
+
+    const students = [
+      { lastName: 'La Terreur', firstName: 'Gigi', birthdate: new Date('2010-02-01') },
+      { lastName: "L'asticot", firstName: 'Gogo', birthdate: new Date('2010-05-10') },
+    ];
+
+    this.set('students', students);
+    this.set('divisions', []);
+    this.set('connectionTypes', []);
+    this.set('certificability', []);
+    this.set('search', null);
+
+    // when
+    const screen = await render(
+      hbs`<ScoOrganizationParticipant::List
+  @students={{this.students}}
+  @onFilter={{this.noop}}
+  @searchFilter={{this.search}}
+  @divisionsFilter={{this.divisions}}
+  @connectionTypeFilter={{this.connectionTypes}}
+  @certificabilityFilter={{this.certificability}}
+  @onClickLearner={{this.noop}}
+  @onResetFilter={{this.noop}}
+  @hasComputeOrganizationLearnerCertificabilityEnabled={{true}}
+/>`,
+    );
+
+    // then
+    assert.ok(screen.getByLabelText('items', { exact: false }));
+  });
+
   test('it should display a link to access student detail', async function (assert) {
     // given
     const students = [

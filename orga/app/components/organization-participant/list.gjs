@@ -42,6 +42,10 @@ export default class List extends Component {
   @service currentUser;
   @service intl;
 
+  get currentLocale() {
+    return this.intl.primaryLocale;
+  }
+
   displayDate(date) {
     return dayjs(date).format('DD/MM/YYYY');
   }
@@ -398,8 +402,12 @@ export default class List extends Component {
             @onCloseDeletionModal={{this.closeDeletionModal}}
           />
         {{/if}}
-
-        <PixPaginationControl @destinationId={{paginationId}} @onChange={{reset}} @pagination={{@participants.meta}} />
+        <PixPaginationControl
+          @destinationId={{paginationId}}
+          @onChange={{reset}}
+          @pagination={{@participants.meta}}
+          @locale={{this.currentLocale}}
+        />
       </SelectableList>
 
       {{#unless @participants}}
@@ -446,7 +454,7 @@ const ActionBar = <template>
 
 const PixPaginationControl = <template>
   <InElement @destinationId={{@destinationId}} @waitForElement={{true}}>
-    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{this.intl.primaryLocale}} />
+    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{@locale}} />
   </InElement>
 </template>;
 

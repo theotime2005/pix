@@ -60,6 +60,10 @@ export default class ScoList extends Component {
     });
   }
 
+  get currentLocale() {
+    return this.intl.primaryLocale;
+  }
+
   get connectionTypes() {
     return CONNECTION_TYPES;
   }
@@ -255,7 +259,12 @@ export default class ScoList extends Component {
           />
         {{/if}}
 
-        <PixPaginationControl @destinationId={{paginationId}} @onChange={{reset}} @pagination={{@students.meta}} />
+        <PixPaginationControl
+          @destinationId={{paginationId}}
+          @onChange={{reset}}
+          @pagination={{@students.meta}}
+          @locale={{this.currentLocale}}
+        />
 
         <Filters
           @destinationId={{filtersId}}
@@ -304,7 +313,7 @@ const Filters = <template>
 
 const PixPaginationControl = <template>
   <InElement @destinationId={{@destinationId}} @waitForElement={{true}}>
-    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{this.intl.primaryLocale}} />
+    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{@locale}} />
   </InElement>
 </template>;
 

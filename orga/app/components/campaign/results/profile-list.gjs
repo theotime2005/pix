@@ -7,8 +7,8 @@ import { LinkTo } from '@ember/routing';
 import dayjsFormat from 'ember-dayjs/helpers/dayjs-format';
 import { t } from 'ember-intl';
 import { gt } from 'ember-truth-helpers';
+import getService from 'pix-orga/helpers/get-service';
 
-import getService from '../../../helpers/get-service.js';
 import CampaignParticipationFilters from '../filter/participation-filters';
 import EvolutionHeader from './evolution-header';
 import ParticipationEvolutionIcon from './participation-evolution-icon';

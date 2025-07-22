@@ -19,6 +19,7 @@ import SupLearnerFilters from './sup-learner-filters';
 import TableRow from './table-row';
 
 export default class ListItems extends Component {
+  @service intl;
   @service currentUser;
   @tracked selectedStudent = null;
   @tracked showDeletionModal = false;
@@ -38,6 +39,10 @@ export default class ListItems extends Component {
         };
       });
     });
+  }
+
+  get currentLocale() {
+    return this.intl.primaryLocale;
   }
 
   get showCheckbox() {
@@ -164,7 +169,12 @@ export default class ListItems extends Component {
           />
         {{/if}}
 
-        <PixPaginationControl @destinationId={{paginationId}} @onChange={{reset}} @pagination={{@students.meta}} />
+        <PixPaginationControl
+          @destinationId={{paginationId}}
+          @onChange={{reset}}
+          @pagination={{@students.meta}}
+          @locale={{this.currentLocale}}
+        />
 
         <Filters
           @destinationId={{filtersId}}
@@ -211,7 +221,7 @@ const Filters = <template>
 
 const PixPaginationControl = <template>
   <InElement @destinationId={{@destinationId}} @waitForElement={{true}}>
-    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{this.intl.primaryLocale}} />
+    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{@locale}} />
   </InElement>
 </template>;
 

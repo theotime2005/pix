@@ -49,6 +49,10 @@ export default class List extends Component {
     this.showDeletionModal = !this.showDeletionModal;
   }
 
+  get currentLocale() {
+    return this.intl.primaryLocale;
+  }
+
   @action
   async deleteCampaigns(selectedCampaigns) {
     const campaignIds = selectedCampaigns.map(({ id }) => id);
@@ -192,7 +196,12 @@ export default class List extends Component {
             @deleteCampaigns={{fn (fn withFunction this.deleteCampaigns reset) selectedCampaigns}}
           />
         {{/if}}
-        <PixPaginationControl @destinationId={{paginationId}} @onChange={{reset}} @pagination={{@campaigns.meta}} />
+        <PixPaginationControl
+          @destinationId={{paginationId}}
+          @onChange={{reset}}
+          @pagination={{@campaigns.meta}}
+          @locale={{this.currentLocale}}
+        />
         <Filters
           @destinationId={{filtersId}}
           @reset={{reset}}
@@ -228,7 +237,7 @@ const Filters = <template>
 
 const PixPaginationControl = <template>
   <InElement @destinationId={{@destinationId}} @waitForElement={{true}}>
-    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{this.intl.primaryLocale}} />
+    <PixPagination @pagination={{@pagination}} @onChange={{@onChange}} @locale={{@locale}} />
   </InElement>
 </template>;
 

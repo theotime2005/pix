@@ -423,6 +423,41 @@ module('Integration | Component | Campaign::Results::ProfileList', function (hoo
       // then
       assert.ok(screen.getByRole('link', { href: '/campagnes/1/profils/7' }));
     });
+
+    test('it should display pagination in correct language', async function (assert) {
+      const intl = this.owner.lookup('service:intl');
+      intl.setLocale(['en', 'en']);
+
+      this.owner.setupRouter();
+      this.campaign = store.createRecord('campaign', {
+        id: '1',
+        name: 'campagne 1',
+        code: 'AAAAAA111',
+        participationsCount: 1,
+      });
+      this.profiles = [
+        {
+          id: 7,
+          lastName: 'Todori',
+          firstName: 'Shoto',
+        },
+      ];
+
+      // when
+      const screen = await render(
+        hbs`<Campaign::Results::ProfileList
+  @campaign={{this.campaign}}
+  @profiles={{this.profiles}}
+  @onClickParticipant={{this.noop}}
+  @onFilter={{this.noop}}
+  @selectedDivisions={{this.divisions}}
+  @selectedGroups={{this.groups}}
+/>`,
+      );
+
+      // then
+      assert.ok(screen.getByLabelText('items', { exact: false }));
+    });
   });
 
   module('when there is no profile', function () {
