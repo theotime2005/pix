@@ -1,5 +1,6 @@
 import { knex as datamartKnex } from '../../../../../datamart/knex-database-connection.js';
 import { config } from '../../../../shared/config.js';
+import { NotFoundError } from '../../../../shared/domain/errors.js';
 import { Challenge } from '../../../../shared/domain/models/index.js';
 import * as solutionAdapter from '../../../../shared/infrastructure/adapters/solution-adapter.js';
 import { LearningContentRepository } from '../../../../shared/infrastructure/repositories/learning-content-repository.js';
@@ -17,6 +18,21 @@ const OPERATIVE_STATUSES = [VALIDATED_STATUS, ARCHIVED_STATUS];
 
 const PIX_CORE_DATAMART_SCOPE = 'COEUR';
 const PIX_CORE_CHALLENGES_DATAMART_STATUS = 'VALIDATED';
+
+export async function getMany(ids, locale) {
+  const challengeDtos = await getInstance().loadMany(ids);
+  challengeDtos.forEach((challengeDto, index) => {
+    if (challengeDto) return;
+    logger.warn({ challengeId: ids[index] }, 'Épreuve introuvable');
+    throw new NotFoundError('Épreuve introuvable');
+  });
+  const localeChallengeDtos = locale
+    ? challengeDtos.filter((challengeDto) => challengeDto.locales.includes(locale))
+    : challengeDtos;
+  localeChallengeDtos.sort(byId);
+  const challengesDtosWithSkills = await loadChallengeDtosSkills(localeChallengeDtos);
+  return challengesDtosWithSkills.map(([challengeDto, skill]) => toDomain({ challengeDto, skill }));
+}
 
 export async function findFlashCompatibleWithoutLocale({
   useObsoleteChallenges,
@@ -60,6 +76,10 @@ async function _findFlashCompatibleWithoutLocaleFromDatamart() {
 
   const challengesDtosWithSkills = await loadChallengeDtosSkills(calibratedChallenges);
   return challengesDtosWithSkills.map(([challengeDto, skill]) => toDomain({ challengeDto, skill }));
+}
+
+function byId(challenge1, challenge2) {
+  return challenge1.id < challenge2.id ? -1 : 1;
 }
 
 function toDomain({ challengeDto, webComponentTagName, webComponentProps, skill, successProbabilityThreshold }) {

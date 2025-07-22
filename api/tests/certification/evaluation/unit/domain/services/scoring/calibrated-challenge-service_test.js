@@ -12,7 +12,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
       challengeRepository,
       certificationChallengeLiveAlertRepository,
       certificationCourseRepository,
-      sharedChallengeRepository,
       originalLatestCalibrationDate;
 
     let challengeList;
@@ -42,11 +41,9 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
             fromArchivedCalibration: false,
           })
           .resolves(challengeList),
-      };
-
-      sharedChallengeRepository = {
         getMany: sinon.stub(),
       };
+
       originalLatestCalibrationDate = config.v3Certification.latestCalibrationDate;
     });
 
@@ -67,10 +64,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           difficulty: null,
         });
 
-        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(
-          challengeList,
-          sharedChallengeRepository,
-        );
+        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(challengeList, challengeRepository);
 
         const expectedAskedChallenges = [challengeExcludedFromCalibration, ...challengesAfterCalibration];
 
@@ -78,7 +72,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           .withArgs({ assessmentId })
           .resolves([]);
 
-        sharedChallengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
+        challengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
 
         challengeCalibrationRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId })
@@ -107,7 +101,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           assessmentId,
           challengeCalibrationRepository,
           certificationChallengeLiveAlertRepository,
-          sharedChallengeRepository,
           certificationCourseRepository,
           challengeRepository,
         });
@@ -136,7 +129,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           ...challengeList.at(-1),
         });
 
-        const challengeCalibrations = _buildDataFromAnsweredChallenges(challengeList, sharedChallengeRepository);
+        const challengeCalibrations = _buildDataFromAnsweredChallenges(challengeList, challengeRepository);
 
         const askedChallenges = [challengeExcludedFromCalibration, ...challengesAfterCalibration];
 
@@ -144,7 +137,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           .withArgs({ assessmentId })
           .resolves([challengeWithValidatedLiveAlert.id]);
 
-        sharedChallengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(askedChallenges);
+        challengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(askedChallenges);
 
         challengeCalibrationRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId })
@@ -173,7 +166,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
             assessmentId,
             challengeCalibrationRepository,
             certificationChallengeLiveAlertRepository,
-            sharedChallengeRepository,
             certificationCourseRepository,
             challengeRepository,
           });
@@ -198,10 +190,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           difficulty: null,
         });
 
-        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(
-          challengeList,
-          sharedChallengeRepository,
-        );
+        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(challengeList, challengeRepository);
 
         const expectedAskedChallenges = [challengeExcludedFromCalibration, ...challengesAfterCalibration];
 
@@ -214,7 +203,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           .withArgs({ assessmentId })
           .resolves([]);
 
-        sharedChallengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
+        challengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
 
         challengeCalibrationRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId })
@@ -235,7 +224,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           assessmentId,
           challengeCalibrationRepository,
           certificationChallengeLiveAlertRepository,
-          sharedChallengeRepository,
           certificationCourseRepository,
           challengeRepository,
         });
@@ -261,10 +249,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           difficulty: null,
         });
 
-        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(
-          challengeList,
-          sharedChallengeRepository,
-        );
+        const expectedChallengeCalibrations = _buildDataFromAnsweredChallenges(challengeList, challengeRepository);
 
         const expectedAskedChallenges = [challengeExcludedFromCalibration, ...challengesAfterCalibration];
 
@@ -272,7 +257,7 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           .withArgs({ assessmentId })
           .resolves([]);
 
-        sharedChallengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
+        challengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(expectedAskedChallenges);
 
         challengeCalibrationRepository.getByCertificationCourseId
           .withArgs({ certificationCourseId })
@@ -297,7 +282,6 @@ describe('Certification | Evaluation | Unit | Domain | Services | calibrated cha
           assessmentId,
           challengeCalibrationRepository,
           certificationChallengeLiveAlertRepository,
-          sharedChallengeRepository,
           certificationCourseRepository,
           challengeRepository,
         });
@@ -321,8 +305,8 @@ const _generateChallengeCalibrations = ({ discriminant, difficulty, id }) => {
   });
 };
 
-const _buildDataFromAnsweredChallenges = (challengeList, sharedChallengeRepository) => {
+const _buildDataFromAnsweredChallenges = (challengeList, challengeRepository) => {
   const challengeCalibrations = challengeList.map(_generateChallengeCalibrations);
-  sharedChallengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(challengeList);
+  challengeRepository.getMany.withArgs(challengeList.map((e) => e.id)).returns(challengeList);
   return challengeCalibrations;
 };

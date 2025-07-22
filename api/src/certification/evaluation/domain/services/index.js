@@ -13,7 +13,6 @@ import * as placementProfileService from '../../../../shared/domain/services/pla
 import * as answerRepository from '../../../../shared/infrastructure/repositories/answer-repository.js';
 import * as areaRepository from '../../../../shared/infrastructure/repositories/area-repository.js';
 import * as assessmentResultRepository from '../../../../shared/infrastructure/repositories/assessment-result-repository.js';
-import * as sharedChallengeRepository from '../../../../shared/infrastructure/repositories/challenge-repository.js';
 import { injectDependencies } from '../../../../shared/infrastructure/utils/dependency-injection.js';
 import { importNamedExportsFromDirectory } from '../../../../shared/infrastructure/utils/import-named-exports-from-directory.js';
 import * as challengeRepository from '../../../evaluation/infrastructure/repositories/challenge-repository.js';
@@ -76,7 +75,6 @@ const dependencies = {
   certificationAssessmentRepository,
   complementaryCertificationCourseResultRepository,
   complementaryCertificationScoringCriteriaRepository,
-  sharedChallengeRepository,
 };
 
 const path = dirname(fileURLToPath(import.meta.url));
