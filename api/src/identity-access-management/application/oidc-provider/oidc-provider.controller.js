@@ -56,6 +56,7 @@ async function authenticateOidcUser(request, h) {
 async function createUser(request, h, dependencies = { requestResponseUtils }) {
   const { identityProvider, authenticationKey } = request.deserializedPayload;
   const localeFromCookie = request.state?.locale;
+  // todo(locale): really extract the language (use new Locale(locale).language)
   const language = dependencies.requestResponseUtils.extractLocaleFromRequest(request);
   const origin = getForwardedOrigin(request.headers);
   const requestedApplication = RequestedApplication.fromOrigin(origin);

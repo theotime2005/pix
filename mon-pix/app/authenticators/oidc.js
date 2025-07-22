@@ -15,7 +15,7 @@ export default class OidcAuthenticator extends BaseAuthenticator {
       method: 'POST',
       headers: {
         Accept: 'application/json',
-        'Accept-Language': this.locale.acceptLanguageHeader,
+        'Accept-Language': this.locale.currentLocale,
         'Content-Type': 'application/json',
       },
     };
