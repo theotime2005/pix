@@ -17,6 +17,7 @@ describe('Quest | Unit | Infrastructure | Serializers | combined-course', functi
           name: 'Mon parcours',
           code: 'COMBINIX1',
           'organization-id': 1,
+          status: 'not-started',
         },
         type: 'combined-courses',
         id: '1',
