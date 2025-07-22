@@ -38,6 +38,7 @@ module.exports = function (environment) {
       API_HOST: process.env.API_HOST || '',
       APPLICATION_NAME: process.env.APP || 'pix-app-local',
       DEFAULT_LOCALE: process.env.DEFAULT_LOCALE || 'en',
+      SUPPORTED_LOCALES: ['en', 'es', 'fr', 'fr-BE', 'fr-FR', 'nl-BE', 'nl'],
       FT_FOCUS_CHALLENGE_ENABLED: _isFeatureEnabled(process.env.FT_FOCUS_CHALLENGE_ENABLED) || false,
       isTimerCountdownEnabled: true,
       LOAD_EXTERNAL_SCRIPT: true,
