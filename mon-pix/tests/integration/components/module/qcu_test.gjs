@@ -50,7 +50,7 @@ module('Integration | Component | Module | QCU', function (hooks) {
     assert.ok(screen.getByLabelText('radio1'));
     assert.ok(screen.getByLabelText('radio2'));
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
     assert.dom(verifyButton).exists();
   });
 
@@ -70,7 +70,7 @@ module('Integration | Component | Module | QCU', function (hooks) {
     const screen = await render(<template><ModulixQcu @element={{qcuElement}} @onAnswer={{onAnswerSpy}} /></template>);
     await click(screen.getByLabelText(answeredProposal.content));
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
     await click(verifyButton);
 
     // then
@@ -101,7 +101,7 @@ module('Integration | Component | Module | QCU', function (hooks) {
     const screen = await render(<template><ModulixQcu @element={{qcuElement}} @onAnswer={{onAnswerSpy}} /></template>);
 
     // when
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert.dom(screen.getByRole('alert')).exists();
@@ -123,9 +123,9 @@ module('Integration | Component | Module | QCU', function (hooks) {
     const screen = await render(<template><ModulixQcu @element={{qcuElement}} @onAnswer={{onAnswerSpy}} /></template>);
 
     // when
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
     await click(screen.getByLabelText('radio1'));
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert.dom(screen.queryByRole('alert', { name: 'Pour valider, sélectionnez une réponse.' })).doesNotExist();
@@ -156,7 +156,7 @@ module('Integration | Component | Module | QCU', function (hooks) {
     assert.dom(screen.getByText('Good job!')).exists();
     assert.ok(screen.getByRole('radio', { name: 'radio1', disabled: true }));
     assert.ok(screen.getByRole('radio', { name: 'radio2', disabled: true }));
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display a ko feedback when exists', async function (assert) {
@@ -183,7 +183,7 @@ module('Integration | Component | Module | QCU', function (hooks) {
     assert.dom(screen.getByText('Too Bad!')).exists();
     assert.ok(screen.getByRole('radio', { name: 'radio1', disabled: true }));
     assert.ok(screen.getByRole('radio', { name: 'radio2', disabled: true }));
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display retry button when a ko feedback appears', async function (assert) {

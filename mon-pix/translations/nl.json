@@ -1623,7 +1623,7 @@
       "buttons": {
         "activity": {
           "retry": "Probeer het opnieuw",
-          "verify": "Kijk op"
+          "verify": "Controleer mijn antwoord"
         },
         "element": {
           "alternativeText": "Het tekstalternatief tonen",

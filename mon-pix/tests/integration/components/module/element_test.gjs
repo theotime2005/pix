@@ -221,7 +221,7 @@ module('Integration | Component | Module | Element', function (hooks) {
     );
 
     // then
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).exists();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).exists();
   });
 
   test('should display an element with a qcu declarative element', async function (assert) {
@@ -265,7 +265,7 @@ module('Integration | Component | Module | Element', function (hooks) {
     );
 
     // then
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).exists();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).exists();
   });
 
   test('should display an element with a qrocm element', async function (assert) {
@@ -316,7 +316,7 @@ module('Integration | Component | Module | Element', function (hooks) {
     );
 
     // then
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).exists();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).exists();
   });
 
   test('should display an element with a flashcards element', async function (assert) {

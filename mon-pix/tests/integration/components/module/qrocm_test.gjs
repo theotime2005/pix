@@ -225,7 +225,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
 
     // then
     assert.dom(screen.getByRole('button', { name: 'select-aria' })).hasText("le fournisseur d'adresse mail");
-    assert.ok(screen.getByRole('button', { name: 'Vérifier' }));
+    assert.ok(screen.getByRole('button', { name: 'Vérifier ma réponse' }));
   });
 
   test('should display an error message if QROCM is validated without response', async function (assert) {
@@ -258,7 +258,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
     const screen = await render(<template><ModuleQrocm @element={{qrocm}} /></template>);
 
     // when
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert.dom(screen.getByRole('alert')).exists();
@@ -297,7 +297,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
     );
 
     // when
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
     await clickByName('select-aria');
     await screen.findByRole('listbox');
     await click(
@@ -305,7 +305,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
         name: "le fournisseur d'adresse mail",
       }),
     );
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert
@@ -342,7 +342,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
       );
       await fillIn(screen.getByLabelText('Réponse 1'), userResponse);
 
-      const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+      const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
       await click(verifyButton);
 
       // then
@@ -403,7 +403,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
       const screen = await render(
         <template><ModuleQrocm @element={{qrocm}} @onAnswer={{onElementAnswerSpy}} /></template>,
       );
-      const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+      const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
 
       // when
       await clickByName('select-aria');
@@ -451,7 +451,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
     // then
     assert.dom(screen.getByText('Correct!')).exists();
     assert.dom(screen.getByText('Good job!')).exists();
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display a ko feedback when exists', async function (assert) {
@@ -475,7 +475,7 @@ module('Integration | Component | Module | QROCM', function (hooks) {
     // then
     assert.dom(screen.getByText('Wrong!')).exists();
     assert.dom(screen.getByText('Too Bad!')).exists();
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display retry button when a ko feedback appears', async function (assert) {

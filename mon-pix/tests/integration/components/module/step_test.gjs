@@ -53,7 +53,7 @@ module('Integration | Component | Module | Step', function (hooks) {
       );
 
       // then
-      assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).exists();
+      assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).exists();
     });
   });
 

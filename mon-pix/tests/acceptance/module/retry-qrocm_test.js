@@ -69,7 +69,6 @@ module('Acceptance | Module | Routes | retryQrocm', function (hooks) {
     // when
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
     const qrocmForm = screen.getByRole('group');
 
     // answer select proposal initially
@@ -82,6 +81,7 @@ module('Acceptance | Module | Routes | retryQrocm', function (hooks) {
     );
 
     // submit
+    const verifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(verifyButton);
 
     assert.dom(screen.getByRole('status')).exists();
@@ -104,7 +104,7 @@ module('Acceptance | Module | Routes | retryQrocm', function (hooks) {
       'false',
     );
 
-    const qrocmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const qrocmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
 
     // re-answer select proposal
     await clickByName('Réponse 1');
@@ -190,7 +190,7 @@ module('Acceptance | Module | Routes | retryQrocm', function (hooks) {
     // when
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
     const input = screen.getByLabelText('Réponse 1');
 
     // answer input proposal
@@ -214,7 +214,7 @@ module('Acceptance | Module | Routes | retryQrocm', function (hooks) {
     await click(retryButton);
 
     // then
-    const qrocmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const qrocmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(qrocmVerifyButtonCameBack);
     const validationAlert = screen.queryAllByRole('alert')[1];
 

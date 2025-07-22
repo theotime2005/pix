@@ -69,7 +69,7 @@ module('Acceptance | Module | Routes | retakeCompletedModule', function (hooks) 
     let screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
     await click(screen.getByLabelText('I am the right answer!'));
 
-    const verifyButton = screen.getByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(verifyButton);
 
     assert.dom(screen.queryByText("Bravo ! C'est la bonne réponse.")).exists();

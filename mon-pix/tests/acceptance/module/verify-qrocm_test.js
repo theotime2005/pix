@@ -78,7 +78,7 @@ module('Acceptance | Module | Routes | verifyQrocm', function (hooks) {
     // when
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
 
     // answer input proposal
     await fillIn(screen.getByLabelText('Réponse 1'), '@');
@@ -95,6 +95,6 @@ module('Acceptance | Module | Routes | verifyQrocm', function (hooks) {
 
     // then
     assert.dom(screen.getByText("Bravo ! C'est la bonne réponse.")).exists();
-    assert.notOk(screen.queryByRole('button', { name: 'Vérifier' }));
+    assert.notOk(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
   });
 });

@@ -71,7 +71,7 @@ module('Acceptance | Module | Routes | verifyQcm', function (hooks) {
 
     // when
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
-    const allVerifyButtons = screen.getAllByRole('button', { name: 'Vérifier' });
+    const allVerifyButtons = screen.getAllByRole('button', { name: 'Vérifier ma réponse' });
     const [firstQcmVerifyButton, nextQcmVerifyButton] = allVerifyButtons;
 
     // when

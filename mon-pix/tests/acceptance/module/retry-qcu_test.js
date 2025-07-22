@@ -68,7 +68,7 @@ module('Acceptance | Module | Routes | retryQcu', function (hooks) {
 
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const firstQcuVerifyButton = screen.getByRole('button', { name: 'Vérifier' });
+    const firstQcuVerifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     const rightAnswerRadio = screen.getByLabelText('I am the right answer!');
     const wrongAnswerRadio = screen.getByLabelText('I am the wrong answer!');
     const firstQcuForm = screen.getByRole('group');
@@ -88,7 +88,7 @@ module('Acceptance | Module | Routes | retryQcu', function (hooks) {
     assert.false(wrongAnswerRadio.checked);
     assert.false(rightAnswerRadio.checked);
 
-    const firstQcuVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const firstQcuVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(wrongAnswerRadio);
     await click(firstQcuVerifyButtonCameBack);
     assert.strictEqual(screen.queryByRole('status').innerText, 'Faux');
@@ -157,7 +157,7 @@ module('Acceptance | Module | Routes | retryQcu', function (hooks) {
 
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const firstQcuVerifyButton = screen.getByRole('button', { name: 'Vérifier' });
+    const firstQcuVerifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     const rightAnswerRadio = screen.getByLabelText('I am the right answer!');
     const wrongAnswerRadio = screen.getByLabelText('I am the wrong answer!');
     const firstQcuForm = screen.getByRole('group');
@@ -177,7 +177,7 @@ module('Acceptance | Module | Routes | retryQcu', function (hooks) {
     assert.false(wrongAnswerRadio.checked);
     assert.false(rightAnswerRadio.checked);
 
-    const firstQcuVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const firstQcuVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(firstQcuVerifyButtonCameBack);
     const validationAlert = screen.queryAllByRole('alert')[1];
 

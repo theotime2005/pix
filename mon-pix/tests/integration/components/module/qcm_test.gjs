@@ -50,7 +50,7 @@ module('Integration | Component | Module | QCM', function (hooks) {
     assert.ok(screen.getByLabelText('checkbox2'));
     assert.ok(screen.getByLabelText('checkbox3'));
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
     assert.dom(verifyButton).exists();
   });
 
@@ -78,7 +78,7 @@ module('Integration | Component | Module | QCM', function (hooks) {
     await click(screen.getByLabelText(answeredProposal[0].content));
     await click(screen.getByLabelText(answeredProposal[1].content));
 
-    const verifyButton = screen.queryByRole('button', { name: 'Vérifier' });
+    const verifyButton = screen.queryByRole('button', { name: 'Vérifier ma réponse' });
     await click(verifyButton);
 
     // then
@@ -111,7 +111,7 @@ module('Integration | Component | Module | QCM', function (hooks) {
 
     // when
     await click(screen.getByLabelText('checkbox1'));
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert.dom(screen.getByRole('alert')).exists();
@@ -134,9 +134,9 @@ module('Integration | Component | Module | QCM', function (hooks) {
     const screen = await render(<template><ModulixQcm @element={{qcmElement}} @onAnswer={{onAnswerSpy}} /></template>);
 
     // when
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
     await click(screen.getByLabelText('checkbox1'));
-    await click(screen.queryByRole('button', { name: 'Vérifier' }));
+    await click(screen.queryByRole('button', { name: 'Vérifier ma réponse' }));
 
     // then
     assert.dom(screen.queryByRole('alert', { name: 'Pour valider, sélectionnez une réponse.' })).doesNotExist();
@@ -168,7 +168,7 @@ module('Integration | Component | Module | QCM', function (hooks) {
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox1', disabled: true }));
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox2', disabled: true }));
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox3', disabled: true }));
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display a ko feedback when exists', async function (assert) {
@@ -196,7 +196,7 @@ module('Integration | Component | Module | QCM', function (hooks) {
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox1', disabled: true }));
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox2', disabled: true }));
     assert.ok(screen.getByRole('checkbox', { name: 'checkbox3', disabled: true }));
-    assert.dom(screen.queryByRole('button', { name: 'Vérifier' })).doesNotExist();
+    assert.dom(screen.queryByRole('button', { name: 'Vérifier ma réponse' })).doesNotExist();
   });
 
   test('should display retry button when a ko feedback appears', async function (assert) {

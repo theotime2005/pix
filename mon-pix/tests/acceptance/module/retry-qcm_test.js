@@ -49,7 +49,7 @@ module('Acceptance | Module | Routes | retryQcm', function (hooks) {
 
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const qcmVerifyButton = screen.getByRole('button', { name: 'Vérifier' });
+    const qcmVerifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     const rightAnswerCheckbox = screen.getByLabelText('I am the second right answer!');
     const wrongAnswerCheckbox = screen.getByLabelText('I am the first wrong answer!');
     const qcmForm = screen.getByRole('group');
@@ -70,7 +70,7 @@ module('Acceptance | Module | Routes | retryQcm', function (hooks) {
     assert.false(wrongAnswerCheckbox.checked);
     assert.false(rightAnswerCheckbox.checked);
 
-    const qcmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const qcmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(wrongAnswerCheckbox);
     await click(rightAnswerCheckbox);
     await click(qcmVerifyButtonCameBack);
@@ -119,7 +119,7 @@ module('Acceptance | Module | Routes | retryQcm', function (hooks) {
 
     const screen = await visit('/modules/bien-ecrire-son-adresse-mail/passage');
 
-    const qcmVerifyButton = screen.getByRole('button', { name: 'Vérifier' });
+    const qcmVerifyButton = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     const rightAnswerCheckbox = screen.getByLabelText('I am the second right answer!');
     const wrongAnswerCheckbox = screen.getByLabelText('I am the first wrong answer!');
     const qcmForm = screen.getByRole('group');
@@ -140,7 +140,7 @@ module('Acceptance | Module | Routes | retryQcm', function (hooks) {
     assert.false(wrongAnswerCheckbox.checked);
     assert.false(rightAnswerCheckbox.checked);
 
-    const qcmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier' });
+    const qcmVerifyButtonCameBack = screen.getByRole('button', { name: 'Vérifier ma réponse' });
     await click(qcmVerifyButtonCameBack);
     const validationAlert = screen.queryAllByRole('alert')[1];
 

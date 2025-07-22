@@ -1620,7 +1620,7 @@
       "buttons": {
         "activity": {
           "retry": "Volver a intentarlo",
-          "verify": "Comprobar"
+          "verify": "Compruebe mi respuesta"
         },
         "element": {
           "alternativeText": "Mostrar el texto alternativo",
