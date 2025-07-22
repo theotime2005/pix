@@ -43,11 +43,11 @@
               ],
               "prompts": [
                 {
-                  "prompt": "Explique moi le cycle de l'eau comme si j'étais un enfant de 7 ans.",
+                  "prompt": "Explique-moi le cycle de l'eau comme si j'étais un enfant de 7 ans.",
                   "response": "L'eau voyage tout le temps : elle s'évapore dans le ciel, forme des nuages, retombe en pluie, puis retourne dans les rivières et la mer pour recommencer !"
                 },
                 {
-                  "prompt": "Aide moi à rédiger une fiche de lecture pour le livre Des souris et des hommes.",
+                  "prompt": "Aide-moi à rédiger une fiche de lecture pour le livre Des souris et des hommes.",
                   "response": "Des souris et des hommes est un roman de John Steinbeck qui raconte l'histoire touchante de deux amis, George et Lennie, cherchant du travail pendant la Grande Dépression en Amérique. Leur rêve de posséder une ferme s'effondre tragiquement à cause de la naïveté de Lennie et de la dureté du monde qui les entoure."
                 },
                 {
@@ -179,7 +179,7 @@
                 {
                   "id": "4386b458-46cb-45e9-8d1b-1e840cb2f7c3",
                   "type": "text",
-                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui donne des <strong>milliards de textes</strong> variés.</p>"
+                  "content": "<p>Pour apprendre à une IA générative à produire du texte, on lui fait étudier des <strong>milliards de textes</strong> variés.</p>"
                 }
               ]
             },
@@ -188,7 +188,7 @@
                 {
                   "id": "93d127a7-e179-40cd-9273-ce7a23007a39",
                   "type": "text",
-                  "content": "<p>L’IA s’entraîne à <strong>deviner</strong> des mots au hasard dans ces textes. 🙈</p>"
+                  "content": "<p>L’IA s’entraîne à supprimer puis <strong>deviner</strong> des mots au hasard parmi tous ces textes. 🙈</p><p>Petit à petit elle s'améliore, elle apprend quels mots apparaissent <strong>souvent</strong> ensemble. 🐈 🐁</p>"
                 }
               ]
             },
@@ -197,7 +197,7 @@
                 {
                   "id": "3cdf627f-2ad0-42e8-a529-696936905830",
                   "type": "text",
-                  "content": "<p>Petit à petit elle s'améliore, elle apprend quels mots apparaissent <strong>souvent</strong> ensemble. 🐈 🐁</p>"
+                  "content": "<p>Elle peut ensuite deviner le mot suivant quand on lui donne le début d'une phrase.</p><p>Puis elle recommence avec la phrase initiale et le mot qu'elle vient de deviner. Et ... elle recommence encore et encore ! 🔁</p>"
                 }
               ]
             },
@@ -224,7 +224,7 @@
           "element": {
             "id": "3e76071c-b053-42a3-8145-c7defd93f748",
             "type": "text",
-            "content": "<p>À ce stade, l’IA générative est capable de prédire la suite d’un texte. 🔮<br>Mais ce n’est pas la même chose que discuter, ou rédiger une lettre de motivation. Comment apprend-elle à faire tout ça ? C'est ce que nous allons découvrir dans cette deuxième étape.</p>"
+            "content": "<p>À ce stade, l’IA générative est capable de <strong>prédire</strong> la suite d’un texte. 🔮<br>Mais ce n’est pas la même chose que discuter ou rédiger une lettre de motivation. Comment apprend-elle à faire tout ça ? C'est ce que nous allons découvrir dans cette deuxième étape.</p>"
           }
         }
       ]
@@ -239,7 +239,7 @@
           "element": {
             "id": "6b03cc70-6198-4e2c-a994-f51ef3fcede4",
             "type": "qab",
-            "instruction": "<p>À votre avis, de quel genre de données a-t-on besoin pour entraîner une IA à <strong>simuler une conversation </strong>? 🤔 </p><p>Sélectionnez les exemples appropriés 👇<br><br></p>",
+            "instruction": "<p>À votre avis, de quel genre de données a-t-on besoin pour entraîner une IA à <strong>simuler une conversation </strong>? 🤔 </p><p>Sélectionnez les exemples appropriés. 👇<br><br></p>",
             "cards": [
               {
                 "id": "cea6f6c8-afd6-4e6b-8821-17558822a5ea",
