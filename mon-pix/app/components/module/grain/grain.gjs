@@ -193,12 +193,27 @@ export default class ModuleGrain extends Component {
     return this.args.grain.type === 'summary';
   }
 
+  get isGrainTypeWithTitle() {
+    return this.args.grain.type === 'lesson' || this.args.grain.type === 'summary';
+  }
+
   get isGrainTypeWithTag() {
     return this.args.grain.type === 'activity' || this.args.grain.type === 'discovery';
   }
 
   get emojiGrain() {
     return '📌';
+  }
+
+  get grainTitle() {
+    switch (this.args.grain.type) {
+      case 'lesson':
+        return this.intl.t('pages.modulix.grain.title.lesson');
+      case 'summary':
+        return this.intl.t('pages.modulix.grain.title.summary');
+      default:
+        return '';
+    }
   }
 
   get tagText() {
@@ -223,8 +238,11 @@ export default class ModuleGrain extends Component {
             {{this.tagText}}
           </PixTag>
         {{/if}}
-        {{#if this.isGrainTypeSummary}}
-          <p class="grain-card-icon">{{this.emojiGrain}}</p>
+        {{#if this.isGrainTypeWithTitle}}
+          <h2 class="grain-card-title">
+            {{#if this.isGrainTypeSummary}}
+              <span aria-hidden="true" class="grain-card-icon">{{this.emojiGrain}}</span>
+            {{/if}}{{this.grainTitle}}</h2>
         {{/if}}
         <div class="grain-card__content">
           <!-- eslint-disable-next-line no-unused-vars -->

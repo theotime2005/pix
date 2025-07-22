@@ -1646,4 +1646,48 @@ module('Integration | Component | Module | Grain', function (hooks) {
       assert.dom(screen.getByText('Activité')).exists();
     });
   });
+
+  module('when grain has type ‘lesson‘', function () {
+    test('should display a title', async function (assert) {
+      // given
+      const textElement = {
+        content: 'element content',
+        type: 'text',
+        isAnswerable: false,
+      };
+      const grain = {
+        id: '12345-abcdef',
+        type: 'lesson',
+        components: [{ type: 'element', element: textElement }],
+      };
+
+      // when
+      const screen = await render(<template><ModuleGrain @grain={{grain}} /></template>);
+
+      // then
+      assert.dom(screen.getByText('Leçon')).exists();
+    });
+  });
+
+  module('when grain has type ‘Summary‘', function () {
+    test('should display a title', async function (assert) {
+      // given
+      const textElement = {
+        content: 'element content',
+        type: 'text',
+        isAnswerable: false,
+      };
+      const grain = {
+        id: '12345-abcdef',
+        type: 'summary',
+        components: [{ type: 'element', element: textElement }],
+      };
+
+      // when
+      const screen = await render(<template><ModuleGrain @grain={{grain}} /></template>);
+
+      // then
+      assert.dom(screen.getByText('Récapitulatif')).exists();
+    });
+  });
 });
