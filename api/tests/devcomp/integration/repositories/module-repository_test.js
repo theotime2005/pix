@@ -9,10 +9,6 @@ import { NotFoundError } from '../../../../src/shared/domain/errors.js';
 import { catchErr, expect, sinon } from '../../../test-helper.js';
 
 describe('Integration | DevComp | Repositories | ModuleRepository', function () {
-  beforeEach(function () {
-    moduleRepository.resetMemoizedModuleVersions();
-  });
-
   describe('#getAllByIds', function () {
     it('should return all modules with their version', async function () {
       // given

@@ -4,8 +4,6 @@ import { NotFoundError } from '../../../shared/domain/errors.js';
 import { LearningContentResourceNotFound } from '../../../shared/domain/errors.js';
 import { ModuleFactory } from '../factories/module-factory.js';
 
-const memoizedModuleVersions = new Map();
-
 async function getAllByIds({ ids, moduleDatasource }) {
   try {
     const modules = await moduleDatasource.getAllByIds(ids);
@@ -32,20 +30,12 @@ async function list({ moduleDatasource }) {
   return modulesData.map((moduleData) => ModuleFactory.build(moduleData));
 }
 
-function resetMemoizedModuleVersions() {
-  memoizedModuleVersions.clear();
-}
-
-export { getAllByIds, getById, getBySlug, list, resetMemoizedModuleVersions };
+export { getAllByIds, getById, getBySlug, list };
 
 function _computeModuleVersion(moduleData) {
-  if (!memoizedModuleVersions.has(moduleData.slug)) {
-    const hash = crypto.createHash('sha256');
-    hash.update(JSON.stringify(moduleData));
-    const version = hash.copy().digest('hex');
-    memoizedModuleVersions.set(moduleData.slug, version);
-  }
-  return memoizedModuleVersions.get(moduleData.slug);
+  const hash = crypto.createHash('sha256');
+  hash.update(JSON.stringify(moduleData));
+  return hash.copy().digest('hex');
 }
 
 async function _getModule({ ref, moduleDatasource, query }) {
