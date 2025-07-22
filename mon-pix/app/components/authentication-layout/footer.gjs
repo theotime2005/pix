@@ -20,7 +20,7 @@ export default class Footer extends Component {
 
   @action
   onLanguageChange(language) {
-    this.locale.setLocale(language);
+    this.locale.setCurrentLocale(language);
     this.router.replaceWith({ queryParams: { lang: null } });
   }
 

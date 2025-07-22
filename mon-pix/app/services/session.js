@@ -116,9 +116,9 @@ export default class CurrentSessionService extends SessionService {
     userIdForLearnerAssociationStorage.remove();
   }
 
-  async _loadCurrentUserAndLocale(language = null) {
+  async _loadCurrentUserAndLocale(language) {
     await this.currentUser.load();
-    this.locale.setUserLocale(this.currentUser.user, language);
+    this.locale.detectBestLocale({ language, user: this.currentUser.user });
   }
 
   _getRouteAfterInvalidation() {

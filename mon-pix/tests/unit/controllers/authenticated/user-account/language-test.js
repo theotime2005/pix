@@ -7,15 +7,15 @@ module('Unit | Controller | user-account/language', function (hooks) {
 
   let controller;
   let userSaveStub;
-  let setLocaleStub;
+  let setCurrentLocaleStub;
 
   hooks.beforeEach(function () {
     userSaveStub = sinon.stub();
-    setLocaleStub = sinon.stub();
+    setCurrentLocaleStub = sinon.stub();
 
     controller = this.owner.lookup('controller:authenticated/user-account/language');
     controller.currentUser = { user: { save: userSaveStub } };
-    controller.locale = { setLocale: setLocaleStub };
+    controller.locale = { setCurrentLocale: setCurrentLocaleStub };
     controller.set('shouldDisplayLanguageUpdatedMessage', false);
   });
 
@@ -32,7 +32,7 @@ module('Unit | Controller | user-account/language', function (hooks) {
 
         // then
         sinon.assert.calledWith(userSaveStub, { adapterOptions: { lang: language } });
-        sinon.assert.calledWith(setLocaleStub, language);
+        sinon.assert.calledWith(setCurrentLocaleStub, language);
         assert.true(controller.shouldDisplayLanguageUpdatedMessage);
         assert.ok(true);
       });
@@ -49,7 +49,7 @@ module('Unit | Controller | user-account/language', function (hooks) {
 
         // then
         sinon.assert.notCalled(userSaveStub);
-        sinon.assert.notCalled(setLocaleStub);
+        sinon.assert.notCalled(setCurrentLocaleStub);
         assert.ok(true);
       });
     });

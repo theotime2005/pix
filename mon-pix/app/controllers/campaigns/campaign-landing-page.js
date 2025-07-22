@@ -39,7 +39,7 @@ export default class CampaignLandingPageController extends Controller {
   @action
   onLanguageChange(language) {
     this.selectedLanguage = language;
-    this.locale.setLocale(this.selectedLanguage);
+    this.locale.setCurrentLocale(this.selectedLanguage);
     this.router.replaceWith('campaigns.campaign-landing-page', { queryParams: { lang: null } });
   }
 

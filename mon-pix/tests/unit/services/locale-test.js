@@ -120,13 +120,13 @@ module('Unit | Services | locale', function (hooks) {
     });
   });
 
-  module('setLocale', function () {
+  module('setCurrentLocale', function () {
     test('set app locale', function (assert) {
       // given
       const locale = DEFAULT_LOCALE;
 
       // when
-      localeService.setLocale(locale);
+      localeService.setCurrentLocale(locale);
 
       // then
       sinon.assert.calledWith(intlService.setLocale, locale);
@@ -135,7 +135,7 @@ module('Unit | Services | locale', function (hooks) {
     });
   });
 
-  module('setUserLocale', function () {
+  module('detectBestLocale', function () {
     module('when the current domain is "fr"', function () {
       module('when there is no cookie locale', function () {
         test('sets the locale with "fr" and adds a cookie locale with "fr-FR"', function (assert) {
@@ -144,7 +144,7 @@ module('Unit | Services | locale', function (hooks) {
           currentDomainService.getExtension.returns('fr');
 
           // when
-          localeService.setUserLocale();
+          localeService.detectBestLocale({ language: null, user: null });
 
           // then
           sinon.assert.calledWith(cookiesService.write, 'locale', 'fr-FR');
@@ -161,7 +161,7 @@ module('Unit | Services | locale', function (hooks) {
           currentDomainService.getExtension.returns('fr');
 
           // when
-          localeService.setUserLocale();
+          localeService.detectBestLocale({ language: null, user: null });
 
           // then
           sinon.assert.notCalled(cookiesService.write);
@@ -180,7 +180,7 @@ module('Unit | Services | locale', function (hooks) {
             currentDomainService.getExtension.returns('org');
 
             // when
-            localeService.setUserLocale();
+            localeService.detectBestLocale({ language: null, user: null });
 
             // then
             sinon.assert.calledWith(intlService.setLocale, DEFAULT_LOCALE);
@@ -193,10 +193,10 @@ module('Unit | Services | locale', function (hooks) {
           test('sets the locale with the overriding language', function (assert) {
             // given
             currentDomainService.getExtension.returns('org');
-            const overridingLanguage = 'es';
+            const language = 'es';
 
             // when
-            localeService.setUserLocale(null, overridingLanguage);
+            localeService.detectBestLocale({ language, user: null });
 
             // then
             sinon.assert.calledWith(intlService.setLocale, 'es');
@@ -209,10 +209,10 @@ module('Unit | Services | locale', function (hooks) {
           test('sets the default locale', function (assert) {
             // given
             currentDomainService.getExtension.returns('org');
-            const badOverridingLanguage = 'xxx';
+            const badLanguage = 'xxx';
 
             // when
-            localeService.setUserLocale(null, badOverridingLanguage);
+            localeService.detectBestLocale({ language: badLanguage, user: null });
 
             // then
             sinon.assert.calledWith(intlService.setLocale, DEFAULT_LOCALE);
@@ -230,7 +230,7 @@ module('Unit | Services | locale', function (hooks) {
             const user = { lang: 'nl' };
 
             // when
-            localeService.setUserLocale(user);
+            localeService.detectBestLocale({ language: null, user });
 
             // then
             sinon.assert.calledWith(intlService.setLocale, 'nl');
@@ -244,10 +244,10 @@ module('Unit | Services | locale', function (hooks) {
             // given
             currentDomainService.getExtension.returns('org');
             const user = { lang: 'nl' };
-            const overridingLanguage = 'es';
+            const language = 'es';
 
             // when
-            localeService.setUserLocale(user, overridingLanguage);
+            localeService.detectBestLocale({ language, user });
 
             // then
             sinon.assert.calledWith(intlService.setLocale, 'es');

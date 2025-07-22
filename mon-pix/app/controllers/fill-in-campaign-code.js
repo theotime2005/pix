@@ -85,7 +85,7 @@ export default class FillInCampaignCodeController extends Controller {
   @action
   onLanguageChange(language) {
     this.selectedLanguage = language;
-    this.locale.setLocale(this.selectedLanguage);
+    this.locale.setCurrentLocale(this.selectedLanguage);
     this.router.replaceWith('fill-in-campaign-code', { queryParams: { lang: null } });
   }
 }

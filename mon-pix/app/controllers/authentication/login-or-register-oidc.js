@@ -51,7 +51,7 @@ export default class LoginOrRegisterOidcController extends Controller {
 
   @action
   onLanguageChange(language) {
-    this.locale.setLocale(language);
+    this.locale.setCurrentLocale(language);
     this.router.replaceWith('authentication.login-or-register-oidc', { queryParams: { lang: null } });
   }
 

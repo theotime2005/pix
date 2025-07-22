@@ -15,7 +15,7 @@ export default class UserAccountPersonalInformationController extends Controller
     if (!this.currentDomain.isFranceDomain) {
       await this.currentUser.user.save({ adapterOptions: { lang: language } });
 
-      this.locale.setLocale(language);
+      this.locale.setCurrentLocale(language);
       this._displayLanguageUpdatedMessage();
     }
   }

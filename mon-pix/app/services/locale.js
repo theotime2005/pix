@@ -54,31 +54,31 @@ export default class LocaleService extends Service {
     }
   }
 
-  setLocale(locale) {
+  setCurrentLocale(locale) {
     this.metrics.context.locale = locale;
     this.intl.setLocale(locale);
     this.dayjs.setLocale(locale);
   }
 
-  setUserLocale(currentUser = null, overridingLanguage = null) {
+  detectBestLocale({ language, user }) {
     if (this.currentDomain.isFranceDomain) {
-      this.setLocale(FRENCH_INTERNATIONAL_LOCALE);
+      this.setCurrentLocale(FRENCH_INTERNATIONAL_LOCALE);
       this.#setLocaleCookie(FRENCH_FRANCE_LOCALE);
       return;
     }
 
-    const supportedLanguage = this.#findSupportedLanguage(overridingLanguage);
+    const supportedLanguage = this.#findSupportedLanguage(language);
     if (supportedLanguage) {
-      this.setLocale(supportedLanguage);
+      this.setCurrentLocale(supportedLanguage);
       return;
     }
 
-    if (currentUser) {
-      this.setLocale(currentUser.lang);
+    if (user) {
+      this.setCurrentLocale(user.lang);
       return;
     }
 
-    this.setLocale(DEFAULT_LOCALE);
+    this.setCurrentLocale(DEFAULT_LOCALE);
   }
 
   #findSupportedLanguage(language) {

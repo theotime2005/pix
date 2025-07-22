@@ -14,7 +14,7 @@ module('Unit | Services | session', function (hooks) {
   hooks.beforeEach(function () {
     sessionService = this.owner.lookup('service:session');
     sessionService.currentUser = { load: sinon.stub(), user: null };
-    sessionService.locale = { setUserLocale: sinon.stub() };
+    sessionService.locale = { detectBestLocale: sinon.stub() };
     sessionService._getRouteAfterInvalidation = sinon.stub();
 
     routerService = this.owner.lookup('service:router');
@@ -93,7 +93,7 @@ module('Unit | Services | session', function (hooks) {
 
       // then
       sinon.assert.calledOnce(sessionService.currentUser.load);
-      sinon.assert.calledWith(sessionService.locale.setUserLocale, user);
+      sinon.assert.calledWith(sessionService.locale.detectBestLocale, { user, language: undefined });
       assert.ok(true);
     });
 
@@ -151,7 +151,7 @@ module('Unit | Services | session', function (hooks) {
 
       // then
       sinon.assert.calledOnce(sessionService.currentUser.load);
-      sinon.assert.calledWith(sessionService.locale.setUserLocale, user, 'es');
+      sinon.assert.calledWith(sessionService.locale.detectBestLocale, { language: 'es', user });
       assert.ok(true);
     });
   });
